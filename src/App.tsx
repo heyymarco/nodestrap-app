@@ -2,11 +2,45 @@ import
     React, {
     useState
 }                          from 'react';
+import {
+    jss as jssDefault,
+}                          from 'react-jss'         // base technology of our nodestrap components
 import logo from './logo.svg';
 import './App.css';
 
 import Container from './libs/Container';
 import Element   from './libs/Element';
+
+
+
+// import jssPluginFunctions        from 'jss-plugin-rule-value-function'
+// import jssPluginObservable       from 'jss-plugin-rule-value-observable'
+// import jssPluginTemplate         from 'jss-plugin-template'
+import jssPluginGlobal              from 'jss-plugin-global'
+import jssPluginExtend              from 'jss-plugin-extend'
+import jssPluginNested              from 'jss-plugin-nested'
+// import jssPluginCompose          from 'jss-plugin-compose'
+import jssPluginCamelCase           from 'jss-plugin-camel-case'
+// import jssPluginDefaultUnit      from 'jss-plugin-default-unit'
+import jssPluginExpand              from 'jss-plugin-expand'
+// import jssPluginVendorPrefixer   from 'jss-plugin-vendor-prefixer'
+// import jssPluginPropsSort        from 'jss-plugin-props-sort'
+
+jssDefault.setup({plugins:[
+	// jssPluginFunctions(),
+	// jssPluginObservable({}),
+	// jssPluginTemplate(),
+	jssPluginGlobal(),
+	jssPluginExtend(),
+	jssPluginNested(),
+	// jssPluginCompose(),
+	jssPluginCamelCase(),
+	// jssPluginDefaultUnit({}),
+	jssPluginExpand(),
+	// jssPluginVendorPrefixer(),
+	// jssPluginPropsSort(),
+	// jssPluginNormalizeShorthands(),
+]});
 
 
 

@@ -25,7 +25,7 @@ const cssPropsManager = new CssPropsManager(() => {
 
     return {
         fontSize          : [[
-            'calc((', (gens.fontSizeSm as string), '+', (gens.fontSizeMd as string), ')/2)'
+            'calc((', gens.fontSizeSm, '+', gens.fontSizeMd, ')/2)'
         ]]                                           as Prop.FontSize            | Cust.Expr,
         fontFamily        : gens.fontFamilyMonospace as Prop.FontFamily[]        | Cust.Ref,
         fontWeight        : gens.fontWeightNormal    as Prop.FontWeight          | Cust.Expr,

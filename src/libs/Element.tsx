@@ -62,7 +62,7 @@ const cssPropsManager = new CssPropsManager(() => {
 
     return {
         fontSize          : typos.fontSizeNm,
-        fontSizeSm        : [['calc((', (typos.fontSizeSm as string), '+', (typos.fontSizeNm as string), ')/2)']],
+        fontSizeSm        : [['calc((', typos.fontSizeSm, '+', typos.fontSizeNm, ')/2)']],
         fontSizeLg        : typos.fontSizeMd,
         fontFamily        : inherit,
         fontWeight        : inherit,
@@ -76,12 +76,12 @@ const cssPropsManager = new CssPropsManager(() => {
 
         opacity           : 1,
 
-        paddingX          : [['calc((', (spacers.sm as string), '+', (spacers.md as string), ')/2)']],
-        paddingY          : [['calc((', (spacers.xs as string), '+', (spacers.sm as string), ')/2)']],
-        paddingXSm        : spacers.sm as string,
-        paddingYSm        : spacers.xs as string,
-        paddingXLg        : spacers.md as string,
-        paddingYLg        : spacers.sm as string,
+        paddingX          : [['calc((', spacers.sm, '+', spacers.md, ')/2)']],
+        paddingY          : [['calc((', spacers.xs, '+', spacers.sm, ')/2)']],
+        paddingXSm        : spacers.sm,
+        paddingYSm        : spacers.xs,
+        paddingXLg        : spacers.md,
+        paddingYLg        : spacers.sm,
         border            : borders.default,
         borderRadius      : border.radiuses.md,
         borderRadiusSm    : border.radiuses.sm,
@@ -431,7 +431,7 @@ export class StylesBuilder {
     }
 }
 
-class ElementStylesBuilder extends StylesBuilder {
+export class ElementStylesBuilder extends StylesBuilder {
     constructor() {
         super('elm');
     }
