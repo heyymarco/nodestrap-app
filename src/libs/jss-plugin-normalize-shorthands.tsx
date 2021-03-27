@@ -1,8 +1,8 @@
-import type { Plugin, Rule, JssStyle, StyleSheet } from 'jss';
+import type { Plugin, Rule, JssStyle, JssValue, StyleSheet } from 'jss';
 
 
 
-const shorthands: { [index: string]: string } = {
+const shorthands: { [key: string]: string } = {
     backg        : 'background',
     'backg-clip' : 'background-clip',
     anim         : 'animation',
@@ -10,69 +10,80 @@ const shorthands: { [index: string]: string } = {
     'gap-y'      : 'row-gap',
 };
 
-type StyleEx = { [index: string]: any };
 export default function normalizeShorthands(): Plugin {
     return {
-        onProcessStyle: (style: JssStyle, rule: Rule, sheet?: StyleSheet): JssStyle => {
-            
-            for (const prop in shorthands) {
-                if (prop in style) {
-                    (style as StyleEx)[shorthands[prop]] = (style as StyleEx)[prop];
-                    delete (style as StyleEx)[prop];
+        onProcessStyle: (style: JssStyle & {[key: string]: JssStyle[keyof JssStyle]}, rule: Rule, sheet?: StyleSheet): JssStyle => {
+            for (const name in style) {
+                if (name in shorthands) {
+                    // set the expanded name:
+                    style[shorthands[name]] = style[name];
+
+                    // delete the original name:
+                    style[name] = null;
                 }
+            } // for
+
+
+
+            {
+                // get the original values:
+                const paddingX = style['padding-x'];
+                const paddingY = style['padding-y'];
+
+
+
+                // set the expanded names:
+                if (paddingX && paddingY) {
+                    style.padding = [[paddingY, paddingX]] as JssValue;
+                }
+                else if (paddingX) {
+                    style['padding-left']   = paddingX;
+                    style['padding-right']  = paddingX;
+                }
+                else if (paddingY) {
+                    style['padding-top']    = paddingY;
+                    style['padding-bottom'] = paddingY;
+                } // if
+
+
+
+                // delete the original names:
+                if (paddingX) style['padding-x'] = null;
+                if (paddingY) style['padding-y'] = null;
             }
 
-            
-            const paddingX = (style as StyleEx)['padding-x'];
-            const paddingY = (style as StyleEx)['padding-y'];
-            if (paddingX && paddingY) {
-                style.padding = [[paddingY, paddingX]];
-                delete (style as StyleEx)['padding-x'];
-                delete (style as StyleEx)['padding-y'];
-            }
-            else if (paddingX) {
-                style.paddingLeft = style.paddingRight = paddingX;
-                delete (style as StyleEx)['padding-x'];
-            }
-            else if (paddingY) {
-                style.paddingTop = style.paddingBottom = paddingY;
-                delete (style as StyleEx)['padding-y'];
-            } // if
 
-            const hasMarginX = ('margin-x' in style);
-            const hasMarginY = ('margin-y' in style);
-            const styleAny = style as {[key: string]: any};
-            if (hasMarginX && hasMarginY) {
-                const marginX = (style as StyleEx)['margin-x'];
-                const marginY = (style as StyleEx)['margin-y'];
-                if (Array.isArray(marginX) && Array.isArray(marginY)
-                    && (marginX.length === 1) && (marginY.length === 1)
-                    && Array.isArray(marginX[0]) && Array.isArray(marginY[0])
-                ) {
-                    style.margin = [[
-                        marginY[0].join(' '),
-                        marginX[0].join(' '),
-                    ]];
-                }
-                else {
-                    style.margin = [[
-                        marginY,
-                        marginX,
-                    ]];
-                }
 
-                delete (style as StyleEx)['margin-x'];
-                delete (style as StyleEx)['margin-y'];
-            } else if (hasMarginX) {
-                styleAny['margin-left'] = styleAny['margin-right'] = (style as StyleEx)['margin-x'];
-                delete (style as StyleEx)['margin-x'];
-            } else if (hasMarginY) {
-                styleAny['margin-top'] = styleAny['margin-bottom'] = (style as StyleEx)['margin-y'];
-                delete (style as StyleEx)['margin-y'];
+            {
+                // get the original values:
+                const marginX = style['margin-x'];
+                const marginY = style['margin-y'];
+
+
+
+                // set the expanded names:
+                if (marginX && marginY) {
+                    style.margin = [[marginY, marginX]] as JssValue;
+                }
+                else if (marginX) {
+                    style['margin-left']   = marginX;
+                    style['margin-right']  = marginX;
+                }
+                else if (marginY) {
+                    style['margin-top']    = marginY;
+                    style['margin-bottom'] = marginY;
+                } // if
+
+
+
+                // delete the original names:
+                if (marginX) style['margin-x'] = null;
+                if (marginY) style['margin-y'] = null;
             }
+
 
 
             return style;
-        }
+        },
     };
 }

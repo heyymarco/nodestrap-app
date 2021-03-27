@@ -5,7 +5,6 @@ import
 import logo from './logo.svg';
 import './App.css';
 
-
 import Container from './libs/Container';
 import Element   from './libs/Element';
 
@@ -39,6 +38,16 @@ function App() {
                     Learn React
                 </a>
                 <hr style={{flexBasis: '100%'}} />
+                <Element theme={theme} size={size} enableGradient={enableGrad}
+					//@ts-ignore
+					outlined={outlined}>
+                        test
+                </Element>
+                <Element theme={theme} size={size} enableGradient={enableGrad}
+					//@ts-ignore
+					outlined={outlined}>
+                        test
+                </Element>
                 <Element theme={theme} size={size} enableGradient={enableGrad}
 					//@ts-ignore
 					outlined={outlined}>

@@ -1,17 +1,23 @@
 // react (builds html using javascript):
-import React               from 'react'             // base technology of our nodestrap components
+import
+    React, {
+    useContext
+}                          from 'react'             // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
-import jssDefault          from 'jss'               // base technology of our nodestrap components
-import
-    jssPluginNormalizeShorthands
-                           from './jss-plugin-normalize-shorthands'
-import { createUseStyles } from 'react-jss'         // base technology of our nodestrap components
 import type {
     JssStyle,
     Styles,
     Classes,
 }                          from 'jss'               // ts defs support for jss
+import {
+    jss as jssDefault,
+    createUseStyles,
+    JssContext,
+}                          from 'react-jss'         // base technology of our nodestrap components
+import
+    jssPluginNormalizeShorthands
+                           from './jss-plugin-normalize-shorthands'
 import {
     Prop,
     PropEx,
@@ -38,10 +44,6 @@ import typos               from './typos/index'     // configurable typography (
 
 
 // jss:
-
-jssDefault.use(
-    jssPluginNormalizeShorthands()
-);
 
 /**
  * A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
@@ -354,10 +356,28 @@ export class StylesBuilder {
      * @returns A jss stylesheet instance.
      */
     public useStyles() {
-        if (!this._useStyleCache) {
-            this._useStyleCache = createUseStyles(this.styles());
-        }
-        return this._useStyleCache();
+        // hack: wrap with function twice and then unwrap twice:
+        // so we can use *react hook* here:
+        return (() => // wrap-1
+            () => { // wrap-2
+                const jssContext = useContext(JssContext);
+
+                if (!this._useStyleCache) {
+                    // console.log('creating style...');
+
+                    const jss = jssContext.jss ?? jssDefault;
+                    jss.use(
+                        jssPluginNormalizeShorthands()
+                    );
+
+                    this._useStyleCache = createUseStyles(this.styles());
+                }
+                // else {
+                //     console.log('use cached style');
+                // }
+                return this._useStyleCache();
+            }
+        )()(); // unwrap-1 & unwrap-2
     }
 
 
@@ -683,9 +703,9 @@ export default function Element(props: Props) {
 
 
     const Tag       = (props.tag ?? 'div');
-    const htmlProps = props as React.HTMLAttributes<HTMLOrSVGElement>;
+    // const htmlProps = props as React.HTMLAttributes<HTMLOrSVGElement>;
     return (
-        <Tag {...htmlProps}
+        <Tag
             className={[
                 elmStyles.main,
                 
