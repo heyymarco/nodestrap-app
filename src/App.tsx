@@ -10,6 +10,7 @@ import './App.css';
 
 import Container from './libs/Container';
 import Element   from './libs/Element';
+import Indicator from './libs/Indicator';
 
 
 
@@ -54,6 +55,9 @@ function App() {
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
 
+	const [enabled,    setEnabled   ] = useState(true);
+	const [active,      setActive   ] = useState(false);
+
 
 
     return (
@@ -72,21 +76,22 @@ function App() {
                     Learn React
                 </a>
                 <hr style={{flexBasis: '100%'}} />
-                <Element theme={theme} size={size} enableGradient={enableGrad}
+                <Element
+					theme={theme} size={size} enableGradient={enableGrad}
 					//@ts-ignore
-					outlined={outlined}>
+					outlined={outlined}
+				>
                         test
                 </Element>
-                <Element theme={theme} size={size} enableGradient={enableGrad}
+                <Indicator
+					theme={theme} size={size} enableGradient={enableGrad}
 					//@ts-ignore
-					outlined={outlined}>
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+				>
                         test
-                </Element>
-                <Element theme={theme} size={size} enableGradient={enableGrad}
-					//@ts-ignore
-					outlined={outlined}>
-                        test
-                </Element>
+                </Indicator>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:
@@ -134,6 +139,24 @@ function App() {
 							onChange={(e) => setOutlined(e.target.checked)}
 						/>
 						outlined
+					</label>
+				</p>
+				<p>
+					<label>
+						<input type='checkbox'
+							checked={enabled}
+							onChange={(e) => setEnabled(e.target.checked)}
+						/>
+						enabled
+					</label>
+				</p>
+				<p>
+					<label>
+						<input type='checkbox'
+							checked={active}
+							onChange={(e) => setActive(e.target.checked)}
+						/>
+						active
 					</label>
 				</p>
             </Container>

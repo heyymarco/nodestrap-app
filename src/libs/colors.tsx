@@ -1,5 +1,5 @@
 // jss   (builds css  using javascript):
-import { Prop, Cust, }     from './Css'             // ts defs support for jss
+import { Prop }            from './Css'             // ts defs support for jss
 import CssPropsManager     from './CssPropsManager' // A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
 import type {
     Dictionary,

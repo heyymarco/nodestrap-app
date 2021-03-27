@@ -1,7 +1,8 @@
 // react (builds html using javascript):
 import
     React, {
-    useContext
+    useContext,
+    useMemo,
 }                          from 'react'             // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
@@ -43,11 +44,8 @@ import typos               from './typos/index'     // configurable typography (
 
 
 
-// jss:
+// configs:
 
-/**
- * A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
- */
 const cssPropsManager = new CssPropsManager(() => {
     // common css values:
     // const initial = 'initial';
@@ -115,6 +113,8 @@ export const cssDecls = cssPropsManager.decls;
 
 
 
+// styles:
+
 /**
  * A css builder for styling our components.
  * Supports theming, styling, resizeable.
@@ -166,7 +166,7 @@ export class StylesBuilder {
      * Holds the prefix name of the generated css props.  
      * Useful to avoid name collision if working with another css frameworks.
      */
-    protected readonly varPfx   : string;
+    protected readonly prefix   : string;
 
     /**
      * Creates a scoped css prop name.
@@ -174,7 +174,7 @@ export class StylesBuilder {
      * @returns A prefixed prop name (if `varPfx` applied) -or- prop name without prefix.
      */
     protected prop(name: string) {
-        if (this.varPfx) return `--${this.varPfx}-${name}`;
+        if (this.prefix) return `--${this.prefix}-${name}`;
         return `--${name}`;
     }
 
@@ -185,7 +185,7 @@ export class StylesBuilder {
      * @param fallback2 The name of third prop to retrieve if the `fallback1` was not found.
      * @returns A generated css expression for retrieving the value.
      */
-    protected ref(propName: string, fallback1?: string, fallback2?: string) {
+    public ref(propName: string, fallback1?: string, fallback2?: string) {
         return fallback1 ? (fallback2 ? `var(${propName},var(${fallback1},var(${fallback2})))` : `var(${propName},var(${fallback1}))`) : `var(${propName})`;
     }
 
@@ -385,14 +385,12 @@ export class StylesBuilder {
     // constructors:
     /**
      * Creates a `StylesBuilder` instance.
-     * @param varPfx The prefix name of the generated css props.  
+     * @param prefix The prefix name of the generated css props.  
      * Useful to avoid name collision if working with another css frameworks.
      */
-    protected constructor(
-        varPfx: string,
-    ) {
+    public constructor(prefix: string = 'ns') {
         // scoped css props:
-        this.varPfx     = varPfx;
+        this.prefix = prefix;
     }
 
 
@@ -432,12 +430,6 @@ export class StylesBuilder {
 }
 
 export class ElementStylesBuilder extends StylesBuilder {
-    constructor() {
-        super('elm');
-    }
-
-
-
     //#region scoped css props
     /**
      * themed foreground color.
@@ -679,43 +671,77 @@ export function useVariantOutlined(props: VariantOutlined) {
 }
 
 
-// func components:
+
+// react components:
 
 export interface Props
     extends
         VariantTheme,
         VariantSize,
         VariantGradient,
-        React.DOMAttributes<HTMLOrSVGElement>
+        React.DOMAttributes<HTMLElement>
 {
     tag?     : keyof JSX.IntrinsicElements
-    classes? : string[]
+    classes? : (string|null)[]
 }
 export default function Element(props: Props) {
-    const elmStyles     = styles.useStyles();
+    const elmStyles    = styles.useStyles();
 
     // themes:
-    const variTheme     = useVariantTheme(props);
-    const variSize      = useVariantSize(props);
-    const variGradient  = useVariantGradient(props);
-    const variOutlined  = useVariantOutlined(props as VariantOutlined);
+    const variTheme    = useVariantTheme(props);
+    const variSize     = useVariantSize(props);
+    const variGradient = useVariantGradient(props);
+    const variOutlined = useVariantOutlined(props as VariantOutlined);
 
 
 
-    const Tag       = (props.tag ?? 'div');
-    // const htmlProps = props as React.HTMLAttributes<HTMLOrSVGElement>;
+    const htmlProps = useMemo(() => {
+        const htmlPropList = [
+            // Standard HTML Attributes:
+            'accessKey',
+            // 'className',
+            'contentEditable',
+            'contextMenu',
+            'dir',
+            'draggable',
+            'hidden',
+            'id',
+            'lang',
+            'placeholder',
+            'slot',
+            'spellCheck',
+            'style',
+            'tabIndex',
+            'title',
+            'translate',
+        ];
+        const htmlProps = {};
+        for (const name in props) {
+            if (name.startsWith('on') || name.startsWith('aria-') || (name in htmlPropList)) {
+                (htmlProps as any)[name] = (props as any)[name];
+            } // if
+        } // for
+        return htmlProps;
+    }, [props]);
+
+
+
+    const Tag = (props.tag ?? 'div');
     return (
         <Tag
+            {...htmlProps}
             className={[
-                elmStyles.main,
-                
+                // main:
+                (props.classes ? null : elmStyles.main),
+
+                // additionals:
+                ...(props.classes ?? []),
+
                 // themes:
                 variTheme.class,
                 variSize.class,
                 variGradient.class,
                 variOutlined.class,
-
-                ...(props.classes ?? []),
             ].filter((c) => !!c).join(' ')}
         >
             {(props as React.PropsWithChildren<Props>)?.children}
