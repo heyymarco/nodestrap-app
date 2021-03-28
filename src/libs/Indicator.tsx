@@ -129,7 +129,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
 
     // themes:
-    // -- same as parent --
+    /* -- same as parent -- */
 
 
 
@@ -139,6 +139,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
 
 
+        //#region re-arrange the animFn at different states
         '&.active,&.actived': { // if activated programmatically (not by user input)
             // define an *animations* func:
             [this.decl(this._animFn)]: [
@@ -163,13 +164,14 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
             this.ref(this._animEnableDisable), // 1st : ctrl must be enable
             this.ref(this._animActivePassive), // 4th : ctrl got pressed
         ],
+        //#endregion re-arrange the animFn at different states
     }}
     protected themesIf(): JssStyle { return {
         extend: super.themesIf(),
 
 
 
-        // define *active* colors:
+        // define an *active* color theme:
         [this.decl(this._colorIfAct)]          : colors.primaryText,
         [this.decl(this._backgIfAct)]          : `linear-gradient(${colors.primary},${colors.primary})`,
         [this.decl(this._colorOutlinedIfAct)]  : colors.primary,
