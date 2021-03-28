@@ -172,9 +172,9 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
 
         // define an *active* color theme:
-        [this.decl(this._colorIfAct)]          : colors.primaryText,
-        [this.decl(this._backgIfAct)]          : `linear-gradient(${colors.primary},${colors.primary})`,
-        [this.decl(this._colorOutlinedIfAct)]  : colors.primary,
+        [this.decl(this._colorIfAct)]         : colors.primaryText,
+        [this.decl(this._backgIfAct)]         : `linear-gradient(${colors.primary},${colors.primary})`,
+        [this.decl(this._colorOutlinedIfAct)] : colors.primary,
     }}
     protected states(): JssStyle { return {
         // all initial states are none:
@@ -182,12 +182,15 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
         [this.decl(this._filterEnableDisable)] : ecssProps.filterNone,
         [this.decl(this._animEnableDisable)]   : ecssProps.animNone,
 
-        [this.decl(this._filterHoverLeave)]    : ecssProps.filterNone, // supports for control
+        [this.decl(this._filterHoverLeave)]    : ecssProps.filterNone, // supports for Control
 
         [this.decl(this._filterActivePassive)] : ecssProps.filterNone,
         [this.decl(this._animActivePassive)]   : ecssProps.animNone,
 
+
+
         // specific states:
+
         extend:[
             super.states(),
 
@@ -302,6 +305,8 @@ const cssPropsManager = new CssPropsManager(() => {
     };
 
     return {
+        // anim props:
+
         filterDisable        : [['grayscale(50%)',  'opacity(50%)'  ]],
         filterActive         : [['brightness(65%)', 'contrast(150%)']],
 
@@ -366,7 +371,9 @@ export function useStateEnableDisable(props: Props) {
     };
 }
 
-export function useStateActivePassive(props: Props, stateEnbDis: {enabled: boolean} = {enabled: true}) {
+export function useStateActivePassive(props: Props) {
+    const stateEnabled = (props.enabled!==false);
+
     const defaultActived = false; // if [active] was not specified => the default value is active=false (released)
     const [actived,     setActived    ] = useState(props.active ?? defaultActived);
     const [activating,  setActivating ] = useState(false);
@@ -392,7 +399,7 @@ export function useStateActivePassive(props: Props, stateEnbDis: {enabled: boole
 
     
     const handlePassivating = () => {
-        if (!stateEnbDis.enabled) return; // control disabled => no response
+        if (!stateEnabled) return; // control disabled => no response
         if (actived) return; // already beed actived programatically => cannot be released by mouse/keyboard
         if (passivating) return; // already being deactivating => action is not required
 
@@ -457,13 +464,28 @@ export default function Indicator(props: Props) {
 
     // states:
     const stateEnbDis  = useStateEnableDisable(props);
-    const stateActPass = useStateActivePassive(props, stateEnbDis);
+    const stateActPass = useStateActivePassive(props);
 
     
+
+    const htmlCtrls = [
+        'button',
+        'fieldset',
+        'input',
+        'select',
+        'optgroup',
+        'option',
+        'textarea',
+    ];
+    const isHtmlCtrl   = props.tag && (props.tag in htmlCtrls);
+    const isActionCtrl = !!(props as any).isActionCtrl ?? false;
+
+
 
     return (
         <Element
             {...props}
+
             classes={[
                 // main:
                 (props.classes ? null : indiStyles.main),
@@ -472,13 +494,23 @@ export default function Indicator(props: Props) {
                 ...(props.classes ?? []),
 
                 // states:
-                stateEnbDis.class ?? (stateEnbDis.disabled ? 'disabled' : null),
+                (stateEnbDis.class ?? ((stateEnbDis.disabled && !isHtmlCtrl) ? 'disabled' : null)),
                 stateActPass.class,
             ]}
+
+            // accessibility:
+            {...(isHtmlCtrl ? { disabled: stateEnbDis.disabled } : {})}
         
+            // events:
+            onMouseDown={(e) => { if (isActionCtrl) stateActPass.handleMouseDown(); props.onMouseDown?.(e); }}
+            onKeyDown=  {(e) => { if (isActionCtrl) stateActPass.handleKeyDown();   props.onKeyDown?.(e);   }}
+            onMouseUp=  {(e) => { if (isActionCtrl) stateActPass.handleMouseUp();   props.onMouseUp?.(e);   }}
+            onKeyUp=    {(e) => { if (isActionCtrl) stateActPass.handleKeyUp();     props.onKeyUp?.(e);     }}
             onAnimationEnd={(e) => {
                 stateEnbDis.handleAnimationEnd(e);
                 stateActPass.handleAnimationEnd(e);
+
+                props.onAnimationEnd?.(e);
             }}
         />
     );

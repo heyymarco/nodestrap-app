@@ -11,6 +11,7 @@ import './App.css';
 import Container from './libs/Container';
 import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
+import Control from './libs/Control';
 
 
 
@@ -58,6 +59,9 @@ function App() {
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
 
+	const focuses = [false, undefined, true];
+	const [focus,       setFocus    ] = useState<boolean|undefined>(undefined);
+
 
 
     return (
@@ -92,6 +96,17 @@ function App() {
 				>
                         test
                 </Indicator>
+                <Control
+					theme={theme} size={size} enableGradient={enableGrad}
+					//@ts-ignore
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+
+					focus={focus}
+				>
+                        test
+                </Control>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:
@@ -158,6 +173,25 @@ function App() {
 						/>
 						active
 					</label>
+				</p>
+				<p>
+					Focus:
+					{
+						focuses.map(fc =>
+							<label key={`${fc ?? ''}`}>
+								<input type='radio'
+									value={`${fc}`}
+									checked={focus===fc}
+									onChange={(e) => setFocus((() => {
+										const value = e.target.value;
+										if (!value) return undefined;
+										return (value==='true');
+									})())}
+								/>
+								{`${fc ?? 'auto'}`}
+							</label>
+						)
+					}
 				</p>
             </Container>
         </div>
