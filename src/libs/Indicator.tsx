@@ -31,30 +31,30 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     /**
      * active unthemed foreground color.
      */
-    protected readonly _colorIfAct          = this.prop('colorIfAct');
+    protected readonly _colorIfAct          = 'colorIfAct'
 
     /**
      * active unthemed background color.
      */
-    protected readonly _backgIfAct          = this.prop('backgIfAct');
+    protected readonly _backgIfAct          = 'backgIfAct'
 
     /**
      * active unthemed foreground color - at outlined state.
      */
-    protected readonly _colorOutlinedIfAct  = this.prop('colorOutlinedIfAct');
+    protected readonly _colorOutlinedIfAct  = 'colorOutlinedIfAct'
 
 
 
     // anim props:
 
-    public    readonly _filterEnableDisable = this.prop('filterEnableDisable');
-    protected readonly _animEnableDisable   = this.prop('animEnableDisable');
+    public    readonly _filterEnableDisable = 'filterEnableDisable'
+    protected readonly _animEnableDisable   = 'animEnableDisable'
 
-    public    readonly _filterHoverLeave    = this.prop('filterHoverLeave'); // will be used    in Control
- // protected readonly _animHoverLeave      = this.prop('animHoverLeave');   // will be defined in Control
+    public    readonly _filterHoverLeave    = 'filterHoverLeave' // will be used    in Control
+ // protected readonly _animHoverLeave      = 'animHoverLeave'   // will be defined in Control
 
-    public    readonly _filterActivePassive = this.prop('filterActivePassive');
-    protected readonly _animActivePassive   = this.prop('animActivePassive');
+    public    readonly _filterActivePassive = 'filterActivePassive'
+    protected readonly _animActivePassive   = 'animActivePassive'
     //#endregion scoped css props
 
 
@@ -120,9 +120,9 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     }
     protected applyStateActive(): JssStyle { return {
         // apply active (primary) colors:
-        [this._colorIf]         : this.ref(this._colorIfAct),
-        [this._backgIf]         : this.ref(this._backgIfAct),
-        [this._colorOutlinedIf] : this.ref(this._colorOutlinedIfAct),
+        [this.decl(this._colorIf)]         : this.ref(this._colorIfAct),
+        [this.decl(this._backgIf)]         : this.ref(this._backgIfAct),
+        [this.decl(this._colorOutlinedIf)] : this.ref(this._colorOutlinedIfAct),
     }}
     //#endregion mixins
 
@@ -141,7 +141,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
         '&.active,&.actived': { // if activated programmatically (not by user input)
             // define an *animations* func:
-            [this._animFn]: [
+            [this.decl(this._animFn)]: [
                 ecssProps.anim,
                 this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
                 this.ref(this._animEnableDisable), // 4th : ctrl enable/disable
@@ -149,7 +149,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
             '&.disabled,&:disabled:not(.disable)': { // if ctrl was disabled programatically
                 // define an *animations* func:
-                [this._animFn]: [
+                [this.decl(this._animFn)]: [
                     ecssProps.anim,
                     this.ref(this._animEnableDisable), // 1st : ctrl already disabled, move to the least priority
                     this.ref(this._animActivePassive), // 4th : ctrl deactivated programatically, move to moderate priority
@@ -158,7 +158,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
         },
 
         // define an *animations* func:
-        [this._animFn]: [
+        [this.decl(this._animFn)]: [
             ecssProps.anim,
             this.ref(this._animEnableDisable), // 1st : ctrl must be enable
             this.ref(this._animActivePassive), // 4th : ctrl got pressed
@@ -170,20 +170,20 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
 
         // define *active* colors:
-        [this._colorIfAct]         : colors.primaryText,
-        [this._backgIfAct]         : `linear-gradient(${colors.primary},${colors.primary})`,
-        [this._colorOutlinedIfAct] : colors.primary,
+        [this.decl(this._colorIfAct)]          : colors.primaryText,
+        [this.decl(this._backgIfAct)]          : `linear-gradient(${colors.primary},${colors.primary})`,
+        [this.decl(this._colorOutlinedIfAct)]  : colors.primary,
     }}
     protected states(): JssStyle { return {
         // all initial states are none:
 
-        [this._filterEnableDisable] : ecssProps.filterNone,
-        [this._animEnableDisable]   : ecssProps.animNone,
+        [this.decl(this._filterEnableDisable)] : ecssProps.filterNone,
+        [this.decl(this._animEnableDisable)]   : ecssProps.animNone,
 
-        [this._filterHoverLeave]    : ecssProps.filterNone, // supports for control
+        [this.decl(this._filterHoverLeave)]    : ecssProps.filterNone, // supports for control
 
-        [this._filterActivePassive] : ecssProps.filterNone,
-        [this._animActivePassive]   : ecssProps.animNone,
+        [this.decl(this._filterActivePassive)] : ecssProps.filterNone,
+        [this.decl(this._animActivePassive)]   : ecssProps.animNone,
 
         // specific states:
         extend:[
@@ -192,32 +192,32 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
 
             this.stateEnableDisable({ // [enabling, disabling, disabled]
-                [this._filterEnableDisable]           : cssProps.filterDisable,
+                [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
             }),
             this.stateEnable({ // [enabling]
-                [this._animEnableDisable]             : cssProps.animEnable,
+                [this.decl(this._animEnableDisable)]   : cssProps.animEnable,
             }),
             this.stateDisable({ // [disabling, disabled]
-                [this._animEnableDisable]             : cssProps.animDisable,
+                [this.decl(this._animEnableDisable)]   : cssProps.animDisable,
             }),
             { // [disabled]
-                '&.disabled,&:disabled:not(.disable)' : // if ctrl was disabled programatically, disable first animation
+                '&.disabled,&:disabled:not(.disable)'  : // if ctrl was disabled programatically, disable first animation
                     this.applyStateNoAnimStartup(),
             },
 
 
             this.stateActivePassive({ // [activating, actived, passivating]
-                [this._filterActivePassive]           : cssProps.filterActive,
+                [this.decl(this._filterActivePassive)] : cssProps.filterActive,
             }),
             this.stateActive({ // [activating, actived]
-                [this._animActivePassive]             : cssProps.animActive,
+                [this.decl(this._animActivePassive)]   : cssProps.animActive,
 
                 extend:[
                     this.applyStateActive(),
                 ] as JssStyle,
             }),
             this.statePassivating({ // [passivating]
-                [this._animActivePassive]             : cssProps.animPassive,
+                [this.decl(this._animActivePassive)]   : cssProps.animPassive,
             }),
             {
                 // [actived]

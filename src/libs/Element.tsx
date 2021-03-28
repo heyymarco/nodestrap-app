@@ -166,15 +166,29 @@ export class StylesBuilder {
      * Holds the prefix name of the generated css props.  
      * Useful to avoid name collision if working with another css frameworks.
      */
-    protected readonly prefix   : string;
+    private _prefix   : string = 'ns';
+    /**
+     * Gets the prefix name of the generated css props.  
+     */
+    public  get prefix() { return this._prefix }
+    /**
+     * Sets the prefix name of the generated css props.  
+     * Useful to avoid name collision if working with another css frameworks.
+     */
+    public  set prefix(newValue: string) {
+        if (this._prefix === newValue) return; // already the same => no change required
+        this._prefix        = newValue; // update the new prefix
+        this._useStyleCache = null;     // clear the cache
+    }
 
     /**
-     * Creates a scoped css prop name.
-     * @param name The name of the prop.
-     * @returns A prefixed prop name (if `varPfx` applied) -or- prop name without prefix.
+     * Gets the declaration name of the specified `propName`.
+     * @param propName The name of prop to retrieve.
+     * @returns A generated prop name for declaring the prop.
      */
-    protected prop(name: string) {
-        if (this.prefix) return `--${this.prefix}-${name}`;
+    protected decl(name: string) {
+        const prefix = this._prefix;
+        if (prefix) return `--${prefix}-${name}`;
         return `--${name}`;
     }
 
@@ -186,7 +200,12 @@ export class StylesBuilder {
      * @returns A generated css expression for retrieving the value.
      */
     public ref(propName: string, fallback1?: string, fallback2?: string) {
-        return fallback1 ? (fallback2 ? `var(${propName},var(${fallback1},var(${fallback2})))` : `var(${propName},var(${fallback1}))`) : `var(${propName})`;
+        const prefix = this._prefix;
+        return (prefix?
+            (fallback1 ? (fallback2 ? `var(--${prefix}-${propName},var(--${prefix}-${fallback1},var(--${prefix}-${fallback2})))` : `var(--${prefix}-${propName},var(--${prefix}-${fallback1}))`) : `var(--${prefix}-${propName})`)
+            :
+            (fallback1 ? (fallback2 ? `var(--${propName},var(--${fallback1},var(--${fallback2})))` : `var(--${propName},var(--${fallback1}))`) : `var(--${propName})`)
+        );
     }
 
 
@@ -382,19 +401,6 @@ export class StylesBuilder {
 
 
 
-    // constructors:
-    /**
-     * Creates a `StylesBuilder` instance.
-     * @param prefix The prefix name of the generated css props.  
-     * Useful to avoid name collision if working with another css frameworks.
-     */
-    public constructor(prefix: string = 'ns') {
-        // scoped css props:
-        this.prefix = prefix;
-    }
-
-
-
     // utilities:
     /**
      * Escapes some sets of character in svg data, so it will be valid to be written in css.
@@ -434,86 +440,86 @@ export class ElementStylesBuilder extends StylesBuilder {
     /**
      * themed foreground color.
      */
-    protected readonly _colorTh           = this.prop('colorTh');
+    protected readonly _colorTh           = 'colorTh'
 
     /**
      * conditional foreground color.
      */
-    protected readonly _colorIfIf         = this.prop('colorIfIf');
+    protected readonly _colorIfIf         = 'colorIfIf'
 
     /**
      * conditional unthemed foreground color.
      */
-    protected readonly _colorIf           = this.prop('colorIf');
+    protected readonly _colorIf           = 'colorIf'
 
     /**
      * functional foreground color.
      */
-    protected readonly _colorFn           = this.prop('colorFn');
+    protected readonly _colorFn           = 'colorFn'
 
     
     /**
      * none background.
      */
-    protected readonly _backgNone         = this.prop('backgNone');
+    protected readonly _backgNone         = 'backgNone'
 
     /**
      * themed background.
      */
-    protected readonly _backgTh           = this.prop('backgTh');
+    protected readonly _backgTh           = 'backgTh'
 
     /**
      * conditional background.
      */
-    protected readonly _backgIfIf         = this.prop('backgIfIf');
+    protected readonly _backgIfIf         = 'backgIfIf'
 
     /**
      * conditional unthemed background.
      */
-    protected readonly _backgIf           = this.prop('backgIf');
+    protected readonly _backgIf           = 'backgIf'
 
     /**
      * functional backgrounds.
      */
-    protected readonly _backgFn           = this.prop('backgFn');
+    protected readonly _backgFn           = 'backgFn'
 
     /**
      * background gradient.
      */
-    protected readonly _backgGradTg       = this.prop('backgGradTg');
+    protected readonly _backgGradTg       = 'backgGradTg'
 
 
     /**
      * themed foreground color - at outlined state.
      */
-    protected readonly _colorOutlinedTh   = this.prop('colorOutlinedTh');
+    protected readonly _colorOutlinedTh   = 'colorOutlinedTh'
 
     /**
      * conditional foreground color - at outlined state.
      */
-    protected readonly _colorOutlinedIfIf = this.prop('colorOutlinedIfIf');
+    protected readonly _colorOutlinedIfIf = 'colorOutlinedIfIf'
 
     /**
      * conditional unthemed foreground color - at outlined state.
      */
-    protected readonly _colorOutlinedIf   = this.prop('colorOutlinedIf');
+    protected readonly _colorOutlinedIf   = 'colorOutlinedIf'
 
     /**
      * functional foreground color - at outlined state.
      */
-    protected readonly _colorOutlinedFn   = this.prop('colorOutlinedFn');
+    protected readonly _colorOutlinedFn   = 'colorOutlinedFn'
 
 
     /**
      * functional backgrounds - at outlined state.
      */
-    protected readonly _backgOutlinedFn   = this.prop('backgOutlinedFn');
+    protected readonly _backgOutlinedFn   = 'backgOutlinedFn'
 
 
     /**
      * functional animations.
      */
-    protected readonly _animFn            = this.prop('animFn');
+    protected readonly _animFn            = 'animFn'
     //#endregion scoped css props
 
 
@@ -522,9 +528,9 @@ export class ElementStylesBuilder extends StylesBuilder {
     protected themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props:
     
-        [this._colorTh]         : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
-        [this._backgTh]         : this.solidBackg(themeColor),
-        [this._colorOutlinedTh] : themeColor,
+        [this.decl(this._colorTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
+        [this.decl(this._backgTh)]         : this.solidBackg(themeColor),
+        [this.decl(this._colorOutlinedTh)] : themeColor,
     }}
     protected sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrite the global props with the *prop{Size}*:
@@ -537,7 +543,7 @@ export class ElementStylesBuilder extends StylesBuilder {
     protected gradient(): JssStyle { return {
         // *toggle on* the background gradient prop:
 
-        [this._backgGradTg]: cssProps.backgGrad,
+        [this.decl(this._backgGradTg)]     : cssProps.backgGrad,
     }}
     protected outlined(): JssStyle { return {
         // apply *outlined* fn props:
@@ -552,14 +558,14 @@ export class ElementStylesBuilder extends StylesBuilder {
     // states:
     protected fnProps(): JssStyle { return {
         // define a *foreground* color func:
-        [this._colorFn] : this.ref(
+        [this.decl(this._colorFn)] : this.ref(
             this._colorIfIf, // first  priority
             this._colorTh,   // second priority
             this._colorIf,   // third  priority
         ),
     
         // define a *backgrounds* func:
-        [this._backgFn] : [
+        [this.decl(this._backgFn)] : [
             // top layer:
             this.ref(
                 this._backgGradTg,
@@ -580,14 +586,14 @@ export class ElementStylesBuilder extends StylesBuilder {
     
     
         // define a *foreground* color func - at *outlined* state:
-        [this._colorOutlinedFn] : this.ref(
+        [this.decl(this._colorOutlinedFn)] : this.ref(
             this._colorOutlinedIfIf, // first  priority
             this._colorOutlinedTh,   // second priority
             this._colorOutlinedIf,   // third  priority
         ),
     
         // define a *backgrounds* func - at *outlined* state:
-        [this._backgOutlinedFn] : this.ref(
+        [this.decl(this._backgOutlinedFn)] : this.ref(
             this._backgGradTg,
             this._backgNone,
         ),
@@ -595,19 +601,19 @@ export class ElementStylesBuilder extends StylesBuilder {
     
     
         // define an *animations* func:
-        [this._animFn] : [
+        [this.decl(this._animFn)] : [
             cssProps.anim,
         ],
     }}
     protected themesIf(): JssStyle { return {
         // define a *default* color theme:
-        [this._colorIf]         : cssProps.color,
-        [this._backgIf]         : this.ref(this._backgNone),
-        [this._colorOutlinedIf] : cssProps.color,
+        [this.decl(this._colorIf)]         : cssProps.color,
+        [this.decl(this._backgIf)]         : this.ref(this._backgNone),
+        [this.decl(this._colorOutlinedIf)] : cssProps.color,
     }}
     protected states(): JssStyle { return {
         // define a *none* background:
-        [this._backgNone] : this.solidBackg('transparent'),
+        [this.decl(this._backgNone)]       : this.solidBackg('transparent'),
     }}
 
 
