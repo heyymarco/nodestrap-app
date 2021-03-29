@@ -11,6 +11,7 @@ import './App.css';
 import Container from './libs/Container';
 import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
+import Content from './libs/Content';
 import Control from './libs/Control';
 
 
@@ -96,6 +97,15 @@ function App() {
 				>
                         test
                 </Indicator>
+                <Content
+					theme={theme} size={size} enableGradient={enableGrad}
+					//@ts-ignore
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+				>
+                        test
+                </Content>
                 <Control
 					theme={theme} size={size} enableGradient={enableGrad}
 					//@ts-ignore

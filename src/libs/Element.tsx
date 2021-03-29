@@ -455,7 +455,7 @@ export class ElementStylesBuilder extends StylesBuilder {
     /**
      * functional foreground color.
      */
-    protected readonly _colorFn           = 'colorFn'
+    public    readonly _colorFn           = 'colorFn'
 
     
     /**
@@ -481,7 +481,7 @@ export class ElementStylesBuilder extends StylesBuilder {
     /**
      * functional backgrounds.
      */
-    protected readonly _backgFn           = 'backgFn'
+    public    readonly _backgFn           = 'backgFn'
 
     /**
      * background gradient.
@@ -507,19 +507,19 @@ export class ElementStylesBuilder extends StylesBuilder {
     /**
      * functional foreground color - at outlined state.
      */
-    protected readonly _colorOutlinedFn   = 'colorOutlinedFn'
+    public    readonly _colorOutlinedFn   = 'colorOutlinedFn'
 
 
     /**
      * functional backgrounds - at outlined state.
      */
-    protected readonly _backgOutlinedFn   = 'backgOutlinedFn'
+    public    readonly _backgOutlinedFn   = 'backgOutlinedFn'
 
 
     /**
      * functional animations.
      */
-    protected readonly _animFn            = 'animFn'
+    public    readonly _animFn            = 'animFn'
     //#endregion scoped css props
 
 
@@ -725,7 +725,6 @@ export default function Element(props: Props) {
         for (const name in props) {
             if (name.startsWith('on') || name.startsWith('aria-') || htmlPropList.includes(name)) {
                 (htmlProps as any)[name] = (props as any)[name];
-                console.log(name);
             } // if
         } // for
         return htmlProps;

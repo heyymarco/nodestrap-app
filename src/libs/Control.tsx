@@ -15,7 +15,7 @@ import {
 import CssPropsManager      from './CssPropsManager' // A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
 import type {
     DictionaryOf,
-}                          from './CssPropsManager' // ts defs support for jss
+}                           from './CssPropsManager' // ts defs support for jss
 
 // nodestrap (modular web components):
 import * as stripOuts       from './strip-outs'
@@ -53,7 +53,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     /**
      * focused functional box-shadow color.
      */
-    protected readonly _boxShadowFocusFn   = 'boxShadowFocusFn'
+    public    readonly _boxShadowFocusFn   = 'boxShadowFocusFn'
 
 
     
@@ -171,8 +171,8 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     protected outlined(): JssStyle {
         // unlike on Indicator/Element,
         // on Control the outlined only be applied
-        // if not-actived, not-hover, not-focus
-        // always applied if disabled & not-actived
+        // * if not-actived
+        // * and if (not-hover, not-focus) -or- disabled
         return this.stateNotActive({
             '&:not(:hover):not(:focus), &:disabled,&.disabled': super.outlined(),
         });
@@ -323,7 +323,7 @@ const cssPropsManager = new CssPropsManager(() => {
     // const middle  = 'middle';
 
 
-    const keyframesHover     : PropEx.Keyframes = {
+    const keyframesHover   : PropEx.Keyframes = {
         from: {
             filter: [[
                 ecssProps.filter,
@@ -341,12 +341,12 @@ const cssPropsManager = new CssPropsManager(() => {
             ]],
         },
     };
-    const keyframesLeave     : PropEx.Keyframes = {
+    const keyframesLeave   : PropEx.Keyframes = {
         from : keyframesHover.to,
         to   : keyframesHover.from,
     };
 
-    const keyframesFocus     : PropEx.Keyframes = {
+    const keyframesFocus   : PropEx.Keyframes = {
         from: {
             boxShadow: [[[
                 ecssProps.boxShadow,
@@ -360,21 +360,21 @@ const cssPropsManager = new CssPropsManager(() => {
             ]]],
         } as JssStyle,
     };
-    const keyframesBlur      : PropEx.Keyframes = {
+    const keyframesBlur    : PropEx.Keyframes = {
         from : keyframesFocus.to,
         to   : keyframesFocus.from,
     };
 
     return {
-        cursor               : 'pointer',
-        cursorDisable        : 'not-allowed',
+        cursor             : 'pointer',
+        cursorDisable      : 'not-allowed',
     
     
 
         // anim props:
 
-        boxShadowFocus       : [[0, 0, 0, '0.25rem']],
-        filterHover          : [['brightness(85%)']],
+        boxShadowFocus     : [[0, 0, 0, '0.25rem']],
+        filterHover        : [['brightness(85%)']],
 
         '@keyframes hover' : keyframesHover,
         '@keyframes leave' : keyframesLeave,
@@ -529,6 +529,7 @@ export function useStateFocusBlur(props: Props) {
 
 
 // react components:
+
 export interface ActionCtrl
     extends
         Indicators.ActionCtrl
@@ -575,10 +576,10 @@ export default function Control(props: Props & ActionCtrl) {
             ]}
         
             // events:
-            onMouseEnter={stateLeave.handleMouseEnter}
-            onMouseLeave={stateLeave.handleMouseLeave}
-            onFocus={stateFocusBlur.handleFocus}
-            onBlur={stateFocusBlur.handleBlur}
+            onMouseEnter={(e) => { stateLeave.handleMouseEnter(); props.onMouseEnter?.(e); }}
+            onMouseLeave={(e) => { stateLeave.handleMouseLeave(); props.onMouseLeave?.(e); }}
+            onFocus=     {(e) => { stateFocusBlur.handleFocus();  props.onFocus?.(e);      }}
+            onBlur=      {(e) => { stateFocusBlur.handleBlur();   props.onBlur?.(e);       }}
             onAnimationEnd={(e) => {
                 stateLeave.handleAnimationEnd(e);
                 stateFocusBlur.handleAnimationEnd(e);
