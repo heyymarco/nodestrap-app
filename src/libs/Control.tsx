@@ -168,6 +168,15 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     
         [this.decl(this._boxShadowFocusTh)]: (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
     }}
+    protected outlined(): JssStyle {
+        // unlike on Indicator/Element,
+        // on Control the outlined only be applied
+        // if not-actived, not-hover, not-focus
+        // always applied if disabled & not-actived
+        return this.stateNotActive({
+            '&:not(:hover):not(:focus), &:disabled,&.disabled': super.outlined(),
+        });
+    }
 
 
 
@@ -339,17 +348,17 @@ const cssPropsManager = new CssPropsManager(() => {
 
     const keyframesFocus     : PropEx.Keyframes = {
         from: {
-            boxShadow: [
+            boxShadow: [[[
                 ecssProps.boxShadow,
              // styles.ref(styles._boxShadowFocusBlur),
-            ],
-        },
+            ]]],
+        } as JssStyle,
         to: {
-            boxShadow: [
+            boxShadow: [[[
                 ecssProps.boxShadow,
                 styles.ref(styles._boxShadowFocusBlur),
-            ],
-        },
+            ]]],
+        } as JssStyle,
     };
     const keyframesBlur      : PropEx.Keyframes = {
         from : keyframesFocus.to,
@@ -520,6 +529,11 @@ export function useStateFocusBlur(props: Props) {
 
 
 // react components:
+export interface ActionCtrl
+    extends
+        Indicators.ActionCtrl
+{
+}
 
 export interface Props
     extends
@@ -528,7 +542,7 @@ export interface Props
     // accessibility:
     focus?:   boolean
 }
-export default function Control(props: Props) {
+export default function Control(props: Props & ActionCtrl) {
     const ctrlStyles     = styles.useStyles();
 
     // states:
@@ -539,8 +553,14 @@ export default function Control(props: Props) {
 
     return (
         <Indicator
-            {...{ isActionCtrl: true }}
-            {...props}
+            {...{
+                isActionCtrl : true, // default [isActionCtrl]=true
+
+                // accessibility:
+                tabIndex     : 0,    // default [tabIndex]=0
+
+            }}
+            {...props}               // [isActionCtrl] might be overriden here
 
             classes={[
                 // main:

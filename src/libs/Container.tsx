@@ -15,7 +15,9 @@ import type {
 }                          from './CssPropsManager' // ts defs support for jss
 
 // nodestrap (modular web components):
-import  * as breakpoint    from './breakpoints'
+import
+    breakpoints,
+    * as breakpoint        from './breakpoints'
 
 // other supports:
 import { pascalCase }      from 'pascal-case'
@@ -54,7 +56,7 @@ export const containers = cssPropsManager.refs;
 
 
 const styleBreakpoints : JssStyle = {};
-for (const bpName in breakpoint.breakpoints) {
+for (const bpName in breakpoints) {
     const BpName = pascalCase(bpName);
 
     const x = (containers as Dictionary<ValueOf<typeof containers>|undefined>)[`x${BpName}`];

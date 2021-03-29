@@ -723,8 +723,9 @@ export default function Element(props: Props) {
         ];
         const htmlProps = {};
         for (const name in props) {
-            if (name.startsWith('on') || name.startsWith('aria-') || (name in htmlPropList)) {
+            if (name.startsWith('on') || name.startsWith('aria-') || htmlPropList.includes(name)) {
                 (htmlProps as any)[name] = (props as any)[name];
+                console.log(name);
             } // if
         } // for
         return htmlProps;

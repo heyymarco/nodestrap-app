@@ -451,6 +451,10 @@ export function useStateActivePassive(props: Props) {
 
 // react components:
 
+export interface ActionCtrl {
+    isActionCtrl?: boolean
+}
+
 export interface Props
     extends
         Elements.Props
@@ -459,7 +463,7 @@ export interface Props
     enabled?: boolean
     active?:  boolean
 }
-export default function Indicator(props: Props) {
+export default function Indicator(props: Props & ActionCtrl) {
     const indiStyles   = styles.useStyles();
 
     // states:
@@ -477,8 +481,8 @@ export default function Indicator(props: Props) {
         'option',
         'textarea',
     ];
-    const isHtmlCtrl   = props.tag && (props.tag in htmlCtrls);
-    const isActionCtrl = !!(props as any).isActionCtrl ?? false;
+    const isHtmlCtrl   = props.tag && htmlCtrls.includes(props.tag);
+    const isActionCtrl = props.isActionCtrl ?? false;
 
 
 

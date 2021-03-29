@@ -10,8 +10,8 @@ const breakpoints = {
     xl  : 1200,
     xxl : 1400,
 };
-const breakpoints2 = breakpoints as (typeof breakpoints & { [name: string]: (undefined|number) });
-export { breakpoints2 as breakpoints };
+export { breakpoints };
+export default breakpoints;
 
 
 

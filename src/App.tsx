@@ -185,7 +185,11 @@ function App() {
 									onChange={(e) => setFocus((() => {
 										const value = e.target.value;
 										if (!value) return undefined;
-										return (value==='true');
+										switch (value) {
+											case 'true' : return true;
+											case 'false': return false;
+											default     : return undefined;
+										} // switch
 									})())}
 								/>
 								{`${fc ?? 'auto'}`}
