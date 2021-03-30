@@ -238,7 +238,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
         // define a *default* color theme:
         [this.decl(this._colorIf)]          : colors.secondaryText,
-        [this.decl(this._backgIf)]          : `linear-gradient(${colors.secondary},${colors.secondary})`,
+        [this.decl(this._backgIf)]          : this.solidBackg(colors.secondary),
         [this.decl(this._colorOutlinedIf)]  : colors.secondary,
         [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
     }}
@@ -295,6 +295,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
             ] as JssStyle}),
         ] as JssStyle,
     }}
+
 
 
     // styles:
@@ -541,7 +542,8 @@ export interface Props
         Indicators.Props
 {
     // accessibility:
-    focus?:   boolean
+    focus?    : boolean
+    tabIndex? : number
 }
 export default function Control(props: Props & ActionCtrl) {
     const ctrlStyles     = styles.useStyles();
@@ -554,36 +556,51 @@ export default function Control(props: Props & ActionCtrl) {
 
     return (
         <Indicator
+            // default props:
             {...{
                 isActionCtrl : true, // default [isActionCtrl]=true
-
-                // accessibility:
-                tabIndex     : 0,    // default [tabIndex]=0
-
             }}
+
+
+            // other props:
             {...props}               // [isActionCtrl] might be overriden here
 
+
+            // classes:
             classes={[
                 // main:
                 (props.classes ? null : ctrlStyles.main),
 
+
                 // additionals:
                 ...(props.classes ?? []),
+
 
                 // states:
                 stateLeave.class,
                 stateFocusBlur.class,
             ]}
+
+
+            // Control props:
+            {...{
+                // accessibility:
+                tabIndex: props.tabIndex ?? 0,
+            }}
         
+
             // events:
-            onMouseEnter={(e) => { stateLeave.handleMouseEnter(); props.onMouseEnter?.(e); }}
-            onMouseLeave={(e) => { stateLeave.handleMouseLeave(); props.onMouseLeave?.(e); }}
-            onFocus=     {(e) => { stateFocusBlur.handleFocus();  props.onFocus?.(e);      }}
-            onBlur=      {(e) => { stateFocusBlur.handleBlur();   props.onBlur?.(e);       }}
-            onAnimationEnd={(e) => {
+            onMouseEnter=   {(e) => { stateLeave.handleMouseEnter(); props.onMouseEnter?.(e); }}
+            onMouseLeave=   {(e) => { stateLeave.handleMouseLeave(); props.onMouseLeave?.(e); }}
+            onFocus=        {(e) => { stateFocusBlur.handleFocus();  props.onFocus?.(e);      }}
+            onBlur=         {(e) => { stateFocusBlur.handleBlur();   props.onBlur?.(e);       }}
+            onAnimationEnd= {(e) => {
+                // states:
                 stateLeave.handleAnimationEnd(e);
                 stateFocusBlur.handleAnimationEnd(e);
 
+
+                // forwards:
                 props.onAnimationEnd?.(e);
             }}
         />

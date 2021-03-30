@@ -173,7 +173,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
         // define an *active* color theme:
         [this.decl(this._colorIfAct)]         : colors.primaryText,
-        [this.decl(this._backgIfAct)]         : `linear-gradient(${colors.primary},${colors.primary})`,
+        [this.decl(this._backgIfAct)]         : this.solidBackg(colors.primary),
         [this.decl(this._colorOutlinedIfAct)] : colors.primary,
     }}
     protected states(): JssStyle { return {
@@ -488,32 +488,45 @@ export default function Indicator(props: Props & ActionCtrl) {
 
     return (
         <Element
+            // other props:
             {...props}
 
+
+            // classes:
             classes={[
                 // main:
                 (props.classes ? null : indiStyles.main),
 
+
                 // additionals:
                 ...(props.classes ?? []),
+
 
                 // states:
                 (stateEnbDis.class ?? ((stateEnbDis.disabled && !isHtmlCtrl) ? 'disabled' : null)),
                 stateActPass.class,
             ]}
 
-            // accessibility:
-            {...(isHtmlCtrl ? { disabled: stateEnbDis.disabled } : {})}
+
+            // Indicator props:
+            {...(isHtmlCtrl ? {
+                // accessibility:
+                disabled: stateEnbDis.disabled,
+            } : {})}
         
+
             // events:
             onMouseDown={(e) => { if (isActionCtrl) stateActPass.handleMouseDown(); props.onMouseDown?.(e); }}
             onKeyDown=  {(e) => { if (isActionCtrl) stateActPass.handleKeyDown();   props.onKeyDown?.(e);   }}
             onMouseUp=  {(e) => { if (isActionCtrl) stateActPass.handleMouseUp();   props.onMouseUp?.(e);   }}
             onKeyUp=    {(e) => { if (isActionCtrl) stateActPass.handleKeyUp();     props.onKeyUp?.(e);     }}
             onAnimationEnd={(e) => {
+                // states:
                 stateEnbDis.handleAnimationEnd(e);
                 stateActPass.handleAnimationEnd(e);
 
+
+                // forwards:
                 props.onAnimationEnd?.(e);
             }}
         />

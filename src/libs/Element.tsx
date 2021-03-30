@@ -735,14 +735,19 @@ export default function Element(props: Props) {
     const Tag = (props.tag ?? 'div');
     return (
         <Tag
+            // other props:
             {...htmlProps}
 
+
+            // classes:
             className={[
                 // main:
                 (props.classes ? null : elmStyles.main),
 
+                
                 // additionals:
                 ...(props.classes ?? []),
+
 
                 // themes:
                 variTheme.class,
