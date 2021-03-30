@@ -1,11 +1,11 @@
 // jss   (builds css  using javascript):
-import { Prop, Cust, }     from '../Css'             // ts defs support for jss
-import CssPropsManager     from '../CssPropsManager' // A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
+import { Prop, Cust, }     from '../Css'        // ts defs support for jss
+import CssConfig           from '../CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
 import * as base           from './base'
-import borders             from '../borders'         // configurable borders
-import spacers             from '../spacers'         // configurable spaces defs
+import borders             from '../borders'    // configurable borders
+import spacers             from '../spacers'    // configurable spaces defs
 
 
 
@@ -14,7 +14,7 @@ import spacers             from '../spacers'         // configurable spaces defs
 /**
  * A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
  */
-const cssPropsManager = new CssPropsManager(() => {
+const cssConfig = new CssConfig(() => {
     // common css values:
     // const initial = 'initial';
     // const unset   = 'unset';
@@ -35,7 +35,7 @@ const cssPropsManager = new CssPropsManager(() => {
         marginInlineEnd   : 0               as Prop.MarginInlineEnd   | Cust.Expr,
     };
 }, /*prefix: */'hr');
-export const cssProps = cssPropsManager.refs;
+export const cssProps = cssConfig.refs;
 export default cssProps;
 
 

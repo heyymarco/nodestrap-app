@@ -58,20 +58,22 @@ const getCustomJss = () => {
 
 
 /**
- * A *css custom property* manager that manages & updates the *css props* stored at *:root* level (default) or at specified `rule`.  
+ * Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.  
+ * The config's values can be *accessed directly* into DOM.
+ * 
  * Supports get property by *declaration*, eg:  
- * `cssPropsManager.decls.myFavColor` => returns `'--myFavColor'`.  
+ * `cssConfig.decls.myFavColor` => returns `'--myFavColor'`.  
  *   
  * Supports get property by *reference*,   eg:  
- * `cssPropsManager.refs.myFavColor`  => returns `'var(--myFooProp)'`.  
+ * `cssConfig.refs.myFavColor`  => returns `'var(--myFooProp)'`.  
  *   
  * Supports get property by *value*, eg:  
- * `cssPropsManager.vals.myFavColor`  => returns `'#ff0000'`.  
+ * `cssConfig.vals.myFavColor`  => returns `'#ff0000'`.  
  *   
  * Supports set property,                  eg:  
- * `cssPropsManager.vals.myFavColor = 'red'`
+ * `cssConfig.vals.myFavColor = 'red'`
  */
-export default class CssPropsManager<TProps, TProp extends ValueOf<TProps>> {
+export default class CssConfig<TProps, TProp extends ValueOf<TProps>> {
     // settings:
 
     //#region rule

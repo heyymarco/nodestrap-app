@@ -3,19 +3,19 @@ import
     React, {
     useContext,
     useMemo,
-}                          from 'react'             // base technology of our nodestrap components
+}                          from 'react'         // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
 import type {
     JssStyle,
     Styles,
     Classes,
-}                          from 'jss'               // ts defs support for jss
+}                          from 'jss'           // ts defs support for jss
 import {
     jss as jssDefault,
     createUseStyles,
     JssContext,
-}                          from 'react-jss'         // base technology of our nodestrap components
+}                          from 'react-jss'     // base technology of our nodestrap components
 import
     jssPluginNormalizeShorthands
                            from './jss-plugin-normalize-shorthands'
@@ -23,30 +23,30 @@ import {
     Prop,
     PropEx,
     Cust,
-}                          from './Css'             // ts defs support for jss
-import CssPropsManager     from './CssPropsManager' // A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
+}                          from './Css'         // ts defs support for jss
+import CssConfig           from './CssConfig'   // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 import type {
     Dictionary,
     DictionaryOf,
-}                          from './CssPropsManager' // ts defs support for jss
-import { pascalCase }      from 'pascal-case'       // pascal-case support for jss
-import { camelCase }       from 'camel-case'        // camel-case  support for jss
+}                          from './CssConfig'   // ts defs support for jss
+import { pascalCase }      from 'pascal-case'   // pascal-case support for jss
+import { camelCase }       from 'camel-case'    // camel-case  support for jss
 
 // nodestrap (modular web components):
 import
     colors,
-    * as color             from './colors'          // configurable colors & theming defs
+    * as color             from './colors'      // configurable colors & theming defs
 import
     borders,
-    * as border            from './borders'         // configurable borders & border radiuses defs
-import spacers             from './spacers'         // configurable spaces defs
-import typos               from './typos/index'     // configurable typography (texting) defs
+    * as border            from './borders'     // configurable borders & border radiuses defs
+import spacers             from './spacers'     // configurable spaces defs
+import typos               from './typos/index' // configurable typography (texting) defs
 
 
 
 // configs:
 
-const cssPropsManager = new CssPropsManager(() => {
+const cssConfig = new CssConfig(() => {
     // common css values:
     // const initial = 'initial';
     // const unset   = 'unset';
@@ -108,8 +108,8 @@ const cssPropsManager = new CssPropsManager(() => {
         anim              : [[keyframesNone]],
     };
 }, /*prefix: */'elm');
-export const cssProps = cssPropsManager.refs;
-export const cssDecls = cssPropsManager.decls;
+export const cssProps = cssConfig.refs;
+export const cssDecls = cssConfig.decls;
 
 
 
@@ -744,7 +744,7 @@ export default function Element(props: Props) {
                 // main:
                 (props.classes ? null : elmStyles.main),
 
-                
+
                 // additionals:
                 ...(props.classes ?? []),
 

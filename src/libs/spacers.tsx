@@ -1,6 +1,6 @@
 // jss   (builds css  using javascript):
-import { PropEx, Cust, }     from './Css'           // ts defs support for jss
-import CssPropsManager     from './CssPropsManager' // A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
+import { PropEx, Cust, }   from './Css'        // ts defs support for jss
+import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 
 
@@ -11,7 +11,7 @@ type Length = PropEx.Length | Cust.Expr
 /**
  * A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
  */
-const cssPropsManager = new CssPropsManager(() => {
+const cssConfig = new CssConfig(() => {
     const basics = {
         none    : '0px'  as Length,
         md      : '1rem' as Length,
@@ -31,5 +31,5 @@ const cssPropsManager = new CssPropsManager(() => {
         xl      : [['calc(', basics.md, '*', 3  , ')']] as Length,
     };
 }, /*prefix: */'spc');
-export const spacers = cssPropsManager.refs;
+export const spacers = cssConfig.refs;
 export default spacers;

@@ -1,4 +1,4 @@
-import CssPropsManager     from './CssPropsManager' // manages & updates the *css props* stored at specified `rule`.
+import CssConfig           from './CssConfig' // manages & updates the *css props* stored at specified `rule`.
 
 // other supports:
 import deepEqual           from 'deep-equal'
@@ -12,7 +12,7 @@ const testTransf = <TProps,TComp,TKfrm>(
     prefix  = '',
     rule    = ':root'
 ) => {
-    const css = new CssPropsManager(props, prefix, rule);
+    const css = new CssConfig(props, prefix, rule);
     css.refresh(true);
 
 

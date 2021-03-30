@@ -1,18 +1,18 @@
 // jss   (builds css  using javascript):
 import { 
     create as createJss,
-}                          from 'jss'               // base technology of our nodestrap components
-import type { JssStyle }   from 'jss'               // ts defs support for jss
-import { createUseStyles } from 'react-jss'         // base technology of our nodestrap components
+}                          from 'jss'          // base technology of our nodestrap components
+import type { JssStyle }   from 'jss'          // ts defs support for jss
+import { createUseStyles } from 'react-jss'    // base technology of our nodestrap components
 
 import jssPluginGlobal     from 'jss-plugin-global'
 
-import { PropEx }          from './Css'             // ts defs support for jss
-import CssPropsManager     from './CssPropsManager' // A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
+import { PropEx }          from './Css'        // ts defs support for jss
+import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 import type {
     Dictionary,
     ValueOf,
-}                          from './CssPropsManager' // ts defs support for jss
+}                          from './CssConfig'  // ts defs support for jss
 
 // nodestrap (modular web components):
 import
@@ -29,7 +29,7 @@ import { pascalCase }      from 'pascal-case'
 /**
  * A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
  */
-const cssPropsManager = new CssPropsManager(() => {
+const cssConfig = new CssConfig(() => {
     return {
         x    : '12px' as PropEx.Length,
         y    :  '9px' as PropEx.Length,
@@ -50,7 +50,7 @@ const cssPropsManager = new CssPropsManager(() => {
         yXxl : '54px' as PropEx.Length,
     };
 }, /*prefix: */'con');
-export const containers = cssPropsManager.refs;
+export const containers = cssConfig.refs;
 // export default containers;
 
 

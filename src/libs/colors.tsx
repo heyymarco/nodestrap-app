@@ -1,14 +1,14 @@
 // jss   (builds css  using javascript):
-import { Prop }            from './Css'             // ts defs support for jss
-import CssPropsManager     from './CssPropsManager' // A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
+import { Prop }            from './Css'        // ts defs support for jss
+import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 import type {
     Dictionary,
     ValueOf,
     DictionaryOf,
-}                          from './CssPropsManager' // ts defs support for jss
+}                          from './CssConfig'  // ts defs support for jss
 
 // other libs:
-import Color               from 'color'             // color utilities
+import Color               from 'color'        // color utilities
 
 
 
@@ -134,7 +134,7 @@ const allColors = {
 /**
  * A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
  */
-const cssPropsManager = new CssPropsManager(() => {
+const cssConfig = new CssConfig(() => {
     type ColorList  = typeof allColors;
     type ColorProxy = { [key in keyof ColorList]: Prop.Color };
     return new Proxy(allColors as unknown as ColorProxy, {
@@ -144,7 +144,7 @@ const cssPropsManager = new CssPropsManager(() => {
         },
     });
 }, /*prefix: */'col');
-export const colors = cssPropsManager.refs;
+export const colors = cssConfig.refs;
 export default colors;
 
 
@@ -164,7 +164,7 @@ const createProxy = <TColorGroup extends { [key in keyof TColorGroup]: Color },>
 
             (colorGroup as Dictionary<Color>)[prop]   = colorValue;
 
-            const vals = cssPropsManager.vals;
+            const vals = cssConfig.vals;
             (vals as DictionaryOf<typeof vals>)[prop] = (colorValue.alpha() === 1) ? colorValue.hex() : colorValue.toString();
         } // if
         

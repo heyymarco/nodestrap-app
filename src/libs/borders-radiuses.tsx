@@ -1,7 +1,7 @@
 // jss   (builds css  using javascript):
-import { Prop, Cust, }     from './Css'             // ts defs support for jss
-import type { JssStyle }   from 'jss'               // ts defs support for jss
-import CssPropsManager     from './CssPropsManager' // A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
+import { Prop, Cust, }     from './Css'        // ts defs support for jss
+import type { JssStyle }   from 'jss'          // ts defs support for jss
+import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 
 
@@ -12,7 +12,7 @@ type BorderRadius = Prop.BorderRadius | Cust.Expr
 /**
  * A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
  */
-const cssPropsManager = new CssPropsManager(() => {
+const cssConfig = new CssConfig(() => {
     const basics = {
         none    : '0px'     as BorderRadius,
         sm      : '0.2rem'  as BorderRadius,
@@ -31,7 +31,7 @@ const cssPropsManager = new CssPropsManager(() => {
         ...defaults,
     };
 }, /*prefix: */'bd-rd');
-export const radiuses = cssPropsManager.refs;
+export const radiuses = cssConfig.refs;
 export default radiuses;
 
 

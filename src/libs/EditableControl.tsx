@@ -4,24 +4,24 @@ import
     useState,
     useEffect,
     useContext,
-}                           from 'react'             // base technology of our nodestrap components
+}                           from 'react'        // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
 import type {
     JssStyle,
-}                           from 'jss'               // ts defs support for jss
+}                           from 'jss'          // ts defs support for jss
 import {
     PropEx,
     Cust,
-}                           from './Css'             // ts defs support for jss
-import CssPropsManager      from './CssPropsManager' // A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
+}                           from './Css'        // ts defs support for jss
+import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 import type {
     DictionaryOf,
-}                           from './CssPropsManager' // ts defs support for jss
+}                           from './CssConfig'  // ts defs support for jss
 
 // nodestrap (modular web components):
 import * as stripOuts       from './strip-outs'
-import colors               from './colors'          // configurable colors & theming defs
+import colors               from './colors'     // configurable colors & theming defs
 import {
     cssProps as ecssProps,
 }                           from './Element'
@@ -301,7 +301,7 @@ export const styles = new EditableControlStylesBuilder();
 
 // configs:
 
-const cssPropsManager = new CssPropsManager(() => {
+const cssConfig = new CssConfig(() => {
     // common css values:
     // const initial = 'initial';
     // const unset   = 'unset';
@@ -353,8 +353,8 @@ const cssPropsManager = new CssPropsManager(() => {
         animUninvalid          : [['100ms',  'ease-out', 'both', keyframesUninvalid]],
     };
 }, /*prefix: */'ectrl');
-export const cssProps = cssPropsManager.refs;
-export const cssDecls = cssPropsManager.decls;
+export const cssProps = cssConfig.refs;
+export const cssDecls = cssConfig.decls;
 
 
 

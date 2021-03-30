@@ -1,11 +1,11 @@
 // jss   (builds css  using javascript):
-import type { JssStyle }   from 'jss'               // ts defs support for jss
-import { Prop, Cust, }     from './Css'             // ts defs support for jss
-import CssPropsManager     from './CssPropsManager' // A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
+import type { JssStyle }   from 'jss'          // ts defs support for jss
+import { Prop, Cust, }     from './Css'        // ts defs support for jss
+import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
 import * as radius         from './borders-radiuses'
-import colors              from './colors'          // configurable colors & theming defs
+import colors              from './colors'     // configurable colors & theming defs
 
 
 
@@ -24,7 +24,7 @@ type Border      = Prop.Border      | Cust.Expr
 /**
  * A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
  */
-const cssPropsManager = new CssPropsManager(() => {
+const cssConfig = new CssConfig(() => {
     const widths = {
         none  : '0px' as BorderWidth,
         hair  : '1px' as BorderWidth,
@@ -48,13 +48,13 @@ const cssPropsManager = new CssPropsManager(() => {
         ...defaults,
     };
 }, /*prefix: */'bd');
-export const borders = cssPropsManager.refs;
+export const borders = cssConfig.refs;
 export default borders;
 
 
 
 // export our mixins:
-const vals = cssPropsManager.vals;
+const vals = cssConfig.vals;
 // property of .default, .style, .defaultWidth, & .color "might" has deleted by user => use nullish op for safety => .?
 const defaultStyle     : BorderStyle = (vals?.default as [[BorderStyle, BorderWidth, BorderColor]])?.[0]?.[0] ?? borders?.style        ?? 'solid'
 const defaultWidth     : BorderWidth = (vals?.default as [[BorderStyle, BorderWidth, BorderColor]])?.[0]?.[1] ?? borders?.defaultWidth ?? borders?.hair ?? '1px'
