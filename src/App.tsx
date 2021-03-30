@@ -13,6 +13,7 @@ import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
 import Content from './libs/Content';
 import Control from './libs/Control';
+import EditableControl from './libs/EditableControl';
 
 
 
@@ -62,6 +63,10 @@ function App() {
 
 	const focuses = [false, undefined, true];
 	const [focus,       setFocus    ] = useState<boolean|undefined>(undefined);
+
+	const isValids = [undefined, false, null, true];
+	const [enableVal, setEnableVal  ] = useState(true);
+	const [isValid,   setIsValid    ] = useState<boolean|null|undefined>(undefined);
 
 
 
@@ -117,6 +122,20 @@ function App() {
 				>
                         test
                 </Control>
+                <EditableControl
+					theme={theme} size={size} enableGradient={enableGrad}
+					//@ts-ignore
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+
+					focus={focus}
+
+					enableValidation={enableVal}
+					isValid={isValid}
+				>
+                        test
+                </EditableControl>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:
@@ -188,7 +207,7 @@ function App() {
 					Focus:
 					{
 						focuses.map(fc =>
-							<label key={`${fc ?? ''}`}>
+							<label key={`${fc}`}>
 								<input type='radio'
 									value={`${fc}`}
 									checked={focus===fc}
@@ -203,6 +222,39 @@ function App() {
 									})())}
 								/>
 								{`${fc ?? 'auto'}`}
+							</label>
+						)
+					}
+				</p>
+				<p>
+					<label>
+						<input type='checkbox'
+							checked={enableVal}
+							onChange={(e) => setEnableVal(e.target.checked)}
+						/>
+						enable validation
+					</label>
+				</p>
+				<p>
+					Focus:
+					{
+						isValids.map(val =>
+							<label key={`${val}`}>
+								<input type='radio'
+									value={`${val}`}
+									checked={isValid===val}
+									onChange={(e) => setIsValid((() => {
+										const value = e.target.value;
+										if (!value) return undefined;
+										switch (value) {
+											case 'true' : return true;
+											case 'false': return false;
+											case 'null' : return null;
+											default     : return undefined;
+										} // switch
+									})())}
+								/>
+								{`${(val===undefined) ? 'auto' : val}`}
 							</label>
 						)
 					}

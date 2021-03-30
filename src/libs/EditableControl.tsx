@@ -12,15 +12,10 @@ import type {
 }                           from 'jss'          // ts defs support for jss
 import {
     PropEx,
-    Cust,
 }                           from './Css'        // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-import type {
-    DictionaryOf,
-}                           from './CssConfig'  // ts defs support for jss
 
 // nodestrap (modular web components):
-import * as stripOuts       from './strip-outs'
 import colors               from './colors'     // configurable colors & theming defs
 import {
     cssProps as ecssProps,
@@ -229,27 +224,16 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
 
         //#region re-arrange the animFn at different states
         '&.active,&.actived': { // if activated programmatically (not by user input)
-            // define an *animations* func:
-            [this.decl(this._animFn)]: [
-                ecssProps.anim,
-                this.ref(this._animValUnval),
-                this.ref(this._animInvUninv),
-                this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
-                this.ref(this._animHoverLeave),    // 2nd : cursor leaved
-                this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
-                this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
-            ],
-
-            '&.disabled,&:disabled:not(.disable)': { // if ctrl was disabled programatically
+            '&:not(.disabled):not(:disabled),&:not(.disabled):disabled.disable': { // if ctrl was not fully disabled
                 // define an *animations* func:
                 [this.decl(this._animFn)]: [
                     ecssProps.anim,
                     this.ref(this._animValUnval),
                     this.ref(this._animInvUninv),
-                    this.ref(this._animEnableDisable), // 1st : ctrl already disabled, move to the least priority
-                    this.ref(this._animHoverLeave),    // 2nd : cursor leaved, should not happened, move to low priority
-                    this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus, might happened programaticaly, move to low priority (can interrupt hover/leave)
-                    this.ref(this._animActivePassive), // 4th : ctrl deactivated programatically, move to moderate priority (can interrupt focus/blur)
+                    this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
+                    this.ref(this._animHoverLeave),    // 2nd : cursor leaved
+                    this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
+                    this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
                 ],
             },
         },
@@ -317,7 +301,6 @@ const cssConfig = new CssConfig(() => {
         },
         to: {
             backg: styles.ref(styles._backgFn),
-            //TODO: backg: styles.ref(styles._backgOutlineFn),
         },
     };
     const keyframesUnvalid   : PropEx.Keyframes = {
@@ -331,7 +314,6 @@ const cssConfig = new CssConfig(() => {
         },
         to: {
             backg: styles.ref(styles._backgFn),
-            //TODO: backg: styles.ref(styles._backgOutlineFn),
         }
     };
     const keyframesUninvalid : PropEx.Keyframes = {

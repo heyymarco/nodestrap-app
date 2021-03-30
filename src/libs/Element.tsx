@@ -548,9 +548,9 @@ export class ElementStylesBuilder extends StylesBuilder {
     protected outlined(): JssStyle { return {
         // apply *outlined* fn props:
 
-        color       : this.ref(this._colorOutlinedFn),
-        backg       : this.ref(this._backgOutlinedFn),
-        borderColor : this.ref(this._colorOutlinedFn),
+        [this.decl(this._colorFn)] : this.ref(this._colorOutlinedFn),
+        [this.decl(this._backgFn)] : this.ref(this._backgOutlinedFn),
+        borderColor                : this.ref(this._colorOutlinedFn),
     }}
 
 

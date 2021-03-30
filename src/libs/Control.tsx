@@ -200,23 +200,14 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         
         //#region re-arrange the animFn at different states
         '&.active,&.actived': { // if activated programmatically (not by user input)
-            // define an *animations* func:
-            [this.decl(this._animFn)]: [
-                ecssProps.anim,
-                this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
-                this.ref(this._animHoverLeave),    // 2nd : cursor leaved
-                this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
-                this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
-            ],
-
-            '&.disabled,&:disabled:not(.disable)': { // if ctrl was disabled programatically
+            '&:not(.disabled):not(:disabled),&:not(.disabled):disabled.disable': { // if ctrl was not fully disabled
                 // define an *animations* func:
                 [this.decl(this._animFn)]: [
                     ecssProps.anim,
-                    this.ref(this._animEnableDisable), // 1st : ctrl already disabled, move to the least priority
-                    this.ref(this._animHoverLeave),    // 2nd : cursor leaved, should not happened, move to low priority
-                    this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus, might happened programaticaly, move to low priority (can interrupt hover/leave)
-                    this.ref(this._animActivePassive), // 4th : ctrl deactivated programatically, move to moderate priority (can interrupt focus/blur)
+                    this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
+                    this.ref(this._animHoverLeave),    // 2nd : cursor leaved
+                    this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
+                    this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
                 ],
             },
         },
