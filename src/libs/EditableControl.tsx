@@ -168,12 +168,23 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
 
     // states:
     protected ValidationFnProps(): JssStyle { return {
+        //#region re-arrange the animFn at different states
+        ...this.stateValid({
+            // define an *animations* func:
+            [this.decl(this._animFn)]: [
+                ecssProps.anim,
+                this.ref(this._animInvUninv),
+                this.ref(this._animValUnval),
+            ],
+        }),
+
         // define an *animations* func:
         [this.decl(this._animFn)]: [
             ecssProps.anim,
             this.ref(this._animValUnval),
             this.ref(this._animInvUninv),
         ],
+        //#endregion re-arrange the animFn at different states
     }}
     protected ValidationThemesIf(): JssStyle { return {
         // define a *valid* color theme:
@@ -225,6 +236,18 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
         //#region re-arrange the animFn at different states
         '&.active,&.actived': { // if activated programmatically (not by user input)
             '&:not(.disabled):not(:disabled),&:not(.disabled):disabled.disable': { // if ctrl was not fully disabled
+                ...this.stateValid({
+                    // define an *animations* func:
+                    [this.decl(this._animFn)]: [
+                        ecssProps.anim,
+                        this.ref(this._animInvUninv),
+                        this.ref(this._animValUnval),
+                        this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
+                        this.ref(this._animHoverLeave),    // 2nd : cursor leaved
+                        this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
+                        this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
+                    ],
+                }),
                 // define an *animations* func:
                 [this.decl(this._animFn)]: [
                     ecssProps.anim,
@@ -238,6 +261,18 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
             },
         },
 
+        ...this.stateValid({
+            // define an *animations* func:
+            [this.decl(this._animFn)]: [
+                ecssProps.anim,
+                this.ref(this._animInvUninv),
+                this.ref(this._animValUnval),
+                this.ref(this._animEnableDisable), // 1st : ctrl must be enable
+                this.ref(this._animHoverLeave),    // 2nd : cursor hovered over ctrl
+                this.ref(this._animFocusBlur),     // 3rd : ctrl got focused (can interrupt hover/leave)
+                this.ref(this._animActivePassive), // 4th : ctrl got pressed (can interrupt focus/blur)
+            ],
+        }),
         // define an *animations* func:
         [this.decl(this._animFn)]: [
             ecssProps.anim,
