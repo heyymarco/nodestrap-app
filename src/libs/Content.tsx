@@ -56,7 +56,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
 
 
     // themes:
-    protected themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // create themes from zero, not copy from base's themes
         
 
@@ -232,17 +232,21 @@ export interface Props
     children? : React.ReactNode
 }
 export default function Content(props: Props) {
-    const ctStyles       = styles.useStyles();
+    const ctStyles = styles.useStyles();
 
     
     
     return (
         <Indicator
+            // other props:
             {...props}
 
+
+            // classes:
             classes={[
                 // main:
                 (props.classes ? null : ctStyles.main),
+
 
                 // additionals:
                 ...(props.classes ?? []),

@@ -556,7 +556,7 @@ export interface Props
         Val.Validation
 {
     // accessibility:
-    readonly?        : boolean
+    readOnly?        : boolean
 
 
     // values:
@@ -578,12 +578,12 @@ export default function EditableControl(props: Props) {
 
     
 
-    const htmlEditCtrls = [
+    const htmlEditCtrls   = [
         'input',
         'select',
         'textarea',
     ];
-    const isHtmlEditCtrl = props.tag && htmlEditCtrls.includes(props.tag);
+    const isHtmlEditCtrl  = props.tag && htmlEditCtrls.includes(props.tag);
 
 
     
@@ -611,7 +611,7 @@ export default function EditableControl(props: Props) {
             // EditableControl props:
             {...(isHtmlEditCtrl ? {
                 // accessibility:
-                readOnly     : props.readonly,
+                readOnly     : props.readOnly,
 
 
                 // values:

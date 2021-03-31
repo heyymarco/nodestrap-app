@@ -465,7 +465,7 @@ export default function Indicator(props: Props & ActionCtrl) {
 
     
 
-    const htmlCtrls = [
+    const htmlCtrls    = [
         'button',
         'fieldset',
         'input',

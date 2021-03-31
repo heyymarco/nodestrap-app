@@ -131,7 +131,7 @@ export class StylesBuilder {
         const cssPropsCopy: Dictionary<any> = {};
         for (const [name, prop] of Object.entries(cssProps)) {
             // excludes the entry if the name matching with following:
-            if ((/(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid)$|^(@)|color|backg|backgGrad|anim|orientation|align/).test(name)) continue; // exclude
+            if ((/(Size|Position|Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid)$|^(@)|color|backg|backgGrad|anim|orientation|align/).test(name)) continue; // exclude
             
             // if not match => include it:
             cssPropsCopy[name] = prop;
@@ -186,7 +186,7 @@ export class StylesBuilder {
      * @param propName The name of prop to retrieve.
      * @returns A generated prop name for declaring the prop.
      */
-    protected decl(name: string) {
+    public decl(name: string) {
         const prefix = this._prefix;
         if (prefix) return `--${prefix}-${name}`;
         return `--${name}`;
@@ -212,12 +212,19 @@ export class StylesBuilder {
 
     // themes:
     /**
+     * Gets the all available theme options.
+     * @returns A `[string, Cust.Ref][]` represents the all available theme options.
+     */
+    protected themeOptions(): [string, Cust.Ref][] {
+        return Object.entries(color.themes);
+    }
+    /**
      * Creates color definitions *for each* theme `options`.
      * @param themes The previous theme definitions to *extend*.
      * @param options The list of the theme options.
      * @returns A `JssStyle` represents the color definitions *for each* theme `options`.
      */
-    protected themes(themes: Dictionary<JssStyle> = {}, options = Object.entries(color.themes)): JssStyle {
+    protected themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle {
         for (const [theme, themeColor] of options) {
             const Theme     = pascalCase(theme);
             const themeProp = `&.th${Theme}`;
@@ -258,12 +265,19 @@ export class StylesBuilder {
     protected themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {}; }
 
     /**
+     * Gets the all available size options.
+     * @returns A `string[]` represents the all available size options.
+     */
+    protected sizeOptions(): string[] {
+        return ['sm', 'lg'];
+    }
+    /**
      * Creates sizing definitions *for each* size `options`.
      * @param sizes The previous size definitions to *extend*.
      * @param options The list of the size options.
      * @returns A `JssStyle` represents the sizing definitions *for each* size `options`.
      */
-    protected sizes(sizes: Dictionary<JssStyle> = {}, options = ['sm', 'lg']): JssStyle {
+    protected sizes(sizes: Dictionary<JssStyle> = {}, options = this.sizeOptions()): JssStyle {
         for (const size of options) {
             const Size     = pascalCase(size);
             const sizeProp = `&.sz${Size}`;
@@ -407,7 +421,7 @@ export class StylesBuilder {
      * @param svgData The raw svg data to be escaped.
      * @returns An escaped svg data.
      */
-    protected escapeSvg(svgData: string) {
+    public escapeSvg(svgData: string) {
         const escapedChars: Dictionary<string> = {
             '<': '%3c',
             '>': '%3e',
@@ -430,7 +444,7 @@ export class StylesBuilder {
      * @param color The color of the solid background to create.
      * @returns An object represents a solid background in css.
      */
-    protected solidBackg(color: Cust.Ref, clip : Prop.BackgroundClip = 'border-box') {
+    public solidBackg(color: Cust.Ref, clip : Prop.BackgroundClip = 'border-box') {
         return [[`linear-gradient(${color},${color})`, clip]];
     }
 }
@@ -547,7 +561,6 @@ export class ElementStylesBuilder extends StylesBuilder {
     }}
     protected outlined(): JssStyle { return {
         // apply *outlined* fn props:
-
         [this.decl(this._colorFn)] : this.ref(this._colorOutlinedFn),
         [this.decl(this._backgFn)] : this.ref(this._backgOutlinedFn),
         borderColor                : this.ref(this._colorOutlinedFn),
@@ -627,7 +640,6 @@ export class ElementStylesBuilder extends StylesBuilder {
     
     
         // apply *non conditional* fn props:
-
         color : this.ref(this._colorFn),
         backg : this.ref(this._backgFn),
         anim  : this.ref(this._animFn),

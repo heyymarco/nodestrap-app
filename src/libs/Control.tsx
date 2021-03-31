@@ -252,6 +252,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
 
             this.stateDisable({ // [disabling, disabled]
+                // accessibility:
                 cursor     : cssProps.cursorDisable,
                 userSelect : 'none',
             }),

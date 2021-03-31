@@ -14,6 +14,7 @@ import Indicator from './libs/Indicator';
 import Content from './libs/Content';
 import Control from './libs/Control';
 import EditableControl from './libs/EditableControl';
+import EditableTextControl from './libs/EditableTextControl';
 
 
 
@@ -136,6 +137,20 @@ function App() {
 				>
                         test
                 </EditableControl>
+                <EditableTextControl
+					theme={theme} size={size} enableGradient={enableGrad}
+					//@ts-ignore
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+
+					focus={focus}
+
+					enableValidation={enableVal}
+					isValid={isValid}
+				>
+                        test
+                </EditableTextControl>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:
