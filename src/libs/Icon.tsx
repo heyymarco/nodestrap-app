@@ -18,7 +18,6 @@ import type {
 }                          from './CssConfig'   // ts defs support for jss
 
 // nodestrap (modular web components):
-import Path                from 'path'
 import fontMaterial        from './Icon-font-material'
 import {
     default  as Element,
@@ -116,7 +115,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         '@global': {
             '@font-face': {
                 ...config.font.styles,
-                src: config.font.files.map((file) => `url("${this.resolveUrl(file, config.font.path)}") ${this.formatOf(file)}`).join(','),
+                src: config.font.files.map((fileName) => `url("${styles.concatUrl(fileName, config.font.path)}") ${this.formatOf(fileName)}`).join(','),
             },
         },
 
@@ -191,16 +190,21 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
     //#region utils
     /**
-     * Gets the file path relative to the specified `path`.
-     * @param fileName The file name to retrieve.
-     * @param path The relative path.
-     * @returns A string represent relative file path.
+     * Merges two specified url to final url.
+     * @param target The relative or absolute target url.
+     * @param base The relative or absolute base url.
+     * @returns A final url.  
+     * If `target` is an absolute url, the `base` discarded.  
+     * Otherwise, the combination of `base` url followed by `target` url.
      */
-    resolveUrl(fileName: string, path: string) {
-        if (!fileName) return fileName;
-    
-        if (fileName[0] === '~') fileName = Path.join('/node_modules', fileName.substr(1));
-        return Path.join(path, fileName);
+    concatUrl(target: string, base: string) {
+        const dummyUrl  = new URL('http://dummy')
+        const baseUrl   = new URL(base, dummyUrl);
+        const targetUrl = new URL(target, baseUrl);
+
+        const result = targetUrl.href;
+        if (result.startsWith(dummyUrl.origin)) return result.substr(dummyUrl.origin.length);
+        return result;
     }
 
     /**
@@ -260,24 +264,48 @@ export const cssDecls = cssConfig.decls;
 
 const config = {
     font: {
-        path  : './fonts/',
+        /**
+         * A *url directory* pointing to the collection of icon's fonts.  
+         * It's the *front-end url*, not the physical path on the server.
+         */
+        path  : '/fonts/',
+
+        /**
+         * A list of icon's fonts with extensions.  
+         * The order does matter. Place the most preferred file on the first.
+         */
         files : [
             'MaterialIcons-Regular.woff2',
             'MaterialIcons-Regular.woff',
             'MaterialIcons-Regular.ttf',
         ],
 
+        /**
+         * A list of valid icon-font's content.
+         */
+        items : fontMaterial,
+
+        /**
+         * The css style of icon-font to be loaded.
+         */
         styles : {
             fontFamily     : '"Material Icons"',
             fontWeight     : 400,
             fontStyle      : 'normal',
             textDecoration : 'none',
         } as JssStyle,
-
-        items : fontMaterial,
     },
     img: {
-        path  : './icons/',
+        /**
+         * A *url directory* pointing to the collection of icon's images.  
+         * It's the *front-end url*, not the physical path on the server.
+         */
+        path  : '/icons/',
+
+        /**
+         * A list of icon's images with extensions.  
+         * The order doesn't matter, but if there are any files with the same name but different extensions, the first one will be used.
+         */
         files : [
             'instagram.svg',
             'whatsapp.svg',
@@ -293,9 +321,9 @@ const config = {
 export function useIcon(props: Props) {
     return useMemo(() => {
         const imgIcon = (() => {
-            const file = config.img.files.find((file) => file.match(/[\w-.]+(?=[.]\w+$)/)?.[0] === props.icon);
-            if (!file) return null;
-            return styles.resolveUrl(file, config.img.path);
+            const fileName = config.img.files.find((file) => file.match(/[\w-.]+(?=[.]\w+$)/)?.[0] === props.icon);
+            if (!fileName) return null;
+            return styles.concatUrl(fileName, config.img.path);
         })();
 
         const isFontIcon = config.font.items.includes(props.icon);
