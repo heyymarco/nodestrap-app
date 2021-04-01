@@ -16,6 +16,8 @@ import Control from './libs/Control';
 import EditableControl from './libs/EditableControl';
 import EditableTextControl from './libs/EditableTextControl';
 
+import Icon   from './libs/Icon';
+
 
 
 // import jssPluginFunctions        from 'jss-plugin-rule-value-function'
@@ -151,6 +153,15 @@ function App() {
 				>
                         test
                 </EditableTextControl>
+				<hr style={{flexBasis: '100%'}} />
+				<Icon
+					theme={theme} size={size} enableGradient={enableGrad}
+					icon='face'
+				/>
+				<Icon
+					theme={theme} size={size} enableGradient={enableGrad}
+					icon='instagram'
+				/>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:

@@ -1,7 +1,7 @@
 // react (builds html using javascript):
 import
     React, {
-    useState,
+    useMemo,
 }                          from 'react'        // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
@@ -10,22 +10,18 @@ import type {
     Styles,
 }                          from 'jss'          // ts defs support for jss
 import {
-    PropEx,
     Cust,
 }                          from './Css'        // ts defs support for jss
 import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 import type {
-    Dictionary,
     DictionaryOf,
 }                          from './CssConfig'   // ts defs support for jss
 
 // nodestrap (modular web components):
-import colors              from './colors'     // configurable colors & theming defs
 import Path                from 'path'
 import fontMaterial        from './Icon-font-material'
 import {
     default  as Element,
-    cssProps as ecssProps,
     ElementStylesBuilder,
 }                          from './Element'
 import type * as Elements  from './Element'
@@ -37,7 +33,7 @@ import type * as Elements  from './Element'
 export class IconStylesBuilder extends ElementStylesBuilder {
     //#region scoped css props
     /**
-     * Icon's image url.
+     * Icon's image url (with additional image's props).
      */
     public readonly _img = 'img'
     //#endregion scoped css props
@@ -63,15 +59,16 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
     // states:
     protected fnProps(): JssStyle { return {
-        ...super.fnProps(),
+        ...super.fnProps(), // copy functional props from base
 
 
 
-        // delete unecessary props from base:
+        //#region delete *unecessary* functional props from base:
         [this.decl(this._backgFn)]         : null,
         [this.decl(this._colorOutlinedFn)] : null,
         [this.decl(this._backgOutlinedFn)] : null,
         [this.decl(this._animFn)]          : null,
+        //#endregion delete *unecessary* functional props from base:
     }}
     protected themesIf(): JssStyle { return {
         // define a *default* color theme:
@@ -82,13 +79,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
     // styles:
     public basicStyle(): JssStyle { return {
-        // apply *general* cssProps
-        ...this.filterGeneralProps(cssProps),
-    
-    
-    
-        // apply *non conditional* fn props:
-        backg : this.ref(this._colorFn),
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
 
 
 
@@ -97,18 +88,36 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         verticalAlign : 'middle',
 
         // colors:
-        color         : null, // delete; in img-icon: color => backgColor ; in font-icon: color => color (font-color)
+        color         : null, // delete from cssProps; in img-icon: color => backgColor ; in font-icon: color => color (font-color)
 
         // sizes:
-        size          : null, // delete, in img-icon: size => [width, height] ; in font-icon: size => fontSize
+        size          : null, // delete from cssProps, in img-icon: size => [width, height] ; in font-icon: size => fontSize
         height        : cssProps.size,
         width         : 'min-content',
     }}
     public fontStyle(): JssStyle { return {
+        // colors:
+        backg         : 'transparent',           // setup backg color
+        color         : this.ref(this._colorFn), // setup icon's color
+
+
+        // sizes:
+        fontSize      : cssProps.size,  // setup icon's size
+        overflowY     : 'hidden',       // hide the pseudo-inherited underline
+
+
+        // accessibility:
+        userSelect    : 'none',         // disable selecting icon's text
+
+
+        //#region fonts
         //#region custom font
         // load custom font:
         '@global': {
-            '@font-face': config.font.styles,
+            '@font-face': {
+                ...config.font.styles,
+                src: config.font.files.map((file) => `url("${this.resolveUrl(file, config.font.path)}") ${this.formatOf(file)}`).join(','),
+            },
         },
 
 
@@ -118,76 +127,64 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         //#endregion custom font
 
 
-
-        //#region font settings
-        fontSize      : cssProps.size,
-        overflowY     : 'hidden', // hide the pseudo-inherited underline
-
-        backg         : 'transparent',
-        color         : cssProps.color,
-
-        userSelect    : 'none', // disable selecting icon's text
-
         lineHeight    : 1,
         textTransform : 'none',
         letterSpacing : 'normal',
         wordWrap      : 'normal',
         whiteSpace    : 'nowrap',
         direction     : 'ltr',
-        //#endregion font settings
-
 
 
         //#region browser supports
-        // support for all WebKit browsers
-        '-webkit-font-smoothing'  : 'antialiased',
-
-        // support for Safari and Chrome
-        'textRendering'           : 'optimizeLegibility',
-
-        // support for Firefox
-        '-moz-osx-font-smoothing' : 'grayscale',
-
-        // support for IE
-        fontFeatureSettings       : 'liga',
+        '-webkit-font-smoothing'  : 'antialiased',        // support for all WebKit browsers
+        'textRendering'           : 'optimizeLegibility', // support for Safari and Chrome
+        '-moz-osx-font-smoothing' : 'grayscale',          // support for Firefox
+        fontFeatureSettings       : 'liga',               // support for IE
         //#endregion browser supports
+        //#endregion fonts
     }}
     public imgStyle(): JssStyle { return {
-        //#region image settings
-        backg         : cssProps.color,
+        // colors:
+        backg         : this.ref(this._colorFn), // setup icon's color
 
+
+        // sizes:
+        //#region children
+        // just a *dummy* element for filling the space
+        '& >img': {
+            // appearance:
+            visibility : [['hidden'], '!important'], // invisible but still filling the space
+
+
+            // sizes:
+            width      : 'auto',           // calculates the width by [height * aspect-ratio]
+            height     : 'fill-available', // follow parent's height
+            fallbacks  : {
+                height : '100%',
+            },
+
+
+            // accessibility:
+            userSelect : 'none', // disable selecting icon's text
+        },
+        //#endregion children
 
 
         //#region image masking
-        mask          : this.ref(this._img),
-        maskSize      : 'contain',
-        maskRepeat    : 'no-repeat',
-        maskPosition  : 'center',
-
-        '-webkit-mask'          : this.ref(this._img),
-        '-webkit-maskSize'      : 'contain',
-        '-webkit-maskRepeat'    : 'no-repeat',
-        '-webkit-maskPosition'  : 'center',
+        maskSize      : 'contain',           // default image props
+        maskRepeat    : 'no-repeat',         // default image props
+        maskPosition  : 'center',            // default image props
+        mask          : this.ref(this._img), // image with additional image's props
         //#endregion image masking
-        //#endregion image settings
-
-
-
-        //#region children
-        '& >img': {
-            visibility : 'hidden !important',
-            height     : '100%', // follow parent's height
-        },
-        //#endregion children
     }}
 
-    protected styles(): Styles<'main'|'font'|'img'> {
-        return {
-            ...super.styles(),
-
-            font : this.fontStyle(),
-            img  : this.imgStyle(),
-        };
+    protected styles(): Styles<'main'> {
+        const styles = super.styles();
+        Object.assign(styles.main, {
+            '&.font' : this.fontStyle(),
+            '&.img'  : this.imgStyle(),
+        });
+        return styles;
     }
 
 
@@ -251,7 +248,7 @@ const cssConfig = new CssConfig(() => {
 
     return {
         ...basics,
-        size   :  basics.sizeNm,
+        size   :            basics.sizeNm,
         sizeSm : [['calc(', basics.sizeNm, '*', 0.75  , ')']],
         sizeMd : [['calc(', basics.sizeNm, '*', 1.50  , ')']],
         sizeLg : [['calc(', basics.sizeNm, '*', 2.00  , ')']],
@@ -263,27 +260,25 @@ export const cssDecls = cssConfig.decls;
 
 const config = {
     font: {
-        // path           : '~@nodestrap/icon/dist/fonts/',
-        path           : '/fonts/',
-        files          : [
+        path  : './fonts/',
+        files : [
             'MaterialIcons-Regular.woff2',
             'MaterialIcons-Regular.woff',
             'MaterialIcons-Regular.ttf',
         ],
 
-        styles: {
+        styles : {
             fontFamily     : '"Material Icons"',
             fontWeight     : 400,
             fontStyle      : 'normal',
             textDecoration : 'none',
         } as JssStyle,
 
-        items          : fontMaterial,
+        items : fontMaterial,
     },
     img: {
-        // path           : '~@nodestrap/icon/dist/icons/',
-        path           : '/icons/',
-        files          : [
+        path  : './icons/',
+        files : [
             'instagram.svg',
             'whatsapp.svg',
             'close.svg',
@@ -294,3 +289,94 @@ const config = {
 
 
 // hooks:
+
+export function useIcon(props: Props) {
+    return useMemo(() => {
+        const imgIcon = (() => {
+            const file = config.img.files.find((file) => file.match(/[\w-.]+(?=[.]\w+$)/)?.[0] === props.icon);
+            if (!file) return null;
+            return styles.resolveUrl(file, config.img.path);
+        })();
+
+        const isFontIcon = config.font.items.includes(props.icon);
+
+
+
+        return {
+            class: imgIcon ? 'img' : (isFontIcon ? 'font' : null),
+
+            style: {
+                ...(imgIcon ? {
+                    // appearance:
+                    [styles.decl(styles._img)] : `url("${imgIcon}")`,
+                } : {}),
+            },
+
+            children: [
+                (imgIcon ? (
+                    <img key='ico-img' src={imgIcon} alt='' />
+                ) : null),
+
+                ((!imgIcon && isFontIcon) ? props.icon : null),
+            ].filter((child) => (child !== null)) as React.ReactNode,
+        };
+    }, [props.icon]);
+}
+
+
+
+// react components:
+
+export interface Props
+    extends
+        Elements.Props
+{
+    // appearance:
+    icon: string
+}
+export default function Icon(props: Props) {
+    const icoStyles = styles.useStyles();
+
+    // appearance:
+    const icon      = useIcon(props);
+
+
+
+    return (
+        <Element
+            // default props:
+            {...{
+                tag : 'span', // default [tag]=span
+            }}
+
+
+            // other props:
+            {...props}
+
+
+            // classes:
+            classes={[
+                // main:
+                (props.classes ? null : icoStyles.main),
+
+
+                // additionals:
+                ...(props.classes ?? []),
+
+
+                // appearance:
+                icon.class,
+            ]}
+
+
+            // appearance:
+            style={{
+                ...icon.style,
+                ...props.style,
+            }}
+        >
+            { icon.children }
+            { props.children }
+        </Element>
+    );
+}

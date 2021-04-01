@@ -701,6 +701,7 @@ export interface Props
 {
     tag?     : keyof JSX.IntrinsicElements
     classes? : (string|null)[]
+    style?   : React.CSSProperties
 }
 export default function Element(props: Props) {
     const elmStyles    = styles.useStyles();
@@ -768,7 +769,7 @@ export default function Element(props: Props) {
                 variOutlined.class,
             ].filter((c) => !!c).join(' ')}
         >
-            {(props as React.PropsWithChildren<Props>)?.children}
+            { props.children }
         </Tag>
     );
 };

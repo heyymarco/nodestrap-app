@@ -57,7 +57,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
 
-        //#region overwrite base's color themes with *softer* colors
+        //#region overwrite base's themes with *softer* colors
         // define a *default* color theme:
         [this.decl(this._colorIf)]    : colors.secondaryCont,
         [this.decl(this._backgIf)]    : this.solidBackg(colors.secondaryThin),
@@ -75,7 +75,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         // define an *invalid* color theme:
         [this.decl(this._colorIfInv)] : colors.dangerCont,
         [this.decl(this._backgIfInv)] : this.solidBackg(colors.dangerThin),
-        //#endregion overwrite base's color themes with *softer* colors
+        //#endregion overwrite base's themes with *softer* colors
     }}
     protected states(): JssStyle { return {
         ...super.states(), // copy states from base
@@ -126,10 +126,11 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
             ...iconStyles.imgStyle(),
 
 
-            //#region setup img-icon
-            [iconStyles.decl(iconStyles._img)] : this.ref(this._iconValInv),      // apply icon's image
-            backg                              : this.ref(this._colorOutlinedFn), // apply icon's color
-            //#endregion setup img-icon
+            // setup icon's image:
+            [iconStyles.decl(iconStyles._img)]     : this.ref(this._iconValInv),
+
+            // setup icon's color:
+            [iconStyles.decl(iconStyles._colorFn)] : this.ref(this._colorOutlinedFn),
             //#endregion apply img-icon
     
 
