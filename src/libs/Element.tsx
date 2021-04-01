@@ -131,7 +131,7 @@ export class StylesBuilder {
         const cssPropsCopy: Dictionary<any> = {};
         for (const [name, prop] of Object.entries(cssProps)) {
             // excludes the entry if the name matching with following:
-            if ((/(Size|Position|Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid)$|^(@)|color|backg|backgGrad|anim|orientation|align/).test(name)) continue; // exclude
+            if ((/^(icon)|(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid)$|^(@)|color|backg|backgGrad|anim|orientation|align/).test(name)) continue; // exclude
             
             // if not match => include it:
             cssPropsCopy[name] = prop;
@@ -161,7 +161,7 @@ export class StylesBuilder {
 
 
     
-    // scoped css props:
+    //#region scoped css props
     /**
      * Holds the prefix name of the generated css props.  
      * Useful to avoid name collision if working with another css frameworks.
@@ -207,6 +207,7 @@ export class StylesBuilder {
             (fallback1 ? (fallback2 ? `var(--${propName},var(--${fallback1},var(--${fallback2})))` : `var(--${propName},var(--${fallback1}))`) : `var(--${propName})`)
         );
     }
+    //#endregion scoped css props
 
 
 

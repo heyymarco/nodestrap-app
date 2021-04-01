@@ -144,14 +144,14 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     }}
     
     protected applyStateValid(): JssStyle { return {
-        // apply valid (success) colors:
+        // apply a *valid* color theme:
         [this.decl(this._colorIfIf)]          : this.ref(this._colorIfVal),
         [this.decl(this._backgIfIf)]          : this.ref(this._backgIfVal),
         [this.decl(this._colorOutlinedIfIf)]  : this.ref(this._colorOutlinedIfVal),
         [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfVal),
     }}
     protected applyStateInvalid(): JssStyle { return {
-        // apply invalid (danger) colors:
+        // apply an *invalid* color theme:
         [this.decl(this._colorIfIf)]          : this.ref(this._colorIfInv),
         [this.decl(this._backgIfIf)]          : this.ref(this._backgIfInv),
         [this.decl(this._colorOutlinedIfIf)]  : this.ref(this._colorOutlinedIfInv),
@@ -200,16 +200,15 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
         [this.decl(this._boxShadowFocusIfInv)]  : colors.dangerTransp,
     }}
     protected ValidationStates(): JssStyle { return {
-        // all initial states are none:
-
+        //#region all initial states are none
         [this.decl(this._animValUnval)] : ecssProps.animNone,
         [this.decl(this._animInvUninv)] : ecssProps.animNone,
+        //#endregion all initial states are none
 
 
 
-        // specific states:
-        
-        extend:[
+        //#region specific states
+        extend: [
             this.stateValidating({
                 [this.decl(this._animValUnval)] : cssProps.animValid,
             }),
@@ -226,10 +225,11 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
                 [this.decl(this._animInvUninv)] : cssProps.animUninvalid,
             }),
         ] as JssStyle,
+        //#endregion specific states
     }}
 
     protected fnProps(): JssStyle { return {
-        extend: super.fnProps(),
+        extend: super.fnProps(), // copy functional props from base
 
 
 
@@ -287,20 +287,20 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     }}
     protected themesIf(): JssStyle { return {
         extend: [
-            super.themesIf(),
+            super.themesIf(),          // copy themes from base
 
 
 
-            this.ValidationThemesIf(),
+            this.ValidationThemesIf(), // copy themes from validation
         ] as JssStyle,
     }}
     protected states(): JssStyle { return {
-        extend:[
-            super.states(),
+        extend: [
+            super.states(),          // copy states from base
 
 
 
-            this.ValidationStates(),
+            this.ValidationStates(), // copy states from validation
         ] as JssStyle,
     }}
 
@@ -309,7 +309,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     // styles:
     public basicStyle(): JssStyle { return {
         extend: [
-            super.basicStyle(),
+            super.basicStyle(),                // copy basicStyle from base
             this.filterGeneralProps(cssProps), // apply *general* cssProps
         ] as JssStyle,
     }}

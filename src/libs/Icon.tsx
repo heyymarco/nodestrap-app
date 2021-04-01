@@ -58,7 +58,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
     // states:
     protected fnProps(): JssStyle { return {
-        ...super.fnProps(), // copy functional props from base
+        extend: super.fnProps(), // copy functional props from base
 
 
 
@@ -78,7 +78,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
     // styles:
     public basicStyle(): JssStyle { return {
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+        extend: this.filterGeneralProps(cssProps), // apply *general* cssProps
 
 
 

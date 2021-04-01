@@ -119,7 +119,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
         );
     }
     protected applyStateActive(): JssStyle { return {
-        // apply active (primary) colors:
+        // apply an *active* color theme:
         [this.decl(this._colorIf)]         : this.ref(this._colorIfAct),
         [this.decl(this._backgIf)]         : this.ref(this._backgIfAct),
         [this.decl(this._colorOutlinedIf)] : this.ref(this._colorOutlinedIfAct),
@@ -135,7 +135,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
     // states:
     protected fnProps(): JssStyle { return {
-        extend: super.fnProps(),
+        extend: super.fnProps(), // copy functional props from base
 
 
 
@@ -160,7 +160,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
         //#endregion re-arrange the animFn at different states
     }}
     protected themesIf(): JssStyle { return {
-        extend: super.themesIf(),
+        extend: super.themesIf(), // copy themes from base
 
 
 
@@ -170,8 +170,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
         [this.decl(this._colorOutlinedIfAct)] : colors.primary,
     }}
     protected states(): JssStyle { return {
-        // all initial states are none:
-
+        //#region all initial states are none
         [this.decl(this._filterEnableDisable)] : ecssProps.filterNone,
         [this.decl(this._animEnableDisable)]   : ecssProps.animNone,
 
@@ -179,16 +178,17 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
         [this.decl(this._filterActivePassive)] : ecssProps.filterNone,
         [this.decl(this._animActivePassive)]   : ecssProps.animNone,
+        //#endregion all initial states are none
 
 
 
-        // specific states:
-
-        extend:[
-            super.states(),
-
-
-
+        //#region specific states
+        extend: [
+            super.states(), // copy states from base
+    
+    
+    
+            //#region enable, disable
             this.stateEnableDisable({ // [enabling, disabling, disabled]
                 [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
             }),
@@ -202,15 +202,18 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
                 '&.disabled,&:disabled:not(.disable)'  : // if ctrl was disabled programatically, disable first animation
                     this.applyStateNoAnimStartup(),
             },
-
-
+            //#endregion enable, disable
+            
+            
+            
+            //#region active, passive
             this.stateActivePassive({ // [activating, actived, passivating]
                 [this.decl(this._filterActivePassive)] : cssProps.filterActive,
             }),
             this.stateActive({ // [activating, actived]
                 [this.decl(this._animActivePassive)]   : cssProps.animActive,
-
-                extend:[
+    
+                extend: [
                     this.applyStateActive(),
                 ] as JssStyle,
             }),
@@ -222,7 +225,9 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
                 '&.actived': // if activated programmatically (not by user input), disable the animation
                     this.applyStateNoAnimStartup(),
             },
+            //#endregion active, passive
         ] as JssStyle,
+        //#endregion specific states
     }}
 
 
@@ -230,7 +235,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     // styles:
     public basicStyle(): JssStyle { return {
         extend: [
-            super.basicStyle(),
+            super.basicStyle(),                // copy basicStyle from base
             this.filterGeneralProps(cssProps), // apply *general* cssProps
         ] as JssStyle,
     }}

@@ -45,15 +45,19 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
     // themes:
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
-                ...super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
-        ...contentStyles.themeOf(theme, Theme, themeProp, themeColor), // copy themes from Content
+        extend: [
+                    super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
+            contentStyles.themeOf(theme, Theme, themeProp, themeColor), // copy themes from Content
+        ] as JssStyle,
     }}
 
 
 
     // states:
     protected themesIf(): JssStyle { return {
-        ...super.themesIf(), // copy themes from base
+        extend: [
+            super.themesIf(), // copy themes from base
+        ] as JssStyle,
 
 
 
@@ -78,10 +82,6 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         //#endregion overwrite base's themes with *softer* colors
     }}
     protected states(): JssStyle { return {
-        ...super.states(), // copy states from base
-
-
-
         //#region all initial states are none
         [this.decl(this._iconValInv)]     : this.ref(this._backgNone),
         //#endregion all initial states are none
@@ -89,25 +89,31 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
         //#region specific states
-        ...this.stateValid({
-            [this.decl(this._iconValInv)] : cssProps.iconValid,   // apply a *valid* icon indicator
-        }),
-        ...this.stateInvalid({
-            [this.decl(this._iconValInv)] : cssProps.iconInvalid, // apply an *invalid* icon indicator
-        }),
+        extend: [
+            super.states(), // copy states from base
+    
+    
+    
+            this.stateValid({
+                [this.decl(this._iconValInv)] : cssProps.iconValid,   // apply a *valid* icon indicator
+            }),
+            this.stateInvalid({
+                [this.decl(this._iconValInv)] : cssProps.iconInvalid, // apply an *invalid* icon indicator
+            }),
 
 
-        
-        //#region supress activating by mouse/keyboard
-        // supress activating by mouse/keyboard (:active)
-        // but still responsive activating programatically (.active & .actived)
-        ...this.stateActive({ // [activating, actived]
-            '&:active:not(.active):not(.actived)': {
-                [this.decl(this._filterActivePassive)] : ecssProps.filterNone,
-                [this.decl(this._animActivePassive)]   : ecssProps.animNone,
-            },
-        }),
-        //#endregion supress activating by mouse/keyboard
+            
+            //#region supress activating by mouse/keyboard
+            // supress activating by mouse/keyboard (:active)
+            // but still responsive activating programatically (.active & .actived)
+            this.stateActive({ // [activating, actived]
+                '&:active:not(.active):not(.actived)': {
+                    [this.decl(this._filterActivePassive)] : ecssProps.filterNone,
+                    [this.decl(this._animActivePassive)]   : ecssProps.animNone,
+                },
+            }),
+            //#endregion supress activating by mouse/keyboard
+        ] as JssStyle,
         //#endregion specific states
     }}
 
@@ -115,15 +121,19 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
     // styles:
     public basicStyle(): JssStyle { return {
-        ...super.basicStyle(),                // copy basicStyle from base
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+        extend: [
+            super.basicStyle(),                // copy basicStyle from base
+            this.filterGeneralProps(cssProps), // apply *general* cssProps
+        ] as JssStyle,
 
 
 
         [iconElm]: {
             //#region apply img-icon
-            ...iconStyles.basicStyle(),
-            ...iconStyles.imgStyle(),
+            extend: [
+                iconStyles.basicStyle(),
+                iconStyles.imgStyle(),
+            ] as JssStyle,
 
 
             // setup icon's image:

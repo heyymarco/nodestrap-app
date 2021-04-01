@@ -122,7 +122,8 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
         ],
     }}
     protected states(): JssStyle { return {
-        extend:[
+        //#region specific states
+        extend: [
             super.states(),
 
 
@@ -137,6 +138,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
                 [this.decl(this._animActivePassive)]   : cssProps.animPassive,  // override Indicator's anim passive
             }),
         ] as JssStyle,
+        //#endregion specific states
     }}
 
 

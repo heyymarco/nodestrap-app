@@ -150,8 +150,8 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         );
     }
     protected applyStateActive(): JssStyle { return {
-        // apply active (primary) colors:
-        extend: super.applyStateActive(),
+        // apply an *active* color theme:
+        extend: super.applyStateActive(), // copy active theme from base
         [this.decl(this._boxShadowFocusIf)] : colors.primaryTransp,
     }}
     //#endregion mixins
@@ -160,7 +160,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
     // themes:
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
-        extend: super.themeOf(theme, Theme, themeProp, themeColor),
+        extend: super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
 
 
 
@@ -168,21 +168,21 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     
         [this.decl(this._boxShadowFocusTh)]: (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
     }}
-    public outlined(): JssStyle {
+    public outlined(): JssStyle { return {
         // unlike on Indicator/Element,
         // on Control the outlined only be applied
         // * if not-actived
         // * and if (not-hover, not-focus) -or- disabled
-        return this.stateNotActive({
+        extend: this.stateNotActive({
             '&:not(:hover):not(:focus), &:disabled,&.disabled': super.outlined(),
-        });
-    }
+        }),
+    }}
 
 
 
     // states:
     protected fnProps(): JssStyle { return {
-        extend: super.fnProps(),
+        extend: super.fnProps(), // copy functional props from base
 
 
 
@@ -223,7 +223,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         //#endregion re-arrange the animFn at different states
     }}
     protected themesIf(): JssStyle { return {
-        extend: super.themesIf(),
+        extend: super.themesIf(), // copy themes from base
 
 
 
@@ -234,23 +234,22 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
     }}
     protected states(): JssStyle { return {
-        // all initial states are none:
-
+        //#region all initial states are none
      // [this.decl(this._filterHoverLeave)]    : ecssProps.filterNone, // was supported from Indicator
         [this.decl(this._animHoverLeave)]      : ecssProps.animNone,
 
         [this.decl(this._boxShadowFocusBlur)]  : ecssProps.boxShadowNone,
         [this.decl(this._animFocusBlur)]       : ecssProps.animNone,
+        //#endregion all initial states are none
 
 
 
-        // specific states:
-        
-        extend:[
-            super.states(),
-
-
-
+        //#region specific states
+        extend: [
+            super.states(), // copy states from base
+    
+    
+    
             this.stateDisable({ // [disabling, disabled]
                 // accessibility:
                 cursor     : cssProps.cursorDisable,
@@ -258,6 +257,8 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
             }),
     
     
+    
+            //#region hover, leave, focus, blur
             this.stateLeaving({
                 [this.decl(this._filterHoverLeave)]       : cssProps.filterHover,
                 [this.decl(this._animHoverLeave)]         : cssProps.animLeave,
@@ -266,13 +267,13 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
                 [this.decl(this._boxShadowFocusBlur)]     : this.ref(this._boxShadowFocusFn),
                 [this.decl(this._animFocusBlur)]          : cssProps.animBlur,
             }),
-            this.stateNotDisable({extend:[
+            this.stateNotDisable({extend: [
                 // state hover & focus are possible when enabled
                 this.stateHover({
                     [this.decl(this._filterHoverLeave)]   : cssProps.filterHover,
                     [this.decl(this._animHoverLeave)]     : cssProps.animHover,
     
-                    extend:[
+                    extend: [
                         this.applyStateActive(),
                     ] as JssStyle,
                 }),
@@ -280,12 +281,14 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
                     [this.decl(this._boxShadowFocusBlur)] : this.ref(this._boxShadowFocusFn),
                     [this.decl(this._animFocusBlur)]      : cssProps.animFocus,
     
-                    extend:[
+                    extend: [
                         this.applyStateActive(),
                     ] as JssStyle,
                 }),
             ] as JssStyle}),
+            //#endregion hover, leave, focus, blur
         ] as JssStyle,
+        //#endregion specific states
     }}
 
 
@@ -295,7 +298,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         extend: [
             stripOuts.control, // clear browser's default styles
 
-            super.basicStyle(),
+            super.basicStyle(),                // copy basicStyle from base
             this.filterGeneralProps(cssProps), // apply *general* cssProps
         ] as JssStyle,
     }}
