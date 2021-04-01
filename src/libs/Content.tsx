@@ -70,7 +70,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
         [this.decl(this._colorActiveTh)]   : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
         [this.decl(this._backgActiveTh)]   : this.solidBackg(themeColor),
     }}
-    protected sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: super.sizeOf(size, Size, sizeProp),
 
 
@@ -80,7 +80,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
         [cssDecls.paddingX] : (cssProps as DictionaryOf<typeof cssProps>)[`paddingX${Size}`],
         [cssDecls.paddingY] : (cssProps as DictionaryOf<typeof cssProps>)[`paddingY${Size}`],
     }}
-    protected outlined(): JssStyle {
+    public outlined(): JssStyle {
         // unlike on Indicator/Element,
         // on Control the outlined only be applied
         // * if not-actived
@@ -142,7 +142,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
 
 
     // styles:
-    protected basicStyle(): JssStyle { return {
+    public basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(),
             this.filterGeneralProps(cssProps), // apply *general* cssProps

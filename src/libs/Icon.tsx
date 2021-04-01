@@ -45,19 +45,19 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
 
     // themes:
-    protected themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         [this.decl(this._colorTh)] : themeColor,
     }}
 
     protected sizeOptions(): string[] {
         return ['sm', 'nm', 'md', 'lg', '1em'];
     }
-    protected sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrite the global props with the *prop{Size}*:
 
         [cssDecls.size] : (size === '1em') ? '1em' : (cssProps as DictionaryOf<typeof cssProps>)[`size${Size}`],
     }}
-    protected outlined(): JssStyle  { return {}; } // remove outlined style
+    public outlined(): JssStyle  { return {}; } // remove outlined style
 
 
 

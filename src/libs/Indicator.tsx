@@ -228,7 +228,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
 
     // styles:
-    protected basicStyle(): JssStyle { return {
+    public basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(),
             this.filterGeneralProps(cssProps), // apply *general* cssProps

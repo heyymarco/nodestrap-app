@@ -262,7 +262,7 @@ export class StylesBuilder {
      * @param themeColor The backg color of the current `theme`.
      * @returns A `JssStyle` represents the color definition for the current `theme`.
      */
-    protected themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {}; }
+    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {}; }
 
     /**
      * Gets the all available size options.
@@ -313,19 +313,19 @@ export class StylesBuilder {
      * @param sizeProp The prop name of the current `size`.
      * @returns A `JssStyle` represents the sizing definition for the current `size`.
      */
-    protected sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {}; }
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {}; }
 
     /**
      * Creates a gradient definition for if the gradient feature is enabled.
      * @returns A `JssStyle` represents the gradient definition.
      */
-    protected gradient(): JssStyle { return {}; }
+    public gradient(): JssStyle { return {}; }
 
     /**
      * Creates an outlined definition for if the outlined feature is enabled.
      * @returns A `JssStyle` represents the outlined definition.
      */
-    protected outlined(): JssStyle  { return {}; }
+    public outlined(): JssStyle  { return {}; }
 
 
 
@@ -355,7 +355,7 @@ export class StylesBuilder {
      * Creates a basic style of a component *without* any themes nor states applied.
      * @returns A `JssStyle` represents the basic style definition.
      */
-    protected basicStyle(): JssStyle { return {}; }
+    public basicStyle(): JssStyle { return {}; }
 
     /**
      * Creates one/more composite styles, with the themes & states applied.
@@ -539,14 +539,14 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
     // themes:
-    protected themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props:
     
         [this.decl(this._colorTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
         [this.decl(this._backgTh)]         : this.solidBackg(themeColor),
         [this.decl(this._colorOutlinedTh)] : themeColor,
     }}
-    protected sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrite the global props with the *prop{Size}*:
 
         [cssDecls.fontSize]     : (cssProps as DictionaryOf<typeof cssProps>)[`fontSize${Size}`],
@@ -554,12 +554,12 @@ export class ElementStylesBuilder extends StylesBuilder {
         [cssDecls.paddingY]     : (cssProps as DictionaryOf<typeof cssProps>)[`paddingY${Size}`],
         [cssDecls.borderRadius] : (cssProps as DictionaryOf<typeof cssProps>)[`borderRadius${Size}`],
     }}
-    protected gradient(): JssStyle { return {
+    public gradient(): JssStyle { return {
         // *toggle on* the background gradient prop:
 
         [this.decl(this._backgGradTg)]     : cssProps.backgGrad,
     }}
-    protected outlined(): JssStyle { return {
+    public outlined(): JssStyle { return {
         // apply *outlined* fn props:
         [this.decl(this._colorFn)] : this.ref(this._colorOutlinedFn),
         [this.decl(this._backgFn)] : this.ref(this._backgOutlinedFn),
@@ -632,7 +632,7 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
     // styles:
-    protected basicStyle(): JssStyle { return {
+    public basicStyle(): JssStyle { return {
         extend: [
             this.filterGeneralProps(cssProps), // apply *general* cssProps
         ] as JssStyle,

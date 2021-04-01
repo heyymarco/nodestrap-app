@@ -159,7 +159,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
 
     // themes:
-    protected themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: super.themeOf(theme, Theme, themeProp, themeColor),
 
 
@@ -168,7 +168,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     
         [this.decl(this._boxShadowFocusTh)]: (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
     }}
-    protected outlined(): JssStyle {
+    public outlined(): JssStyle {
         // unlike on Indicator/Element,
         // on Control the outlined only be applied
         // * if not-actived
@@ -291,7 +291,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
 
     // styles:
-    protected basicStyle(): JssStyle { return {
+    public basicStyle(): JssStyle { return {
         extend: [
             stripOuts.control, // clear browser's default styles
 
