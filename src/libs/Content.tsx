@@ -71,7 +71,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
         [this.decl(this._backgActiveTh)]   : this.solidBackg(themeColor),
     }}
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
-        extend: super.sizeOf(size, Size, sizeProp),
+        extend: super.sizeOf(size, Size, sizeProp), // copy sizes from base
 
 
 

@@ -17,5 +17,5 @@ export namespace Cust {
 
 export namespace PropEx {
     export type Keyframes = { [key: string]: JssStyle }
-    export type Length    = 0 | string   
+    export type Length    = 0 | string
 }

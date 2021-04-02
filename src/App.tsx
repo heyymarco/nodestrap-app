@@ -16,6 +16,9 @@ import Control from './libs/Control';
 import EditableControl from './libs/EditableControl';
 import EditableTextControl from './libs/EditableTextControl';
 
+import Button, * as Buttons from './libs/Button';
+// import Input from './libs/Input';
+
 import Icon   from './libs/Icon';
 
 
@@ -71,6 +74,9 @@ function App() {
 	const [enableVal, setEnableVal  ] = useState(true);
 	const [isValid,   setIsValid    ] = useState<boolean|null|undefined>(undefined);
 
+	const btnStyles = [undefined, 'link'];
+	const [btnStyle,    setBtnStyle     ] = useState<Buttons.BtnStyle|undefined>(undefined);
+
 
 
     return (
@@ -125,6 +131,23 @@ function App() {
 				>
                         test
                 </Control>
+                <Button
+					theme={theme} size={size} enableGradient={enableGrad}
+					//@ts-ignore
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+
+					focus={focus}
+
+					btnStyle={btnStyle}
+
+					onClick={() => {
+						alert('hello world')
+					}}
+				>
+                        button
+                </Button>
                 <EditableControl
 					theme={theme} size={size} enableGradient={enableGrad}
 					//@ts-ignore
@@ -153,6 +176,18 @@ function App() {
 				>
                         test
                 </EditableTextControl>
+                {/* <Input
+					theme={theme} size={size} enableGradient={enableGrad}
+					//@ts-ignore
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+
+					focus={focus}
+
+					enableValidation={enableVal}
+					isValid={isValid}
+				/> */}
 				<hr style={{flexBasis: '100%'}} />
 				<Icon
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -281,6 +316,21 @@ function App() {
 									})())}
 								/>
 								{`${(val===undefined) ? 'auto' : val}`}
+							</label>
+						)
+					}
+				</p>
+				<p>
+					BtnStyle:
+					{
+						btnStyles.map(st =>
+							<label key={st ?? ''}>
+								<input type='radio'
+									value={st}
+									checked={btnStyle===st}
+									onChange={(e) => setBtnStyle((e.target.value || undefined) as (Buttons.BtnStyle|undefined))}
+								/>
+								{`${st}`}
 							</label>
 						)
 					}
