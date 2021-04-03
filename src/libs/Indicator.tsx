@@ -199,7 +199,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
                 [this.decl(this._animEnableDisable)]   : cssProps.animDisable,
             }),
             { // [disabled]
-                '&.disabled,&:disabled:not(.disable)'  : // if ctrl was disabled programatically, disable first animation
+                '&.disabled,&:disabled:not(.disable)'  : // if ctrl was fully disabled programatically, disable first animation
                     this.applyStateNoAnimStartup(),
             },
             //#endregion enable, disable

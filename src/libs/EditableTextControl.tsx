@@ -134,6 +134,8 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
                 iconStyles.basicStyle(),
                 iconStyles.imgStyle(),
             ] as JssStyle,
+    
+            verticalAlign : null, // delete
 
 
             // setup icon's image:

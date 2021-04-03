@@ -139,19 +139,16 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     
     // override base: pseudo + non-pseudo active
     protected applyStateNoAnimStartup(): JssStyle {
-        return this.stateNotEnablingDisabling(
-            this.stateNotActivatingPassivating(
-                this.stateNotHoverLeave(
-                    this.stateNotFocusBlur({
-                        animationDuration: [['0ms'], '!important'],
-                    })
-                )
+        return this.stateNotHoverLeave(
+            this.stateNotFocusBlur(
+                super.applyStateNoAnimStartup()
             )
         );
     }
     protected applyStateActive(): JssStyle { return {
         // apply an *active* color theme:
         extend: super.applyStateActive(), // copy active theme from base
+        
         [this.decl(this._boxShadowFocusIf)] : colors.primaryTransp,
     }}
     //#endregion mixins
