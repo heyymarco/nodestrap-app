@@ -573,14 +573,16 @@ export default function Control(props: Props & ActionCtrl) {
 
                 // states:
                 stateLeave.class,
-                stateFocusBlur.class,
+
+                // if [tabIndex] is negative => treats Control as *wrapper* element, so there's no *:focus* => replace with synthetic *.focus*
+                (stateFocusBlur.class ?? ((stateFocusBlur.focus && ((props.tabIndex ?? 0) < 0)) ? 'focus' : null)),
             ]}
 
 
             // Control props:
             {...{
                 // accessibility:
-                tabIndex: props.tabIndex ?? 0,
+                tabIndex : props.tabIndex ?? 0,
             }}
         
 

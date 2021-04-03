@@ -205,14 +205,6 @@ export interface Props
 export default function EditableTextControl(props: Props) {
     const etctrlStyles       = styles.useStyles();
 
-
-
-    const htmlEditTextCtrls  = [
-        'input',
-        'textarea',
-    ];
-    const isHtmlEditTextCtrl = props.tag && htmlEditTextCtrls.includes(props.tag);
-
     
 
     return (
@@ -236,15 +228,6 @@ export default function EditableTextControl(props: Props) {
                 // additionals:
                 ...(props.classes ?? []),
             ]}
-
-
-            // EditableTextControl props:
-            {...(isHtmlEditTextCtrl ? {
-                // validations:
-                minLength : props.minLength,
-                maxLength : props.maxLength,
-                pattern   : props.pattern,
-            } : {})}
         />
     );
 }

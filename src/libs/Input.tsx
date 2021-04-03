@@ -5,16 +5,10 @@ import React                from 'react'        // base technology of our nodest
 import type {
     JssStyle,
 }                           from 'jss'          // ts defs support for jss
-import {
-    Prop,
-    PropEx,
-    Cust,
-}                           from './Css'        // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
 import * as stripOuts       from './strip-outs'
-import colors               from './colors'     // configurable colors & theming defs
 import {
     cssProps as ecssProps,
     cssDecls as ecssDecls,
@@ -24,12 +18,6 @@ import {
     EditableTextControlStylesBuilder,
 }                           from './EditableTextControl'
 import type * as EditableTextControls   from './EditableTextControl'
-import {
-    styles as contentStyles,
-}                           from './Content'
-import {
-    styles as iconStyles,
-}                           from './Icon'
 
 
 
@@ -127,6 +115,10 @@ export interface Props
     extends
         EditableTextControls.Props
 {
+    // essentials:
+    elmRef? : React.Ref<HTMLInputElement>
+
+
     // validations:
     min? : string | number
     max? : string | number
@@ -141,16 +133,50 @@ export default function Input(props: Props) {
 
     
 
+    const {
+        // essentials:
+        elmRef,
+
+
+        // accessibility:
+        tabIndex,
+        readOnly,
+
+
+        // values:
+        defaultValue,
+        value,
+        onChange,
+
+
+        // validations:
+        required,
+        minLength,
+        maxLength,
+        pattern,
+        min,
+        max,
+
+
+        // formats:
+        type,
+        placeholder,
+
+
+    ...otherProps}  = props;
+
     return (
         <EditableTextControl
             // default props:
-            {...{
-                tag : 'input', // default [tag]=input
-            }}
+            tag='span' // default [tag]=span
 
 
             // other props:
-            {...props}
+            {...otherProps}
+
+
+            // unchanged props:
+            tabIndex={-1}
 
 
             // classes:
@@ -162,41 +188,56 @@ export default function Input(props: Props) {
                 // additionals:
                 ...(props.classes ?? []),
             ]}
-        />
+        >
+            <input
+                // essentials:
+                ref={elmRef}
+
+
+                // accessibility:
+                disabled={props.enabled === false}
+                tabIndex={tabIndex}
+                readOnly={readOnly}
+
+
+                // values:
+                defaultValue={defaultValue}
+                value={value}
+             // onChange={onChange} // bubble to parent, let's the parent handle the onChange
+
+
+                // validations:
+                required={required}
+                minLength={minLength}
+                maxLength={maxLength}
+                pattern={pattern}
+                min={min}
+                max={max}
+
+
+                // formats:
+                type={type}
+                placeholder={placeholder}
+
+
+                // events:
+                // *forward* non bubbling event to parent
+                onFocus={(e) => {
+                    e.currentTarget.parentElement?.dispatchEvent(new FocusEvent('focus'));
+
+
+                    // forwards:
+                    props.onFocus?.(e);
+                }}
+                onBlur={(e) => {
+                    e.currentTarget.parentElement?.dispatchEvent(new FocusEvent('blur'));
+
+
+                    // forwards:
+                    props.onBlur?.(e);
+                }}
+                // onAnimationEnd // bubble to parent, let's the parent handle the onAnimationEnd
+            />
+        </EditableTextControl>
     );
-
-    /*
-    <input
-        // accessibility:
-        disabled={props.enabled===false}
-        tabIndex={props.tabIndex}
-        readOnly={props.readOnly}
-
-
-        // values:
-        defaultValue={props.defaultValue}
-        value={props.value}
-        // onChange={props.onChange}
-        
-
-        // validations:
-        required={props.required}
-        minLength={props.minLength}
-        maxLength={props.maxLength}
-        pattern={props.pattern}
-        min={props.min}
-        max={props.max}
-        // ref={nativeValidator.handleInit}
-
-
-        // formats:
-        type={props.type ?? 'text'}
-        placeholder={props.placeholder}
-
-
-        // events:
-        onFocus={stateFocusBlur.handleFocus}
-        onBlur={stateFocusBlur.handleBlur}
-    />
-    */
 }

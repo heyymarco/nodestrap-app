@@ -385,7 +385,8 @@ export function useNativeValidator(customValidator?: CustomValidatorHandler) {
 
 
     const handleVals = (target: EditableControlElement) => {
-        isValid = (customValidator ? customValidator(target.validity, target.value) : target.validity.valid);
+        const validity = target.validity;
+        isValid = (customValidator ? customValidator(validity, target.value) : validity.valid);
         setIsValid(isValid);
     }
     const handleInit = (target: EditableControlElement | null) => {
@@ -583,7 +584,6 @@ export default function EditableControl(props: Props) {
         'select',
         'textarea',
     ];
-    const isHtmlEditCtrl  = props.tag && htmlEditCtrls.includes(props.tag);
 
 
     
@@ -609,28 +609,38 @@ export default function EditableControl(props: Props) {
 
 
             // EditableControl props:
-            {...(isHtmlEditCtrl ? {
-                // accessibility:
-                readOnly     : props.readOnly,
+            elmRef={(elm) => {
+                if (elm) {
+                    if ((elm as any).validity) {
+                        nativeValidator.handleInit(elm as EditableControlElement);
+                    }
+                    else {
+                        const firstChild = elm.querySelector(htmlEditCtrls.join(','));
+                        if (firstChild) nativeValidator.handleInit(firstChild as EditableControlElement);
+                    } // if
+                } // if
 
 
-                // values:
-                defaultValue : props.defaultValue,
-                value        : props.value,
-                onChange     : (e: React.ChangeEvent<EditableControlElement>) => {
-                    // validations:
-                    nativeValidator.handleChange(e);
-    
-
-                    // forwards:
-                    props.onChange?.(e);
-                },
-
-
+                // forwards:
+                const elmRef = props.elmRef;
+                if (elmRef) {
+                    if (typeof(elmRef) === 'function') {
+                        elmRef(elm);
+                    }
+                    else {
+                        // @ts-ignore
+                        elmRef.current = elm;
+                    } // if
+                } // if
+            }}
+            onChange={(e: React.ChangeEvent<EditableControlElement>) => { // watch change event from current element or bubbling from children
                 // validations:
-                required     : props.required,
-                ref          : nativeValidator.handleInit,
-            } : {})}
+                nativeValidator.handleChange(e);
+
+
+                // forwards:
+                props.onChange?.(e);
+            }}
         
 
             // events:

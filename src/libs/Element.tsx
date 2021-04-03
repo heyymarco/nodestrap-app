@@ -833,9 +833,11 @@ export interface Props
         VariantGradient,
         React.DOMAttributes<HTMLElement>
 {
-    tag?     : keyof JSX.IntrinsicElements
-    classes? : (string|null)[]
-    style?   : React.CSSProperties
+    // essentials:
+    tag?       : keyof JSX.IntrinsicElements
+    classes?   : (string|null)[]
+    style?     : React.CSSProperties
+    elmRef?    : React.Ref<HTMLElement>
 }
 export default function Element(props: Props) {
     const elmStyles    = styles.useStyles();
@@ -849,7 +851,10 @@ export default function Element(props: Props) {
 
 
     const htmlProps = useMemo(() => {
-        const htmlProps = {};
+        const htmlProps = {
+            ref : props.elmRef as any,
+        };
+
         for (const name in props) {
             if (isHtmlProp(name)) {
                 (htmlProps as any)[name] = (props as any)[name];

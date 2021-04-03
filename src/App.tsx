@@ -17,7 +17,7 @@ import EditableControl from './libs/EditableControl';
 import EditableTextControl from './libs/EditableTextControl';
 
 import Button, * as Buttons from './libs/Button';
-// import Input from './libs/Input';
+import Input from './libs/Input';
 
 import Icon   from './libs/Icon';
 
@@ -176,7 +176,7 @@ function App() {
 				>
                         test
                 </EditableTextControl>
-                {/* <Input
+                <Input
 					theme={theme} size={size} enableGradient={enableGrad}
 					//@ts-ignore
 					outlined={outlined}
@@ -187,7 +187,10 @@ function App() {
 
 					enableValidation={enableVal}
 					isValid={isValid}
-				/> */}
+
+					type='email'
+					defaultValue='yourmail'
+				/>
 				<hr style={{flexBasis: '100%'}} />
 				<Icon
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -297,7 +300,7 @@ function App() {
 					</label>
 				</p>
 				<p>
-					Focus:
+					is valid:
 					{
 						isValids.map(val =>
 							<label key={`${val}`}>
