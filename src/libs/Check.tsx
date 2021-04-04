@@ -499,10 +499,47 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
         [labelElm] : buttonStyles.basicStyle(),
     }}
+    public switchStyle(): JssStyle { return {
+        //#region specific states
+        extend: [
+            //#region check, clear
+            { // [checking, checked, clearing, cleared => all states]
+                [this.decl(this._filterCheckClearIn)]  : cssProps.switchFilterCheck,
+                [this.decl(this._filterCheckClearOut)] : cssProps.switchFilterClear,
+
+                [this.decl(this._switchTransfIn)]      : cssProps.switchTransfCheck,
+                [this.decl(this._switchTransfOut)]     : cssProps.switchTransfClear,
+            },
+            this.stateCheck({ // [checking, checked]
+                [this.decl(this._animCheckClear)]      : cssProps.switchAnimCheck,
+            }),
+            this.stateNotCheck({ // [not-checking, not-checked] => [clearing, cleared]
+                [this.decl(this._animCheckClear)]      : cssProps.switchAnimClear,
+            }),
+            //#endregion check, clear
+        ] as JssStyle,
+        //#endregion specific states
+
+
+
+        // children:
+        [chkElm]: {
+            width        : '2em', // make the width twice the height
+            borderRadius : cssProps.switchBorderRadius,
+
+
+
+            // children:
+            [iconElm]: {
+                [iconStyles.decl(iconStyles._img)] : cssProps.switchImg,
+            },
+        },
+    }}
     protected styles(): Styles<'main'> {
         const styles = super.styles();
         Object.assign(styles.main, {
-            '&.btn' : this.buttonStyle(),
+            '&.btn'    : this.buttonStyle(),
+            '&.switch' : this.switchStyle(),
         });
         return styles;
     }
