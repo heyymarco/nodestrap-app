@@ -75,6 +75,10 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     protected stateNotDisable(content: JssStyle): JssStyle { return {
         '&:not(.disable):not(.disabled):not(:disabled)': content,
     }}
+    protected stateNotDisabled(content: JssStyle): JssStyle { return {
+        // not fully disabled
+        '&:not(.disabled):not(:disabled),&:not(.disabled):disabled.disable': content,
+    }}
     protected stateEnableDisable(content: JssStyle): JssStyle { return {
         '&.enable,&.disable,&.disabled,&:disabled': content,
     }}
@@ -140,16 +144,15 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
 
         //#region re-arrange the animFn at different states
-        '&.active,&.actived': { // if activated programmatically (not by user input)
-            '&:not(.disabled):not(:disabled),&:not(.disabled):disabled.disable': { // if ctrl was not fully disabled
+        '&.active,&.actived': // if activated programmatically (not by user input)
+            this.stateNotDisabled({ // if ctrl was not fully disabled
                 // define an *animations* func:
                 [this.decl(this._animFn)]: [
                     ecssProps.anim,
                     this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
                     this.ref(this._animEnableDisable), // 4th : ctrl enable/disable
                 ],
-            },
-        },
+            }),
 
         // define an *animations* func:
         [this.decl(this._animFn)]: [

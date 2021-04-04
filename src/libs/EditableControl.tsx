@@ -234,8 +234,8 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
 
 
         //#region re-arrange the animFn at different states
-        '&.active,&.actived': { // if activated programmatically (not by user input)
-            '&:not(.disabled):not(:disabled),&:not(.disabled):disabled.disable': { // if ctrl was not fully disabled
+        '&.active,&.actived': // if activated programmatically (not by user input)
+            this.stateNotDisabled({ // if ctrl was not fully disabled
                 ...this.stateValid({
                     // define an *animations* func:
                     [this.decl(this._animFn)]: [
@@ -258,8 +258,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
                     this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
                     this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
                 ],
-            },
-        },
+            }),
 
         ...this.stateValid({
             // define an *animations* func:

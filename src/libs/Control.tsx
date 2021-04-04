@@ -196,8 +196,8 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
         
         //#region re-arrange the animFn at different states
-        '&.active,&.actived': { // if activated programmatically (not by user input)
-            '&:not(.disabled):not(:disabled),&:not(.disabled):disabled.disable': { // if ctrl was not fully disabled
+        '&.active,&.actived': // if activated programmatically (not by user input)
+            this.stateNotDisabled({ // if ctrl was not fully disabled
                 // define an *animations* func:
                 [this.decl(this._animFn)]: [
                     ecssProps.anim,
@@ -206,8 +206,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
                     this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
                     this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
                 ],
-            },
-        },
+            }),
 
         // define an *animations* func:
         [this.decl(this._animFn)]: [

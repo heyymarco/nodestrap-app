@@ -7,6 +7,7 @@ import
 // jss   (builds css  using javascript):
 import type {
     JssStyle,
+    Styles,
 }                           from 'jss'          // ts defs support for jss
 import {
     PropEx,
@@ -36,6 +37,9 @@ import type * as EditableControls   from './EditableControl'
 import {
     styles as iconStyles,
 }                           from './Icon'
+import {
+    styles as buttonStyles,
+}                           from './Button'
 
 
 
@@ -175,6 +179,11 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         // customize the *themed* props for the label:
         [this.decl(this._colorLabelTh)]: (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
     }}
+    public outlined(): JssStyle {
+        return this.stateNotCheck(
+            super.outlined()
+        );
+    }
 
 
 
@@ -221,6 +230,43 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             this._colorLabelTh,   // second priority
             this._colorLabelIf    // third  priority
         ),
+
+
+
+        //#region re-arrange the animFn at different states
+        extend: [
+            this.stateCheck(
+                this.stateNotDisabled({ // if ctrl was not fully disabled
+                    ...this.stateValid({
+                        [labelElm]: {
+                            // define an *animations* func:
+                            [this.decl(this._animFn)]: [
+                                ecssProps.anim,
+                                this.ref(this._animInvUninv),
+                                this.ref(this._animValUnval),
+                                this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
+                                this.ref(this._animHoverLeave),    // 2nd : cursor leaved
+                                this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
+                                this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
+                            ],
+                        },
+                    }),
+                    [labelElm]: {
+                        // define an *animations* func:
+                        [this.decl(this._animFn)]: [
+                            ecssProps.anim,
+                            this.ref(this._animValUnval),
+                            this.ref(this._animInvUninv),
+                            this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
+                            this.ref(this._animHoverLeave),    // 2nd : cursor leaved
+                            this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
+                            this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
+                        ],
+                    },
+                })
+            ),
+        ] as JssStyle,
+        //#endregion re-arrange the animFn at different states
     }}
     protected labelThemesIf(): JssStyle { return {
         // define a *default* color theme for the label:
@@ -274,30 +320,6 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
                 },
             },
             //#endregion check, clear => label active, passive
-    
-    
-    
-            //#region focus, blur => label focus, blur
-            this.stateBlurring({
-                [labelElm]: {
-                    [this.decl(this._boxShadowFocusBlur)]     : this.ref(this._boxShadowFocusFn),
-                    [this.decl(this._animFocusBlur)]          : ccssProps.animBlur,
-                },
-            }),
-            this.stateNotDisable({extend: [
-                // state focus are possible when enabled
-                this.stateFocus({
-                    [labelElm]: {
-                        [this.decl(this._boxShadowFocusBlur)] : this.ref(this._boxShadowFocusFn),
-                        [this.decl(this._animFocusBlur)]      : ccssProps.animFocus,
-                        
-                        extend: [
-                            this.applyStateActive(),
-                        ] as JssStyle,
-                    },
-                }),
-            ] as JssStyle}),
-            //#endregion focus, blur => label focus, blur
         ] as JssStyle,
         //#endregion specific states
     }}
@@ -348,7 +370,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         // accessibility:
         cursor             : 'inherit', // force   inherit
     }}
-    protected checkStyle(): JssStyle { return {
+    protected basicCheckStyle(): JssStyle { return {
         extend: [
             super.basicStyle(),                // copy basicStyle from base
             this.inheritStyle(),               // force some props inherited from parent
@@ -415,7 +437,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             anim : this.ref(this._animIconFn),
         },
     }}
-    protected labelStyle(): JssStyle { return {
+    protected basicLabelStyle(): JssStyle { return {
         // apply *non conditional* fn props:
         color : this.ref(this._colorLabelFn),
     }}
@@ -456,9 +478,34 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     
     
     
-        [chkElm]   : this.checkStyle(),
-        [labelElm] : this.labelStyle(),
+        // children:
+        [chkElm]   : this.basicCheckStyle(),
+        [labelElm] : this.basicLabelStyle(),
     }}
+    public buttonStyle(): JssStyle { return {
+        // layout:
+        verticalAlign : 'baseline',
+
+
+
+        // children:
+
+        [chkElm]   : {
+            // hides the checkbox while still preserving animation & focus working
+            opacity: 0,
+            width: 0, height: 0, border: 0,
+            marginInlineEnd: 0,
+        },
+
+        [labelElm] : buttonStyles.basicStyle(),
+    }}
+    protected styles(): Styles<'main'> {
+        const styles = super.styles();
+        Object.assign(styles.main, {
+            '&.btn' : this.buttonStyle(),
+        });
+        return styles;
+    }
 }
 export const styles = new CheckStylesBuilder();
 
@@ -642,7 +689,7 @@ export function useStateCheckClear(props: Props) {
     };
 }
 
-export type ChkStyle = 'switch' | 'btn' // might be added more styles in the future
+export type ChkStyle = 'btn' | 'switch' // might be added more styles in the future
 export interface VariantCheck {
     chkStyle?: ChkStyle
 }
@@ -689,7 +736,7 @@ export default function Check(props: Props) {
 
 
 
-    const isBtnStyle  = props.chkStyle?.startsWith('btn');
+    const isBtnStyle  = props.chkStyle?.startsWith('btn') ?? false;
 
     
 
