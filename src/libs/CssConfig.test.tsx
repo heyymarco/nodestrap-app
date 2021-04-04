@@ -241,7 +241,7 @@ test('with prefix + keyframes + ref + array', () => {
 });
 
 test('mutation with prefix + keyframes + ref + array', () => {
-    const[css, genProps, genKeyframes] = testTransf({
+    const [css] = testTransf({
         red       : '#ff000a',
         green     : '#00ff0a',
         blue      : '#a000ff',

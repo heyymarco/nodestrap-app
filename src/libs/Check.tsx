@@ -27,9 +27,6 @@ import {
     cssProps as icssProps,
 }                           from './Indicator'
 import {
-    cssProps as ccssProps,
-}                           from './Control'
-import {
     default  as EditableControl,
     EditableControlStylesBuilder,
 }                           from './EditableControl'
