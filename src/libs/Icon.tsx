@@ -94,7 +94,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         height        : cssProps.size,
         width         : 'min-content',
     }}
-    public fontStyle(): JssStyle { return {
+    public basicFontStyle(): JssStyle { return {
         // colors:
         backg         : 'transparent',           // setup backg color
         color         : this.ref(this._colorFn), // setup icon's color
@@ -142,7 +142,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         //#endregion browser supports
         //#endregion fonts
     }}
-    public imgStyle(): JssStyle { return {
+    public basicImgStyle(): JssStyle { return {
         // colors:
         backg         : this.ref(this._colorFn), // setup icon's color
 
@@ -177,11 +177,28 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         //#endregion image masking
     }}
 
+    public imgStyle(img: Cust.Ref, color?: Cust.Ref): JssStyle { return {
+        extend: [
+            this.basicStyle(),
+            this.basicImgStyle(),
+        ] as JssStyle,
+
+        verticalAlign : null, // delete
+
+
+
+        // setup icon's image:
+        [this.decl(this._img)]     : img,
+
+        // setup icon's color:
+        [this.decl(this._colorFn)] : (color && (color !== this.decl(this._colorFn))) ? color : null,
+    }}
+
     protected styles(): Styles<'main'> {
         const styles = super.styles();
         Object.assign(styles.main, {
-            '&.font' : this.fontStyle(),
-            '&.img'  : this.imgStyle(),
+            '&.font' : this.basicFontStyle(),
+            '&.img'  : this.basicImgStyle(),
         });
         return styles;
     }

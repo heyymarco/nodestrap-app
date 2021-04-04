@@ -221,22 +221,8 @@ export default function Input(props: Props) {
 
 
                 // events:
-                // *forward* non bubbling event to parent
-                onFocus={(e) => {
-                    e.currentTarget.parentElement?.dispatchEvent(new FocusEvent('focus'));
-
-
-                    // forwards:
-                    props.onFocus?.(e);
-                }}
-                onBlur={(e) => {
-                    e.currentTarget.parentElement?.dispatchEvent(new FocusEvent('blur'));
-
-
-                    // forwards:
-                    props.onBlur?.(e);
-                }}
-                // onAnimationEnd // bubble to parent, let's the parent handle the onAnimationEnd
+                // onFocus, onBlur // bubble to parent (unlike on native DOM that doesn't bubble, on react *do* bubbling)
+                // onAnimationEnd  // bubble to parent, let's the parent handle the onAnimationEnd
             />
         </EditableTextControl>
     );

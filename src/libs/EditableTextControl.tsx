@@ -129,21 +129,12 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
         [iconElm]: {
-            //#region apply img-icon
             extend: [
-                iconStyles.basicStyle(),
-                iconStyles.imgStyle(),
+                iconStyles.imgStyle( // apply icon
+                    /*img   :*/ this.ref(this._iconValInv),
+                    /*color :*/ this.ref(this._colorOutlinedFn)
+                ),
             ] as JssStyle,
-    
-            verticalAlign : null, // delete
-
-
-            // setup icon's image:
-            [iconStyles.decl(iconStyles._img)]     : this.ref(this._iconValInv),
-
-            // setup icon's color:
-            [iconStyles.decl(iconStyles._colorFn)] : this.ref(this._colorOutlinedFn),
-            //#endregion apply img-icon
     
 
 
@@ -152,7 +143,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
             display : 'inline-block',
     
             // sizes:
-            height                 : cssProps.iconSize,
+            height                 :            cssProps.iconSize,
             width                  : [['calc(', cssProps.iconSize, '* 1.25)']],  // make sure the icon's image ratio is 1.25 or less
             marginInlineStart      : [['calc(', cssProps.iconSize, '* -1.25)']], // sizeless (ghost): cancel-out icon's width with negative margin, so it doen't take up space
 
