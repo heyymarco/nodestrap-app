@@ -1,13 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import reportWebVitals from './reportWebVitals';
+
 import App from './App';
 import CheckApp from './CheckApp';
-import reportWebVitals from './reportWebVitals';
+import ListGroupApp from './ListGroupApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <CheckApp />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

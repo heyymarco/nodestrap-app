@@ -147,7 +147,9 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     }
     protected applyStateActive(): JssStyle { return {
         // apply an *active* color theme:
-        extend: super.applyStateActive(), // copy active theme from base
+        extend: [
+            super.applyStateActive(), // copy active theme from base
+        ] as JssStyle,
         
         [this.decl(this._boxShadowFocusIf)] : colors.primaryTransp,
     }}
@@ -170,16 +172,20 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         // on Control the outlined only be applied
         // * if not-actived
         // * and if (not-hover, not-focus) -or- disabled
-        extend: this.stateNotActive({
-            '&:not(:hover):not(:focus), &:disabled,&.disabled': super.outlined(),
-        }),
+        extend: [
+            this.stateNotActive({
+                '&:not(:hover):not(.focus):not(:focus), &:disabled,&.disabled': super.outlined(),
+            }),
+        ] as JssStyle,
     }}
 
 
 
     // states:
     protected fnProps(): JssStyle { return {
-        extend: super.fnProps(), // copy functional props from base
+        extend: [
+            super.fnProps(), // copy functional props from base
+        ] as JssStyle,
 
 
 
@@ -219,14 +225,16 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         //#endregion re-arrange the animFn at different states
     }}
     protected themesIf(): JssStyle { return {
-        extend: super.themesIf(), // copy themes from base
+        extend: [
+            super.themesIf(), // copy themes from base
+        ] as JssStyle,
 
 
 
         // define a *default* color theme:
-        [this.decl(this._colorIf)]          : colors.secondaryText,
+        [this.decl(this._foregIf)]          : colors.secondaryText,
         [this.decl(this._backgIf)]          : this.solidBackg(colors.secondary),
-        [this.decl(this._colorOutlinedIf)]  : colors.secondary,
+        [this.decl(this._foregOutlinedIf)]  : colors.secondary,
         [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
     }}
     protected states(): JssStyle { return {

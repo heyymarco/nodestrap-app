@@ -41,7 +41,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
     // themes:
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
-        [this.decl(this._colorTh)] : themeColor,
+        [this.decl(this._foregTh)] : themeColor,
     }}
 
     protected sizeOptions(): string[] {
@@ -64,14 +64,14 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
         //#region delete *unecessary* functional props from base:
         [this.decl(this._backgFn)]         : null,
-        [this.decl(this._colorOutlinedFn)] : null,
+        [this.decl(this._foregOutlinedFn)] : null,
         [this.decl(this._backgOutlinedFn)] : null,
         [this.decl(this._animFn)]          : null,
         //#endregion delete *unecessary* functional props from base:
     }}
     protected themesIf(): JssStyle { return {
         // define a *default* color theme:
-        [this.decl(this._colorIf)] : cssProps.color,
+        [this.decl(this._foregIf)] : cssProps.color,
     }}
 
 
@@ -97,7 +97,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
     public basicFontStyle(): JssStyle { return {
         // colors:
         backg         : 'transparent',           // setup backg color
-        color         : this.ref(this._colorFn), // setup icon's color
+        color         : this.ref(this._foregFn), // setup icon's color
 
 
         // sizes:
@@ -144,7 +144,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
     }}
     public basicImgStyle(): JssStyle { return {
         // colors:
-        backg         : this.ref(this._colorFn), // setup icon's color
+        backg         : this.ref(this._foregFn), // setup icon's color
 
 
         // sizes:
@@ -191,7 +191,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         [this.decl(this._img)]     : img,
 
         // setup icon's color:
-        [this.decl(this._colorFn)] : (color && (color !== this.decl(this._colorFn))) ? color : null,
+        [this.decl(this._foregFn)] : (color && (color !== this.decl(this._foregFn))) ? color : null,
     }}
 
     protected styles(): Styles<'main'> {

@@ -35,12 +35,12 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
     /**
      * actived themed foreground color.
      */
-    protected readonly _colorActiveTh = 'colorActiveTh'
+    protected readonly _foregActiveTh = 'foregActiveTh'
 
     /**
      * actived functional foreground color.
      */
-    public    readonly _colorActiveFn = 'colorActiveFn'
+    public    readonly _foregActiveFn = 'foregActiveFn'
 
     /**
      * actived themed background.
@@ -56,31 +56,23 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
 
 
     // themes:
-    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
-        // create themes from zero, not copy from base's themes
-        
-
-
+    public contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props:
     
-        [this.decl(this._colorTh)]         :                 (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],  // light on dark backg | dark on light backg with slightly color from background
+        [this.decl(this._foregTh)]         :                 (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],  // light on dark backg | dark on light backg with slightly color from background
         [this.decl(this._backgTh)]         : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]), // thin opacity with slightly color from background
-        [this.decl(this._colorOutlinedTh)] : themeColor,
+        [this.decl(this._foregOutlinedTh)] : themeColor,
 
-        [this.decl(this._colorActiveTh)]   : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
+        [this.decl(this._foregActiveTh)]   : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
         [this.decl(this._backgActiveTh)]   : this.solidBackg(themeColor),
     }}
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
-        extend: super.sizeOf(size, Size, sizeProp), // copy sizes from base
-
-
-
+    public contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrite the global props with the *prop{Size}*:
 
         [cssDecls.paddingX] : (cssProps as DictionaryOf<typeof cssProps>)[`paddingX${Size}`],
         [cssDecls.paddingY] : (cssProps as DictionaryOf<typeof cssProps>)[`paddingY${Size}`],
     }}
-    public outlined(): JssStyle {
+    public contentOutlined(): JssStyle {
         // unlike on Indicator/Element,
         // on Control the outlined only be applied
         // * if not-actived
@@ -89,18 +81,35 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
         );
     }
 
+    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+        extend: [
+            // create themes from zero, not copy from base's themes
+            // super.themeOf(theme, Theme, themeProp, themeColor),
+
+            this.contentThemeOf(theme, Theme, themeProp, themeColor),
+        ] as JssStyle,
+    }}
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+        extend: [
+            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+
+            this.contentSizeOf(size, Size, sizeProp),
+        ] as JssStyle,
+    }}
+    public outlined(): JssStyle { return {
+        extend: [
+            this.contentOutlined(),
+        ] as JssStyle,
+    }}
+
 
 
     // states:
-    protected fnProps(): JssStyle { return {
-        extend: super.fnProps(),
-
-
-
+    public contentFnProps(): JssStyle { return {
         // define an actived *foreground* color func:
-        [this.decl(this._colorActiveFn)] : this.ref(
-            this._colorActiveTh, // second priority
-            this._colorIf,       // third  priority
+        [this.decl(this._foregActiveFn)] : this.ref(
+            this._foregActiveTh, // second priority
+            this._foregIf,       // third  priority
         ),
 
         // define an actived *backgrounds* func:
@@ -121,13 +130,10 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
             ecssProps.backg,
         ],
     }}
-    protected states(): JssStyle { return {
+    public contentThemesIf(): JssStyle { return {}; }
+    public contentStates(): JssStyle { return {
         //#region specific states
         extend: [
-            super.states(),
-
-
-
             this.stateActivePassive({ // [activating, actived, passivating]
                 [this.decl(this._filterActivePassive)] : cssProps.filterActive, // override Indicator's filter active
             }),
@@ -139,6 +145,21 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
             }),
         ] as JssStyle,
         //#endregion specific states
+    }}
+
+    protected fnProps(): JssStyle { return {
+        extend: [
+            super.fnProps(), // copy functional props from base
+
+            this.contentFnProps(),
+        ] as JssStyle,
+    }}
+    protected states(): JssStyle { return {
+        extend: [
+            super.states(), // copy states from base
+
+            this.contentStates(),
+        ] as JssStyle,
     }}
 
 
@@ -178,7 +199,7 @@ const cssConfig = new CssConfig(() => {
             ]],
             //#endregion copy from Indicator
 
-            color: styles.ref(styles._colorFn),
+            color: styles.ref(styles._foregFn),
             backg: styles.ref(styles._backgFn),
         },
         to: {
@@ -191,7 +212,7 @@ const cssConfig = new CssConfig(() => {
             ]],
             //#endregion copy from Indicator
 
-            color: styles.ref(styles._colorActiveFn),
+            color: styles.ref(styles._foregActiveFn),
             backg: styles.ref(styles._backgActiveFn),
         },
     };

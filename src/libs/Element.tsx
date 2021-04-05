@@ -455,22 +455,22 @@ export class ElementStylesBuilder extends StylesBuilder {
     /**
      * themed foreground color.
      */
-    protected readonly _colorTh           = 'colorTh'
+    protected readonly _foregTh           = 'foregTh'
 
     /**
      * conditional foreground color.
      */
-    protected readonly _colorIfIf         = 'colorIfIf'
+    protected readonly _foregIfIf         = 'foregIfIf'
 
     /**
      * conditional unthemed foreground color.
      */
-    protected readonly _colorIf           = 'colorIf'
+    protected readonly _foregIf           = 'foregIf'
 
     /**
      * functional foreground color.
      */
-    public    readonly _colorFn           = 'colorFn'
+    public    readonly _foregFn           = 'foregFn'
 
     
     /**
@@ -507,22 +507,22 @@ export class ElementStylesBuilder extends StylesBuilder {
     /**
      * themed foreground color - at outlined state.
      */
-    protected readonly _colorOutlinedTh   = 'colorOutlinedTh'
+    protected readonly _foregOutlinedTh   = 'foregOutlinedTh'
 
     /**
      * conditional foreground color - at outlined state.
      */
-    protected readonly _colorOutlinedIfIf = 'colorOutlinedIfIf'
+    protected readonly _foregOutlinedIfIf = 'foregOutlinedIfIf'
 
     /**
      * conditional unthemed foreground color - at outlined state.
      */
-    protected readonly _colorOutlinedIf   = 'colorOutlinedIf'
+    protected readonly _foregOutlinedIf   = 'foregOutlinedIf'
 
     /**
      * functional foreground color - at outlined state.
      */
-    public    readonly _colorOutlinedFn   = 'colorOutlinedFn'
+    public    readonly _foregOutlinedFn   = 'foregOutlinedFn'
 
 
     /**
@@ -543,9 +543,9 @@ export class ElementStylesBuilder extends StylesBuilder {
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props:
     
-        [this.decl(this._colorTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
+        [this.decl(this._foregTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
         [this.decl(this._backgTh)]         : this.solidBackg(themeColor),
-        [this.decl(this._colorOutlinedTh)] : themeColor,
+        [this.decl(this._foregOutlinedTh)] : themeColor,
     }}
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrite the global props with the *prop{Size}*:
@@ -562,9 +562,9 @@ export class ElementStylesBuilder extends StylesBuilder {
     }}
     public outlined(): JssStyle { return {
         // apply *outlined* fn props:
-        [this.decl(this._colorFn)] : this.ref(this._colorOutlinedFn),
+        [this.decl(this._foregFn)] : this.ref(this._foregOutlinedFn),
         [this.decl(this._backgFn)] : this.ref(this._backgOutlinedFn),
-        borderColor                : this.ref(this._colorOutlinedFn),
+        borderColor                : this.ref(this._foregOutlinedFn),
     }}
 
 
@@ -572,10 +572,10 @@ export class ElementStylesBuilder extends StylesBuilder {
     // states:
     protected fnProps(): JssStyle { return {
         // define a *foreground* color func:
-        [this.decl(this._colorFn)] : this.ref(
-            this._colorIfIf, // first  priority
-            this._colorTh,   // second priority
-            this._colorIf,   // third  priority
+        [this.decl(this._foregFn)] : this.ref(
+            this._foregIfIf, // first  priority
+            this._foregTh,   // second priority
+            this._foregIf,   // third  priority
         ),
     
         // define a *backgrounds* func:
@@ -600,10 +600,10 @@ export class ElementStylesBuilder extends StylesBuilder {
     
     
         // define a *foreground* color func - at *outlined* state:
-        [this.decl(this._colorOutlinedFn)] : this.ref(
-            this._colorOutlinedIfIf, // first  priority
-            this._colorOutlinedTh,   // second priority
-            this._colorOutlinedIf,   // third  priority
+        [this.decl(this._foregOutlinedFn)] : this.ref(
+            this._foregOutlinedIfIf, // first  priority
+            this._foregOutlinedTh,   // second priority
+            this._foregOutlinedIf,   // third  priority
         ),
     
         // define a *backgrounds* func - at *outlined* state:
@@ -621,9 +621,9 @@ export class ElementStylesBuilder extends StylesBuilder {
     }}
     protected themesIf(): JssStyle { return {
         // define a *default* color theme:
-        [this.decl(this._colorIf)]         : cssProps.color,
+        [this.decl(this._foregIf)]         : cssProps.color,
         [this.decl(this._backgIf)]         : this.ref(this._backgNone),
-        [this.decl(this._colorOutlinedIf)] : cssProps.color,
+        [this.decl(this._foregOutlinedIf)] : cssProps.color,
     }}
     protected states(): JssStyle { return {
         // define a *none* background:
@@ -641,7 +641,7 @@ export class ElementStylesBuilder extends StylesBuilder {
     
     
         // apply *non conditional* fn props:
-        color : this.ref(this._colorFn),
+        color : this.ref(this._foregFn),
         backg : this.ref(this._backgFn),
         anim  : this.ref(this._animFn),
     }}
@@ -826,27 +826,18 @@ const htmlPropList = [
 ];
 const isHtmlProp = (propName: string) => propName.startsWith('on') || propName.startsWith('aria-') || htmlPropList.includes(propName)
 
-export interface Props
+export interface GenericProps<TElement extends HTMLElement = HTMLElement>
     extends
-        VariantTheme,
-        VariantSize,
-        VariantGradient,
-        React.DOMAttributes<HTMLElement>
+        React.DOMAttributes<TElement>
 {
     // essentials:
-    tag?       : keyof JSX.IntrinsicElements
-    classes?   : (string|null)[]
-    style?     : React.CSSProperties
-    elmRef?    : React.Ref<HTMLElement>
+    tag?     : keyof JSX.IntrinsicElements
+    classes? : (string|null)[]
+    style?   : React.CSSProperties
+    elmRef?  : React.Ref<TElement>
 }
-export default function Element(props: Props) {
-    const elmStyles    = styles.useStyles();
-
-    // themes:
-    const variTheme    = useVariantTheme(props);
-    const variSize     = useVariantSize(props);
-    const variGradient = useVariantGradient(props);
-    const variOutlined = useVariantOutlined(props as VariantOutlined);
+export function GenericElement(props: GenericProps) {
+    const bscStyles    = styles.useStyles();
 
 
 
@@ -875,6 +866,49 @@ export default function Element(props: Props) {
             // classes:
             className={[
                 // main:
+                (props.classes ? null : bscStyles.main),
+
+
+                // additionals:
+                ...(props.classes ?? []),
+            ].filter((c) => !!c).join(' ')}
+        >
+            { props.children }
+        </Tag>
+    );
+};
+
+
+
+export interface Props
+    extends
+        GenericProps,
+        
+        VariantTheme,
+        VariantSize,
+        VariantGradient
+{
+}
+export default function Element(props: Props) {
+    const elmStyles    = styles.useStyles();
+
+    // themes:
+    const variTheme    = useVariantTheme(props);
+    const variSize     = useVariantSize(props);
+    const variGradient = useVariantGradient(props);
+    const variOutlined = useVariantOutlined(props as VariantOutlined);
+
+
+
+    return (
+        <GenericElement
+            // other props:
+            {...props}
+
+
+            // classes:
+            classes={[
+                // main:
                 (props.classes ? null : elmStyles.main),
 
 
@@ -887,9 +921,7 @@ export default function Element(props: Props) {
                 variSize.class,
                 variGradient.class,
                 variOutlined.class,
-            ].filter((c) => !!c).join(' ')}
-        >
-            { props.children }
-        </Tag>
+            ]}
+        />
     );
 };

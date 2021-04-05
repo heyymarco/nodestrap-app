@@ -58,38 +58,38 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     /**
      * themed foreground color for the label.
      */
-    protected readonly _colorLabelTh        = 'colorLabelTh'
+    protected readonly _foregLabelTh        = 'foregLabelTh'
 
     /**
      * conditional foreground color for the label.
      */
-    protected readonly _colorLabelIfIf      = 'colorLabelIfIf'
+    protected readonly _foregLabelIfIf      = 'foregLabelIfIf'
 
     /**
      * conditional unthemed foreground color for the label.
      */
-    protected readonly _colorLabelIf        = 'colorLabelIf'
+    protected readonly _foregLabelIf        = 'foregLabelIf'
 
     /**
      * functional foreground color for the label.
      */
-    public    readonly _colorLabelFn        = 'colorLabelFn'
+    public    readonly _foregLabelFn        = 'foregLabelFn'
 
     
     /**
      * active unthemed foreground color for the label.
      */
-    protected readonly _colorLabelIfAct     = 'colorLabelIfAct'
+    protected readonly _foregLabelIfAct     = 'foregLabelIfAct'
 
     /**
      * valid-state foreground color for the label.
      */
-    protected readonly _colorLabelIfVal     = 'colorLabelIfVal'
+    protected readonly _foregLabelIfVal     = 'foregLabelIfVal'
 
     /**
      * invalid-state foreground color for the label.
      */
-    protected readonly _colorLabelIfInv     = 'colorLabelIfInv'
+    protected readonly _foregLabelIfInv     = 'foregLabelIfInv'
 
 
 
@@ -143,7 +143,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
         
         // apply an *active* color theme for the label:
-        [this.decl(this._colorLabelIf)]   : this.ref(this._colorLabelIfAct),
+        [this.decl(this._foregLabelIf)]   : this.ref(this._foregLabelIfAct),
     }}
     protected applyStateValid(): JssStyle { return {
         // apply a *valid* color theme:
@@ -152,7 +152,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
         // apply a *valid* color theme for the label:
-        [this.decl(this._colorLabelIfIf)] : this.ref(this._colorLabelIfVal),
+        [this.decl(this._foregLabelIfIf)] : this.ref(this._foregLabelIfVal),
     }}
     protected applyStateInvalid(): JssStyle { return {
         // apply an *invalid* color theme:
@@ -161,26 +161,40 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
         // apply an *invalid* color theme for the label:
-        [this.decl(this._colorLabelIfIf)] : this.ref(this._colorLabelIfInv),
+        [this.decl(this._foregLabelIfIf)] : this.ref(this._foregLabelIfInv),
     }}
     //#endregion mixins
 
 
 
     // themes:
-    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
-        extend: super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
-
-
-
-        // customize the *themed* props for the label:
-        [this.decl(this._colorLabelTh)]: (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
-    }}
-    public outlined(): JssStyle {
+    protected checkThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {}; }
+    protected checkOutlined(): JssStyle {
         return this.stateNotCheck(
             super.outlined()
         );
     }
+
+    protected labelThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+        // customize the *themed* props for the label:
+        [this.decl(this._foregLabelTh)]: (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
+    }}
+    protected labelOutlined(): JssStyle  { return {}; }
+
+    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+        extend: [
+            super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
+
+            this.checkThemeOf(theme, Theme, themeProp, themeColor),
+            this.labelThemeOf(theme, Theme, themeProp, themeColor),
+        ] as JssStyle,
+    }}
+    public outlined(): JssStyle { return {
+        extend: [
+            this.checkOutlined(),
+            this.labelOutlined(),
+        ] as JssStyle,
+    }}
 
 
 
@@ -222,10 +236,10 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
     protected labelFnProps(): JssStyle { return {
         // define a *foreground* color func for the label:
-        [this.decl(this._colorLabelFn)] : this.ref(
-            this._colorLabelIfIf, // first  priority
-            this._colorLabelTh,   // second priority
-            this._colorLabelIf    // third  priority
+        [this.decl(this._foregLabelFn)] : this.ref(
+            this._foregLabelIfIf, // first  priority
+            this._foregLabelTh,   // second priority
+            this._foregLabelIf    // third  priority
         ),
 
 
@@ -267,26 +281,22 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     }}
     protected labelThemesIf(): JssStyle { return {
         // define a *default* color theme for the label:
-        [this.decl(this._colorLabelIf)]    : colors.secondaryCont,
+        [this.decl(this._foregLabelIf)]    : colors.secondaryCont,
 
         // define an *active* color theme for the label:
-        [this.decl(this._colorLabelIfAct)] : colors.primaryCont,
+        [this.decl(this._foregLabelIfAct)] : colors.primaryCont,
 
 
 
         // define a *valid* color theme for the label:
-        [this.decl(this._colorLabelIfVal)] : colors.successCont,
+        [this.decl(this._foregLabelIfVal)] : colors.successCont,
 
         // define an *invalid* color theme for the label:
-        [this.decl(this._colorLabelIfInv)] : colors.dangerCont,
+        [this.decl(this._foregLabelIfInv)] : colors.dangerCont,
     }}
     protected labelStates(): JssStyle { return {
         //#region specific states
         extend: [
-            super.states(), // copy states from base
-    
-    
-    
             //#region check, clear => label active, passive
             this.stateCheckClear({ // [checking, checked, clearing] => label [activating, actived, passivating]
                 [labelElm]: {
@@ -436,7 +446,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     }}
     protected basicLabelStyle(): JssStyle { return {
         // apply *non conditional* fn props:
-        color : this.ref(this._colorLabelFn),
+        color : this.ref(this._foregLabelFn),
     }}
     public basicStyle(): JssStyle { return {
         extend: [

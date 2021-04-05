@@ -37,7 +37,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     /**
      * valid-state foreground color.
      */
-    protected readonly _colorIfVal          = 'colorIfVal'
+    protected readonly _foregIfVal          = 'foregIfVal'
 
     /**
      * valid-state background color.
@@ -47,7 +47,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     /**
      * valid-state foreground color - at outlined state.
      */
-    protected readonly _colorOutlinedIfVal  = 'colorOutlinedIfVal'
+    protected readonly _foregOutlinedIfVal  = 'foregOutlinedIfVal'
 
     /**
      * valid-state focused box-shadow color.
@@ -58,7 +58,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     /**
      * invalid-state foreground color.
      */
-    protected readonly _colorIfInv          = 'colorIfInv'
+    protected readonly _foregIfInv          = 'foregIfInv'
 
     /**
      * invalid-state background color.
@@ -68,7 +68,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     /**
      * invalid-state foreground color - at outlined state.
      */
-    protected readonly _colorOutlinedIfInv  = 'colorOutlinedIfInv'
+    protected readonly _foregOutlinedIfInv  = 'foregOutlinedIfInv'
 
     /**
      * invalid-state focused box-shadow color.
@@ -145,16 +145,16 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     
     protected applyStateValid(): JssStyle { return {
         // apply a *valid* color theme:
-        [this.decl(this._colorIfIf)]          : this.ref(this._colorIfVal),
+        [this.decl(this._foregIfIf)]          : this.ref(this._foregIfVal),
         [this.decl(this._backgIfIf)]          : this.ref(this._backgIfVal),
-        [this.decl(this._colorOutlinedIfIf)]  : this.ref(this._colorOutlinedIfVal),
+        [this.decl(this._foregOutlinedIfIf)]  : this.ref(this._foregOutlinedIfVal),
         [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfVal),
     }}
     protected applyStateInvalid(): JssStyle { return {
         // apply an *invalid* color theme:
-        [this.decl(this._colorIfIf)]          : this.ref(this._colorIfInv),
+        [this.decl(this._foregIfIf)]          : this.ref(this._foregIfInv),
         [this.decl(this._backgIfIf)]          : this.ref(this._backgIfInv),
-        [this.decl(this._colorOutlinedIfIf)]  : this.ref(this._colorOutlinedIfInv),
+        [this.decl(this._foregOutlinedIfIf)]  : this.ref(this._foregOutlinedIfInv),
         [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfInv),
     }}
     //#endregion mixins
@@ -167,7 +167,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
 
 
     // states:
-    protected ValidationFnProps(): JssStyle { return {
+    public validationFnProps(): JssStyle { return {
         //#region re-arrange the animFn at different states
         ...this.stateValid({
             // define an *animations* func:
@@ -186,20 +186,20 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
         ],
         //#endregion re-arrange the animFn at different states
     }}
-    protected ValidationThemesIf(): JssStyle { return {
+    public validationThemesIf(): JssStyle { return {
         // define a *valid* color theme:
-        [this.decl(this._colorIfVal)]           : colors.successText,
+        [this.decl(this._foregIfVal)]           : colors.successText,
         [this.decl(this._backgIfVal)]           : this.solidBackg(colors.success),
-        [this.decl(this._colorOutlinedIfVal)]   : colors.success,
+        [this.decl(this._foregOutlinedIfVal)]   : colors.success,
         [this.decl(this._boxShadowFocusIfVal)]  : colors.successTransp,
 
         // define an *invalid* color theme:
-        [this.decl(this._colorIfInv)]           : colors.dangerText,
+        [this.decl(this._foregIfInv)]           : colors.dangerText,
         [this.decl(this._backgIfInv)]           : this.solidBackg(colors.danger),
-        [this.decl(this._colorOutlinedIfInv)]   : colors.danger,
+        [this.decl(this._foregOutlinedIfInv)]   : colors.danger,
         [this.decl(this._boxShadowFocusIfInv)]  : colors.dangerTransp,
     }}
-    protected ValidationStates(): JssStyle { return {
+    public validationStates(): JssStyle { return {
         //#region all initial states are none
         [this.decl(this._animValUnval)] : ecssProps.animNone,
         [this.decl(this._animInvUninv)] : ecssProps.animNone,
@@ -229,7 +229,9 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     }}
 
     protected fnProps(): JssStyle { return {
-        extend: super.fnProps(), // copy functional props from base
+        extend: [
+            super.fnProps(), // copy functional props from base
+        ] as JssStyle,
 
 
 
@@ -290,7 +292,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
 
 
 
-            this.ValidationThemesIf(), // copy themes from validation
+            this.validationThemesIf(), // copy themes from validation
         ] as JssStyle,
     }}
     protected states(): JssStyle { return {
@@ -299,7 +301,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
 
 
 
-            this.ValidationStates(), // copy states from validation
+            this.validationStates(), // copy states from validation
         ] as JssStyle,
     }}
 

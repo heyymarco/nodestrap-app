@@ -45,9 +45,13 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
     // themes:
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+        /*
+            Control: boxShadowFocusTh
+            Content: colorTh, backgTh, colorOutlinedTh, colorActiveTh,backgActiveTh 
+        */
         extend: [
-                    super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
-            contentStyles.themeOf(theme, Theme, themeProp, themeColor), // copy themes from Content
+                           super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
+            contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor), // copy themes from Content
         ] as JssStyle,
     }}
 
@@ -63,21 +67,21 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
         //#region overwrite base's themes with *softer* colors
         // define a *default* color theme:
-        [this.decl(this._colorIf)]    : colors.secondaryCont,
+        [this.decl(this._foregIf)]    : colors.secondaryCont,
         [this.decl(this._backgIf)]    : this.solidBackg(colors.secondaryThin),
 
         // define an *active* color theme:
-        [this.decl(this._colorIfAct)] : colors.primaryCont,
+        [this.decl(this._foregIfAct)] : colors.primaryCont,
         [this.decl(this._backgIfAct)] : this.solidBackg(colors.primaryThin),
 
 
 
         // define a *valid* color theme:
-        [this.decl(this._colorIfVal)] : colors.successCont,
+        [this.decl(this._foregIfVal)] : colors.successCont,
         [this.decl(this._backgIfVal)] : this.solidBackg(colors.successThin),
 
         // define an *invalid* color theme:
-        [this.decl(this._colorIfInv)] : colors.dangerCont,
+        [this.decl(this._foregIfInv)] : colors.dangerCont,
         [this.decl(this._backgIfInv)] : this.solidBackg(colors.dangerThin),
         //#endregion overwrite base's themes with *softer* colors
     }}
@@ -132,7 +136,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
             extend: [
                 iconStyles.imgStyle( // apply icon
                     /*img   :*/ this.ref(this._iconValInv),
-                    /*color :*/ this.ref(this._colorOutlinedFn)
+                    /*color :*/ this.ref(this._foregOutlinedFn)
                 ),
             ] as JssStyle,
     

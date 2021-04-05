@@ -31,7 +31,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     /**
      * active unthemed foreground color.
      */
-    protected readonly _colorIfAct          = 'colorIfAct'
+    protected readonly _foregIfAct          = 'foregIfAct'
 
     /**
      * active unthemed background color.
@@ -41,7 +41,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     /**
      * active unthemed foreground color - at outlined state.
      */
-    protected readonly _colorOutlinedIfAct  = 'colorOutlinedIfAct'
+    protected readonly _foregOutlinedIfAct  = 'foregOutlinedIfAct'
 
 
 
@@ -124,9 +124,9 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     }
     protected applyStateActive(): JssStyle { return {
         // apply an *active* color theme:
-        [this.decl(this._colorIf)]         : this.ref(this._colorIfAct),
+        [this.decl(this._foregIf)]         : this.ref(this._foregIfAct),
         [this.decl(this._backgIf)]         : this.ref(this._backgIfAct),
-        [this.decl(this._colorOutlinedIf)] : this.ref(this._colorOutlinedIfAct),
+        [this.decl(this._foregOutlinedIf)] : this.ref(this._foregOutlinedIfAct),
     }}
     //#endregion mixins
 
@@ -138,11 +138,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
 
     // states:
-    protected fnProps(): JssStyle { return {
-        extend: super.fnProps(), // copy functional props from base
-
-
-
+    public indicationFnProps(): JssStyle { return {
         //#region re-arrange the animFn at different states
         '&.active,&.actived': // if activated programmatically (not by user input)
             this.stateNotDisabled({ // if ctrl was not fully disabled
@@ -162,17 +158,13 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
         ],
         //#endregion re-arrange the animFn at different states
     }}
-    protected themesIf(): JssStyle { return {
-        extend: super.themesIf(), // copy themes from base
-
-
-
+    public indicationThemesIf(): JssStyle { return {
         // define an *active* color theme:
-        [this.decl(this._colorIfAct)]         : colors.primaryText,
+        [this.decl(this._foregIfAct)]         : colors.primaryText,
         [this.decl(this._backgIfAct)]         : this.solidBackg(colors.primary),
-        [this.decl(this._colorOutlinedIfAct)] : colors.primary,
+        [this.decl(this._foregOutlinedIfAct)] : colors.primary,
     }}
-    protected states(): JssStyle { return {
+    public indicationStates(): JssStyle { return {
         //#region all initial states are none
         [this.decl(this._filterEnableDisable)] : ecssProps.filterNone,
         [this.decl(this._animEnableDisable)]   : ecssProps.animNone,
@@ -187,10 +179,6 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
         //#region specific states
         extend: [
-            super.states(), // copy states from base
-    
-    
-    
             //#region enable, disable
             this.stateEnableDisable({ // [enabling, disabling, disabled]
                 [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
@@ -231,6 +219,28 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
             //#endregion active, passive
         ] as JssStyle,
         //#endregion specific states
+    }}
+
+    protected fnProps(): JssStyle { return {
+        extend: [
+            super.fnProps(), // copy functional props from base
+
+            this.indicationFnProps(),
+        ] as JssStyle,
+    }}
+    protected themesIf(): JssStyle { return {
+        extend: [
+            super.themesIf(), // copy themes from base
+
+            this.indicationThemesIf(),
+        ] as JssStyle,
+    }}
+    protected states(): JssStyle { return {
+        extend: [
+            super.states(), // copy states from base
+    
+            this.indicationStates(),
+        ] as JssStyle,
     }}
 
 
@@ -456,13 +466,18 @@ export interface ActionCtrl {
     isActionCtrl?: boolean
 }
 
-export interface Props
-    extends
-        Elements.Props
+export interface IndicationProps
 {
     // accessibility:
-    enabled?: boolean
-    active?:  boolean
+    enabled? : boolean
+    active?  : boolean
+}
+
+export interface Props
+    extends
+        Elements.Props,
+        IndicationProps
+{
 }
 export default function Indicator(props: Props & ActionCtrl) {
     const indiStyles   = styles.useStyles();
