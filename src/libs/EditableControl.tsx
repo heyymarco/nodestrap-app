@@ -45,6 +45,11 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     protected readonly _backgIfVal          = 'backgIfVal'
 
     /**
+     * valid-state border color.
+     */
+    protected readonly _borderIfVal         = 'borderIfVal'
+
+    /**
      * valid-state foreground color - at outlined state.
      */
     protected readonly _foregOutlinedIfVal  = 'foregOutlinedIfVal'
@@ -64,6 +69,11 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
      * invalid-state background color.
      */
     protected readonly _backgIfInv          = 'backgIfInv'
+
+    /**
+     * invalid-state border color.
+     */
+    protected readonly _borderIfInv         = 'borderIfInv'
 
     /**
      * invalid-state foreground color - at outlined state.
@@ -147,6 +157,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
         // apply a *valid* color theme:
         [this.decl(this._foregIfIf)]          : this.ref(this._foregIfVal),
         [this.decl(this._backgIfIf)]          : this.ref(this._backgIfVal),
+        [this.decl(this._borderIfIf)]         : this.ref(this._borderIfVal),
         [this.decl(this._foregOutlinedIfIf)]  : this.ref(this._foregOutlinedIfVal),
         [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfVal),
     }}
@@ -154,6 +165,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
         // apply an *invalid* color theme:
         [this.decl(this._foregIfIf)]          : this.ref(this._foregIfInv),
         [this.decl(this._backgIfIf)]          : this.ref(this._backgIfInv),
+        [this.decl(this._borderIfIf)]         : this.ref(this._borderIfInv),
         [this.decl(this._foregOutlinedIfIf)]  : this.ref(this._foregOutlinedIfInv),
         [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfInv),
     }}
@@ -190,12 +202,14 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
         // define a *valid* color theme:
         [this.decl(this._foregIfVal)]           : colors.successText,
         [this.decl(this._backgIfVal)]           : this.solidBackg(colors.success),
+        [this.decl(this._borderIfVal)]          : colors.successCont,
         [this.decl(this._foregOutlinedIfVal)]   : colors.success,
         [this.decl(this._boxShadowFocusIfVal)]  : colors.successTransp,
 
         // define an *invalid* color theme:
         [this.decl(this._foregIfInv)]           : colors.dangerText,
         [this.decl(this._backgIfInv)]           : this.solidBackg(colors.danger),
+        [this.decl(this._borderIfInv)]          : colors.dangerCont,
         [this.decl(this._foregOutlinedIfInv)]   : colors.danger,
         [this.decl(this._boxShadowFocusIfInv)]  : colors.dangerTransp,
     }}

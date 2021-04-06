@@ -66,7 +66,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
         //#region overwrite base's themes with *softer* colors
-        // define a *default* color theme:
+        // define a *secondary* color theme:
         [this.decl(this._foregIf)]    : colors.secondaryCont,
         [this.decl(this._backgIf)]    : this.solidBackg(colors.secondaryThin),
 

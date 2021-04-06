@@ -54,7 +54,8 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     public    readonly _animIconFn          = 'animIconFn'
 
 
-
+    
+    //#region foreground - label
     /**
      * themed foreground color for the label.
      */
@@ -90,6 +91,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
      * invalid-state foreground color for the label.
      */
     protected readonly _foregLabelIfInv     = 'foregLabelIfInv'
+    //#endregion foreground - label
 
 
 

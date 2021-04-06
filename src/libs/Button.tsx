@@ -106,6 +106,7 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         // re-define a *default* color theme:
         [this.decl(this._foregIf)]          : colors.primaryText,
         [this.decl(this._backgIf)]          : this.solidBackg(colors.primary),
+        [this.decl(this._borderIf)]         : colors.primaryCont,
         [this.decl(this._foregOutlinedIf)]  : colors.primary,
         [this.decl(this._boxShadowFocusIf)] : colors.primaryTransp,
         //#endregion link styles

@@ -39,6 +39,11 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     protected readonly _backgIfAct          = 'backgIfAct'
 
     /**
+     * active unthemed border color.
+     */
+    protected readonly _borderIfAct         = 'borderIfAct'
+
+    /**
      * active unthemed foreground color - at outlined state.
      */
     protected readonly _foregOutlinedIfAct  = 'foregOutlinedIfAct'
@@ -126,6 +131,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
         // apply an *active* color theme:
         [this.decl(this._foregIf)]         : this.ref(this._foregIfAct),
         [this.decl(this._backgIf)]         : this.ref(this._backgIfAct),
+        [this.decl(this._borderIf)]        : this.ref(this._borderIfAct),
         [this.decl(this._foregOutlinedIf)] : this.ref(this._foregOutlinedIfAct),
     }}
     //#endregion mixins
@@ -162,6 +168,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
         // define an *active* color theme:
         [this.decl(this._foregIfAct)]         : colors.primaryText,
         [this.decl(this._backgIfAct)]         : this.solidBackg(colors.primary),
+        [this.decl(this._borderIfAct)]        : colors.primaryCont,
         [this.decl(this._foregOutlinedIfAct)] : colors.primary,
     }}
     public indicationStates(): JssStyle { return {

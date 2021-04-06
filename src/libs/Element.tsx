@@ -81,6 +81,7 @@ const cssConfig = new CssConfig(() => {
         paddingXLg        : spacers.md,
         paddingYLg        : spacers.sm,
         border            : borders.default,
+        borderColor       : borders.color,
         borderRadius      : border.radiuses.md,
         borderRadiusSm    : border.radiuses.sm,
         borderRadiusLg    : border.radiuses.lg,
@@ -445,13 +446,14 @@ export class StylesBuilder {
      * @param color The color of the solid background to create.
      * @returns An object represents a solid background in css.
      */
-    public solidBackg(color: Cust.Ref, clip : Prop.BackgroundClip = 'border-box') {
+    public solidBackg(color: Cust.Ref, clip : Prop.BackgroundClip = 'padding-box') {
         return [[`linear-gradient(${color},${color})`, clip]];
     }
 }
 
 export class ElementStylesBuilder extends StylesBuilder {
     //#region scoped css props
+    //#region foreground
     /**
      * themed foreground color.
      */
@@ -471,8 +473,11 @@ export class ElementStylesBuilder extends StylesBuilder {
      * functional foreground color.
      */
     public    readonly _foregFn           = 'foregFn'
+    //#endregion foreground
 
     
+
+    //#region background
     /**
      * none background.
      */
@@ -502,8 +507,35 @@ export class ElementStylesBuilder extends StylesBuilder {
      * background gradient.
      */
     protected readonly _backgGradTg       = 'backgGradTg'
+    //#endregion background
 
 
+
+    //#region border
+    /**
+     * themed border color.
+     */
+    protected readonly _borderTh          = 'borderTh'
+
+    /**
+     * conditional border color.
+     */
+    protected readonly _borderIfIf        = 'borderIfIf'
+
+    /**
+     * conditional unthemed border color.
+     */
+    protected readonly _borderIf          = 'borderIf'
+
+    /**
+     * functional border color.
+     */
+    public    readonly _borderFn          = 'borderFn'
+    //#endregion border
+
+
+
+    //#region foreground - outlined
     /**
      * themed foreground color - at outlined state.
      */
@@ -523,12 +555,17 @@ export class ElementStylesBuilder extends StylesBuilder {
      * functional foreground color - at outlined state.
      */
     public    readonly _foregOutlinedFn   = 'foregOutlinedFn'
+    //#endregion foreground - outlined
 
 
+
+    //#region background - outlined
     /**
      * functional backgrounds - at outlined state.
      */
     public    readonly _backgOutlinedFn   = 'backgOutlinedFn'
+    //#endregion background - outlined
+
 
 
     /**
@@ -545,6 +582,7 @@ export class ElementStylesBuilder extends StylesBuilder {
     
         [this.decl(this._foregTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
         [this.decl(this._backgTh)]         : this.solidBackg(themeColor),
+        [this.decl(this._borderTh)]        : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
         [this.decl(this._foregOutlinedTh)] : themeColor,
     }}
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
@@ -596,6 +634,13 @@ export class ElementStylesBuilder extends StylesBuilder {
             // bottom layer:
             cssProps.backg,
         ],
+
+        // define a *border* color func:
+        [this.decl(this._borderFn)] : this.ref(
+            this._borderIfIf, // first  priority
+            this._borderTh,   // second priority
+            this._borderIf,   // third  priority
+        ),
     
     
     
@@ -623,6 +668,7 @@ export class ElementStylesBuilder extends StylesBuilder {
         // define a *default* color theme:
         [this.decl(this._foregIf)]         : cssProps.color,
         [this.decl(this._backgIf)]         : this.ref(this._backgNone),
+        [this.decl(this._borderIf)]        : cssProps.borderColor,
         [this.decl(this._foregOutlinedIf)] : cssProps.color,
     }}
     protected states(): JssStyle { return {
@@ -641,9 +687,10 @@ export class ElementStylesBuilder extends StylesBuilder {
     
     
         // apply *non conditional* fn props:
-        color : this.ref(this._foregFn),
-        backg : this.ref(this._backgFn),
-        anim  : this.ref(this._animFn),
+        color       : this.ref(this._foregFn),
+        backg       : this.ref(this._backgFn),
+        borderColor : this.ref(this._borderFn),
+        anim        : this.ref(this._animFn),
     }}
 }
 export const styles = new ElementStylesBuilder();

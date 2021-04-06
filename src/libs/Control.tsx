@@ -35,6 +35,7 @@ import type * as Indicators from './Indicator'
 
 export class ControlStylesBuilder extends IndicatorStylesBuilder {
     //#region scoped css props
+    //#region boxShadow-focus
     /**
      * focused themed box-shadow color.
      */
@@ -54,6 +55,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
      * focused functional box-shadow color.
      */
     public    readonly _boxShadowFocusFn   = 'boxShadowFocusFn'
+    //#endregion boxShadow-focus
 
 
     
@@ -231,9 +233,10 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
 
 
-        // define a *default* color theme:
+        // define a *secondary* color theme:
         [this.decl(this._foregIf)]          : colors.secondaryText,
         [this.decl(this._backgIf)]          : this.solidBackg(colors.secondary),
+        [this.decl(this._borderIf)]         : colors.secondaryCont,
         [this.decl(this._foregOutlinedIf)]  : colors.secondary,
         [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
     }}

@@ -32,6 +32,7 @@ import type * as Indicators from './Indicator'
 
 export class ContentStylesBuilder extends IndicatorStylesBuilder {
     //#region scoped css props
+    //#region foreground - active
     /**
      * actived themed foreground color.
      */
@@ -41,7 +42,11 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
      * actived functional foreground color.
      */
     public    readonly _foregActiveFn = 'foregActiveFn'
+    //#endregion foreground - active
 
+
+
+    //#region background - active
     /**
      * actived themed background.
      */
@@ -51,6 +56,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
      * actived functional backgrounds.
      */
     public    readonly _backgActiveFn = 'backgActiveFn'
+    //#endregion background - active
     //#endregion scoped css props
 
 
@@ -61,7 +67,6 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
     
         [this.decl(this._foregTh)]         :                 (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],  // light on dark backg | dark on light backg with slightly color from background
         [this.decl(this._backgTh)]         : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]), // thin opacity with slightly color from background
-        [this.decl(this._foregOutlinedTh)] : themeColor,
 
         [this.decl(this._foregActiveTh)]   : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
         [this.decl(this._backgActiveTh)]   : this.solidBackg(themeColor),
@@ -83,8 +88,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
 
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
-            // create themes from zero, not copy from base's themes
-            // super.themeOf(theme, Theme, themeProp, themeColor),
+            super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
 
             this.contentThemeOf(theme, Theme, themeProp, themeColor),
         ] as JssStyle,
