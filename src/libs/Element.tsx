@@ -933,7 +933,8 @@ export interface Props
         
         VariantTheme,
         VariantSize,
-        VariantGradient
+        VariantGradient,
+        VariantOutlined
 {
 }
 export default function Element(props: Props) {
@@ -943,7 +944,7 @@ export default function Element(props: Props) {
     const variTheme    = useVariantTheme(props);
     const variSize     = useVariantSize(props);
     const variGradient = useVariantGradient(props);
-    const variOutlined = useVariantOutlined(props as VariantOutlined);
+    const variOutlined = useVariantOutlined(props);
 
 
 

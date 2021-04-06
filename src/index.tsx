@@ -9,7 +9,7 @@ import ListGroupApp from './ListGroupApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ListGroupApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

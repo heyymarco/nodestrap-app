@@ -10,13 +10,13 @@ import type {
 import * as stripOuts       from './strip-outs'
 import * as border          from './borders'     // configurable borders & border radiuses defs
 import {
-    default  as Element,
     cssProps as ecssProps,
 }                           from './Element'
-import type * as Elements   from './Element'
 import {
+    default  as Indicator,
     IndicatorStylesBuilder,
 }                           from './Indicator'
+import type * as Indicators from './Indicator'
 import ListGroupItem        from './ListGroupItem'
 
 
@@ -33,10 +33,7 @@ export class ListGroupStylesBuilder extends IndicatorStylesBuilder {
 
 
     // states:
-    // disable functional props & states:
-    // func props & states will be delegated on ListGroupItem.
-    protected fnProps(): JssStyle  { return {}; }
-    protected states(): JssStyle  { return {}; }
+    /* -- same as parent -- */
 
 
 
@@ -66,7 +63,8 @@ export class ListGroupStylesBuilder extends IndicatorStylesBuilder {
             // borders:
             //#region make a nicely rounded corners
             //#region border-strokes
-            border: ecssProps.border, // moved in from children
+            border      : ecssProps.border,         // moved in from children
+            borderColor : this.ref(this._borderFn), // moved in from children
 
             '&:not(:first-child)': { // only first-child having top-border
                 borderTopWidth: 0,   // remove duplicate border
@@ -78,6 +76,7 @@ export class ListGroupStylesBuilder extends IndicatorStylesBuilder {
             //#region border radiuses
             '&:first-child' : border.radius.top(ecssProps.borderRadius),    // moved in from children
             '&:last-child'  : border.radius.bottom(ecssProps.borderRadius), // moved in from children
+            overflow        : 'hidden', // clip overflowed children at the rounded corner
             //#endregion border radiuses
             //#endregion make a nicely rounded corners
     
@@ -90,16 +89,17 @@ export class ListGroupStylesBuilder extends IndicatorStylesBuilder {
     
 
                 // borders:
-                border        : [['none'], '!important'], // moved out to wrapper
-                borderRadius  : [[0],      '!important'], // moved out to wrapper
+                border       : [['none'], '!important'], // moved out to wrapper
+                borderColor  : undefined,                // moved out to wrapper
+                borderRadius : [[0],      '!important'], // moved out to wrapper
     
 
 
                 // layout:
-                display       : 'block',
-                position      : 'relative',
-            } // main child elements
-        }, // wrapper element
+                display      : 'block',
+                position     : 'relative',
+            } as JssStyle, // main child elements
+        } as JssStyle, // wrapper element
     }}
 }
 export const styles = new ListGroupStylesBuilder();
@@ -110,7 +110,7 @@ export const styles = new ListGroupStylesBuilder();
 
 export interface Props
     extends
-        Elements.Props
+        Indicators.Props
 {
 }
 export default function ListGroup(props: Props) {
@@ -119,7 +119,7 @@ export default function ListGroup(props: Props) {
 
 
     return (
-        <Element
+        <Indicator
             // default props:
             {...{
                 tag : 'ul', // default [tag]=ul
@@ -143,12 +143,25 @@ export default function ListGroup(props: Props) {
             {
                 props.children && (Array.isArray(props.children) ? props.children : [props.children]).map((child, index) =>
                     <li key={index}>
-                        <ListGroupItem>
-                            { child }
-                        </ListGroupItem>
+                        {
+                            ((child as React.ReactElement).type === ListGroupItem) ?
+                            child
+                            :
+                            <ListGroupItem
+                                // events:
+                                onAnimationEnd={(e) =>
+                                    // triggers ListGroup's onAnimationEnd event
+                                    e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }))
+                                }
+                            >
+                                { child }
+                            </ListGroupItem>
+                        }
                     </li>
                 )
             }
-        </Element>
+        </Indicator>
     );
 }
+
+export { ListGroupItem }

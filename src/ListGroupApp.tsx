@@ -12,7 +12,7 @@ import Container from './libs/Container';
 import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
 import Content from './libs/Content';
-import ListGroup from './libs/ListGroup';
+import ListGroup, {ListGroupItem} from './libs/ListGroup';
 
 
 
@@ -80,14 +80,12 @@ function App() {
                 <hr style={{flexBasis: '100%'}} />
                 <Element
 					theme={theme} size={size} enableGradient={enableGrad}
-					//@ts-ignore
 					outlined={outlined}
 				>
                         test
                 </Element>
                 <Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
-					//@ts-ignore
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -96,7 +94,6 @@ function App() {
                 </Indicator>
                 <Content
 					theme={theme} size={size} enableGradient={enableGrad}
-					//@ts-ignore
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -105,7 +102,6 @@ function App() {
                 </Content>
 				<ListGroup
 					theme={theme} size={size} enableGradient={enableGrad}
-					//@ts-ignore
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -113,6 +109,9 @@ function App() {
 					<>hello</>
 					<>holla</>
 					<>hey</>
+					<ListGroupItem enabled={false}>i'm disabled</ListGroupItem>
+					'hoho'
+					<ListGroupItem active={true}>i'm active</ListGroupItem>
                 </ListGroup>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
