@@ -208,15 +208,17 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         ],
     }}
     protected checkThemesIf(): JssStyle { return {}; }
-    protected checkStates(): JssStyle { return {
-        //#region all initial states are none
-        [this.decl(this._animCheckClear)]      : ecssProps.animNone,
-        //#endregion all initial states are none
-
-
-
-        //#region specific states
+    protected checkStates(inherit = false): JssStyle { return {
         extend: [
+            this.iif(!inherit, {
+                //#region all initial states are none
+                [this.decl(this._animCheckClear)]      : ecssProps.animNone,
+                //#endregion all initial states are none
+            }),
+
+
+
+            //#region specific states
             //#region check, clear
             { // [checking, checked, clearing, cleared => all states]
                 [this.decl(this._filterCheckClearIn)]  : cssProps.filterCheck,
@@ -232,8 +234,8 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
                 this.applyStateNoAnimStartup()
             ),
             //#endregion check, clear
+            //#endregion specific states
         ] as JssStyle,
-        //#endregion specific states
     }}
 
     protected labelFnProps(): JssStyle { return {
@@ -296,9 +298,9 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         // define an *invalid* color theme for the label:
         [this.decl(this._foregLabelIfInv)] : colors.dangerCont,
     }}
-    protected labelStates(): JssStyle { return {
-        //#region specific states
+    protected labelStates(inherit = false): JssStyle { return {
         extend: [
+            //#region specific states
             //#region check, clear => label active, passive
             this.stateCheckClear({ // [checking, checked, clearing] => label [activating, actived, passivating]
                 [labelElm]: {
@@ -329,8 +331,8 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
                 },
             },
             //#endregion check, clear => label active, passive
+            //#endregion specific states
         ] as JssStyle,
-        //#endregion specific states
     }}
 
     protected fnProps(): JssStyle { return {
@@ -349,12 +351,12 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             this.labelThemesIf(),
         ] as JssStyle,
     }}
-    protected states(): JssStyle { return {
+    protected states(inherit = false): JssStyle { return {
         extend: [
-            super.states(), // copy states from base
+            super.states(inherit), // copy states from base
 
-            this.checkStates(),
-            this.labelStates(),
+            this.checkStates(inherit),
+            this.labelStates(inherit),
         ] as JssStyle,
     }}
 

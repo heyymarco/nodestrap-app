@@ -135,9 +135,10 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
         ],
     }}
     public contentThemesIf(): JssStyle { return {}; }
-    public contentStates(): JssStyle { return {
-        //#region specific states
+    public contentStates(inherit = false): JssStyle { return {
         extend: [
+            //#region specific states
+            //#region active, passive
             this.stateActivePassive({ // [activating, actived, passivating]
                 [this.decl(this._filterActivePassive)] : cssProps.filterActive, // override Indicator's filter active
             }),
@@ -147,8 +148,9 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
             this.statePassivating({ // [passivating]
                 [this.decl(this._animActivePassive)]   : cssProps.animPassive,  // override Indicator's anim passive
             }),
+            //#endregion active, passive
+            //#endregion specific states
         ] as JssStyle,
-        //#endregion specific states
     }}
 
     protected fnProps(): JssStyle { return {
@@ -158,11 +160,11 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
             this.contentFnProps(),
         ] as JssStyle,
     }}
-    protected states(): JssStyle { return {
+    protected states(inherit = false): JssStyle { return {
         extend: [
-            super.states(), // copy states from base
+            super.states(inherit), // copy states from base
 
-            this.contentStates(),
+            this.contentStates(inherit),
         ] as JssStyle,
     }}
 

@@ -171,21 +171,23 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
         [this.decl(this._borderIfAct)]        : colors.primaryCont,
         [this.decl(this._foregOutlinedIfAct)] : colors.primary,
     }}
-    public indicationStates(): JssStyle { return {
-        //#region all initial states are none
-        [this.decl(this._filterEnableDisable)] : ecssProps.filterNone,
-        [this.decl(this._animEnableDisable)]   : ecssProps.animNone,
-
-        [this.decl(this._filterHoverLeave)]    : ecssProps.filterNone, // supports for Control
-
-        [this.decl(this._filterActivePassive)] : ecssProps.filterNone,
-        [this.decl(this._animActivePassive)]   : ecssProps.animNone,
-        //#endregion all initial states are none
-
-
-
-        //#region specific states
+    public indicationStates(inherit = false): JssStyle { return {
         extend: [
+            this.iif(!inherit, {
+                //#region all initial states are none
+                [this.decl(this._filterEnableDisable)] : ecssProps.filterNone,
+                [this.decl(this._animEnableDisable)]   : ecssProps.animNone,
+        
+                [this.decl(this._filterHoverLeave)]    : ecssProps.filterNone, // supports for Control
+        
+                [this.decl(this._filterActivePassive)] : ecssProps.filterNone,
+                [this.decl(this._animActivePassive)]   : ecssProps.animNone,
+                //#endregion all initial states are none
+            }),
+
+    
+    
+            //#region specific states
             //#region enable, disable
             this.stateEnableDisable({ // [enabling, disabling, disabled]
                 [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
@@ -224,8 +226,8 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
                     this.applyStateNoAnimStartup(),
             },
             //#endregion active, passive
+            //#endregion specific states
         ] as JssStyle,
-        //#endregion specific states
     }}
 
     protected fnProps(): JssStyle { return {
@@ -242,11 +244,11 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
             this.indicationThemesIf(),
         ] as JssStyle,
     }}
-    protected states(): JssStyle { return {
+    protected states(inherit = false): JssStyle { return {
         extend: [
-            super.states(), // copy states from base
+            super.states(inherit), // copy states from base
     
-            this.indicationStates(),
+            this.indicationStates(inherit),
         ] as JssStyle,
     }}
 

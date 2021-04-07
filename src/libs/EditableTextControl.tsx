@@ -85,19 +85,21 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         [this.decl(this._backgIfInv)] : this.solidBackg(colors.dangerThin),
         //#endregion overwrite base's themes with *softer* colors
     }}
-    protected states(): JssStyle { return {
-        //#region all initial states are none
-        [this.decl(this._iconValInv)]     : this.ref(this._backgNone),
-        //#endregion all initial states are none
-
-
-
-        //#region specific states
+    protected states(inherit = false): JssStyle { return {
         extend: [
-            super.states(), // copy states from base
-    
-    
-    
+            super.states(inherit), // copy states from base
+
+
+
+            this.iif(!inherit, {
+                //#region all initial states are none
+                [this.decl(this._iconValInv)]     : this.ref(this._backgNone),
+                //#endregion all initial states are none
+            }),
+            
+            
+            
+            //#region specific states
             this.stateValid({
                 [this.decl(this._iconValInv)] : cssProps.iconValid,   // apply a *valid* icon indicator
             }),
@@ -117,8 +119,8 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
                 },
             }),
             //#endregion supress activating by mouse/keyboard
+            //#endregion specific states
         ] as JssStyle,
-        //#endregion specific states
     }}
 
 

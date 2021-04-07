@@ -212,6 +212,14 @@ export class StylesBuilder {
 
 
 
+    //#region mixins
+    protected iif(condition: boolean, content: JssStyle): JssStyle {
+        return condition ? content : {};
+    }
+    //#endregion mixins
+
+
+
     // themes:
     /**
      * Gets the all available theme options.
@@ -346,9 +354,10 @@ export class StylesBuilder {
 
     /**
      * Creates css rule definitions for every *specific* state by overriding some *scoped css props* and applied some `themesIf`.
+     * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
      * @returns A `JssStyle` represents the css rule definitions for every *specific* state.
      */
-    protected states(): JssStyle   { return {}; }
+    protected states(inherit = false): JssStyle   { return {}; }
 
 
 
@@ -671,9 +680,13 @@ export class ElementStylesBuilder extends StylesBuilder {
         [this.decl(this._borderIf)]        : cssProps.borderColor,
         [this.decl(this._foregOutlinedIf)] : cssProps.color,
     }}
-    protected states(): JssStyle { return {
-        // define a *none* background:
-        [this.decl(this._backgNone)]       : this.solidBackg('transparent'),
+    protected states(inherit = false): JssStyle { return {
+        extend: [
+            this.iif(!inherit, {
+                // define a *none* background:
+                [this.decl(this._backgNone)] : this.solidBackg('transparent'),
+            }),
+        ] as JssStyle,
     }}
 
 

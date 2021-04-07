@@ -4,6 +4,7 @@ import React                from 'react'       // base technology of our nodestr
 // jss   (builds css  using javascript):
 import type {
     JssStyle,
+    Styles,
 }                           from 'jss'          // ts defs support for jss
 
 // nodestrap (modular web components):
@@ -102,6 +103,21 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
             } as JssStyle, // main child elements
         } as JssStyle, // wrapper element
     }}
+    protected styles(): Styles<'main'> {
+        const styles = super.styles();
+        Object.assign(styles.main, {
+            [wrapperElm]: {
+                [listItemElm]: {
+                    extend: [
+                        // states:
+                        this.fnProps(), // functional  props
+                        this.states(/*inherit =*/true),  // state rules
+                    ] as JssStyle,
+                },
+            },
+        });
+        return styles;
+    }
 }
 export const styles = new ListGroupStylesBuilder();
 
@@ -121,7 +137,7 @@ export default function ListGroup(props: Props) {
 
     const { tag, ...otherProps } = props;
     const parentTag = tag ?? 'ul';
-    const childTag = ['ul', 'ol'].includes(parentTag) ? 'li' : 'div';
+    const wrapTag   = ['ul', 'ol'].includes(parentTag) ? 'li' : 'div';
 
     return (
         <Content
@@ -147,7 +163,7 @@ export default function ListGroup(props: Props) {
                 props.children && (Array.isArray(props.children) ? props.children : [props.children]).map((child, index) =>
                     <GenericElement
                         // essentials:
-                        tag={childTag}
+                        tag={wrapTag}
                         key={index}
                     >
                         {

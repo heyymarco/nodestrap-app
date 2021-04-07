@@ -240,28 +240,32 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         [this.decl(this._foregOutlinedIf)]  : colors.secondary,
         [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
     }}
-    protected states(): JssStyle { return {
-        //#region all initial states are none
-     // [this.decl(this._filterHoverLeave)]    : ecssProps.filterNone, // was supported from Indicator
-        [this.decl(this._animHoverLeave)]      : ecssProps.animNone,
-
-        [this.decl(this._boxShadowFocusBlur)]  : ecssProps.boxShadowNone,
-        [this.decl(this._animFocusBlur)]       : ecssProps.animNone,
-        //#endregion all initial states are none
-
-
-
-        //#region specific states
+    protected states(inherit = false): JssStyle { return {
         extend: [
-            super.states(), // copy states from base
+            super.states(inherit), // copy states from base
     
     
     
+            this.iif(!inherit, {
+                //#region all initial states are none
+             // [this.decl(this._filterHoverLeave)]    : ecssProps.filterNone, // was supported from Indicator
+                [this.decl(this._animHoverLeave)]      : ecssProps.animNone,
+        
+                [this.decl(this._boxShadowFocusBlur)]  : ecssProps.boxShadowNone,
+                [this.decl(this._animFocusBlur)]       : ecssProps.animNone,
+                //#endregion all initial states are none
+            }),
+    
+    
+    
+            //#region specific states
+            //#region disable
             this.stateDisable({ // [disabling, disabled]
                 // accessibility:
                 cursor     : cssProps.cursorDisable,
                 userSelect : 'none',
             }),
+            //#endregion disable
     
     
     
@@ -294,8 +298,8 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
                 }),
             ] as JssStyle}),
             //#endregion hover, leave, focus, blur
+            //#endregion specific states
         ] as JssStyle,
-        //#endregion specific states
     }}
 
 

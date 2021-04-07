@@ -213,16 +213,18 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
         [this.decl(this._foregOutlinedIfInv)]   : colors.danger,
         [this.decl(this._boxShadowFocusIfInv)]  : colors.dangerTransp,
     }}
-    public validationStates(): JssStyle { return {
-        //#region all initial states are none
-        [this.decl(this._animValUnval)] : ecssProps.animNone,
-        [this.decl(this._animInvUninv)] : ecssProps.animNone,
-        //#endregion all initial states are none
-
-
-
-        //#region specific states
+    public validationStates(inherit = false): JssStyle { return {
         extend: [
+            this.iif(!inherit, {
+                //#region all initial states are none
+                [this.decl(this._animValUnval)] : ecssProps.animNone,
+                [this.decl(this._animInvUninv)] : ecssProps.animNone,
+                //#endregion all initial states are none
+            }),
+
+
+
+            //#region specific states
             this.stateValidating({
                 [this.decl(this._animValUnval)] : cssProps.animValid,
             }),
@@ -238,8 +240,8 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
             this.stateUninvalidating({
                 [this.decl(this._animInvUninv)] : cssProps.animUninvalid,
             }),
+            //#endregion specific states
         ] as JssStyle,
-        //#endregion specific states
     }}
 
     protected fnProps(): JssStyle { return {
@@ -309,13 +311,13 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
             this.validationThemesIf(), // copy themes from validation
         ] as JssStyle,
     }}
-    protected states(): JssStyle { return {
+    protected states(inherit = false): JssStyle { return {
         extend: [
-            super.states(),          // copy states from base
+            super.states(inherit),          // copy states from base
 
 
 
-            this.validationStates(), // copy states from validation
+            this.validationStates(inherit), // copy states from validation
         ] as JssStyle,
     }}
 
