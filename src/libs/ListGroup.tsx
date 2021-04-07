@@ -42,7 +42,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
     // styles:
     public basicStyle(): JssStyle { return {
         extend: [
-            stripOuts.list,     // clear browser's default styles
+            stripOuts.list, // clear browser's default styles
         ] as JssStyle,
 
 
@@ -90,16 +90,16 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
                 ] as JssStyle,
     
 
+
                 // borders:
-                border       : [['none'], '!important'], // moved out to wrapper
+                border       : [['none'], '!important'], // moved out to wrapper & prevent @keyframes to set the border
                 borderColor  : undefined,                // moved out to wrapper
-                borderRadius : [[0],      '!important'], // moved out to wrapper
+                borderRadius : [[0],      '!important'], // moved out to wrapper & prevent @keyframes to set the border radius
     
 
 
                 // layout:
                 display      : 'block',
-                position     : 'relative',
             } as JssStyle, // main child elements
         } as JssStyle, // wrapper element
     }}
@@ -109,9 +109,11 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
             [wrapperElm]: {
                 [listItemElm]: {
                     extend: [
+                        // themes:
+                        this.watchThemes(), // always inherit
+
                         // states:
-                        this.fnProps(), // functional  props
-                        this.states(/*inherit =*/true),  // state rules
+                        this.watchStates(/*inherit =*/true),
                     ] as JssStyle,
                 },
             },
@@ -187,4 +189,4 @@ export default function ListGroup(props: Props) {
     );
 }
 
-export { ListGroupItem }
+export { ListGroupItem, ListGroupItem as Item }

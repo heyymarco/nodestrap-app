@@ -2,15 +2,8 @@
 import React                from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
-import {
-    GenericElement,
-}                           from './Element'
-import type * as Elements   from './Element'
-import {
-    useStateEnableDisable,
-    useStateActivePassive,
-}                           from './Indicator'
-import type * as Indicators from './Indicator'
+import Content              from './Content'
+import type * as Contents   from './Content'
 
 
 
@@ -18,21 +11,12 @@ import type * as Indicators from './Indicator'
 
 export interface Props
     extends
-        Elements.GenericProps,
-        Indicators.IndicationProps
+        Contents.Props
 {
-    // children:
-    children? : React.ReactNode
 }
 export default function ListGroupItem(props: Props) {
-    // states:
-    const stateEnbDis  = useStateEnableDisable(props);
-    const stateActPass = useStateActivePassive(props);
-
-
-
     return (
-        <GenericElement
+        <Content
             // other props:
             {...props}
 
@@ -41,11 +25,6 @@ export default function ListGroupItem(props: Props) {
             classes={[
                 // additionals:
                 ...(props.classes ?? []),
-
-
-                // states:
-                (stateEnbDis.class ?? (stateEnbDis.disabled ? 'disabled' : null)),
-                stateActPass.class,
             ]}
         />
     );

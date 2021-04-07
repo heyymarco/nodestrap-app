@@ -346,6 +346,19 @@ export class StylesBuilder {
      */
     public outlined(): JssStyle  { return {}; }
 
+    /**
+     * Watches & applies any theme related classes.
+     * @returns A `JssStyle` represents the implementation of the themes.
+     */
+    public watchThemes(): JssStyle { return {
+        extend: [
+            this.themes(),                      // variant themes
+            this.sizes(),                       // variant sizes
+            { '&.gradient' : this.gradient() }, // variant gradient
+            { '&.outlined' : this.outlined() }, // variant outlined
+        ] as JssStyle,
+    }}
+
 
 
     // states:
@@ -368,6 +381,21 @@ export class StylesBuilder {
      */
     protected states(inherit = false): JssStyle   { return {}; }
 
+    /**
+     * Watches & applies any state related classes.
+     * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
+     * @returns A `JssStyle` represents the implementation of the states.
+     */
+    public watchStates(inherit = false): JssStyle { return {
+        extend: [
+            this.iif(!inherit,
+                this.themesIf()   // conditional themes
+            ),
+            this.fnProps(),       // functional  props
+            this.states(inherit), // state rules
+        ] as JssStyle,
+    }}
+
 
 
     // styles:
@@ -388,15 +416,10 @@ export class StylesBuilder {
                     this.basicStyle(), // basic style
         
                     // themes:
-                    this.themes(),                      // variant themes
-                    this.sizes(),                       // variant sizes
-                    { '&.gradient' : this.gradient() }, // variant gradient
-                    { '&.outlined' : this.outlined() }, // variant outlined
+                    this.watchThemes(),
         
                     // states:
-                    this.fnProps(),  // functional  props
-                    this.themesIf(), // conditional themes
-                    this.states(),   // state rules
+                    this.watchStates(),
                 ] as JssStyle,
             },
         };

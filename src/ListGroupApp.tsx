@@ -112,6 +112,13 @@ function App() {
 					<ListGroupItem enabled={false}>i'm disabled</ListGroupItem>
 					'hoho'
 					<ListGroupItem active={true}>i'm active</ListGroupItem>
+					<>hehe</>
+					<ListGroupItem theme='danger'>i'm angry</ListGroupItem>
+					<ListGroupItem theme='success'>i'm fine</ListGroupItem>
+					<ListGroupItem size='sm'>i'm small</ListGroupItem>
+					<ListGroupItem size='lg'>i'm big</ListGroupItem>
+					<ListGroupItem enableGradient={true}>i'm 3d</ListGroupItem>
+					<ListGroupItem outlined={true}>i'm transparent</ListGroupItem>
                 </ListGroup>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
