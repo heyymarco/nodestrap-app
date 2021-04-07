@@ -79,7 +79,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
     }}
     public contentOutlined(): JssStyle {
         // unlike on Indicator/Element,
-        // on Control the outlined only be applied
+        // on Content the outlined *only be applied*
         // * if not-actived
         return this.stateNotActive(
             super.outlined()

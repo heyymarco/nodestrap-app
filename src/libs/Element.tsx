@@ -196,17 +196,26 @@ export class StylesBuilder {
     /**
      * Gets the *value* (reference) of the specified `propName`.
      * @param propName The name of prop to retrieve.
-     * @param fallback1 The name of secondary prop to retrieve if the `propName` was not found.
-     * @param fallback2 The name of third prop to retrieve if the `fallback1` was not found.
+     * @param fallbacks The name of secondary/next prop to retrieve if the `propName` was not found.
      * @returns A generated css expression for retrieving the value.
      */
-    public ref(propName: string, fallback1?: string, fallback2?: string) {
-        const prefix = this._prefix;
-        return (prefix?
-            (fallback1 ? (fallback2 ? `var(--${prefix}-${propName},var(--${prefix}-${fallback1},var(--${prefix}-${fallback2})))` : `var(--${prefix}-${propName},var(--${prefix}-${fallback1}))`) : `var(--${prefix}-${propName})`)
-            :
-            (fallback1 ? (fallback2 ? `var(--${propName},var(--${fallback1},var(--${fallback2})))` : `var(--${propName},var(--${fallback1}))`) : `var(--${propName})`)
-        );
+    public ref(propName: string, ...fallbacks: string[]) {
+        const prefix = this._prefix ? `--${this._prefix}-` : '--';
+
+
+
+        const fallbackRecursive = (...fallbacks: string[]): string => {
+            const [curentFallback, ...restFallbacks] = fallbacks;
+
+            if (!curentFallback) return ''; // no more fallback => return empty
+
+            // handle the curentFallback and recursively handle the restFallbacks:
+            return `,var(${prefix}${curentFallback}${fallbackRecursive(...restFallbacks)})`;
+        };
+
+
+
+        return `var(${prefix}${propName}${fallbackRecursive(...fallbacks)})`;
     }
     //#endregion scoped css props
 
@@ -513,7 +522,12 @@ export class ElementStylesBuilder extends StylesBuilder {
     public    readonly _backgFn           = 'backgFn'
 
     /**
-     * background gradient.
+     * layered backgrounds.
+     */
+    public    readonly _backgLy           = 'backgLy'
+
+    /**
+     * toggles background gradient.
      */
     protected readonly _backgGradTg       = 'backgGradTg'
     //#endregion background
@@ -564,6 +578,11 @@ export class ElementStylesBuilder extends StylesBuilder {
      * functional foreground color - at outlined state.
      */
     public    readonly _foregOutlinedFn   = 'foregOutlinedFn'
+
+    /**
+     * toggles *on* foreground color - at outlined state.
+     */
+    protected readonly _foregOutlinedTg   = 'foregOutlinedTg'
     //#endregion foreground - outlined
 
 
@@ -573,6 +592,11 @@ export class ElementStylesBuilder extends StylesBuilder {
      * functional backgrounds - at outlined state.
      */
     public    readonly _backgOutlinedFn   = 'backgOutlinedFn'
+
+    /**
+     * toggles *on* backgrounds - at outlined state.
+     */
+    protected readonly _backgOutlinedTg   = 'backgOutlinedTg'
     //#endregion background - outlined
 
 
@@ -604,14 +628,12 @@ export class ElementStylesBuilder extends StylesBuilder {
     }}
     public gradient(): JssStyle { return {
         // *toggle on* the background gradient prop:
-
         [this.decl(this._backgGradTg)]     : cssProps.backgGrad,
     }}
     public outlined(): JssStyle { return {
-        // apply *outlined* fn props:
-        [this.decl(this._foregFn)]  : this.ref(this._foregOutlinedFn),
-        [this.decl(this._backgFn)]  : this.ref(this._backgOutlinedFn),
-        [this.decl(this._borderFn)] : this.ref(this._foregOutlinedFn),
+        // *toggle on* the outlined props:
+        [this.decl(this._foregOutlinedTg)] : this.ref(this._foregOutlinedFn),
+        [this.decl(this._backgOutlinedTg)] : this.ref(this._backgOutlinedFn),
     }}
 
 
@@ -620,13 +642,15 @@ export class ElementStylesBuilder extends StylesBuilder {
     protected fnProps(): JssStyle { return {
         // define a *foreground* color func:
         [this.decl(this._foregFn)] : this.ref(
+            this._foregOutlinedTg, // toggle outlined
+
             this._foregIfIf, // first  priority
             this._foregTh,   // second priority
             this._foregIf,   // third  priority
         ),
     
-        // define a *backgrounds* func:
-        [this.decl(this._backgFn)] : [
+        // define a *backgrounds* layers:
+        [this.decl(this._backgLy)] : [
             // top layer:
             this.ref(
                 this._backgGradTg,
@@ -643,9 +667,17 @@ export class ElementStylesBuilder extends StylesBuilder {
             // bottom layer:
             cssProps.backg,
         ],
+        // define a *backgrounds* func:
+        [this.decl(this._backgFn)] : this.ref(
+            this._backgOutlinedTg, // toggle outlined
+
+            this._backgLy,
+        ),
 
         // define a *border* color func:
         [this.decl(this._borderFn)] : this.ref(
+            this._foregOutlinedTg, // toggle outlined
+            
             this._borderIfIf, // first  priority
             this._borderTh,   // second priority
             this._borderIf,   // third  priority
@@ -683,8 +715,21 @@ export class ElementStylesBuilder extends StylesBuilder {
     protected states(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit, {
+                //#region all initial states are none
                 // define a *none* background:
-                [this.decl(this._backgNone)] : this.solidBackg('transparent'),
+                [this.decl(this._backgNone)]       : this.solidBackg('transparent'),
+
+
+
+                // *toggle off* the background gradient prop:
+                [this.decl(this._backgGradTg)]     : 'initial',
+
+
+
+                // *toggle off* the outlined props:
+                [this.decl(this._foregOutlinedTg)] : 'initial',
+                [this.decl(this._backgOutlinedTg)] : 'initial',
+                //#endregion all initial states are none
             }),
         ] as JssStyle,
     }}
