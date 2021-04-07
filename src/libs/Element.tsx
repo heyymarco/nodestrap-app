@@ -884,10 +884,6 @@ export interface GenericProps<TElement extends HTMLElement = HTMLElement>
     elmRef?  : React.Ref<TElement>
 }
 export function GenericElement(props: GenericProps) {
-    const bscStyles    = styles.useStyles();
-
-
-
     const htmlProps = useMemo(() => {
         const htmlProps = {
             ref : props.elmRef as any,
@@ -904,6 +900,7 @@ export function GenericElement(props: GenericProps) {
 
 
     const Tag = (props.tag ?? 'div');
+
     return (
         <Tag
             // other props:
@@ -911,14 +908,7 @@ export function GenericElement(props: GenericProps) {
 
 
             // classes:
-            className={[
-                // main:
-                (props.classes ? null : bscStyles.main),
-
-
-                // additionals:
-                ...(props.classes ?? []),
-            ].filter((c) => !!c).join(' ')}
+            className={(props.classes ?? []).filter((c) => !!c).join(' ') || undefined}
         >
             { props.children }
         </Tag>

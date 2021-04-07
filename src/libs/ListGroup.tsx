@@ -10,6 +10,7 @@ import type {
 import * as stripOuts       from './strip-outs'
 import * as border          from './borders'     // configurable borders & border radiuses defs
 import {
+    GenericElement,
     cssProps as ecssProps,
 }                           from './Element'
 import {
@@ -118,16 +119,18 @@ export default function ListGroup(props: Props) {
 
 
 
+    const { tag, ...otherProps } = props;
+    const parentTag = tag ?? 'ul';
+    const childTag = ['ul', 'ol'].includes(parentTag) ? 'li' : 'div';
+
     return (
         <Indicator
-            // default props:
-            {...{
-                tag : 'ul', // default [tag]=ul
-            }}
+            // essentials:
+            tag={parentTag}
 
 
             // other props:
-            {...props}
+            {...otherProps}
 
 
             // classes:
@@ -142,7 +145,11 @@ export default function ListGroup(props: Props) {
         >
             {
                 props.children && (Array.isArray(props.children) ? props.children : [props.children]).map((child, index) =>
-                    <li key={index}>
+                    <GenericElement
+                        // essentials:
+                        tag={childTag}
+                        key={index}
+                    >
                         {
                             ((child as React.ReactElement).type === ListGroupItem) ?
                             child
@@ -157,7 +164,7 @@ export default function ListGroup(props: Props) {
                                 { child }
                             </ListGroupItem>
                         }
-                    </li>
+                    </GenericElement>
                 )
             }
         </Indicator>
