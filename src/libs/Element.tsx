@@ -600,9 +600,9 @@ export class ElementStylesBuilder extends StylesBuilder {
     }}
     public outlined(): JssStyle { return {
         // apply *outlined* fn props:
-        [this.decl(this._foregFn)] : this.ref(this._foregOutlinedFn),
-        [this.decl(this._backgFn)] : this.ref(this._backgOutlinedFn),
-        borderColor                : this.ref(this._foregOutlinedFn),
+        [this.decl(this._foregFn)]  : this.ref(this._foregOutlinedFn),
+        [this.decl(this._backgFn)]  : this.ref(this._backgOutlinedFn),
+        [this.decl(this._borderFn)] : this.ref(this._foregOutlinedFn),
     }}
 
 

@@ -14,10 +14,10 @@ import {
     cssProps as ecssProps,
 }                           from './Element'
 import {
-    default  as Indicator,
-    IndicatorStylesBuilder,
-}                           from './Indicator'
-import type * as Indicators from './Indicator'
+    default  as Content,
+    ContentStylesBuilder,
+}                           from './Content'
+import type * as Contents   from './Content'
 import ListGroupItem        from './ListGroupItem'
 
 
@@ -27,7 +27,7 @@ import ListGroupItem        from './ListGroupItem'
 const wrapperElm  = '& >li, & >*';
 const listItemElm = '& >*';
 
-export class ListGroupStylesBuilder extends IndicatorStylesBuilder {
+export class ListGroupStylesBuilder extends ContentStylesBuilder {
     // themes:
     /* -- same as parent -- */
 
@@ -111,7 +111,7 @@ export const styles = new ListGroupStylesBuilder();
 
 export interface Props
     extends
-        Indicators.Props
+        Contents.Props
 {
 }
 export default function ListGroup(props: Props) {
@@ -124,7 +124,7 @@ export default function ListGroup(props: Props) {
     const childTag = ['ul', 'ol'].includes(parentTag) ? 'li' : 'div';
 
     return (
-        <Indicator
+        <Content
             // essentials:
             tag={parentTag}
 
@@ -167,7 +167,7 @@ export default function ListGroup(props: Props) {
                     </GenericElement>
                 )
             }
-        </Indicator>
+        </Content>
     );
 }
 
