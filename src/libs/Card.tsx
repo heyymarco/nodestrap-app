@@ -4,22 +4,15 @@ import React                from 'react'        // base technology of our nodest
 // jss   (builds css  using javascript):
 import type {
     JssStyle,
-    Styles,
 }                           from 'jss'          // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 import type {
     Dictionary,
-    DictionaryOf,
-}                          from './CssConfig'   // ts defs support for jss
+}                           from './CssConfig'   // ts defs support for jss
 
 // nodestrap (modular web components):
-import * as stripOuts      from './strip-outs'
-import * as border         from './borders'     // configurable borders & border radiuses defs
-import spacers             from './spacers'     // configurable spaces defs
-import {
-    GenericElement,
-    cssProps as ecssProps,
-}                           from './Element'
+import * as stripOuts       from './strip-outs'
+import spacers              from './spacers'     // configurable spaces defs
 import {
     default  as Content,
     ContentStylesBuilder,
@@ -66,18 +59,27 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
         // sizes:
         // maximum width including parent's paddings:
-        width   : [['calc(100% + (', ccssProps.paddingX, ' * 2))']], // Required because we use flexbox and this inherently applies align-self: stretch
-     // height  : [['calc(100% + (', ccssProps.paddingY, ' * 2))']],
+        width      : 'fill-available',
+     // height     : 'fill-available',
+        fallbacks  : {
+            width  : [['calc(100% + (', ccssProps.paddingInline, ' * 2))']],
+         // height : [['calc(100% + (', ccssProps.paddingInline, ' * 2))']], // TODO: page's orientation in vertical mode
+        },
 
+
+        // spacings:
         // cancel-out parent's padding with negative margin:
-        marginX : [['calc(0px - ', ccssProps.paddingX, ')']],
-        marginY : [['calc(0px - ', ccssProps.paddingY, ')']],
+        marginInline : [['calc(0px - ', ccssProps.paddingInline, ')']],
+        marginBlock  : [['calc(0px - ', ccssProps.paddingBlock,  ')']],
 
-
+        // kill negative margin so the prev sibling can add spaces:
+        '&:not(:first-child)': {
+            marginBlockStart : 0,
+        },
 
         // add an extra spaces to the next sibling:
         '&:not(:last-child)': {
-            marginBottom: ccssProps.paddingY,
+            marginBlockEnd   : ccssProps.paddingBlock,
         },
     }}
     protected basicCardItemStyle(): JssStyle { return {
@@ -86,13 +88,13 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
         // sizes:
-        // default card's items are unresizeable (excepts for card's body):
-        flex: [[0, 0, 'auto']],
+        // default card items' height are unresizeable (excepts for card's body):
+        flex: [[0, 0, 'auto']], // not shrinking, not growing
 
 
         // spacings:
-        paddingX: ccssProps.paddingX, // moved in paddings from parent
-        paddingY: ccssProps.paddingY, // moved in paddings from parent
+        paddingInline : ccssProps.paddingInline, // moved in paddings from parent
+        paddingBlock  : ccssProps.paddingBlock,  // moved in paddings from parent
 
 
 
@@ -102,7 +104,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
         '& >a': {
             '& +a': {
                 // add spaces between links:
-                marginLeft: spacers.default,
+                marginInlineStart: spacers.default,
             },
         },
         //#endregion links
@@ -110,7 +112,6 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
         //#region images
         // handle <figure> & <img> as card-image:
-        '& >figure, & >img': this.basicImageStyle(),
         '& >figure': {
             extend: [
                 stripOuts.figure, // clear browser's default styles
@@ -124,9 +125,15 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
                 // sizes:
-                width: '100%',
+                width      : 'fill-available',
+             // height     : 'fill-available',
+                fallbacks  : {
+                    width  : '100%',
+                 // height : '100%', // TODO: page's orientation in vertical mode
+                },
             }
         },
+        '& >figure, & >img': this.basicImageStyle(),
         //#endregion images
         //#endregion children
     }}
@@ -147,8 +154,8 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
         
 
         // spacings:
-        paddingX       : undefined, // moved out to [header, body, footer]
-        paddingY       : undefined, // moved out to [header, body, footer]
+        paddingInline  : undefined, // moved out to [header, body, footer]
+        paddingBlock   : undefined, // moved out to [header, body, footer]
     
 
         // typos:
@@ -164,19 +171,19 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
             ] as JssStyle,
         },
         '& .body': {
-            // borders:
-            '&:not(:first-child)': {
-                borderTop: 'inherit',    // add border between header & body
-            },
-            '&:not(:last-child)': {
-                borderBottom: 'inherit', // add border between body & footer
-            },
-
-
             // sizes:
             // Enable `flex-grow: 1` for decks and groups so that card blocks take up
             // as much space as possible, ensuring footers are aligned to the bottom.
             flex: [[1, 1, 'auto']],
+
+            
+            // borders:
+            '&:not(:first-child)': {
+                borderBlockStart : 'inherit', // add border between header & body
+            },
+            '&:not(:last-child)' : {
+                borderBlockEnd   : 'inherit', // add border between body & footer
+            },
         },
     }}
 }
@@ -210,3 +217,49 @@ export const cssDecls = cssConfig.decls;
 
 
 // react components:
+
+export interface Props
+    extends
+        Contents.Props
+{
+    // children:
+    header? : React.ReactNode
+    footer? : React.ReactNode
+}
+export default function Card(props: Props) {
+    const crdStyles = styles.useStyles();
+
+
+
+    return (
+        <Content
+            // essentials:
+            tag='article'
+
+
+            // other props:
+            {...props}
+
+
+            // classes:
+            classes={[
+                // main:
+                (props.classes ? null : crdStyles.main),
+
+
+                // additionals:
+                ...(props.classes ?? []),
+            ]}
+        >
+            {props.header && <header>
+                { props.header }
+            </header>}
+            {props.children && <div className='body'>
+                { props.children }
+            </div>}
+            {props.footer && <footer>
+                { props.footer }
+            </footer>}
+        </Content>
+    );
+}

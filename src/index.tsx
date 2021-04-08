@@ -6,10 +6,11 @@ import reportWebVitals from './reportWebVitals';
 import App from './App';
 import CheckApp from './CheckApp';
 import ListGroupApp from './ListGroupApp';
+import CardApp from './CardApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ListGroupApp />
+    <CardApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

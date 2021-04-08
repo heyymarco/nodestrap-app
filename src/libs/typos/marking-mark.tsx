@@ -26,20 +26,20 @@ const cssConfig = new CssConfig(() => {
     // const middle  = 'middle';
 
     return {
-        fontSize          : inherit              as Prop.FontSize            | Cust.Expr,
-        fontFamily        : inherit              as Prop.FontFamily[]        | Cust.Ref,
-        fontWeight        : inherit              as Prop.FontWeight          | Cust.Expr,
-        fontStyle         : inherit              as Prop.FontStyle           | Cust.Ref,
-        textDecoration    : inherit              as Prop.TextDecoration      | Cust.Ref,
-        lineHeight        : inherit              as Prop.LineHeight          | Cust.Expr,
+        fontSize          : inherit              as Prop.FontSize       | Cust.Expr,
+        fontFamily        : inherit              as Prop.FontFamily[]   | Cust.Ref,
+        fontWeight        : inherit              as Prop.FontWeight     | Cust.Expr,
+        fontStyle         : inherit              as Prop.FontStyle      | Cust.Ref,
+        textDecoration    : inherit              as Prop.TextDecoration | Cust.Ref,
+        lineHeight        : inherit              as Prop.LineHeight     | Cust.Expr,
     
-        color             : inherit              as Prop.Color               | Cust.Ref,
-        backg             : colors.warningTransp as Prop.Background          | Cust.Ref,
+        color             : inherit              as Prop.Color          | Cust.Ref,
+        backg             : colors.warningTransp as Prop.Background     | Cust.Ref,
         
-        paddingX          : '0.2em' as Prop.PaddingLeft | Prop.PaddingRight  | Cust.Expr,
-        paddingY          : '0em'   as Prop.PaddingTop  | Prop.PaddingBottom | Cust.Expr,
-        border            : borders.default      as Prop.Border              | Cust.Expr,
-        borderRadius      : border.radiuses.sm   as Prop.BorderRadius        | Cust.Expr,
+        paddingInline     : '0.2em'              as Prop.PaddingInline  | Cust.Expr,
+        paddingBlock      : '0em'                as Prop.PaddingBlock   | Cust.Expr,
+        border            : borders.default      as Prop.Border         | Cust.Expr,
+        borderRadius      : border.radiuses.sm   as Prop.BorderRadius   | Cust.Expr,
     };
 }, /*prefix: */'mrk');
 export const cssProps = cssConfig.refs;

@@ -25,20 +25,20 @@ const cssConfig = new CssConfig(() => {
     // const middle  = 'middle';
 
     return {
-        fontSize          : codes.fontSize       as Prop.FontSize            | Cust.Expr,
-        fontFamily        : codes.fontFamily     as Prop.FontFamily[]        | Cust.Ref,
-        fontWeight        : codes.fontWeight     as Prop.FontWeight          | Cust.Expr,
-        fontStyle         : codes.fontStyle      as Prop.FontStyle           | Cust.Ref,
-        textDecoration    : codes.textDecoration as Prop.TextDecoration      | Cust.Ref,
-        lineHeight        : codes.lineHeight     as Prop.LineHeight          | Cust.Expr,
+        fontSize          : codes.fontSize       as Prop.FontSize       | Cust.Expr,
+        fontFamily        : codes.fontFamily     as Prop.FontFamily[]   | Cust.Ref,
+        fontWeight        : codes.fontWeight     as Prop.FontWeight     | Cust.Expr,
+        fontStyle         : codes.fontStyle      as Prop.FontStyle      | Cust.Ref,
+        textDecoration    : codes.textDecoration as Prop.TextDecoration | Cust.Ref,
+        lineHeight        : codes.lineHeight     as Prop.LineHeight     | Cust.Expr,
     
-        color             : colors.white         as Prop.Color               | Cust.Ref,
-        backg             : colors.grayDark      as Prop.Background          | Cust.Ref,
+        color             : colors.white         as Prop.Color          | Cust.Ref,
+        backg             : colors.grayDark      as Prop.Background     | Cust.Ref,
         
-        paddingX          : '0.4em' as Prop.PaddingLeft | Prop.PaddingRight  | Cust.Expr,
-        paddingY          : '0.2em' as Prop.PaddingTop  | Prop.PaddingBottom | Cust.Expr,
-        border            : marks.border         as Prop.Border              | Cust.Expr,
-        borderRadius      : marks.borderRadius   as Prop.BorderRadius        | Cust.Expr,
+        paddingInline     : '0.4em'              as Prop.PaddingInline  | Cust.Expr,
+        paddingBlock      : '0.2em'              as Prop.PaddingBlock   | Cust.Expr,
+        border            : marks.border         as Prop.Border         | Cust.Expr,
+        borderRadius      : marks.borderRadius   as Prop.BorderRadius   | Cust.Expr,
     };
 }, /*prefix: */'kbd');
 export const cssProps = cssConfig.refs;

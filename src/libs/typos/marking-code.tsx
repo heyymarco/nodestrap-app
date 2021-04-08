@@ -26,20 +26,20 @@ const cssConfig = new CssConfig(() => {
     return {
         fontSize          : [[
             'calc((', gens.fontSizeSm, '+', gens.fontSizeMd, ')/2)'
-        ]]                                           as Prop.FontSize            | Cust.Expr,
-        fontFamily        : gens.fontFamilyMonospace as Prop.FontFamily[]        | Cust.Ref,
-        fontWeight        : gens.fontWeightNormal    as Prop.FontWeight          | Cust.Expr,
-        fontStyle         : none                     as Prop.FontStyle           | Cust.Ref,
-        textDecoration    : none                     as Prop.TextDecoration      | Cust.Ref,
-        lineHeight        : inherit                  as Prop.LineHeight          | Cust.Expr,
+        ]]                                           as Prop.FontSize       | Cust.Expr,
+        fontFamily        : gens.fontFamilyMonospace as Prop.FontFamily[]   | Cust.Ref,
+        fontWeight        : gens.fontWeightNormal    as Prop.FontWeight     | Cust.Expr,
+        fontStyle         : none                     as Prop.FontStyle      | Cust.Ref,
+        textDecoration    : none                     as Prop.TextDecoration | Cust.Ref,
+        lineHeight        : inherit                  as Prop.LineHeight     | Cust.Expr,
     
-        color             : colors.pink              as Prop.Color               | Cust.Ref,
-        backg             : none                     as Prop.Background          | Cust.Ref,
+        color             : colors.pink              as Prop.Color          | Cust.Ref,
+        backg             : none                     as Prop.Background     | Cust.Ref,
         
-        paddingX          : 0    as Prop.PaddingLeft | Prop.PaddingRight         | Cust.Expr,
-        paddingY          : 0    as Prop.PaddingTop  | Prop.PaddingBottom        | Cust.Expr,
-        border            : none as Prop.Border                                  | Cust.Expr,
-        borderRadius      : 0    as Prop.BorderRadius                            | Cust.Expr,
+        paddingInline     : 0                        as Prop.PaddingInline  | Cust.Expr,
+        paddingBlock      : 0                        as Prop.PaddingBlock   | Cust.Expr,
+        border            : none                     as Prop.Border         | Cust.Expr,
+        borderRadius      : 0                        as Prop.BorderRadius   | Cust.Expr,
     };
 }, /*prefix: */'code');
 export const cssProps = cssConfig.refs;

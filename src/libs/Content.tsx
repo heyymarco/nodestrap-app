@@ -74,8 +74,8 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
     public contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrite the global props with the *prop{Size}*:
 
-        [cssDecls.paddingX] : (cssProps as DictionaryOf<typeof cssProps>)[`paddingX${Size}`],
-        [cssDecls.paddingY] : (cssProps as DictionaryOf<typeof cssProps>)[`paddingY${Size}`],
+        [cssDecls.paddingInline] : (cssProps as DictionaryOf<typeof cssProps>)[`paddingInline${Size}`],
+        [cssDecls.paddingBlock]  : (cssProps as DictionaryOf<typeof cssProps>)[`paddingBlock${Size}`],
     }}
     public contentOutlined(): JssStyle {
         // unlike on Indicator/Element,
@@ -228,12 +228,12 @@ const cssConfig = new CssConfig(() => {
     };
 
     return {
-        paddingX             : spacers.default, // override to Element
-        paddingY             : spacers.default, // override to Element
-        paddingXSm           : spacers.sm,      // override to Element
-        paddingYSm           : spacers.sm,      // override to Element
-        paddingXLg           : spacers.lg,      // override to Element
-        paddingYLg           : spacers.lg,      // override to Element
+        paddingInline        : spacers.default, // override to Element
+        paddingBlock         : spacers.default, // override to Element
+        paddingInlineSm      : spacers.sm,      // override to Element
+        paddingBlockSm       : spacers.sm,      // override to Element
+        paddingInlineLg      : spacers.lg,      // override to Element
+        paddingBlockLg       : spacers.lg,      // override to Element
 
 
         // anim props:

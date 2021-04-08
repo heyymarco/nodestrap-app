@@ -74,12 +74,12 @@ const cssConfig = new CssConfig(() => {
 
         opacity           : 1,
 
-        paddingX          : [['calc((', spacers.sm, '+', spacers.md, ')/2)']],
-        paddingY          : [['calc((', spacers.xs, '+', spacers.sm, ')/2)']],
-        paddingXSm        : spacers.sm,
-        paddingYSm        : spacers.xs,
-        paddingXLg        : spacers.md,
-        paddingYLg        : spacers.sm,
+        paddingInline     : [['calc((', spacers.sm, '+', spacers.md, ')/2)']],
+        paddingBlock      : [['calc((', spacers.xs, '+', spacers.sm, ')/2)']],
+        paddingInlineSm   : spacers.sm,
+        paddingBlockSm    : spacers.xs,
+        paddingInlineLg   : spacers.md,
+        paddingBlockLg    : spacers.sm,
         border            : borders.default,
         borderColor       : borders.color,
         borderRadius      : border.radiuses.md,
@@ -644,10 +644,10 @@ export class ElementStylesBuilder extends StylesBuilder {
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrite the global props with the *prop{Size}*:
 
-        [cssDecls.fontSize]     : (cssProps as DictionaryOf<typeof cssProps>)[`fontSize${Size}`],
-        [cssDecls.paddingX]     : (cssProps as DictionaryOf<typeof cssProps>)[`paddingX${Size}`],
-        [cssDecls.paddingY]     : (cssProps as DictionaryOf<typeof cssProps>)[`paddingY${Size}`],
-        [cssDecls.borderRadius] : (cssProps as DictionaryOf<typeof cssProps>)[`borderRadius${Size}`],
+        [cssDecls.fontSize]      : (cssProps as DictionaryOf<typeof cssProps>)[`fontSize${Size}`],
+        [cssDecls.paddingInline] : (cssProps as DictionaryOf<typeof cssProps>)[`paddingInline${Size}`],
+        [cssDecls.paddingBlock]  : (cssProps as DictionaryOf<typeof cssProps>)[`paddingBlock${Size}`],
+        [cssDecls.borderRadius]  : (cssProps as DictionaryOf<typeof cssProps>)[`borderRadius${Size}`],
     }}
     public gradient(): JssStyle { return {
         // *toggle on* the background gradient prop:

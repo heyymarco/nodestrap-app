@@ -66,11 +66,11 @@ export class InputStylesBuilder extends EditableTextControlStylesBuilder {
 
 
             // layout:
-            display  : 'inherit',
-            marginX  : [['calc(0px -', ecssProps.paddingX, ')']],
-            marginY  : [['calc(0px -', ecssProps.paddingY, ')']],
-            paddingX : ecssProps.paddingX,
-            paddingY : ecssProps.paddingY,
+            display       : 'inherit',
+            marginInline  : [['calc(0px -', ecssProps.paddingInline, ')']],
+            marginBlock   : [['calc(0px -', ecssProps.paddingBlock, ')' ]],
+            paddingInline : ecssProps.paddingInline,
+            paddingBlock  : ecssProps.paddingBlock,
     
     
             // strip out prop [size]:

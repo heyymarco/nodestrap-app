@@ -91,15 +91,15 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
     
 
 
+                // layout:
+                display      : 'block',
+    
+
+
                 // borders:
                 border       : [['none'], '!important'], // moved out to wrapper & prevent @keyframes to set the border
                 borderColor  : undefined,                // moved out to wrapper
                 borderRadius : [[0],      '!important'], // moved out to wrapper & prevent @keyframes to set the border radius
-    
-
-
-                // layout:
-                display      : 'block',
             } as JssStyle, // main child elements
         } as JssStyle, // wrapper element
     }}

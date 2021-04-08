@@ -413,7 +413,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         width     : '1em',
         height    : '1em',
         boxSizing : 'border-box', // the size is *including* the border
-        paddingX: 0, paddingY: 0, // no padding
+        paddingInline: 0, paddingBlock: 0, // no padding
     
 
         // spacing between check & label:
@@ -435,12 +435,16 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
             // layout:
-            content : '""',
-            display : 'block',
+            content    : '""',
+            display    : 'block',
 
             // sizes:
-            height  : '100%',
-            width   : '100%',
+            width      : 'fill-available',
+            height     : 'fill-available',
+            fallbacks  : {
+                width  : '100%',
+                height : '100%',
+            },
             
             
             
@@ -462,8 +466,8 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         // force backgroundless:
         backg         : [['none'], '!important'],
         boxShadow     : [['none'], '!important'],
-        paddingX      : undefined as unknown as null, // delete
-        paddingY      : undefined as unknown as null, // delete
+        paddingInline : undefined as unknown as null, // delete
+        paddingBlock  : undefined as unknown as null, // delete
         border        : undefined as unknown as null, // delete
         borderRadius  : undefined as unknown as null, // delete
         
