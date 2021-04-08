@@ -69,7 +69,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
             borderColor : this.ref(this._borderFn), // moved in from children
 
             '&:not(:first-child)': { // only first-child having top-border
-                borderTopWidth: 0,   // remove duplicate border
+                borderBlockStartWidth: 0,
             },
             //#endregion border-strokes
 

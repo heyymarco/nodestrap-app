@@ -487,7 +487,7 @@ export class StylesBuilder {
      * @param color The color of the solid background to create.
      * @returns An object represents a solid background in css.
      */
-    public solidBackg(color: Cust.Ref, clip : Prop.BackgroundClip = 'padding-box') {
+    public solidBackg(color: Cust.Ref, clip : Prop.BackgroundClip = 'border-box') {
         return [[`linear-gradient(${color},${color})`, clip]];
     }
 }

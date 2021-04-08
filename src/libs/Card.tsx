@@ -58,12 +58,10 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
         // sizes:
-        // maximum width including parent's paddings:
-        width      : 'fill-available',
-     // height     : 'fill-available',
-        fallbacks  : {
-            width  : [['calc(100% + (', ccssProps.paddingInline, ' * 2))']],
-         // height : [['calc(100% + (', ccssProps.paddingInline, ' * 2))']], // TODO: page's orientation in vertical mode
+        // span to maximum width including parent's paddings:
+        inlineSize     : 'fill-available',
+        fallbacks      : {
+            inlineSize : [['calc(100% + (', ccssProps.paddingInline, ' * 2))']],
         },
 
 
@@ -125,11 +123,10 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
                 // sizes:
-                width      : 'fill-available',
-             // height     : 'fill-available',
-                fallbacks  : {
-                    width  : '100%',
-                 // height : '100%', // TODO: page's orientation in vertical mode
+                // span to maximum width:
+                inlineSize     : 'fill-available',
+                fallbacks      : {
+                    inlineSize : '100%',
                 },
             }
         },
@@ -150,7 +147,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
         // sizes:
-        minWidth       : 0, // See https://github.com/twbs/bootstrap/pull/22740#issuecomment-305868106
+        minInlineSize  : 0, // See https://github.com/twbs/bootstrap/pull/22740#issuecomment-305868106
         
 
         // spacings:
@@ -204,7 +201,7 @@ const cssConfig = new CssConfig(() => {
 
 
     return {
-        height            : '100%', // set height to maximum if parent container has specific height, otherwise no effect
+        blockSize         : '100%', // set height to maximum if parent container has specific height, otherwise no effect
 
         capColor          : 'unset',
         capBackg          : 'unset',

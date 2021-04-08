@@ -44,11 +44,11 @@ export default cssProps;
 base.declareCss({
     'hr': {
         extend          : cssProps,
-        width           : null,
+        width           : null, // delete from cssProps. width means blockSize (the height of the <hr>)
         
         display         : 'block',
         backgroundColor : 'currentColor',
-        height          : cssProps.width,
+        blockSize       : cssProps.width,
         border          : 0,
     },
 });

@@ -91,8 +91,8 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
         // sizes:
         size          : null, // delete from cssProps, in img-icon: size => [width, height] ; in font-icon: size => fontSize
-        height        : cssProps.size,
-        width         : 'min-content',
+        blockSize     : cssProps.size,
+        inlineSize    : 'min-content',
     }}
     public basicFontStyle(): JssStyle { return {
         // colors:
@@ -156,10 +156,10 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
 
             // sizes:
-            width      : 'auto',           // calculates the width by [height * aspect-ratio]
-            height     : 'fill-available', // follow parent's height
-            fallbacks  : {
-                height : '100%',
+            inlineSize    : 'auto',           // calculates the width by [height * aspect-ratio]
+            blockSize     : 'fill-available', // follow parent's height
+            fallbacks     : {
+                blockSize : '100%',
             },
 
 

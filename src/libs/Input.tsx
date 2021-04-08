@@ -74,9 +74,9 @@ export class InputStylesBuilder extends EditableTextControlStylesBuilder {
     
     
             // strip out prop [size]:
-            width     : 'fill-available',
-            fallbacks : {
-                width : '100%',
+            inlineSize     : 'fill-available',
+            fallbacks      : {
+                inlineSize : '100%',
             },
         },
     }}

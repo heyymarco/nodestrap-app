@@ -410,9 +410,9 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
         // sizes:
         /* the size is exactly the same as current font size */
-        width     : '1em',
-        height    : '1em',
-        boxSizing : 'border-box', // the size is *including* the border
+        inlineSize : '1em',
+        blockSize  : '1em',
+        boxSizing  : 'border-box', // the size is *including* the border
         paddingInline: 0, paddingBlock: 0, // no padding
     
 
@@ -439,11 +439,11 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             display    : 'block',
 
             // sizes:
-            width      : 'fill-available',
-            height     : 'fill-available',
-            fallbacks  : {
-                width  : '100%',
-                height : '100%',
+            inlineSize     : 'fill-available',
+            blockSize      : 'fill-available',
+            fallbacks      : {
+                inlineSize : '100%',
+                blockSize  : '100%',
             },
             
             
@@ -486,7 +486,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             content    : '"\xa0"', // &nbsp;
             display    : 'inline',
             
-            width      : 0,
+            inlineSize : 0,
             overflow   : 'hidden',
             visibility : 'hidden',
         },
@@ -508,7 +508,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         [chkElm]   : {
             // hides the checkbox while still preserving animation & focus working
             opacity: 0,
-            width: 0, height: 0, border: 0,
+            inlineSize: 0, blockSize: 0, border: 0,
             marginInlineEnd: 0,
         },
 
@@ -539,7 +539,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
         // children:
         [chkElm]: {
-            width        : '2em', // make the width twice the height
+            inlineSize   : '2em', // make the width twice the height
             borderRadius : cssProps.switchBorderRadius,
 
 
@@ -602,7 +602,7 @@ const cssConfig = new CssConfig(() => {
             ]],
         },
         '75%': {
-            transformOrigin: 'left',
+            transformOrigin: 'left', // todo: orientation aware transform => left will be top if the element rotated 90deg clockwise
             transform: [[
                 'scaleX(1.1)',
                 styles.ref(styles._switchTransfIn),
@@ -627,7 +627,7 @@ const cssConfig = new CssConfig(() => {
             ]],
         },
         '75%': {
-            transformOrigin: 'right',
+            transformOrigin: 'right', // todo: orientation aware transform => right will be bottom if the element rotated 90deg clockwise
             transform: [[
                 'scaleX(1.1)',
                 styles.ref(styles._switchTransfOut),
