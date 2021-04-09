@@ -7,10 +7,11 @@ import App from './App';
 import CheckApp from './CheckApp';
 import ListGroupApp from './ListGroupApp';
 import CardApp from './CardApp';
+import ModalApp from './ModalApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <CardApp />
+    <ModalApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

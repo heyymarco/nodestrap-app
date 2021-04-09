@@ -37,7 +37,7 @@ const cssConfig = new CssConfig(() => {
         textDecoration    : inherit  as Prop.TextDecoration                             | Cust.Ref,
         lineHeight        : 1.25     as Prop.LineHeight                                 | Cust.Expr,
     
-        color             : inherit  as Prop.Color                                      | Cust.Ref,
+        foreg             : inherit  as Prop.Color                                      | Cust.Ref,
         
         marginBlockStart  : 0        as Prop.MarginBlockStart                           | Cust.Expr,
         marginBlockEnd    : '0.75em' as Prop.MarginBlockEnd                             | Cust.Expr,

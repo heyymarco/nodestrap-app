@@ -8,11 +8,11 @@ import type {
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 import type {
     Dictionary,
-}                           from './CssConfig'   // ts defs support for jss
+}                           from './CssConfig'  // ts defs support for jss
 
 // nodestrap (modular web components):
 import * as stripOuts       from './strip-outs'
-import spacers              from './spacers'     // configurable spaces defs
+import spacers              from './spacers'    // configurable spaces defs
 import {
     default  as Content,
     ContentStylesBuilder,
@@ -24,7 +24,7 @@ import type * as Contents   from './Content'
 
 // styles:
 
-export class ListGroupStylesBuilder extends ContentStylesBuilder {
+export class CardStylesBuilder extends ContentStylesBuilder {
     //#region global css props
     protected filterGeneralProps<TCssProps>(cssProps: TCssProps): JssStyle {
         const cssPropsCopy: Dictionary<any> = {};
@@ -184,7 +184,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
         },
     }}
 }
-export const styles = new ListGroupStylesBuilder();
+export const styles = new CardStylesBuilder();
 
 
 

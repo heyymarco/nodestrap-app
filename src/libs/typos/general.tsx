@@ -61,7 +61,7 @@ const cssConfig = new CssConfig(() => {
         lineHeightNm          : 1.50         as Prop.LineHeight     | Cust.Expr,
         lineHeightLg          : 2.00         as Prop.LineHeight     | Cust.Expr,
 
-        color                 : colors.foreg as Prop.Color          | Cust.Ref,
+        foreg                 : colors.foreg as Prop.Color          | Cust.Ref,
         /**
          * Defaults is color's backg.
          * It can be an image with the average color as color's backg.

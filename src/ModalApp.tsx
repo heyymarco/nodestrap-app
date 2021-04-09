@@ -12,7 +12,8 @@ import Container from './libs/Container';
 import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
 import Content from './libs/Content';
-import ListGroup, {ListGroupItem} from './libs/ListGroup';
+import Button from './libs/Button';
+import Modal from './libs/Modal';
 
 
 
@@ -100,93 +101,74 @@ function App() {
 				>
                         test
                 </Content>
-				<ListGroup
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+				<Button onClick={() => setActive(true)}>Show modal</Button>
+				<Modal theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}
+					header=
+						'Lorem ipsum dolor'
 
-					enabled={enabled} active={active}
+					footer=
+						'dolor sit amet'
+					
 				>
-					<>hello</>
-					<>holla</>
-					<>hey</>
-					<ListGroupItem enabled={false}>i'm disabled</ListGroupItem>
-					'hoho'
-					<ListGroupItem active={true}>i'm active</ListGroupItem>
-					<>hehe</>
-					<ListGroupItem theme='danger'>i'm angry</ListGroupItem>
-					<ListGroupItem theme='success'>i'm fine</ListGroupItem>
-					<ListGroupItem size='sm'>i'm small</ListGroupItem>
-					<ListGroupItem size='lg'>i'm big</ListGroupItem>
-					<ListGroupItem enableGradient={true}>i'm 3d</ListGroupItem>
-					<ListGroupItem outlined={true}>i'm transparent</ListGroupItem>
-                </ListGroup>
+					<p>
+						Theme:
+						{
+							themes.map(th =>
+								<label key={th ?? ''}>
+									<input type='radio'
+										value={th}
+										checked={theme===th}
+										onChange={(e) => setTheme(e.target.value || undefined)}
+									/>
+									{`${th}`}
+								</label>
+							)
+						}
+					</p>
+					<p>
+						Size:
+						{
+							sizes.map(sz =>
+								<label key={sz ?? ''}>
+									<input type='radio'
+										value={sz}
+										checked={size===sz}
+										onChange={(e) => setSize(e.target.value || undefined)}
+									/>
+									{`${sz}`}
+								</label>
+							)
+						}
+					</p>
+					<p>
+						<label>
+							<input type='checkbox'
+								checked={enableGrad}
+								onChange={(e) => setEnableGrad(e.target.checked)}
+							/>
+							enable gradient
+						</label>
+					</p>
+					<p>
+						<label>
+							<input type='checkbox'
+								checked={outlined}
+								onChange={(e) => setOutlined(e.target.checked)}
+							/>
+							outlined
+						</label>
+					</p>
+					<p>
+						<label>
+							<input type='checkbox'
+								checked={enabled}
+								onChange={(e) => setEnabled(e.target.checked)}
+							/>
+							enabled
+						</label>
+					</p>
+				</Modal>
                 <hr style={{flexBasis: '100%'}} />
-				<p>
-					Theme:
-					{
-						themes.map(th =>
-							<label key={th ?? ''}>
-								<input type='radio'
-									value={th}
-									checked={theme===th}
-									onChange={(e) => setTheme(e.target.value || undefined)}
-								/>
-								{`${th}`}
-							</label>
-						)
-					}
-				</p>
-				<p>
-					Size:
-					{
-						sizes.map(sz =>
-							<label key={sz ?? ''}>
-								<input type='radio'
-									value={sz}
-									checked={size===sz}
-									onChange={(e) => setSize(e.target.value || undefined)}
-								/>
-								{`${sz}`}
-							</label>
-						)
-					}
-				</p>
-				<p>
-					<label>
-						<input type='checkbox'
-							checked={enableGrad}
-							onChange={(e) => setEnableGrad(e.target.checked)}
-						/>
-						enable gradient
-					</label>
-				</p>
-				<p>
-					<label>
-						<input type='checkbox'
-							checked={outlined}
-							onChange={(e) => setOutlined(e.target.checked)}
-						/>
-						outlined
-					</label>
-				</p>
-				<p>
-					<label>
-						<input type='checkbox'
-							checked={enabled}
-							onChange={(e) => setEnabled(e.target.checked)}
-						/>
-						enabled
-					</label>
-				</p>
-				<p>
-					<label>
-						<input type='checkbox'
-							checked={active}
-							onChange={(e) => setActive(e.target.checked)}
-						/>
-						active
-					</label>
-				</p>
             </Container>
         </div>
     );

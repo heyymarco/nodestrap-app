@@ -65,10 +65,10 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
 
     //#region mixins
-    protected stateEnable(content: JssStyle): JssStyle { return {
+    protected stateEnabling(content: JssStyle): JssStyle { return {
         '&.enable': content,
     }}
-    protected stateNotEnable(content: JssStyle): JssStyle { return {
+    protected stateNotEnabling(content: JssStyle): JssStyle { return {
         '&:not(.enable)': content,
     }}
     protected stateDisabling(content: JssStyle): JssStyle { return {
@@ -84,10 +84,10 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
         // not fully disabled
         '&:not(.disabled):not(:disabled),&:not(.disabled):disabled.disable': content,
     }}
-    protected stateEnableDisable(content: JssStyle): JssStyle { return {
+    protected stateEnablingDisable(content: JssStyle): JssStyle { return {
         '&.enable,&.disable,&.disabled,&:disabled': content,
     }}
-    protected stateNotEnableDisable(content: JssStyle): JssStyle { return {
+    protected stateNotEnablingDisable(content: JssStyle): JssStyle { return {
         '&:not(.enable):not(.disable):not(.disabled):not(:disabled)': content,
     }}
     protected stateNotEnablingDisabling(content: JssStyle): JssStyle { return {
@@ -107,13 +107,13 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     protected statePassivating(content: JssStyle): JssStyle { return {
         '&.passive': content,
     }}
-    protected stateNotPassive(content: JssStyle): JssStyle { return {
+    protected stateNotPassivating(content: JssStyle): JssStyle { return {
         '&:not(.passive)': content,
     }}
-    protected stateActivePassive(content: JssStyle): JssStyle { return {
+    protected stateActivePassivating(content: JssStyle): JssStyle { return {
         '&.active,&.actived,&.passive': content,
     }}
-    protected stateNotActivePassive(content: JssStyle): JssStyle { return {
+    protected stateNotActivePassivating(content: JssStyle): JssStyle { return {
         '&:not(.active):not(.actived):not(.passive)': content,
     }}
     protected stateNotActivatingPassivating(content: JssStyle): JssStyle { return {
@@ -122,9 +122,9 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     
     protected applyStateNoAnimStartup(): JssStyle {
         return this.stateNotEnablingDisabling(
-            this.stateNotActivatingPassivating({
-                animationDuration: [['0ms'], '!important'],
-            })
+            this.stateNotActivatingPassivating(
+                super.applyStateNoAnimStartup()
+            )
         );
     }
     protected applyStateActive(): JssStyle { return {
@@ -189,10 +189,10 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     
             //#region specific states
             //#region enable, disable
-            this.stateEnableDisable({ // [enabling, disabling, disabled]
+            this.stateEnablingDisable({ // [enabling, disabling, disabled]
                 [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
             }),
-            this.stateEnable({ // [enabling]
+            this.stateEnabling({ // [enabling]
                 [this.decl(this._animEnableDisable)]   : cssProps.animEnable,
             }),
             this.stateDisable({ // [disabling, disabled]
@@ -207,7 +207,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
             
             
             //#region active, passive
-            this.stateActivePassive({ // [activating, actived, passivating]
+            this.stateActivePassivating({ // [activating, actived, passivating]
                 [this.decl(this._filterActivePassive)] : cssProps.filterActive,
             }),
             this.stateActive({ // [activating, actived]

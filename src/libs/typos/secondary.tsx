@@ -30,7 +30,7 @@ const cssConfig = new CssConfig(() => {
         textDecoration : inherit as Prop.TextDecoration | Cust.Ref,
         lineHeight     : inherit as Prop.LineHeight     | Cust.Expr,
     
-        color          : inherit as Prop.Color          | Cust.Ref,
+        foreg          : inherit as Prop.Color          | Cust.Ref,
         opacity        : 0.65    as Prop.Opacity        | Cust.Expr,
     };
 }, /*prefix: */'sec');

@@ -3,7 +3,6 @@ import {
     create as createJss,
 }                          from 'jss'          // base technology of our nodestrap components
 import type { JssStyle }   from 'jss'          // ts defs support for jss
-import { createUseStyles } from 'react-jss'    // base technology of our nodestrap components
 
 import jssPluginGlobal     from 'jss-plugin-global'
 
@@ -15,6 +14,11 @@ import type {
 }                          from './CssConfig'  // ts defs support for jss
 
 // nodestrap (modular web components):
+import {
+    GenericElement,
+    ElementStylesBuilder,
+}                          from './Element'
+import type * as Elements  from './Element'
 import
     breakpoints,
     * as breakpoint        from './breakpoints'
@@ -24,48 +28,47 @@ import { pascalCase }      from 'pascal-case'
 
 
 
-// jss:
+// configs:
 
-/**
- * A *css custom property* manager that manages & updates the *css props* stored at specified `rule`.
- */
 const cssConfig = new CssConfig(() => {
     return {
-        x    : '12px' as PropEx.Length,
-        y    :  '9px' as PropEx.Length,
+        paddingInline    : '12px' as PropEx.Length,
+        paddingBlock     :  '9px' as PropEx.Length,
     
-        xSm  : '24px' as PropEx.Length,
-        ySm  : '18px' as PropEx.Length,
+        paddingInlineSm  : '24px' as PropEx.Length,
+        paddingBlockSm   : '18px' as PropEx.Length,
     
-        xMd  : '36px' as PropEx.Length,
-        yMd  : '27px' as PropEx.Length,
+        paddingInlineMd  : '36px' as PropEx.Length,
+        paddingBlockMd   : '27px' as PropEx.Length,
     
-        xLg  : '48px' as PropEx.Length,
-        yLg  : '36px' as PropEx.Length,
+        paddingInlineLg  : '48px' as PropEx.Length,
+        paddingBlockLg   : '36px' as PropEx.Length,
     
-        xXl  : '60px' as PropEx.Length,
-        yXl  : '45px' as PropEx.Length,
+        paddingInlineXl  : '60px' as PropEx.Length,
+        paddingBlockXl   : '45px' as PropEx.Length,
     
-        xXxl : '72px' as PropEx.Length,
-        yXxl : '54px' as PropEx.Length,
+        paddingInlineXxl : '72px' as PropEx.Length,
+        paddingBlockXxl  : '54px' as PropEx.Length,
     };
 }, /*prefix: */'con');
-export const containers = cssConfig.refs;
-// export default containers;
+export const cssProps = cssConfig.refs;
+export const cssDecls = cssConfig.decls;
 
 
+
+// jss:
 
 const styleBreakpoints : JssStyle = {};
 for (const bpName in breakpoints) {
     const BpName = pascalCase(bpName);
 
-    const x = (containers as Dictionary<ValueOf<typeof containers>|undefined>)[`x${BpName}`];
-    const y = (containers as Dictionary<ValueOf<typeof containers>|undefined>)[`y${BpName}`];
-    if (x || y) {
+    const paddingInline = (cssProps as Dictionary<ValueOf<typeof cssProps>|undefined>)[`paddingInline${BpName}`];
+    const paddingBlock  = (cssProps as Dictionary<ValueOf<typeof cssProps>|undefined>)[`paddingBlock${BpName}`];
+    if (paddingInline || paddingBlock) {
         Object.assign(styleBreakpoints, breakpoint.mediaUp(bpName, {
             ':root': {
-                '--con-x': x || null,
-                '--con-y': y || null,
+                [cssDecls.paddingInline] : paddingInline || null,
+                [cssDecls.paddingBlock]  : paddingBlock  || null,
             },
         }));
     } // if
@@ -83,45 +86,70 @@ createJss().setup({plugins:[
 
 
 
-export const useStyles = createUseStyles({
-    main: {
-        padding : [[
-            containers.y,
-            containers.x
-        ]],
+// styles:
 
-        display  : 'block',
-    },
-});
+export class ContainerStylesBuilder extends ElementStylesBuilder {
+    // themes:
+    /* -- same as parent -- */
 
 
+
+    // states:
+    /* -- same as parent -- */
+
+
+
+    // styles:
+    /**
+     * Applies responsive container functionality - without any other styling.
+     * @returns A `JssStyle` represents a responsive container style definition.
+     */
+    public basicContainerStyle(): JssStyle { return {
+        extend: [
+            this.filterGeneralProps(cssProps), // apply *general* cssProps
+        ] as JssStyle,
+    }}
+    public basicStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(),         // copy basicStyle from base
+
+            this.basicContainerStyle(), // applies responsive container functionality
+        ] as JssStyle,
+    }}
+}
+export const styles = new ContainerStylesBuilder();
+
+
+
+// react components:
 
 export interface Props
     extends
-        React.HTMLAttributes<HTMLOrSVGElement>
+        Elements.Props
 {
-    tag?       : keyof JSX.IntrinsicElements
-    classes?   : string[]
-
-    children?  : React.ReactNode
+    // children:
+    children? : React.ReactNode
 }
 export default function Container(props: Props) {
-    const styles = useStyles();
+    const conStyles = styles.useStyles();
 
 
 
-    const Tag       = props.tag ?? 'div';
-    const htmlProps = props as React.HTMLAttributes<HTMLOrSVGElement>;
     return (
-        <Tag {...htmlProps}
-            className={[
-                styles.main,
+        <GenericElement
+            // other props:
+            {...props}
 
+
+            // classes:
+            classes={[
+                // main:
+                (props.classes ? null : conStyles.main),
+
+
+                // additionals:
                 ...(props.classes ?? []),
-                props.className,
-            ].join(' ')}
-        >
-            {props.children}
-        </Tag>
+            ]}
+        />
     );
 }

@@ -324,7 +324,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             {
                 // [cleared] => label [actived]
                 '&.checked,&:checked:not(.check)': { // if ctrl was fully checked, disable the animation
-                    /* IF */[chkElm]: this.stateNotFocusBlur({ // but still transfering the focus state to the "sibling" element(s):
+                    /* IF */[chkElm]: this.stateNotFocusBlurring({ // but still transfering the focus state to the "sibling" element(s):
                         /* THEN [labelElm] */'&~*':
                             super.applyStateNoAnimStartup(),
                     }),
@@ -373,6 +373,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         lineHeight         : null,      // default inherit
 
         // appearances:
+        foreg              : null,      // default inherit
         color              : null,      // default inherit
         opacity            : null,      // pseudo  inherit
         transition         : 'inherit', // force   inherit
@@ -454,7 +455,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     }}
     protected basicLabelStyle(): JssStyle { return {
         // apply *non conditional* fn props:
-        color : this.ref(this._foregLabelFn),
+        foreg : this.ref(this._foregLabelFn),
     }}
     public basicStyle(): JssStyle { return {
         extend: [

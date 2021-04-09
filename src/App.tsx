@@ -81,7 +81,7 @@ function App() {
 
     return (
         <div className="App">
-            <Container className="App-header">
+            <Container>
                 <img src={logo} className="App-logo" alt="logo" />
                 <p>
                     Edit <code>src/App.tsx</code> and save to reload.

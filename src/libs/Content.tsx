@@ -139,7 +139,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
         extend: [
             //#region specific states
             //#region active, passive
-            this.stateActivePassive({ // [activating, actived, passivating]
+            this.stateActivePassivating({ // [activating, actived, passivating]
                 [this.decl(this._filterActivePassive)] : cssProps.filterActive, // override Indicator's filter active
             }),
             this.stateActive({ // [activating, actived]
@@ -205,7 +205,7 @@ const cssConfig = new CssConfig(() => {
             ]],
             //#endregion copy from Indicator
 
-            color: styles.ref(styles._foregFn),
+            foreg: styles.ref(styles._foregFn),
             backg: styles.ref(styles._backgFn),
         },
         to: {
@@ -218,7 +218,7 @@ const cssConfig = new CssConfig(() => {
             ]],
             //#endregion copy from Indicator
 
-            color: styles.ref(styles._foregActiveFn),
+            foreg: styles.ref(styles._foregActiveFn),
             backg: styles.ref(styles._backgActiveFn),
         },
     };

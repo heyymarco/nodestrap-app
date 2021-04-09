@@ -71,7 +71,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
     }}
     protected themesIf(): JssStyle { return {
         // define a *default* color theme:
-        [this.decl(this._foregIf)] : cssProps.color,
+        [this.decl(this._foregIf)] : cssProps.foreg,
     }}
 
 
@@ -87,7 +87,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         verticalAlign : 'middle',
 
         // colors:
-        color         : null, // delete from cssProps; in img-icon: color => backgColor ; in font-icon: color => color (font-color)
+        foreg         : null, // delete from cssProps; in img-icon: foreg => backgColor ; in font-icon: foreg => foreg => color (font-color)
 
         // sizes:
         size          : null, // delete from cssProps, in img-icon: size => [width, height] ; in font-icon: size => fontSize
@@ -97,7 +97,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
     public basicFontStyle(): JssStyle { return {
         // colors:
         backg         : 'transparent',           // setup backg color
-        color         : this.ref(this._foregFn), // setup icon's color
+        foreg         : this.ref(this._foregFn), // setup icon's color
 
 
         // sizes:
@@ -177,7 +177,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         //#endregion image masking
     }}
 
-    public imgStyle(img: Cust.Ref, color?: Cust.Ref): JssStyle { return {
+    public imgStyle(img: Cust.Ref, foreg?: Cust.Ref): JssStyle { return {
         extend: [
             this.basicStyle(),
             this.basicImgStyle(),
@@ -191,7 +191,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         [this.decl(this._img)]     : img,
 
         // setup icon's color:
-        [this.decl(this._foregFn)] : (color && (color !== this.decl(this._foregFn))) ? color : null,
+        [this.decl(this._foregFn)] : (foreg && (foreg !== this.decl(this._foregFn))) ? foreg : null,
     }}
 
     protected styles(): Styles<'main'> {
@@ -262,7 +262,7 @@ const cssConfig = new CssConfig(() => {
 
 
     const basics = {
-        color  : 'currentColor',
+        foreg  : 'currentColor',
         
         sizeNm : '24px',
     };

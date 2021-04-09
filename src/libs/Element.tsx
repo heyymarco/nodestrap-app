@@ -68,7 +68,7 @@ const cssConfig = new CssConfig(() => {
         textDecoration    : inherit,
         lineHeight        : inherit,
 
-        color             : 'currentColor',
+        foreg             : 'currentColor',
         backg             : 'transparent',
         backgGrad         : [['linear-gradient(180deg, rgba(255,255,255, 0.2), rgba(0,0,0, 0.2))', 'border-box']],
 
@@ -132,7 +132,7 @@ export class StylesBuilder {
         const cssPropsCopy: Dictionary<any> = {};
         for (const [name, prop] of Object.entries(cssProps)) {
             // excludes the entry if the name matching with following:
-            if ((/^(icon)|(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid)$|^(@)|color|backg|backgGrad|anim|orientation|align/).test(name)) continue; // exclude
+            if ((/^(icon)|(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid)$|^(@)|backgGrad|anim|orientation|align/).test(name)) continue; // exclude
             
             // if not match => include it:
             cssPropsCopy[name] = prop;
@@ -401,7 +401,7 @@ export class StylesBuilder {
     // styles:
     /**
      * Creates a basic style of a component *without* any themes nor states applied.
-     * @returns A `JssStyle` represents the basic style definition.
+     * @returns A `JssStyle` represents a basic style definition.
      */
     public basicStyle(): JssStyle { return {}; }
 
@@ -632,6 +632,14 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
 
+    //#region mixins
+    protected applyStateNoAnimStartup(): JssStyle { return {
+        animationDuration: [['0ms'], '!important'],
+    }}
+    //#endregion mixins
+
+
+
     // themes:
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props:
@@ -730,10 +738,10 @@ export class ElementStylesBuilder extends StylesBuilder {
     }}
     protected themesIf(): JssStyle { return {
         // define a *default* color theme:
-        [this.decl(this._foregIf)]         : cssProps.color,
+        [this.decl(this._foregIf)]         : cssProps.foreg,
         [this.decl(this._backgIf)]         : this.ref(this._backgNone),
         [this.decl(this._borderIf)]        : cssProps.borderColor,
-        [this.decl(this._foregOutlinedIf)] : cssProps.color,
+        [this.decl(this._foregOutlinedIf)] : cssProps.foreg,
     }}
     protected states(inherit = false): JssStyle { return {
         extend: [
@@ -768,7 +776,7 @@ export class ElementStylesBuilder extends StylesBuilder {
     
     
         // apply *non conditional* fn props:
-        color       : this.ref(this._foregFn),
+        foreg       : this.ref(this._foregFn),
         backg       : this.ref(this._backgFn),
         borderColor : this.ref(this._borderFn),
         anim        : this.ref(this._animFn),

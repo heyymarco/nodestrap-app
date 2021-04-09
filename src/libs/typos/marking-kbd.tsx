@@ -32,7 +32,7 @@ const cssConfig = new CssConfig(() => {
         textDecoration    : codes.textDecoration as Prop.TextDecoration | Cust.Ref,
         lineHeight        : codes.lineHeight     as Prop.LineHeight     | Cust.Expr,
     
-        color             : colors.white         as Prop.Color          | Cust.Ref,
+        foreg             : colors.white         as Prop.Color          | Cust.Ref,
         backg             : colors.grayDark      as Prop.Background     | Cust.Ref,
         
         paddingInline     : '0.4em'              as Prop.PaddingInline  | Cust.Expr,

@@ -1,8 +1,9 @@
-import type { Plugin, Rule, JssStyle, JssValue, StyleSheet } from 'jss';
+import type { Plugin, Rule, JssStyle, StyleSheet } from 'jss';
 
 
 
 const shorthands: { [key: string]: string } = {
+    foreg        : 'color',
     backg        : 'background',
     'backg-clip' : 'background-clip',
     anim         : 'animation',

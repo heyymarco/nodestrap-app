@@ -32,7 +32,7 @@ const cssConfig = new CssConfig(() => {
         textDecoration    : pars.textDecoration    as Prop.TextDecoration    | Cust.Ref,
         lineHeight        : pars.lineHeight        as Prop.LineHeight        | Cust.Expr,
     
-        color             : pars.color             as Prop.Color             | Cust.Ref,
+        foreg             : pars.foreg             as Prop.Color             | Cust.Ref,
         
         marginBlockStart  : pars.marginBlockStart  as Prop.MarginBlockStart  | Cust.Expr,
         marginBlockEnd    : pars.marginBlockEnd    as Prop.MarginBlockEnd    | Cust.Expr,

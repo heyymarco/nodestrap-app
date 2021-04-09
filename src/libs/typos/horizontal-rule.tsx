@@ -24,7 +24,7 @@ const cssConfig = new CssConfig(() => {
     // const middle  = 'middle';
 
     return {
-        color             : inherit         as Prop.Color             | Cust.Ref,
+        foreg             : inherit         as Prop.Color             | Cust.Ref,
         opacity           : 0.25            as Prop.Opacity           | Cust.Ref,
 
         width             : borders.hair    as Prop.Width             | Cust.Ref,

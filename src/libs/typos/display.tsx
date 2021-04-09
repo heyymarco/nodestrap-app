@@ -38,7 +38,7 @@ const cssConfig = new CssConfig(() => {
         textDecoration    : heads.textDecoration    as Prop.TextDecoration             | Cust.Ref,
         lineHeight        : heads.lineHeight        as Prop.LineHeight                 | Cust.Expr,
     
-        color             : heads.color             as Prop.Color                      | Cust.Ref,
+        foreg             : heads.foreg             as Prop.Color                      | Cust.Ref,
         
         marginBlockStart  : heads.marginBlockStart  as Prop.MarginBlockStart           | Cust.Expr,
         marginBlockEnd    : heads.marginBlockEnd    as Prop.MarginBlockEnd             | Cust.Expr,

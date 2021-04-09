@@ -33,7 +33,7 @@ const cssConfig = new CssConfig(() => {
         textDecoration    : none                     as Prop.TextDecoration | Cust.Ref,
         lineHeight        : inherit                  as Prop.LineHeight     | Cust.Expr,
     
-        color             : colors.pink              as Prop.Color          | Cust.Ref,
+        foreg             : colors.pink              as Prop.Color          | Cust.Ref,
         backg             : none                     as Prop.Background     | Cust.Ref,
         
         paddingInline     : 0                        as Prop.PaddingInline  | Cust.Expr,

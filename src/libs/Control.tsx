@@ -84,13 +84,13 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
             '&.leave,&.blur': content,
         });
     }
-    protected stateNotLeave(content: JssStyle): JssStyle { return {
+    protected stateNotLeaving(content: JssStyle): JssStyle { return {
         '&:not(.leave):not(.blur)': content,
     }}
-    protected stateHoverLeave(content: JssStyle): JssStyle { return {
+    protected stateHoverLeaving(content: JssStyle): JssStyle { return {
         '&:hover,&.focus,&:focus,&.leave,&.blur': content,
     }}
-    protected stateNotHoverLeave(content: JssStyle): JssStyle { return {
+    protected stateNotHoverLeaving(content: JssStyle): JssStyle { return {
         '&:not(:hover):not(.focus):not(:focus):not(.leave):not(.blur)': content,
     }}
     
@@ -103,13 +103,13 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     protected stateBlurring(content: JssStyle): JssStyle { return {
         '&.blur': content,
     }}
-    protected stateNotBlur(content: JssStyle): JssStyle { return {
+    protected stateNotBlurring(content: JssStyle): JssStyle { return {
         '&:not(.blur)': content,
     }}
-    protected stateFocusBlur(content: JssStyle): JssStyle { return {
+    protected stateFocusBlurring(content: JssStyle): JssStyle { return {
         '&.focus,&:focus,&.blur': content,
     }}
-    protected stateNotFocusBlur(content: JssStyle): JssStyle { return {
+    protected stateNotFocusBlurring(content: JssStyle): JssStyle { return {
         '&:not(.focus):not(:focus):not(.blur)': content,
     }}
     
@@ -126,13 +126,13 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     protected statePassivating(content: JssStyle): JssStyle { return {
         '&.passive': content,
     }}
-    protected stateNotPassive(content: JssStyle): JssStyle { return {
+    protected stateNotPassivating(content: JssStyle): JssStyle { return {
         '&:not(.passive)': content,
     }}
-    protected stateActivePassive(content: JssStyle): JssStyle { return {
+    protected stateActivePassivating(content: JssStyle): JssStyle { return {
         '&.active,&.actived,&:active:not(.disable):not(.disabled):not(:disabled),&.passive': content,
     }}
-    protected stateNotActivePassive(content: JssStyle): JssStyle { return {
+    protected stateNotActivePassivating(content: JssStyle): JssStyle { return {
         '&:not(.active):not(.actived):not(:active):not(.passive), &:not(.active):not(.actived).disable:not(.passive), &:not(.active):not(.actived).disabled:not(.passive), &:not(.active):not(.actived):disabled:not(.passive)': content,
     }}
     protected stateNotActivatingPassivating(content: JssStyle): JssStyle { return {
@@ -141,8 +141,8 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     
     // override base: pseudo + non-pseudo active
     protected applyStateNoAnimStartup(): JssStyle {
-        return this.stateNotHoverLeave(
-            this.stateNotFocusBlur(
+        return this.stateNotHoverLeaving(
+            this.stateNotFocusBlurring(
                 super.applyStateNoAnimStartup()
             )
         );
