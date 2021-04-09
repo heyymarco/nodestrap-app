@@ -108,6 +108,8 @@ function App() {
 
 					footer=
 						'dolor sit amet'
+
+					onClose={() => setActive(false)}
 					
 				>
 					<p>

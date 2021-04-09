@@ -431,7 +431,7 @@ export class StylesBuilder {
      * Returns a jss stylesheet for styling dom.
      * @returns A jss stylesheet instance.
      */
-    public useStyles() {
+    public useStyles(): Classes<'main'> {
         // hack: wrap with function twice and then unwrap twice:
         // so we can use *react hook* here:
         return (() => // wrap-1

@@ -4,6 +4,8 @@ import React                from 'react'        // base technology of our nodest
 // jss   (builds css  using javascript):
 import type {
     JssStyle,
+    Styles,
+    Classes,
 }                           from 'jss'          // ts defs support for jss
 import {
     PropEx,
@@ -38,6 +40,7 @@ import {
     cssDecls as rcssDecls,
 }                           from './Card'
 import type * as Cards      from './Card'
+import Button               from './Button'
 import typos                from './typos/index' // configurable typography (texting) defs
 
 
@@ -223,6 +226,32 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             },
         },
     }}
+    protected styles(): Styles<'main'|'title'|'actionBar'> {
+        return {
+            ...super.styles(),
+
+            title: {
+                display        : 'flex',
+                justifyContent : 'space-between',
+                alignItems     : 'center',
+            },
+
+            actionBar: {
+                display        : 'flex',
+                justifyContent : 'space-between',
+                alignItems     : 'center',
+
+
+                // children:
+                '& :first-child:last-child': {
+                    marginInlineStart: 'auto',
+                },
+            },
+        };
+    }
+    public useStyles(): Classes<'main'|'title'|'actionBar'> {
+        return super.useStyles() as Classes<'main'|'title'|'actionBar'>;
+    }
 }
 export const styles = new ModalStylesBuilder();
 
@@ -301,12 +330,21 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
+export type CloseType = 'ui' | 'backg' | 'shortcut';
 export interface Props
     extends
         Cards.Props
 {
     // accessibility:
-    tabIndex? : number
+    tabIndex?   : number
+
+
+    // actions:
+    onClose?    : (closeType: CloseType) => void
+
+
+    // layouts:
+    scrollable? : boolean
 }
 export default function Modal(props: Props) {
     const modStyles = styles.useStyles();
@@ -317,9 +355,34 @@ export default function Modal(props: Props) {
         // accessibility:
         active,
         tabIndex,
+
+
+        // actions:
+        onClose,
+
+
+        // layouts:
+        scrollable,
         
 
+        // children:
+        header,
+        footer,
         ...otherProps } = props;
+    
+    const header2 = ((header === undefined) || (typeof(header) === 'string')) ? (
+        <h5 className={modStyles.title}>
+            { header }
+            <Button btnStyle='link' theme='secondary' aria-label='Close' onClick={() => props.onClose?.('ui')} />
+        </h5>
+    ) : header;
+
+    const footer2 = ((footer === undefined) || (typeof(footer) === 'string')) ? (
+        <p className={modStyles.actionBar}>
+            { footer }
+            <Button theme='primary' text='Close' onClick={() => props.onClose?.('ui')} />
+        </p>
+    ) : footer;
 
     return (
         <Indicator
@@ -343,11 +406,36 @@ export default function Modal(props: Props) {
                 // accessibility:
                 tabIndex : tabIndex,
             }}
+
+
+            // events:
+            // watch [escape key] on the whole modal, including card & children:
+            onKeyDown={(e) => {
+                if ((e.code === 'Escape') || (e.key === 'Escape')) props.onClose?.('shortcut');
+
+
+                // forwards:
+                props.onKeyDown?.(e);
+            }}
+
+            // watch left click on the backg only (not at the card):
+            onClick={(e) => {
+                if ((e.target === e.currentTarget) && (e.type === 'click')) props.onClose?.('backg');
+
+
+                // forwards:
+                props.onClick?.(e);
+            }}
         >
             <div>
                 <Card
                     // other props:
                     {...otherProps}
+
+
+                    // children:
+                    header={header2}
+                    footer={footer2}
                 />
             </div>
         </Indicator>
