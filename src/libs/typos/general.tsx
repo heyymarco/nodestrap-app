@@ -1,8 +1,15 @@
 // jss   (builds css  using javascript):
+import type {
+    JssStyle,
+}                          from 'jss'           // ts defs support for jss
 import { Prop, Cust, }     from '../Css'        // ts defs support for jss
 import CssConfig           from '../CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
+import type {
+    Dictionary,
+}                          from '../CssConfig'  // ts defs support for jss
 
 // nodestrap (modular web components):
+import * as base           from './base'
 import colors              from '../colors'     // configurable colors & theming defs
 
 
@@ -90,3 +97,20 @@ const cssConfig = new CssConfig(() => {
 }, /*prefix: */'');
 export const cssProps = cssConfig.refs;
 export default cssProps;
+
+
+
+// define the css using configurable cssProps:
+base.declareCss({
+    ':root': (() => {
+        const cssPropsCopy: Dictionary<any> = {};
+        for (const [name, prop] of Object.entries(cssProps)) {
+            // excludes the entry if the name matching with following:
+            if ((/(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|Lighter|Light|Normal|Bold|Bolder)$|(fontFamily\w+)/).test(name)) continue; // exclude
+            
+            // if not match => include it:
+            cssPropsCopy[name] = prop;
+        }
+        return cssPropsCopy as JssStyle;
+    })()
+});

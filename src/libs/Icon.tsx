@@ -22,6 +22,7 @@ import fontMaterial        from './Icon-font-material'
 import {
     default  as Element,
     ElementStylesBuilder,
+    cssProps as ecssProps,
 }                          from './Element'
 import type * as Elements  from './Element'
 
@@ -78,93 +79,132 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
     // styles:
     public basicStyle(): JssStyle { return {
-        extend: this.filterGeneralProps(cssProps), // apply *general* cssProps
+        extend: [
+            this.filterGeneralProps(cssProps), // apply *general* cssProps
+        ] as JssStyle,
 
 
 
         // layout:
-        display       : 'inline-block',
-        verticalAlign : 'middle',
+        display       : 'inline-flex',
+        alignItems    : 'center', // center items vertically
+        flexWrap      : 'nowrap',
+
+
+
+        // positions:
+        verticalAlign : 'baseline',
+
+
+
+        // the dummy text content, for making height as tall as line-height
+        '&::before': {
+            // layout:
+            content    : '"\xa0"', // &nbsp;
+            display    : 'inline',
+            
+
+            // appearance:
+            inlineSize : 0,
+            overflow   : 'hidden',
+            visibility : 'hidden',
+        },
+
+
 
         // colors:
         foreg         : null, // delete from cssProps; in img-icon: foreg => backgColor ; in font-icon: foreg => foreg => color (font-color)
 
         // sizes:
         size          : null, // delete from cssProps, in img-icon: size => [width, height] ; in font-icon: size => fontSize
-        blockSize     : cssProps.size,
-        inlineSize    : 'min-content',
     }}
     public basicFontStyle(): JssStyle { return {
-        // colors:
-        backg         : 'transparent',           // setup backg color
-        foreg         : this.ref(this._foregFn), // setup icon's color
+        '&::after': {
+            // layout:
+            content    : this.ref(this._img),
+            display    : 'inline',
+            
 
-
-        // sizes:
-        fontSize      : cssProps.size,  // setup icon's size
-        overflowY     : 'hidden',       // hide the pseudo-inherited underline
-
-
-        // accessibility:
-        userSelect    : 'none',         // disable selecting icon's text
-
-
-        //#region fonts
-        //#region custom font
-        // load custom font:
-        '@global': {
-            '@font-face': {
-                ...config.font.styles,
-                src: config.font.files.map((fileName) => `url("${styles.concatUrl(fileName, config.font.path)}") ${this.formatOf(fileName)}`).join(','),
+            // colors:
+            backg         : 'transparent',           // setup backg color
+            foreg         : this.ref(this._foregFn), // setup icon's color
+            
+    
+            // sizes:
+            fontSize      : cssProps.size,  // setup icon's size
+            overflowY     : 'hidden',       // hide the pseudo-inherited underline
+            
+            
+            // transition:
+            transition    : ecssProps.transition,
+    
+    
+            // accessibility:
+            userSelect    : 'none',         // disable selecting icon's text
+    
+    
+            //#region fonts
+            //#region custom font
+            // load custom font:
+            '@global': {
+                '@font-face': {
+                    ...config.font.styles,
+                    src: config.font.files.map((fileName) => `url("${styles.concatUrl(fileName, config.font.path)}") ${this.formatOf(fileName)}`).join(','),
+                },
             },
+    
+    
+    
+            // apply custom font:
+            ...config.font.styles,
+            //#endregion custom font
+    
+    
+            lineHeight    : 1,
+            textTransform : 'none',
+            letterSpacing : 'normal',
+            wordWrap      : 'normal',
+            whiteSpace    : 'nowrap',
+            direction     : 'ltr',
+    
+    
+            //#region browser supports
+            '-webkit-font-smoothing'  : 'antialiased',        // support for all WebKit browsers
+            'textRendering'           : 'optimizeLegibility', // support for Safari and Chrome
+            '-moz-osx-font-smoothing' : 'grayscale',          // support for Firefox
+            fontFeatureSettings       : 'liga',               // support for IE
+            //#endregion browser supports
+            //#endregion fonts
         },
-
-
-
-        // apply custom font:
-        ...config.font.styles,
-        //#endregion custom font
-
-
-        lineHeight    : 1,
-        textTransform : 'none',
-        letterSpacing : 'normal',
-        wordWrap      : 'normal',
-        whiteSpace    : 'nowrap',
-        direction     : 'ltr',
-
-
-        //#region browser supports
-        '-webkit-font-smoothing'  : 'antialiased',        // support for all WebKit browsers
-        'textRendering'           : 'optimizeLegibility', // support for Safari and Chrome
-        '-moz-osx-font-smoothing' : 'grayscale',          // support for Firefox
-        fontFeatureSettings       : 'liga',               // support for IE
-        //#endregion browser supports
-        //#endregion fonts
     }}
     public basicImgStyle(): JssStyle { return {
         // colors:
         backg         : this.ref(this._foregFn), // setup icon's color
+        
+        
+        // transition:
+        transition    : ecssProps.transition,
 
 
         // sizes:
         //#region children
-        // just a *dummy* element for filling the space
+        // just a *dummy* element for filling the space (width)
         '& >img': {
             // appearance:
             visibility : [['hidden'], '!important'], // invisible but still filling the space
 
 
             // sizes:
-            inlineSize    : 'auto',           // calculates the width by [height * aspect-ratio]
-            blockSize     : 'fill-available', // follow parent's height
-            fallbacks     : {
-                blockSize : '100%',
-            },
+            blockSize  : cssProps.size, // follow config's size
+            inlineSize : 'auto',        // calculates the width by [height * aspect-ratio]
+
+
+            // transition:
+            transition : 'inherit',
 
 
             // accessibility:
-            userSelect : 'none', // disable selecting icon's text
+            userSelect : 'none', // disable selecting icon's img
         },
         //#endregion children
 
@@ -182,8 +222,6 @@ export class IconStylesBuilder extends ElementStylesBuilder {
             this.basicStyle(),
             this.basicImgStyle(),
         ] as JssStyle,
-
-        verticalAlign : null, // delete
 
 
 
@@ -351,18 +389,14 @@ export function useIcon(props: Props) {
             class: imgIcon ? 'img' : (isFontIcon ? 'font' : null),
 
             style: {
-                ...(imgIcon ? {
-                    // appearance:
-                    [styles.decl(styles._img)] : `url("${imgIcon}")`,
-                } : {}),
+                // appearance:
+                [styles.decl(styles._img)] : isFontIcon ? `"${props.icon}"` : `url("${imgIcon}")`,
             },
 
             children: [
                 (imgIcon ? (
                     <img key='ico-img' src={imgIcon} alt='' />
                 ) : null),
-
-                ((!imgIcon && isFontIcon) ? props.icon : null),
             ].filter((child) => (child !== null)) as React.ReactNode,
         };
     }, [props.icon]);

@@ -405,7 +405,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         display       : 'inline-block',
 
 
-        // typos:
+        // positions:
         verticalAlign : 'baseline',
     
 
@@ -439,7 +439,9 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             content    : '""',
             display    : 'block',
 
+
             // sizes:
+            // fill the entire parent:
             inlineSize     : 'fill-available',
             blockSize      : 'fill-available',
             fallbacks      : {
@@ -476,9 +478,13 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         
         // layout:
         display       : 'inline-flex',
-        verticalAlign : 'text-bottom',
-        alignItems    : 'center',
+        alignItems    : 'center', // center items vertically
         flexWrap      : 'wrap',
+
+
+
+        // positions:
+        verticalAlign : 'baseline', // check's text should be aligned with sibling text, so the check behave like <span> wrapper
     
     
     
@@ -499,11 +505,6 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         [labelElm] : this.basicLabelStyle(),
     }}
     public buttonStyle(): JssStyle { return {
-        // layout:
-        verticalAlign : 'baseline',
-
-
-
         // children:
 
         [chkElm]   : {

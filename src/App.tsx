@@ -17,7 +17,9 @@ import EditableControl from './libs/EditableControl';
 import EditableTextControl from './libs/EditableTextControl';
 
 import Button, * as Buttons from './libs/Button';
+import ButtonIcon from './libs/ButtonIcon';
 import Input from './libs/Input';
+import Check from './libs/Check';
 
 import Icon   from './libs/Icon';
 
@@ -97,14 +99,12 @@ function App() {
                 <hr style={{flexBasis: '100%'}} />
                 <Element
 					theme={theme} size={size} enableGradient={enableGrad}
-					//@ts-ignore
 					outlined={outlined}
 				>
                         test
                 </Element>
                 <Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
-					//@ts-ignore
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -113,7 +113,6 @@ function App() {
                 </Indicator>
                 <Content
 					theme={theme} size={size} enableGradient={enableGrad}
-					//@ts-ignore
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -122,7 +121,6 @@ function App() {
                 </Content>
                 <Control
 					theme={theme} size={size} enableGradient={enableGrad}
-					//@ts-ignore
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -133,7 +131,6 @@ function App() {
                 </Control>
                 <Button
 					theme={theme} size={size} enableGradient={enableGrad}
-					//@ts-ignore
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -146,11 +143,49 @@ function App() {
 						alert('hello world')
 					}}
 				>
-                        button
+					My button
                 </Button>
+				<ButtonIcon
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+
+					focus={focus}
+
+					btnStyle={btnStyle}
+
+					icon='face'
+				>
+                    <span>M</span>
+                </ButtonIcon>
+				<ButtonIcon
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+
+					focus={focus}
+
+					btnStyle={btnStyle}
+
+					icon='instagram'
+				>
+                    <span>My instagram</span>
+                </ButtonIcon>
+				<Check
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+
+					focus={focus}
+				>
+                    <span>My opt</span>
+                </Check>
+				<span>My text</span>
                 <EditableControl
 					theme={theme} size={size} enableGradient={enableGrad}
-					//@ts-ignore
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -164,7 +199,6 @@ function App() {
                 </EditableControl>
                 <EditableTextControl
 					theme={theme} size={size} enableGradient={enableGrad}
-					//@ts-ignore
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -178,7 +212,6 @@ function App() {
                 </EditableTextControl>
                 <Input
 					theme={theme} size={size} enableGradient={enableGrad}
-					//@ts-ignore
 					outlined={outlined}
 
 					enabled={enabled} active={active}

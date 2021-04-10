@@ -226,20 +226,15 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             },
         },
     }}
-    protected styles(): Styles<'main'|'title'|'actionBar'> {
+    protected styles(): Styles<'main'|'actionBar'> {
         return {
             ...super.styles(),
 
-            title: {
-                display        : 'flex',
-                justifyContent : 'space-between',
-                alignItems     : 'center',
-            },
-
             actionBar: {
+                // layout:
                 display        : 'flex',
-                justifyContent : 'space-between',
-                alignItems     : 'center',
+                justifyContent : 'space-between', // separates items horizontally
+                alignItems     : 'center', // center items vertically
 
 
                 // children:
@@ -249,8 +244,8 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             },
         };
     }
-    public useStyles(): Classes<'main'|'title'|'actionBar'> {
-        return super.useStyles() as Classes<'main'|'title'|'actionBar'>;
+    public useStyles(): Classes<'main'|'actionBar'> {
+        return super.useStyles() as Classes<'main'|'actionBar'>;
     }
 }
 export const styles = new ModalStylesBuilder();
@@ -371,7 +366,7 @@ export default function Modal(props: Props) {
         ...otherProps } = props;
     
     const header2 = ((header === undefined) || (typeof(header) === 'string')) ? (
-        <h5 className={modStyles.title}>
+        <h5 className={modStyles.actionBar}>
             { header }
             <Button btnStyle='link' theme='secondary' aria-label='Close' onClick={() => props.onClose?.('ui')} />
         </h5>

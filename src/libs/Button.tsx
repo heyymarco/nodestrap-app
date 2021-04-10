@@ -60,8 +60,12 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         // layout:
         display        : 'inline-flex',
         flexDirection  : cssProps.orientation,
-        justifyContent : 'center',
-        alignItems     : 'center',
+        justifyContent : 'center', // center items horizontally
+        alignItems     : 'center', // center items vertically
+
+        
+        // positions:
+        verticalAlign  : 'baseline', // button's text should be aligned with sibling text, so the button behave like <span> wrapper
 
 
         // sizes:
@@ -71,7 +75,6 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
 
         // typos:
         textAlign      : 'center',
-        verticalAlign  : 'baseline', // button's text should aligned with sibling text, so the button behave like <span> wrapper
 
 
         // accessibility:

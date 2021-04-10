@@ -49,11 +49,11 @@ export class InputStylesBuilder extends EditableTextControlStylesBuilder {
 
         // layout:
         display       : 'flex',
-        alignItems    : 'center',
+        alignItems    : 'center', // center items vertically
     
 
-        // typos:
-        verticalAlign : 'baseline',
+        // positions:
+        verticalAlign : 'baseline', // input's text should be aligned with sibling text, so the input behave like <span> wrapper
 
 
 

@@ -90,12 +90,12 @@ const cssConfig = new CssConfig(() => {
         // anim props:
 
         transition        : [
-            ['background' , '300ms', 'ease-out'],
             ['color'      , '300ms', 'ease-out'],
+            ['background' , '300ms', 'ease-out'],
             ['border'     , '300ms', 'ease-out'],
+            ['inline-size', '300ms', 'ease-out'],
+            ['block-size' , '300ms', 'ease-out'],
             ['font-size'  , '300ms', 'ease-out'],
-            ['width'      , '300ms', 'ease-out'],
-            ['height'     , '300ms', 'ease-out'],
         ],
 
         boxShadowNone     : [[0, 0, 'transparent']],
@@ -753,13 +753,13 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
                 // *toggle off* the background gradient prop:
-                [this.decl(this._backgGradTg)]     : 'initial',
+                [this.decl(this._backgGradTg)]     : 'unset', // inherit from parent (if any)
 
 
 
                 // *toggle off* the outlined props:
-                [this.decl(this._foregOutlinedTg)] : 'initial',
-                [this.decl(this._backgOutlinedTg)] : 'initial',
+                [this.decl(this._foregOutlinedTg)] : 'unset', // inherit from parent (if any)
+                [this.decl(this._backgOutlinedTg)] : 'unset', // inherit from parent (if any)
                 //#endregion all initial states are none
             }),
         ] as JssStyle,
