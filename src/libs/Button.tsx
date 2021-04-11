@@ -9,15 +9,12 @@ import type {
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 import type {
     DictionaryOf,
-}                          from './CssConfig'   // ts defs support for jss
+}                           from './CssConfig'   // ts defs support for jss
 
 // nodestrap (modular web components):
 import colors               from './colors'     // configurable colors & theming defs
-import * as border         from './borders'     // configurable borders & border radiuses defs
-import spacers             from './spacers'     // configurable spaces defs
-import {
-    styles as indicatorStyles,
-}                           from './Indicator'
+import * as border          from './borders'     // configurable borders & border radiuses defs
+import spacers              from './spacers'     // configurable spaces defs
 import {
     default  as Control,
     ControlStylesBuilder,
@@ -81,12 +78,29 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         userSelect     : 'none', // disable selecting button's text
     }}
     public linkStyle(): JssStyle { return {
-        // extend: this.outlined(), // copy outlined style from base
-        extend: indicatorStyles.outlined(), // copy outlined style from base's base
+        extend: this.outlined(), // copy outlined style from base
 
 
 
         '&:not(.outlined)' : {
+            extend: [
+                this.stateActive( // [activating, actived]
+                    // always *toggle on* the outlined props:
+                    this.toggleOnOutlined(),
+                ),
+                this.stateNotDisable({extend: [
+                    this.stateHover(
+                        // always *toggle on* the outlined props:
+                        this.toggleOnOutlined(),
+                    ),
+                    this.stateFocus(
+                        // always *toggle on* the outlined props:
+                        this.toggleOnOutlined(),
+                    ),
+                ] as JssStyle}),
+            ] as JssStyle,
+
+
             borderColor    : 'transparent', // hides the border if not outlined
 
 

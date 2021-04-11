@@ -139,7 +139,6 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         );
     }
     protected applyStateActive(): JssStyle { return {
-        // apply an *active* color theme:
         extend: [
             super.applyStateActive(), // copy active theme from base
         ] as JssStyle,

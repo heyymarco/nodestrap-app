@@ -148,11 +148,13 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         );
     }
     protected applyStateActive(): JssStyle { return {
-        // apply an *active* color theme:
         extend: [
             super.applyStateActive(), // copy active theme from base
         ] as JssStyle,
         
+
+        
+        // apply an *active* color theme:
         [this.decl(this._boxShadowFocusIf)] : colors.primaryTransp,
     }}
     //#endregion mixins
@@ -168,11 +170,6 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         // customize the *themed* props:
     
         [this.decl(this._boxShadowFocusTh)]: (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
-    }}
-    public outlined(): JssStyle { return { //TODO: removed useless
-        extend: [
-            super.outlined(),
-        ] as JssStyle,
     }}
 
 

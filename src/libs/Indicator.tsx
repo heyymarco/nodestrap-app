@@ -135,6 +135,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
         [this.decl(this._foregOutlinedIf)] : this.ref(this._foregOutlinedIfAct),
 
 
+        
         extend: [
             // *toggle off* the outlined props:
             this.toggleOffOutlined(),

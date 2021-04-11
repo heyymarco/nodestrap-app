@@ -11,7 +11,7 @@ import ModalApp from './ModalApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ModalApp />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );
