@@ -397,7 +397,7 @@ export const cssDecls = cssConfig.decls;
 type EditableControlElement        = HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement
 export type ValidatorHandler       = () => Val.Result
 export type CustomValidatorHandler = (state: ValidityState, value: string) => Val.Result
-export function useNativeValidator(customValidator?: CustomValidatorHandler) {
+export function useInputValidator(customValidator?: CustomValidatorHandler) {
     let [isValid, setIsValid] = useState<Val.Result>(null);
 
 
@@ -439,7 +439,7 @@ export function useStateValidInvalid(props: Val.Validation, validator?: Validato
         if (props.enableValidation === false)      return null;          // disabled => uncheck
         if (props.isValid !== undefined)           return props.isValid; // force state to uncheck/valid/invalid
 
-        // use native validator as tertiary:
+        // use input validator as tertiary:
         if (validator)                             return undefined; // undefined means => evaluate the validator *at startup*
 
         // use default value as fallback:
@@ -504,7 +504,7 @@ export function useStateValidInvalid(props: Val.Validation, validator?: Validato
         if (props.enableValidation === false)      return null;          // disabled => uncheck
         if (props.isValid !== undefined)           return props.isValid; // force state to uncheck/valid/invalid
 
-        // use native validator as tertiary:
+        // use input validator as tertiary:
         if ((valided !== undefined) && validator)  return validator(); // now validator has been loaded => evaluate the validator *now*
 
         // no change needed:
@@ -588,11 +588,11 @@ export interface Props
     required?        : boolean
 }
 export default function EditableControl(props: Props) {
-    const ectrlStyles     = styles.useStyles();
+    const ectrlStyles    = styles.useStyles();
 
     // states:
-    const nativeValidator = useNativeValidator(props.customValidator);
-    const stateValInval   = useStateValidInvalid(props, nativeValidator.validator);
+    const inputValidator = useInputValidator(props.customValidator);
+    const stateValInval  = useStateValidInvalid(props, inputValidator.validator);
 
     
 
@@ -629,11 +629,11 @@ export default function EditableControl(props: Props) {
             elmRef={(elm) => {
                 if (elm) {
                     if ((elm as any).validity) {
-                        nativeValidator.handleInit(elm as EditableControlElement);
+                        inputValidator.handleInit(elm as EditableControlElement);
                     }
                     else {
                         const firstChild = elm.querySelector(htmlEditCtrls.join(','));
-                        if (firstChild) nativeValidator.handleInit(firstChild as EditableControlElement);
+                        if (firstChild) inputValidator.handleInit(firstChild as EditableControlElement);
                     } // if
                 } // if
 
@@ -652,7 +652,7 @@ export default function EditableControl(props: Props) {
             }}
             onChange={(e: React.ChangeEvent<EditableControlElement>) => { // watch change event from current element or bubbling from children
                 // validations:
-                nativeValidator.handleChange(e);
+                inputValidator.handleChange(e);
 
 
                 // forwards:

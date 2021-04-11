@@ -45,13 +45,17 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
     // themes:
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
-        /*
-            Control: boxShadowFocusTh
-            Content: colorTh, backgTh, colorOutlinedTh, colorActiveTh,backgActiveTh 
-        */
         extend: [
-                           super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
+            super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
+            
             contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor), // copy themes from Content
+        ] as JssStyle,
+    }}
+    public outlined(): JssStyle { return {
+        extend: [
+            super.outlined(),
+
+            contentStyles.contentOutlined(),
         ] as JssStyle,
     }}
 
