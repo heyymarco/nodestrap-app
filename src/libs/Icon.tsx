@@ -390,7 +390,7 @@ export function useIcon(props: Props) {
 
             style: {
                 // appearance:
-                [styles.decl(styles._img)] : isFontIcon ? `"${props.icon}"` : `url("${imgIcon}")`,
+                [styles.decl(styles._img)] : imgIcon ? `url("${imgIcon}")` : `"${props.icon}"`,
             },
 
             children: [

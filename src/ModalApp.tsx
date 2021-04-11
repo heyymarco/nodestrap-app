@@ -13,6 +13,7 @@ import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
 import Content from './libs/Content';
 import Button from './libs/Button';
+import ButtonIcon from './libs/ButtonIcon';
 import Modal from './libs/Modal';
 
 
@@ -102,6 +103,7 @@ function App() {
                         test
                 </Content>
 				<Button onClick={() => setActive(true)}>Show modal</Button>
+				<ButtonIcon btnStyle='link' theme='secondary' aria-label='Close' icon='close' />
 				<Modal theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}
 					header=
 						'Lorem ipsum dolor'

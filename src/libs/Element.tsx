@@ -158,6 +158,34 @@ export class StylesBuilder {
         }
         return cssPropsCopy as JssStyle;
     }
+
+    /**
+     * Backups the value of the specified `cssProps`.
+     * @param cssProps The props to be backed up.  
+     * @param backupSuff The suffix name of the backup props.
+     * @returns A `JssStyle` which is the copy of the `cssProps` that the prop names renamed with the specified `backupSuff`.
+     */
+    protected backupProps<TCssProps>(cssProps: TCssProps, backupSuff: string = 'Bak'): JssStyle {
+        const cssPropsCopy: Dictionary<any> = {};
+        for (const [name] of Object.entries(cssProps)) {
+            cssPropsCopy[`${name}${backupSuff}`] = `var(${name})`;
+        }
+        return cssPropsCopy as JssStyle;
+    }
+
+    /**
+     * Restores the value of the specified `cssProps`.
+     * @param cssProps The props to be restored.  
+     * @param backupSuff The suffix name of the backup props.
+     * @returns A `JssStyle` which is the copy of the `cssProps` that the prop values pointed to the backed up values.
+     */
+    protected restoreProps<TCssProps>(cssProps: TCssProps, backupSuff: string = 'Bak'): JssStyle {
+        const cssPropsCopy: Dictionary<any> = {};
+        for (const [name] of Object.entries(cssProps)) {
+            cssPropsCopy[name] = `var(${name}${backupSuff})`;
+        }
+        return cssPropsCopy as JssStyle;
+    }
     //#endregion global css props
 
 

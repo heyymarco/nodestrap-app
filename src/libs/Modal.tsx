@@ -1,5 +1,9 @@
 // react (builds html using javascript):
-import React                from 'react'        // base technology of our nodestrap components
+import
+    React, {
+    useRef,
+    useEffect,
+}                           from 'react'        // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
 import type {
@@ -40,7 +44,7 @@ import {
     cssDecls as rcssDecls,
 }                           from './Card'
 import type * as Cards      from './Card'
-import Button               from './Button'
+import Button               from './ButtonIcon'
 import typos                from './typos/index' // configurable typography (texting) defs
 
 
@@ -177,8 +181,6 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     // styles:
     public basicStyle(): JssStyle { return {
         extend: [
-            stripOuts.focusableElement, // clear browser's default styles
-
             super.basicStyle(),                        // copy basicStyle from base
             this.filterPrefixProps(cssProps, 'backg'), // apply cssProps starting with backg***
         ] as JssStyle,
@@ -219,11 +221,31 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
             // children:
-            '& >*': { // card layer
-                extend: [
-                    this.overwriteParentProps(cssProps),
-                ] as JssStyle,
-            },
+            ...(() => {
+                const newCardProps = this.overwriteParentProps(cssProps);
+
+                return {
+                    ...this.backupProps(newCardProps), // backup cardProps
+                    '& >*': { // card layer
+                        extend: [
+                            stripOuts.focusableElement, // clear browser's default styles
+                        ] as JssStyle,
+
+                        '&:not(._)': { // force overwrite
+                            extend: [
+                                newCardProps, // overwrite cardProps
+                            ] as JssStyle,
+
+
+                            [this.decl(this._animFn)]: 'inherit', // inherit from Modal
+                        },
+        
+        
+                        // children's children:
+                        '& >*': this.restoreProps(newCardProps), // restore cardProps
+                    },
+                };
+            })(),
         },
     }}
     protected styles(): Styles<'main'|'actionBar'> {
@@ -346,6 +368,15 @@ export default function Modal(props: Props) {
 
 
 
+    const modRef = useRef<HTMLElement>();
+    useEffect(() => {
+        if (props.active) {
+            modRef.current?.focus(); // when actived => focus the dialog, so the user able to use [esc] key to close the dialog
+        }
+    }, [props.active]);
+
+
+
     const {
         // accessibility:
         active,
@@ -368,7 +399,7 @@ export default function Modal(props: Props) {
     const header2 = ((header === undefined) || (typeof(header) === 'string')) ? (
         <h5 className={modStyles.actionBar}>
             { header }
-            <Button btnStyle='link' theme='secondary' aria-label='Close' onClick={() => props.onClose?.('ui')} />
+            <Button btnStyle='link' theme='secondary' aria-label='Close' icon='close' onClick={() => props.onClose?.('ui')} />
         </h5>
     ) : header;
 
@@ -396,36 +427,48 @@ export default function Modal(props: Props) {
             ]}
 
 
-            // Control props:
-            {...{
-                // accessibility:
-                tabIndex : tabIndex,
-            }}
-
-
             // events:
             // watch [escape key] on the whole modal, including card & children:
             onKeyDown={(e) => {
                 if ((e.code === 'Escape') || (e.key === 'Escape')) props.onClose?.('shortcut');
-
-
-                // forwards:
-                props.onKeyDown?.(e);
             }}
 
             // watch left click on the backg only (not at the card):
             onClick={(e) => {
                 if ((e.target === e.currentTarget) && (e.type === 'click')) props.onClose?.('backg');
-
-
-                // forwards:
-                props.onClick?.(e);
             }}
         >
             <div>
                 <Card
                     // other props:
                     {...otherProps}
+
+                    
+                    // essentials:
+                    elmRef={(elm) => {
+                        // @ts-ignore
+                        modRef.current = elm;
+
+
+                        // forwards:
+                        const elmRef = props.elmRef;
+                        if (elmRef) {
+                            if (typeof(elmRef) === 'function') {
+                                elmRef(elm);
+                            }
+                            else {
+                                // @ts-ignore
+                                elmRef.current = elm;
+                            } // if
+                        } // if
+                    }}
+
+
+                    // Control props:
+                    {...{
+                        // accessibility:
+                        tabIndex : tabIndex ?? -1,
+                    }}
 
 
                     // children:
