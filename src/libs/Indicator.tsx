@@ -133,6 +133,12 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
         [this.decl(this._backgIf)]         : this.ref(this._backgIfAct),
         [this.decl(this._borderIf)]        : this.ref(this._borderIfAct),
         [this.decl(this._foregOutlinedIf)] : this.ref(this._foregOutlinedIfAct),
+
+
+        extend: [
+            // *toggle off* the outlined props:
+            this.toggleOffOutlined(),
+        ] as JssStyle,
     }}
     //#endregion mixins
 

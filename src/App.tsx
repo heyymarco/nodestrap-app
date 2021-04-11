@@ -101,7 +101,7 @@ function App() {
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
 				>
-                        test
+                        element
                 </Element>
                 <Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -109,7 +109,7 @@ function App() {
 
 					enabled={enabled} active={active}
 				>
-                        test
+                        indicator
                 </Indicator>
                 <Content
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -117,7 +117,7 @@ function App() {
 
 					enabled={enabled} active={active}
 				>
-                        test
+                        content
                 </Content>
                 <Control
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -127,7 +127,7 @@ function App() {
 
 					focus={focus}
 				>
-                        test
+                        control
                 </Control>
                 <Button
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -143,7 +143,7 @@ function App() {
 						alert('hello world')
 					}}
 				>
-					My button
+					button
                 </Button>
 				<ButtonIcon
 					theme={theme} size={size} enableGradient={enableGrad}

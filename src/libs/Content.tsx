@@ -36,7 +36,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
     /**
      * actived themed foreground color.
      */
-    protected readonly _foregActiveTh = 'foregActiveTh'
+    public    readonly _foregActiveTh = 'foregActiveTh'
 
     /**
      * actived functional foreground color.
@@ -50,7 +50,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
     /**
      * actived themed background.
      */
-    protected readonly _backgActiveTh = 'backgActiveTh'
+    public    readonly _backgActiveTh = 'backgActiveTh'
 
     /**
      * actived functional backgrounds.
@@ -77,14 +77,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
         [cssDecls.paddingInline] : (cssProps as DictionaryOf<typeof cssProps>)[`paddingInline${Size}`],
         [cssDecls.paddingBlock]  : (cssProps as DictionaryOf<typeof cssProps>)[`paddingBlock${Size}`],
     }}
-    public contentOutlined(): JssStyle {
-        // unlike on Indicator/Element,
-        // on Content the outlined *only be applied*
-        // * if not-actived
-        return this.stateNotActive(
-            super.outlined()
-        );
-    }
+    public contentOutlined(): JssStyle { return {}; }
 
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
@@ -102,6 +95,8 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
     }}
     public outlined(): JssStyle { return {
         extend: [
+            super.outlined(),
+
             this.contentOutlined(),
         ] as JssStyle,
     }}

@@ -664,6 +664,26 @@ export class ElementStylesBuilder extends StylesBuilder {
     protected applyStateNoAnimStartup(): JssStyle { return {
         animationDuration: [['0ms'], '!important'],
     }}
+
+    protected toggleOnGradient(): JssStyle { return {
+        // *toggle on* the background gradient prop:
+        [this.decl(this._backgGradTg)]     : cssProps.backgGrad,
+    }}
+    protected toggleOffGradient(inherit = false): JssStyle { return {
+        // *toggle off* the background gradient prop:
+        [this.decl(this._backgGradTg)]     : inherit ? 'unset' : 'initial',
+    }}
+
+    protected toggleOnOutlined(): JssStyle { return {
+        // *toggle on* the outlined props:
+        [this.decl(this._foregOutlinedTg)] : this.ref(this._foregOutlinedFn),
+        [this.decl(this._backgOutlinedTg)] : this.ref(this._backgOutlinedFn),
+    }}
+    protected toggleOffOutlined(inherit = false): JssStyle { return {
+        // *toggle off* the outlined props:
+        [this.decl(this._foregOutlinedTg)] : inherit ? 'unset' : 'initial',
+        [this.decl(this._backgOutlinedTg)] : inherit ? 'unset' : 'initial',
+    }}
     //#endregion mixins
 
 
@@ -685,15 +705,14 @@ export class ElementStylesBuilder extends StylesBuilder {
         [cssDecls.paddingBlock]  : (cssProps as DictionaryOf<typeof cssProps>)[`paddingBlock${Size}`],
         [cssDecls.borderRadius]  : (cssProps as DictionaryOf<typeof cssProps>)[`borderRadius${Size}`],
     }}
-    public gradient(): JssStyle { return {
+    public gradient(): JssStyle {
         // *toggle on* the background gradient prop:
-        [this.decl(this._backgGradTg)]     : cssProps.backgGrad,
-    }}
-    public outlined(): JssStyle { return {
+        return this.toggleOnGradient();
+    }
+    public outlined(): JssStyle {
         // *toggle on* the outlined props:
-        [this.decl(this._foregOutlinedTg)] : this.ref(this._foregOutlinedFn),
-        [this.decl(this._backgOutlinedTg)] : this.ref(this._backgOutlinedFn),
-    }}
+        return this.toggleOnOutlined();
+    }
 
 
 
@@ -781,13 +800,14 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
                 // *toggle off* the background gradient prop:
-                [this.decl(this._backgGradTg)]     : 'unset', // inherit from parent (if any)
+                // but still be *toggle on* by parent (inherit)
+                ...this.toggleOffGradient(/*inherit =*/true),
 
 
 
                 // *toggle off* the outlined props:
-                [this.decl(this._foregOutlinedTg)] : 'unset', // inherit from parent (if any)
-                [this.decl(this._backgOutlinedTg)] : 'unset', // inherit from parent (if any)
+                // but still be *toggle on* by parent (inherit)
+                ...this.toggleOffOutlined(/*inherit =*/true),
                 //#endregion all initial states are none
             }),
         ] as JssStyle,

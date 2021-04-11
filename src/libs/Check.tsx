@@ -140,7 +140,9 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     }
     protected applyStateActive(): JssStyle { return {
         // apply an *active* color theme:
-        extend: super.applyStateActive(), // copy active theme from base
+        extend: [
+            super.applyStateActive(), // copy active theme from base
+        ] as JssStyle,
         
 
         
@@ -165,23 +167,23 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         // apply an *invalid* color theme for the label:
         [this.decl(this._foregLabelIfIf)] : this.ref(this._foregLabelIfInv),
     }}
+    protected applyStateCheck(): JssStyle { return {
+        extend: [
+            // *toggle off* the outlined props:
+            this.toggleOffOutlined(),
+        ] as JssStyle,
+    }}
     //#endregion mixins
 
 
 
     // themes:
     protected checkThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {}; }
-    protected checkOutlined(): JssStyle {
-        return this.stateNotCheck(
-            super.outlined()
-        );
-    }
 
     protected labelThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props for the label:
         [this.decl(this._foregLabelTh)]: (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
     }}
-    protected labelOutlined(): JssStyle  { return {}; }
 
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
@@ -189,12 +191,6 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
             this.checkThemeOf(theme, Theme, themeProp, themeColor),
             this.labelThemeOf(theme, Theme, themeProp, themeColor),
-        ] as JssStyle,
-    }}
-    public outlined(): JssStyle { return {
-        extend: [
-            this.checkOutlined(),
-            this.labelOutlined(),
         ] as JssStyle,
     }}
 
@@ -226,6 +222,10 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             },
             this.stateCheck({ // [checking, checked]
                 [this.decl(this._animCheckClear)]      : cssProps.animCheck,
+
+                extend: [
+                    this.applyStateCheck(),
+                ] as JssStyle,
             }),
             this.stateNotCheck({ // [not-checking, not-checked] => [clearing, cleared]
                 [this.decl(this._animCheckClear)]      : cssProps.animClear,
@@ -310,11 +310,11 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             this.stateCheck({ // [checking, checked] => label [activating, actived]
                 [labelElm]: {
                     [this.decl(this._animActivePassive)]   : icssProps.animActive,
-    
-                    extend: [
-                        this.applyStateActive(),
-                    ] as JssStyle,
                 },
+
+                extend: [
+                    this.applyStateActive(),
+                ] as JssStyle,
             }),
             this.stateClearing({ // [clearing] => label [passivating]
                 [labelElm]: {

@@ -169,15 +169,11 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     
         [this.decl(this._boxShadowFocusTh)]: (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
     }}
-    public outlined(): JssStyle {
-        // unlike on Indicator/Element,
-        // on Control the outlined *only be applied*
-        // * if not-actived
-        // * and if (not-hover, not-focus) -or- disabled
-        return this.stateNotActive({
-            '&:not(:hover):not(.focus):not(:focus), &:disabled,&.disabled': super.outlined(),
-        });
-    }
+    public outlined(): JssStyle { return { //TODO: removed useless
+        extend: [
+            super.outlined(),
+        ] as JssStyle,
+    }}
 
 
 
