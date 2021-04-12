@@ -391,7 +391,7 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export function useStateLeave(props: Props) {
+export function useStateLeave<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const stateEnabled = (props.enabled!==false);
 
     const [hovered, setHovered] = useState(false);
@@ -450,7 +450,7 @@ export function useStateLeave(props: Props) {
     };
 }
 
-export function useStateFocusBlur(props: Props) {
+export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const stateEnabled = (props.enabled!==false);
 
     const defaultFocused = false; // if [focus] was not specified => the default value is focus=false
@@ -534,15 +534,15 @@ export interface ActionCtrl
 {
 }
 
-export interface Props
+export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Indicators.Props
+        Indicators.Props<TElement>
 {
     // accessibility:
     focus?    : boolean
     tabIndex? : number
 }
-export default function Control(props: Props & ActionCtrl) {
+export default function Control<TElement extends HTMLElement = HTMLElement>(props: Props<TElement> & ActionCtrl) {
     const ctrlStyles     = styles.useStyles();
 
     // states:
@@ -552,7 +552,7 @@ export default function Control(props: Props & ActionCtrl) {
     
 
     return (
-        <Indicator
+        <Indicator<TElement>
             // default props:
             {...{
                 isActionCtrl : true, // default [isActionCtrl]=true

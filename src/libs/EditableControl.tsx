@@ -590,9 +590,9 @@ export function useStateValidInvalid(props: Val.Validation, validator?: Validato
 
 // react components:
 
-export interface Props
+export interface Props<TElement extends EditableControlElement = EditableControlElement>
     extends
-        Controls.Props,
+        Controls.Props<TElement>,
         Val.Validation
 {
     // accessibility:
@@ -602,14 +602,14 @@ export interface Props
     // values:
     defaultValue?    : string | number | ReadonlyArray<string>
     value?           : string | number | ReadonlyArray<string>
-    onChange?        : React.ChangeEventHandler<EditableControlElement>
+    onChange?        : React.ChangeEventHandler<TElement>
     
 
     // validations:
     customValidator? : CustomValidatorHandler
     required?        : boolean
 }
-export default function EditableControl(props: Props) {
+export default function EditableControl<TElement extends EditableControlElement = EditableControlElement>(props: Props<TElement>) {
     const ectrlStyles    = styles.useStyles();
 
     // states:
@@ -627,7 +627,7 @@ export default function EditableControl(props: Props) {
 
     
     return (
-        <Control
+        <Control<TElement>
             // other props:
             {...props}
 
@@ -650,12 +650,12 @@ export default function EditableControl(props: Props) {
             // EditableControl props:
             elmRef={(elm) => {
                 if (elm) {
-                    if ((elm as any).validity) {
-                        inputValidator.handleInit(elm as EditableControlElement);
+                    if (elm.validity) {
+                        inputValidator.handleInit(elm);
                     }
                     else {
                         const firstChild = elm.querySelector(htmlEditCtrls.join(','));
-                        if (firstChild) inputValidator.handleInit(firstChild as EditableControlElement);
+                        if (firstChild) inputValidator.handleInit(firstChild as TElement);
                     } // if
                 } // if
 
@@ -672,7 +672,7 @@ export default function EditableControl(props: Props) {
                     } // if
                 } // if
             }}
-            onChange={(e: React.ChangeEvent<EditableControlElement>) => { // watch change event from current element or bubbling from children
+            onChange={(e: React.ChangeEvent<TElement>) => { // watch change event from current element or bubbling from children
                 // validations:
                 inputValidator.handleChange(e);
 

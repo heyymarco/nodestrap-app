@@ -354,7 +354,7 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export function useStateEnableDisable(props: Props) {
+export function useStateEnableDisable<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const defaultEnabled = true; // if [enabled] was not specified => the default value is enabled=true
     const [enabled,   setEnabled  ] = useState(props.enabled ?? defaultEnabled);
     const [enabling,  setEnabling ] = useState(false);
@@ -398,7 +398,7 @@ export function useStateEnableDisable(props: Props) {
     };
 }
 
-export function useStateActivePassive(props: Props) {
+export function useStateActivePassive<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const stateEnabled = (props.enabled!==false);
 
     const defaultActived = false; // if [active] was not specified => the default value is active=false (released)
@@ -489,13 +489,13 @@ export interface IndicationProps
     active?  : boolean
 }
 
-export interface Props
+export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Elements.Props,
+        Elements.Props<TElement>,
         IndicationProps
 {
 }
-export default function Indicator(props: Props & ActionCtrl) {
+export default function Indicator<TElement extends HTMLElement = HTMLElement>(props: Props<TElement> & ActionCtrl) {
     const indiStyles   = styles.useStyles();
 
     // states:
@@ -519,7 +519,7 @@ export default function Indicator(props: Props & ActionCtrl) {
 
 
     return (
-        <Element
+        <Element<TElement>
             // other props:
             {...props}
 

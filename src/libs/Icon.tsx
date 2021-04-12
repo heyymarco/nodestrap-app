@@ -373,7 +373,7 @@ const config = {
 
 // hooks:
 
-export function useIcon(props: Props) {
+export function useIcon<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     return useMemo(() => {
         const imgIcon = (() => {
             const fileName = config.img.files.find((file) => file.match(/[\w-.]+(?=[.]\w+$)/)?.[0] === props.icon);
@@ -406,14 +406,14 @@ export function useIcon(props: Props) {
 
 // react components:
 
-export interface Props
+export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Elements.Props
+        Elements.Props<TElement>
 {
     // appearance:
     icon: string
 }
-export default function Icon(props: Props) {
+export default function Icon<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const icoStyles = styles.useStyles();
 
     // appearance:
@@ -422,7 +422,7 @@ export default function Icon(props: Props) {
 
 
     return (
-        <Element
+        <Element<TElement>
             // default props:
             tag='span' // default [tag]=span
 

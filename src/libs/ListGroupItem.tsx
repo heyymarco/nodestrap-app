@@ -9,14 +9,14 @@ import type * as Contents   from './Content'
 
 // react components:
 
-export interface Props
+export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Contents.Props
+        Contents.Props<TElement>
 {
 }
-export default function ListGroupItem(props: Props) {
+export default function ListGroupItem<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     return (
-        <Content
+        <Content<TElement>
             // other props:
             {...props}
 

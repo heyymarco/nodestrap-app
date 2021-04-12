@@ -187,7 +187,7 @@ export function useVariantButton(props: VariantButton) {
 
 export interface Props
     extends
-        Controls.Props,
+        Controls.Props<HTMLButtonElement>,
         VariantButton
 {
     // actions:
@@ -207,7 +207,7 @@ export default function Button(props: Props) {
 
 
     return (
-        <Control
+        <Control<HTMLButtonElement>
             // default props:
             tag='button' // default [tag]=button
 

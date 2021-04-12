@@ -348,9 +348,9 @@ export const cssDecls = cssConfig.decls;
 // react components:
 
 export type CloseType = 'ui' | 'backg' | 'shortcut';
-export interface Props
+export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Cards.Props
+        Cards.Props<TElement>
 {
     // accessibility:
     tabIndex?   : number
@@ -363,7 +363,7 @@ export interface Props
     // layouts:
     scrollable? : boolean
 }
-export default function Modal(props: Props) {
+export default function Modal<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const modStyles = styles.useStyles();
 
 
@@ -439,7 +439,7 @@ export default function Modal(props: Props) {
             }}
         >
             <div>
-                <Card
+                <Card<TElement>
                     // other props:
                     {...otherProps}
 

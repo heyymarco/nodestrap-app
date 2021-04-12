@@ -248,20 +248,20 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
-export interface Props
+export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Indicators.Props
+        Indicators.Props<TElement>
 {
     // children:
     children? : React.ReactNode
 }
-export default function Content(props: Props) {
+export default function Content<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const ctStyles = styles.useStyles();
 
     
     
     return (
-        <Indicator
+        <Indicator<TElement>
             // other props:
             {...props}
 

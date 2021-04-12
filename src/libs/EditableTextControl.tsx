@@ -207,22 +207,24 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
-export interface Props
+type EditableTextControlElement = HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement
+
+export interface Props<TElement extends EditableTextControlElement = EditableTextControlElement>
     extends
-        EditableControls.Props
+        EditableControls.Props<TElement>
 {
     // validations:
     minLength? : number
     maxLength? : number
     pattern?   : string
 }
-export default function EditableTextControl(props: Props) {
+export default function EditableTextControl<TElement extends EditableTextControlElement = EditableTextControlElement>(props: Props<TElement>) {
     const etctrlStyles       = styles.useStyles();
 
     
 
     return (
-        <EditableControl
+        <EditableControl<TElement>
             // default props:
             {...{
                 isActionCtrl : false, // default [isActionCtrl]=false

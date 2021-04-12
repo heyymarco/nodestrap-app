@@ -127,12 +127,12 @@ export const styles = new ListGroupStylesBuilder();
 
 // react components:
 
-export interface Props
+export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Contents.Props
+        Contents.Props<TElement>
 {
 }
-export default function ListGroup(props: Props) {
+export default function ListGroup<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const lgStyles = styles.useStyles();
 
 
@@ -142,7 +142,7 @@ export default function ListGroup(props: Props) {
     const wrapTag   = ['ul', 'ol'].includes(parentTag) ? 'li' : 'div';
 
     return (
-        <Content
+        <Content<TElement>
             // essentials:
             tag={parentTag}
 

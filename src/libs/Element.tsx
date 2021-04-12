@@ -1020,7 +1020,7 @@ export interface GenericProps<TElement extends HTMLElement = HTMLElement>
     style?   : React.CSSProperties
     elmRef?  : React.Ref<TElement>
 }
-export function GenericElement(props: GenericProps) {
+export function GenericElement<TElement extends HTMLElement = HTMLElement>(props: GenericProps<TElement>) {
     const htmlProps = useMemo(() => {
         const htmlProps = {
             ref : props.elmRef as any,
@@ -1054,9 +1054,9 @@ export function GenericElement(props: GenericProps) {
 
 
 
-export interface Props
+export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        GenericProps,
+        GenericProps<TElement>,
         
         VariantTheme,
         VariantSize,
@@ -1064,7 +1064,7 @@ export interface Props
         VariantOutlined
 {
 }
-export default function Element(props: Props) {
+export default function Element<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const elmStyles    = styles.useStyles();
 
     // themes:
@@ -1076,7 +1076,7 @@ export default function Element(props: Props) {
 
 
     return (
-        <GenericElement
+        <GenericElement<TElement>
             // other props:
             {...props}
 

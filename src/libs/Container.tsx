@@ -123,20 +123,20 @@ export const styles = new ContainerStylesBuilder();
 
 // react components:
 
-export interface Props
+export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Elements.Props
+        Elements.GenericProps<TElement>
 {
     // children:
     children? : React.ReactNode
 }
-export default function Container(props: Props) {
+export default function Container<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const conStyles = styles.useStyles();
 
 
 
     return (
-        <GenericElement
+        <GenericElement<TElement>
             // other props:
             {...props}
 

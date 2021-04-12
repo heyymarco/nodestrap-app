@@ -113,12 +113,8 @@ export type InputType     = InputTextLike | 'color'|'file'|'range'
 
 export interface Props
     extends
-        EditableTextControls.Props
+        EditableTextControls.Props<HTMLInputElement>
 {
-    // essentials:
-    elmRef? : React.Ref<HTMLInputElement>
-
-
     // validations:
     min? : string | number
     max? : string | number
@@ -166,7 +162,7 @@ export default function Input(props: Props) {
     ...otherProps}  = props;
 
     return (
-        <EditableTextControl
+        <EditableTextControl<HTMLInputElement>
             // default props:
             tag='span' // default [tag]=span
 

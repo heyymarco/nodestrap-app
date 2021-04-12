@@ -89,9 +89,7 @@ function App() {
 						<Check
 							key={theme ?? 'none'}
 
-							theme={theme} size={size} enableGradient={enableGrad}
-							//@ts-ignore
-							outlined={outlined}
+							theme={theme} size={size} enableGradient={enableGrad} outlined={outlined}
 		
 							enabled={enabled} active={active}
 		

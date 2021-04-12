@@ -215,21 +215,21 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
-export interface Props
+export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Contents.Props
+        Contents.Props<TElement>
 {
     // children:
     header? : React.ReactNode
     footer? : React.ReactNode
 }
-export default function Card(props: Props) {
+export default function Card<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const crdStyles = styles.useStyles();
 
 
 
     return (
-        <Content
+        <Content<TElement>
             // essentials:
             tag='article'
 

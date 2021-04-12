@@ -758,13 +758,9 @@ export function useVariantCheck(props: VariantCheck, styles: Record<string, stri
 
 export interface Props
     extends
-        EditableControls.Props,
+        EditableControls.Props<HTMLInputElement>,
         VariantCheck
 {
-    // essentials:
-    elmRef? : React.Ref<HTMLInputElement>
-
-
     // values:
     defaultChecked? : boolean
     checked?        : boolean
@@ -820,7 +816,7 @@ export default function Check(props: Props) {
     ...otherProps}  = props;
 
     return (
-        <EditableControl
+        <EditableControl<HTMLInputElement>
             // default props:
             tag='label' // default [tag]=label
 

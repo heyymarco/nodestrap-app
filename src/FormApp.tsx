@@ -66,24 +66,21 @@ function App() {
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
 
-	const [enabled,    setEnabled   ] = useState(true);
-	const [active,      setActive   ] = useState(false);
-
-	const focuses = [false, undefined, true];
-	const [focus,       setFocus    ] = useState<boolean|undefined>(undefined);
-
 	const isValids = [undefined, false, null, true];
 	const [enableVal, setEnableVal  ] = useState(true);
 	const [isValid,   setIsValid    ] = useState<boolean|null|undefined>(undefined);
 
-	const btnStyles = [undefined, 'link'];
-	const [btnStyle,    setBtnStyle     ] = useState<Buttons.BtnStyle|undefined>(undefined);
 
 
 
     return (
         <div className="App">
-            <Form>
+            <Form
+				theme={theme} size={size} enableGradient={enableGrad} outlined={outlined}
+
+				enableValidation={enableVal}
+				isValid={isValid}
+			>
 				<Input
 					theme={undefined}
 
@@ -150,47 +147,6 @@ function App() {
 				<p>
 					<label>
 						<input type='checkbox'
-							checked={enabled}
-							onChange={(e) => setEnabled(e.target.checked)}
-						/>
-						enabled
-					</label>
-				</p>
-				<p>
-					<label>
-						<input type='checkbox'
-							checked={active}
-							onChange={(e) => setActive(e.target.checked)}
-						/>
-						active
-					</label>
-				</p>
-				<p>
-					Focus:
-					{
-						focuses.map(fc =>
-							<label key={`${fc}`}>
-								<input type='radio'
-									value={`${fc}`}
-									checked={focus===fc}
-									onChange={(e) => setFocus((() => {
-										const value = e.target.value;
-										if (!value) return undefined;
-										switch (value) {
-											case 'true' : return true;
-											case 'false': return false;
-											default     : return undefined;
-										} // switch
-									})())}
-								/>
-								{`${fc ?? 'auto'}`}
-							</label>
-						)
-					}
-				</p>
-				<p>
-					<label>
-						<input type='checkbox'
 							checked={enableVal}
 							onChange={(e) => setEnableVal(e.target.checked)}
 						/>
@@ -217,21 +173,6 @@ function App() {
 									})())}
 								/>
 								{`${(val===undefined) ? 'auto' : val}`}
-							</label>
-						)
-					}
-				</p>
-				<p>
-					BtnStyle:
-					{
-						btnStyles.map(st =>
-							<label key={st ?? ''}>
-								<input type='radio'
-									value={st}
-									checked={btnStyle===st}
-									onChange={(e) => setBtnStyle((e.target.value || undefined) as (Buttons.BtnStyle|undefined))}
-								/>
-								{`${st}`}
 							</label>
 						)
 					}

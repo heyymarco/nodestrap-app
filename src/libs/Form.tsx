@@ -98,12 +98,6 @@ export class FormStylesBuilder extends ElementStylesBuilder {
             super.basicStyle(),                // copy basicStyle from base
             this.filterGeneralProps(cssProps), // apply *general* cssProps
         ] as JssStyle,
-
-
-
-        // children:
-        '& >*': {
-        },
     }}
 }
 export const styles = new FormStylesBuilder();
@@ -195,8 +189,9 @@ export function useFormValidator(customValidator?: CustomValidatorHandler) {
 
 export interface Props
     extends
-        Elements.Props,
-        Val.Validation
+        Elements.Props<HTMLFormElement>,
+        Val.Validation,
+        React.FormHTMLAttributes<HTMLFormElement>
 {
     // validations:
     customValidator? : CustomValidatorHandler
@@ -205,7 +200,7 @@ export interface Props
     // children:
     children?        : React.ReactNode
 }
-export default function EditableControl(props: Props) {
+export default function Form(props: Props) {
     const formStyles    = styles.useStyles();
 
     // states:
@@ -215,7 +210,7 @@ export default function EditableControl(props: Props) {
 
 
     return (
-        <Element
+        <Element<HTMLFormElement>
             // default props:
             tag='form' // default [tag]=form
 
@@ -242,7 +237,7 @@ export default function EditableControl(props: Props) {
             // EditableControl props:
             elmRef={(elm) => {
                 if (elm) {
-                    formValidator.handleInit(elm as HTMLFormElement);
+                    formValidator.handleInit(elm);
                 } // if
 
 
