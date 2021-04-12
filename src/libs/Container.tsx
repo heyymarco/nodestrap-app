@@ -141,15 +141,8 @@ export default function Container<TElement extends HTMLElement = HTMLElement>(pr
             {...props}
 
 
-            // classes:
-            classes={[
-                // main:
-                (props.classes ? null : conStyles.main),
-
-
-                // additionals:
-                ...(props.classes ?? []),
-            ]}
+            // main:
+            mainClass={props.mainClass ?? conStyles.main}
         />
     );
 }

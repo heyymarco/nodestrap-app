@@ -175,15 +175,8 @@ export default function Input(props: Props) {
             tabIndex={-1}
 
 
-            // classes:
-            classes={[
-                // main:
-                (props.classes ? null : inpStyles.main),
-
-
-                // additionals:
-                ...(props.classes ?? []),
-            ]}
+            // main:
+            mainClass={props.mainClass ?? inpStyles.main}
         >
             <input
                 // essentials:

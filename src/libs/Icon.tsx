@@ -431,12 +431,12 @@ export default function Icon<TElement extends HTMLElement = HTMLElement>(props: 
             {...props}
 
 
+            // main:
+            mainClass={props.mainClass ?? icoStyles.main}
+
+
             // classes:
             classes={[
-                // main:
-                (props.classes ? null : icoStyles.main),
-
-
                 // additionals:
                 ...(props.classes ?? []),
 

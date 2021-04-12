@@ -563,12 +563,12 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
             {...props}               // [isActionCtrl] might be overriden here
 
 
+            // main:
+            mainClass={props.mainClass ?? ctrlStyles.main}
+
+
             // classes:
             classes={[
-                // main:
-                (props.classes ? null : ctrlStyles.main),
-
-
                 // additionals:
                 ...(props.classes ?? []),
 

@@ -219,12 +219,12 @@ export default function Form(props: Props) {
             {...props}
 
 
+            // main:
+            mainClass={props.mainClass ?? formStyles.main}
+
+
             // classes:
             classes={[
-                // main:
-                (props.classes ? null : formStyles.main),
-
-
                 // additionals:
                 ...(props.classes ?? []),
 

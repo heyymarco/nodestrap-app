@@ -216,12 +216,12 @@ export default function Button(props: Props) {
             {...props}
 
 
+            // main:
+            mainClass={props.mainClass ?? btnStyles.main}
+
+
             // classes:
             classes={[
-                // main:
-                (props.classes ? null : btnStyles.main),
-
-
                 // additionals:
                 ...(props.classes ?? []),
 

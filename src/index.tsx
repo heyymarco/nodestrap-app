@@ -12,7 +12,7 @@ import FormApp from './FormApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <FormApp />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

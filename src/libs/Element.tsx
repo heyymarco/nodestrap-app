@@ -1015,10 +1015,11 @@ export interface GenericProps<TElement extends HTMLElement = HTMLElement>
         React.DOMAttributes<TElement>
 {
     // essentials:
-    tag?     : keyof JSX.IntrinsicElements
-    classes? : (string|null)[]
-    style?   : React.CSSProperties
-    elmRef?  : React.Ref<TElement>
+    tag?       : keyof JSX.IntrinsicElements
+    mainClass? : string|null
+    classes?   : (string|null)[]
+    style?     : React.CSSProperties
+    elmRef?    : React.Ref<TElement>
 }
 export function GenericElement<TElement extends HTMLElement = HTMLElement>(props: GenericProps<TElement>) {
     const htmlProps = useMemo(() => {
@@ -1045,7 +1046,14 @@ export function GenericElement<TElement extends HTMLElement = HTMLElement>(props
 
 
             // classes:
-            className={(props.classes ?? []).filter((c) => !!c).join(' ') || undefined}
+            className={[
+                // main:
+                props.mainClass,
+
+
+                // additionals:
+                ...(props.classes ?? []),
+            ].filter((c) => !!c).join(' ') || undefined}
         >
             { props.children }
         </Tag>
@@ -1081,12 +1089,12 @@ export default function Element<TElement extends HTMLElement = HTMLElement>(prop
             {...props}
 
 
+            // main:
+            mainClass={props.mainClass ?? elmStyles.main}
+
+
             // classes:
             classes={[
-                // main:
-                (props.classes ? null : elmStyles.main),
-
-
                 // additionals:
                 ...(props.classes ?? []),
 

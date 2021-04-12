@@ -524,12 +524,12 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
             {...props}
 
 
+            // main:
+            mainClass={props.mainClass ?? indiStyles.main}
+
+
             // classes:
             classes={[
-                // main:
-                (props.classes ? null : indiStyles.main),
-
-
                 // additionals:
                 ...(props.classes ?? []),
 

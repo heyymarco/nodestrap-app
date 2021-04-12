@@ -632,12 +632,12 @@ export default function EditableControl<TElement extends EditableControlElement 
             {...props}
 
 
+            // main:
+            mainClass={props.mainClass ?? ectrlStyles.main}
+
+
             // classes:
             classes={[
-                // main:
-                (props.classes ? null : ectrlStyles.main),
-
-
                 // additionals:
                 ...(props.classes ?? []),
 

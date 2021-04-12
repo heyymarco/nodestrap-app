@@ -829,12 +829,12 @@ export default function Check(props: Props) {
             tabIndex={-1}
 
 
+            // main:
+            mainClass={props.mainClass ?? chkStyles.main}
+
+
             // classes:
             classes={[
-                // main:
-                (props.classes ? null : chkStyles.main),
-
-
                 // additionals:
                 ...(props.classes ?? []),
 

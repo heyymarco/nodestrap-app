@@ -235,15 +235,8 @@ export default function EditableTextControl<TElement extends EditableTextControl
             {...props}                // [isActionCtrl] might be overriden here
 
 
-            // classes:
-            classes={[
-                // main:
-                (props.classes ? null : etctrlStyles.main),
-
-
-                // additionals:
-                ...(props.classes ?? []),
-            ]}
+            // main:
+            mainClass={props.mainClass ?? etctrlStyles.main}
         />
     );
 }

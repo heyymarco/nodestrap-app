@@ -416,15 +416,8 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
             active={active}
 
 
-            // classes:
-            classes={[
-                // main:
-                (props.classes ? null : modStyles.main),
-
-
-                // additionals:
-                ...(props.classes ?? []),
-            ]}
+            // main:
+            mainClass={props.mainClass ?? modStyles.main}
 
 
             // events:

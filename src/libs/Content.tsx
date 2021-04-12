@@ -266,15 +266,8 @@ export default function Content<TElement extends HTMLElement = HTMLElement>(prop
             {...props}
 
 
-            // classes:
-            classes={[
-                // main:
-                (props.classes ? null : ctStyles.main),
-
-
-                // additionals:
-                ...(props.classes ?? []),
-            ]}
+            // main:
+            mainClass={props.mainClass ?? ctStyles.main}
         />
     );
 }

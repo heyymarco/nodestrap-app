@@ -238,15 +238,8 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
             {...props}
 
 
-            // classes:
-            classes={[
-                // main:
-                (props.classes ? null : crdStyles.main),
-
-
-                // additionals:
-                ...(props.classes ?? []),
-            ]}
+            // main:
+            mainClass={props.mainClass ?? crdStyles.main}
         >
             {props.header && <header>
                 { props.header }

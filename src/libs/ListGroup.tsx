@@ -151,15 +151,8 @@ export default function ListGroup<TElement extends HTMLElement = HTMLElement>(pr
             {...otherProps}
 
 
-            // classes:
-            classes={[
-                // main:
-                (props.classes ? null : lgStyles.main),
-
-
-                // additionals:
-                ...(props.classes ?? []),
-            ]}
+            // main:
+            mainClass={props.mainClass ?? lgStyles.main}
         >
             {
                 props.children && (Array.isArray(props.children) ? props.children : [props.children]).map((child, index) =>
