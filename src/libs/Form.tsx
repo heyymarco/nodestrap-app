@@ -23,9 +23,11 @@ import {
     styles as contentStyles,
 }                          from './Content'
 import {
-    styles as editableControlStyles,
     useStateValidInvalid,
 }                          from './EditableControl'
+import {
+    styles as editableTextControlStyles,
+}                          from './EditableTextControl'
 import type * as Val       from './validations'
 
 
@@ -65,23 +67,26 @@ export class FormStylesBuilder extends ElementStylesBuilder {
     // states:
     protected fnProps(): JssStyle { return {
         extend: [
-            super.fnProps(),                           // copy functional props from base
+            super.fnProps(),                               // copy functional props from base
 
-            editableControlStyles.validationFnProps(), // copy functional props from validation
+            editableTextControlStyles.validationFnProps(), // copy functional props from validation
+            editableTextControlStyles.contentFnProps(),
         ] as JssStyle,
     }}
     protected themesIf(): JssStyle { return {
         extend: [
-            super.themesIf(),                           // copy themes from base
+            super.themesIf(),                               // copy themes from base
 
-            editableControlStyles.validationThemesIf(), // copy themes from validation
+            editableTextControlStyles.validationThemesIf(), // copy themes from validation
+            editableTextControlStyles.contentThemesIf(),
         ] as JssStyle,
     }}
     protected states(inherit = false): JssStyle { return {
         extend: [
-            super.states(inherit),                           // copy states from base
+            super.states(inherit),                               // copy states from base
 
-            editableControlStyles.validationStates(inherit), // copy states from validation
+            editableTextControlStyles.validationStates(inherit), // copy states from validation
+            editableTextControlStyles.contentStates(inherit),
         ] as JssStyle,
     }}
 
@@ -133,13 +138,38 @@ export function useFormValidator(customValidator?: CustomValidatorHandler) {
     let [isValid, setIsValid] = useState<Val.Result>(null);
 
 
-    const handleVals = (target: HTMLFormElement) => {
-        const isFormValid = target.matches(':valid');
-        isValid = (customValidator ? customValidator(isFormValid) : isFormValid);
-        setIsValid(isValid);
+    const handleVals = (target: HTMLFormElement, immediately = false) => {
+        const getIsValid = (): Val.Result => target.matches(':valid') ? true : (target.matches(':invalid') ? false : null);
+
+        
+        
+        const update = (validPrev?: Val.Result) => {
+            const validNow = getIsValid();
+            if ((validPrev !== undefined) && (validPrev !== validNow)) return; // has been modified during waiting => abort further validating
+            
+
+            isValid = (customValidator ? customValidator(validNow) : validNow);
+            setIsValid(isValid);
+        };
+
+
+
+        if (immediately) {
+            // instant validate:
+            update();
+        }
+        else {
+            const validPrev = getIsValid();
+        
+            // delay a while for the further validating, to avoid unpleasant effect
+            setTimeout(
+                () => update(validPrev),
+                (validPrev !== false) ? 100 : 500
+            );
+        } // if
     }
     const handleInit = (target: HTMLFormElement | null) => {
-        if (target) handleVals(target);
+        if (target) handleVals(target, /*immediately =*/true);
     }
     const handleChange = ({currentTarget}: React.FormEvent<HTMLFormElement>) => {
         handleVals(currentTarget);
@@ -186,6 +216,10 @@ export default function EditableControl(props: Props) {
 
     return (
         <Element
+            // default props:
+            tag='form' // default [tag]=form
+
+
             // other props:
             {...props}
 

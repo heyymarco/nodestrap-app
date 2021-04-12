@@ -8,10 +8,11 @@ import CheckApp from './CheckApp';
 import ListGroupApp from './ListGroupApp';
 import CardApp from './CardApp';
 import ModalApp from './ModalApp';
+import FormApp from './FormApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <FormApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -224,7 +224,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
 
 
-        // define a *secondary* color theme:
+        // define a *default* color theme:
         [this.decl(this._foregIf)]          : colors.secondaryText,
         [this.decl(this._backgIf)]          : this.solidBackg(colors.secondary),
         [this.decl(this._borderIf)]         : colors.secondaryCont,

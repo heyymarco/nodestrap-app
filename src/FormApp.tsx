@@ -8,7 +8,7 @@ import {
 import logo from './logo.svg';
 import './App.css';
 
-import Container from './libs/Container';
+import Form from './libs/Form';
 import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
 import Content from './libs/Content';
@@ -83,155 +83,20 @@ function App() {
 
     return (
         <div className="App">
-            <Container>
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                    Edit <code>src/App.tsx</code> and save to reload.
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
-                <hr style={{flexBasis: '100%'}} />
-                <Element
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
-				>
-                        element
-                </Element>
-                <Indicator
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+            <Form>
+				<Input
+					theme={undefined}
 
-					enabled={enabled} active={active}
-				>
-                        indicator
-                </Indicator>
-                <Content
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
-
-					enabled={enabled} active={active}
-				>
-                        content
-                </Content>
-                <Control
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
-
-					enabled={enabled} active={active}
-
-					focus={focus}
-				>
-                        control
-                </Control>
-                <Button
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
-
-					enabled={enabled} active={active}
-
-					focus={focus}
-
-					btnStyle={btnStyle}
-
-					onClick={() => {
-						alert('hello world')
-					}}
-				>
-					button
-                </Button>
-				<ButtonIcon
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
-
-					enabled={enabled} active={active}
-
-					focus={focus}
-
-					btnStyle={btnStyle}
-
-					icon='face'
-				>
-                    <span>M</span>
-                </ButtonIcon>
-				<ButtonIcon
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
-
-					enabled={enabled} active={active}
-
-					focus={focus}
-
-					btnStyle={btnStyle}
-
-					icon='instagram'
-				>
-                    <span>My instagram</span>
-                </ButtonIcon>
-				<Check
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
-
-					enabled={enabled} active={active}
-
-					focus={focus}
-				>
-                    <span>My opt</span>
-                </Check>
-				<span>My text</span>
-                <EditableControl
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
-
-					enabled={enabled} active={active}
-
-					focus={focus}
-
-					enableValidation={enableVal}
-					isValid={isValid}
-				>
-                        editable control
-                </EditableControl>
-                <EditableTextControl
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
-
-					enabled={enabled} active={active}
-
-					focus={focus}
-
-					enableValidation={enableVal}
-					isValid={isValid}
-				>
-                        editable text control
-                </EditableTextControl>
+					type='text'
+					defaultValue=''
+					minLength={4}
+					maxLength={8}
+				/>
                 <Input
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
-
-					enabled={enabled} active={active}
-
-					focus={focus}
-
-					enableValidation={enableVal}
-					isValid={isValid}
+					theme={undefined}
 
 					type='email'
 					defaultValue='yourmail'
-				/>
-				<hr style={{flexBasis: '100%'}} />
-				<Icon
-					theme={theme} size={size} enableGradient={enableGrad}
-					icon='face'
-				/>
-				<Icon
-					theme={theme} size={size} enableGradient={enableGrad}
-					icon='instagram'
 				/>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
@@ -371,7 +236,7 @@ function App() {
 						)
 					}
 				</p>
-            </Container>
+            </Form>
         </div>
     );
 }

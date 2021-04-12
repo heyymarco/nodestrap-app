@@ -401,13 +401,35 @@ export function useInputValidator(customValidator?: CustomValidatorHandler) {
     let [isValid, setIsValid] = useState<Val.Result>(null);
 
 
-    const handleVals = (target: EditableControlElement) => {
-        const validity = target.validity;
-        isValid = (customValidator ? customValidator(validity, target.value) : validity.valid);
-        setIsValid(isValid);
+    const handleVals = (target: EditableControlElement, immediately = false) => {
+        const update = (validity: ValidityState, valuePrev?: string) => {
+            const valueNow = target.value;
+            if ((valuePrev !== undefined) && (valuePrev !== valueNow)) return; // has been modified during waiting => abort further validating
+            
+
+            isValid = (customValidator ? customValidator(validity, valueNow) : validity.valid);
+            setIsValid(isValid);
+        };
+
+
+
+        if (immediately) {
+            // instant validate:
+            update(target.validity);
+        }
+        else {
+            const valuePrev = target.value;
+            const validity  = target.validity;
+        
+            // delay a while for the further validating, to avoid unpleasant effect
+            setTimeout(
+                () => update(validity, valuePrev),
+                (validity.valid !== false) ? 100 : 500
+            );
+        } // if
     }
     const handleInit = (target: EditableControlElement | null) => {
-        if (target) handleVals(target);
+        if (target) handleVals(target, /*immediately =*/true);
     }
     const handleChange = ({target}: React.ChangeEvent<EditableControlElement>) => {
         handleVals(target);

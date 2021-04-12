@@ -424,9 +424,7 @@ export default function Icon(props: Props) {
     return (
         <Element
             // default props:
-            {...{
-                tag : 'span', // default [tag]=span
-            }}
+            tag='span' // default [tag]=span
 
 
             // other props:

@@ -62,15 +62,10 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
     // states:
-    protected themesIf(): JssStyle { return {
-        extend: [
-            super.themesIf(), // copy themes from base
-        ] as JssStyle,
-
-
-
+    public contentFnProps(): JssStyle { return {}; }
+    public contentThemesIf(): JssStyle { return {
         //#region overwrite base's themes with *softer* colors
-        // define a *secondary* color theme:
+        // define a *default* color theme:
         [this.decl(this._foregIf)]    : colors.secondaryCont,
         [this.decl(this._backgIf)]    : this.solidBackg(colors.secondaryThin),
 
@@ -88,6 +83,22 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         [this.decl(this._foregIfInv)] : colors.dangerCont,
         [this.decl(this._backgIfInv)] : this.solidBackg(colors.dangerThin),
         //#endregion overwrite base's themes with *softer* colors
+    }}
+    public contentStates(inherit = false): JssStyle { return {}; }
+
+    protected fnProps(): JssStyle { return {
+        extend: [
+            super.fnProps(), // copy functional props from base
+
+            this.contentFnProps(),
+        ] as JssStyle,
+    }}
+    protected themesIf(): JssStyle { return {
+        extend: [
+            super.themesIf(), // copy themes from base
+
+            this.contentThemesIf(),
+        ] as JssStyle,
     }}
     protected states(inherit = false): JssStyle { return {
         extend: [

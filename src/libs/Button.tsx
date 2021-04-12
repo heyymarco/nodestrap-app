@@ -209,9 +209,7 @@ export default function Button(props: Props) {
     return (
         <Control
             // default props:
-            {...{
-                tag : 'button', // default [tag]=button
-            }}
+            tag='button' // default [tag]=button
 
 
             // other props:
