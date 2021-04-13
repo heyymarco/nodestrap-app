@@ -20,7 +20,7 @@ export default function Radio(props: Props) {
     return (
         <Check
             // default props:
-            type='radio' // default [type]=radio
+            type='radio'
 
 
             // other props:

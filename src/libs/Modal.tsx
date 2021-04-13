@@ -412,12 +412,12 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
     return (
         <Indicator
-            // indications:
-            active={active}
-
-
             // main:
             mainClass={props.mainClass ?? modStyles.main}
+
+
+            // indications:
+            active={active}
 
 
             // events:

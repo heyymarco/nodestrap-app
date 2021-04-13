@@ -528,12 +528,6 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
 
 // react components:
 
-export interface ActionCtrl
-    extends
-        Indicators.ActionCtrl
-{
-}
-
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
         Indicators.Props<TElement>
@@ -542,7 +536,7 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     focus?    : boolean
     tabIndex? : number
 }
-export default function Control<TElement extends HTMLElement = HTMLElement>(props: Props<TElement> & ActionCtrl) {
+export default function Control<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const ctrlStyles     = styles.useStyles();
 
     // states:
@@ -554,13 +548,11 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
     return (
         <Indicator<TElement>
             // default props:
-            {...{
-                isActionCtrl : true, // default [isActionCtrl]=true
-            }}
+            actionCtrl={true}
 
 
             // other props:
-            {...props}               // [isActionCtrl] might be overriden here
+            {...props}
 
 
             // main:

@@ -209,7 +209,7 @@ export default function Button(props: Props) {
     return (
         <Control<HTMLButtonElement>
             // default props:
-            tag='button' // default [tag]=button
+            tag='button'
 
 
             // other props:

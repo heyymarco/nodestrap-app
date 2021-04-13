@@ -818,19 +818,19 @@ export default function Check(props: Props) {
     return (
         <EditableControl<HTMLInputElement>
             // default props:
-            tag='label' // default [tag]=label
+            tag='label'
 
 
             // other props:
             {...otherProps}
 
 
-            // unchanged props:
-            tabIndex={-1}
-
-
             // main:
             mainClass={props.mainClass ?? chkStyles.main}
+
+
+            // unchanged props:
+            tabIndex={-1}
 
 
             // classes:

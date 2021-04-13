@@ -212,7 +212,7 @@ export default function Form(props: Props) {
     return (
         <Element<HTMLFormElement>
             // default props:
-            tag='form' // default [tag]=form
+            tag='form'
 
 
             // other props:

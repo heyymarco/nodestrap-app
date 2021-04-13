@@ -230,7 +230,7 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
 
     return (
         <Content<TElement>
-            // essentials:
+            // default props:
             tag='article'
 
 

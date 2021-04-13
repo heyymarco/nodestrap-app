@@ -143,7 +143,7 @@ export default function ListGroup<TElement extends HTMLElement = HTMLElement>(pr
 
     return (
         <Content<TElement>
-            // essentials:
+            // default props:
             tag={parentTag}
 
 

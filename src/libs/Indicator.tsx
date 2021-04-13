@@ -478,10 +478,6 @@ export function useStateActivePassive<TElement extends HTMLElement = HTMLElement
 
 // react components:
 
-export interface ActionCtrl {
-    isActionCtrl?: boolean
-}
-
 export interface IndicationProps
 {
     // accessibility:
@@ -494,8 +490,9 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
         Elements.Props<TElement>,
         IndicationProps
 {
+    actionCtrl?: boolean
 }
-export default function Indicator<TElement extends HTMLElement = HTMLElement>(props: Props<TElement> & ActionCtrl) {
+export default function Indicator<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const indiStyles   = styles.useStyles();
 
     // states:
@@ -514,7 +511,7 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
         'textarea',
     ];
     const isHtmlCtrl   = props.tag && htmlCtrls.includes(props.tag);
-    const isActionCtrl = props.isActionCtrl ?? false;
+    const isActionCtrl = props.actionCtrl ?? false;
 
 
 

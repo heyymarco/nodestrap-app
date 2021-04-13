@@ -424,7 +424,7 @@ export default function Icon<TElement extends HTMLElement = HTMLElement>(props: 
     return (
         <Element<TElement>
             // default props:
-            tag='span' // default [tag]=span
+            tag='span'
 
 
             // other props:

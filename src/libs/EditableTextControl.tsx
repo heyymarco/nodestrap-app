@@ -226,13 +226,11 @@ export default function EditableTextControl<TElement extends EditableTextControl
     return (
         <EditableControl<TElement>
             // default props:
-            {...{
-                isActionCtrl : false, // default [isActionCtrl]=false
-            }}
+            actionCtrl={false}
 
 
             // other props:
-            {...props}                // [isActionCtrl] might be overriden here
+            {...props}
 
 
             // main:

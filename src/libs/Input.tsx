@@ -164,19 +164,19 @@ export default function Input(props: Props) {
     return (
         <EditableTextControl<HTMLInputElement>
             // default props:
-            tag='span' // default [tag]=span
+            tag='span'
 
 
             // other props:
             {...otherProps}
 
 
-            // unchanged props:
-            tabIndex={-1}
-
-
             // main:
             mainClass={props.mainClass ?? inpStyles.main}
+
+
+            // unchanged props:
+            tabIndex={-1}
         >
             <input
                 // essentials:
