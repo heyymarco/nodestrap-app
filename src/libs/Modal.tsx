@@ -52,6 +52,10 @@ import typos                from './typos/index' // configurable typography (tex
 
 // styles:
 
+const scrollElm      = '& >*';
+const cardElm        = '& >*';
+const cardItemsElm   = '& >*';
+
 export class ModalStylesBuilder extends IndicatorStylesBuilder {
     //#region global css props
     protected overwriteParentProps<TCssProps>(cssProps: TCssProps): JssStyle {
@@ -201,30 +205,44 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         position : 'fixed',
         inset    : 0,
 
+            
+        // scrollers:
+        // scroller at modal layer & at content's body layer:
+        '&, & >* >* >.body': {
+            overflowInline : 'hidden', // no horizontal scrolling
+            overflowBlock  : 'auto',   // enable vertical scrolling
+            fallbacks: {
+                overflowX  : 'hidden', // no horizontal scrolling
+                overflowY  : 'auto',   // enable vertical scrolling
+            },
+        },
+
 
         // apply *non conditional* fn props:
         anim : this.ref(this._animBackgFn),
 
 
 
-        // children:
-        // scroller props:
-        overflowInline : 'hidden', // no horizontal scrolling
-        overflowBlock  : 'auto',   // enable vertical scrolling
-        fallbacks: {
-            overflowX  : 'hidden', // no horizontal scrolling
-            overflowY  : 'auto',   // enable vertical scrolling
-        },
-        '& >*': { // scrolling layer with additional paddings (responsive container)
+        // wrapper (add scrolling paddings):
+        [scrollElm]: { // scrolling layer with additional paddings (responsive container)
             extend: [
                 containerStyles.basicContainerStyle(), // applies responsive container functionality
             ] as JssStyle,
 
 
+            // layout:
+            display      : 'inherit',
+            justifyItems : 'inherit',
+            alignItems   : 'inherit',
+
+
             // sizes:
-            inlineSize : 'fit-content',
-            blockSize  : 'fit-content',
-            boxSizing  : 'content-box',
+            blockSize    : 'fit-content', // follows the content's height (or switch to the maximum available parent's height)
+            boxSizing    : 'border-box',
+
+
+            // scrollers:
+            overflow     : 'hidden', // force content to shrink if overflowed
 
 
 
@@ -234,31 +252,43 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
                 return {
                     ...this.backupProps(newCardProps), // backup cardProps
-                    '& >*': { // card layer
+                    [cardElm]: { // card layer
                         extend: [
                             stripOuts.focusableElement, // clear browser's default styles
                         ] as JssStyle,
 
                         '&:not(._)': { // force overwrite
+                            [this.decl(this._animFn)]: 'inherit', // inherit from Modal
+
+                            blockSize    : 'auto', // follows the content's height
+                            maxBlockSize : '100%', // but limits the height up to the parent's height
+
                             extend: [
                                 newCardProps, // overwrite cardProps
                             ] as JssStyle,
-
-
-                            [this.decl(this._animFn)]: 'inherit', // inherit from Modal
                         },
         
         
-                        // children's children:
-                        '& >*': this.restoreProps(newCardProps), // restore cardProps
+                        // card items:
+                        [cardItemsElm]: this.restoreProps(newCardProps), // restore cardProps
                     },
                 };
             })(),
         },
     }}
+    public scrollableStyle(): JssStyle { return {
+        [scrollElm]: { // scrolling layer with additional paddings (responsive container)
+            // sizes:
+            blockSize : '100%', // switch to the maximum available parent's height
+        },
+    }}
     protected styles(): Styles<'main'|'actionBar'> {
+        const styles = super.styles();
+        Object.assign(styles.main, {
+            '&.scrollable' : this.scrollableStyle(),
+        });
         return {
-            ...super.styles(),
+            ...styles,
 
             actionBar: {
                 // layout:
@@ -353,12 +383,27 @@ export const cssDecls = cssConfig.decls;
 
 
 
+// hooks:
+
+export type ModalStyle = 'scrollable' // might be added more styles in the future
+export interface VariantModal {
+    modalStyle?: ModalStyle
+}
+export function useVariantModal(props: VariantModal) {
+    return {
+        class: props.modalStyle ? props.modalStyle : null,
+    };
+}
+
+
+
 // react components:
 
 export type CloseType = 'ui' | 'backg' | 'shortcut';
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Cards.Props<TElement>
+        Cards.Props<TElement>,
+        VariantModal
 {
     // accessibility:
     tabIndex?   : number
@@ -366,13 +411,12 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
 
     // actions:
     onClose?    : (closeType: CloseType) => void
-
-
-    // layouts:
-    scrollable? : boolean
 }
 export default function Modal<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const modStyles = styles.useStyles();
+
+    // layouts:
+    const variModal = useVariantModal(props);
 
 
 
@@ -396,7 +440,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
 
         // layouts:
-        scrollable,
+        modalStyle,
         
 
         // children:
@@ -422,6 +466,17 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
         <Indicator
             // main:
             mainClass={props.mainClass ?? modStyles.main}
+
+
+            // classes:
+            classes={[
+                // additionals:
+                ...(props.classes ?? []),
+
+
+                // themes:
+                variModal.class,
+            ]}
 
 
             // indications:

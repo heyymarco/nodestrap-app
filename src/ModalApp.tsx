@@ -14,7 +14,7 @@ import Indicator from './libs/Indicator';
 import Content from './libs/Content';
 import Button from './libs/Button';
 import ButtonIcon from './libs/ButtonIcon';
-import Modal from './libs/Modal';
+import Modal, * as Modals from './libs/Modal';
 
 
 
@@ -62,7 +62,9 @@ function App() {
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
 
-	const [scrollable, setScrollable   ] = useState(false);
+	const modalStyles = [undefined, 'scrollable'];
+	const [modalStyle,    setModalStyle     ] = useState<Modals.ModalStyle|undefined>(undefined);
+
 	const [longContent, setLongContent   ] = useState(false);
 
 	
@@ -116,7 +118,7 @@ function App() {
 
 					onClose={() => setActive(false)}
 					
-					scrollable={scrollable}
+					modalStyle={modalStyle}
 				>
 					<p>
 						Theme:
@@ -176,13 +178,19 @@ function App() {
 						</label>
 					</p>
 					<p>
-						<label>
-							<input type='checkbox'
-								checked={scrollable}
-								onChange={(e) => setScrollable(e.target.checked)}
-							/>
-							scrollable
-						</label>
+						ModalStyle:
+						{
+							modalStyles.map(st =>
+								<label key={st ?? ''}>
+									<input type='radio'
+										value={st}
+										checked={modalStyle===st}
+										onChange={(e) => setModalStyle((e.target.value || undefined) as (Modals.ModalStyle|undefined))}
+									/>
+									{`${st}`}
+								</label>
+							)
+						}
 					</p>
 					<p>
 						<label>
