@@ -62,6 +62,9 @@ function App() {
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
 
+	const [scrollable, setScrollable   ] = useState(false);
+	const [longContent, setLongContent   ] = useState(false);
+
 	
 
     return (
@@ -113,6 +116,7 @@ function App() {
 
 					onClose={() => setActive(false)}
 					
+					scrollable={scrollable}
 				>
 					<p>
 						Theme:
@@ -171,6 +175,61 @@ function App() {
 							enabled
 						</label>
 					</p>
+					<p>
+						<label>
+							<input type='checkbox'
+								checked={scrollable}
+								onChange={(e) => setScrollable(e.target.checked)}
+							/>
+							scrollable
+						</label>
+					</p>
+					<p>
+						<label>
+							<input type='checkbox'
+								checked={longContent}
+								onChange={(e) => setLongContent(e.target.checked)}
+							/>
+							long content
+						</label>
+					</p>
+					{longContent && <>
+						{/* <p>
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit qui provident vero at, veniam eligendi velit, culpa odit modi cumque fugit dicta facere asperiores autem iusto tenetur saepe, accusamus cum?
+						</p> */}
+						<p>
+							Lorem<br/>
+							ipsum<br/>
+							dolor<br/>
+							sit,<br/>
+							amet<br/>
+							consectetur<br/>
+							adipisicing<br/>
+							elit.<br/>
+							Obcaecati,<br/>
+							fugiat<br/>
+							quam<br/>
+							corrupti<br/>
+							doloremque<br/>
+							mollitia<br/>
+							fuga<br/>
+							tempora<br/>
+							sequi<br/>
+							repellat?<br/>
+							Sint<br/>
+							quia<br/>
+							doloremque,<br/>
+							accusantium<br/>
+							perferendis<br/>
+							autem<br/>
+							cupiditate!<br/>
+							Sapiente<br/>
+							odio<br/>
+							sit<br/>
+							voluptatem<br/>
+							accusamus.
+						</p>
+					</>}
 				</Modal>
                 <hr style={{flexBasis: '100%'}} />
             </Container>

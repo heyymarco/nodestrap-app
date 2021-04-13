@@ -13,6 +13,7 @@ import type {
 }                           from 'jss'          // ts defs support for jss
 import {
     PropEx,
+    Cust,
 }                           from './Css'        // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 import type {
@@ -76,7 +77,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     /**
      * functional animations for the modal's background.
      */
-    public    readonly _animBackgFn = 'animBackgFn'
+    public    readonly _animBackgFn              = 'animBackgFn'
 
 
 
@@ -94,7 +95,11 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
     // themes:
-    /* -- same as parent -- */
+    // disable themes:
+    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {}; }
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {}; }
+    public gradient(): JssStyle { return {}; }
+    public outlined(): JssStyle  { return {}; }
 
 
 
@@ -181,7 +186,6 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     // styles:
     public basicStyle(): JssStyle { return {
         extend: [
-            super.basicStyle(),                        // copy basicStyle from base
             this.filterPrefixProps(cssProps, 'backg'), // apply cssProps starting with backg***
         ] as JssStyle,
 
@@ -207,6 +211,10 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         // scroller props:
         overflowInline : 'hidden', // no horizontal scrolling
         overflowBlock  : 'auto',   // enable vertical scrolling
+        fallbacks: {
+            overflowX  : 'hidden', // no horizontal scrolling
+            overflowY  : 'auto',   // enable vertical scrolling
+        },
         '& >*': { // scrolling layer with additional paddings (responsive container)
             extend: [
                 containerStyles.basicContainerStyle(), // applies responsive container functionality
