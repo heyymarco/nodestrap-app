@@ -66,8 +66,8 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
 
 
         // sizes:
-        /* auto size depends on the text/content */
-        boxSizing      : 'content-box', // the size is *excluding* the border
+        /* -- auto size depends on the text/content's size -- */
+        boxSizing      : 'content-box', // the final size is excluding borders & paddings
 
 
         // typos:

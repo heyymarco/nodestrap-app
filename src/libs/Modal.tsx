@@ -195,15 +195,21 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
         // layout:
-        display      : 'grid',         // we use grid, so we can align the card both horizontally & vertically
-        justifyItems : 'center',       // align center horizontally
-        alignItems   : cssProps.align, // align (defaults center) vertically
+        display        : 'grid',         // we use grid, so we can align the card both horizontally & vertically
+        justifyContent : 'center',       // align center horizontally
+        alignContent   : cssProps.align, // align (defaults center) vertically
 
 
         // sizes:
         // fill the entire screen:
-        position : 'fixed',
-        inset    : 0,
+        boxSizing : 'border-box', // the final size is including borders & paddings
+        position  : 'fixed',
+        left      : 0,
+        top       : 0,
+        width     : '100vw',
+        height    : '100vh',
+        maxWidth  : 'fill-available', // hack to excluding scrollbar
+        maxHeight : 'fill-available', // hack to excluding scrollbar
 
             
         // scrollers:
@@ -231,18 +237,16 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
             // layout:
-            display      : 'inherit',
-            justifyItems : 'inherit',
-            alignItems   : 'inherit',
+            display   : 'inline-block',
 
 
             // sizes:
-            blockSize    : 'fit-content', // follows the content's height (or switch to the maximum available parent's height)
-            boxSizing    : 'border-box',
+            boxSizing : 'border-box',  // any borders & paddings *reduces* the content size
+            blockSize : 'fit-content', // follows the content's height (or switch to the maximum available parent's height)
 
 
             // scrollers:
-            overflow     : 'hidden', // force content to shrink if overflowed
+            overflow  : 'hidden', // force content to shrink if overflowed
 
 
 
@@ -260,6 +264,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
                         '&:not(._)': { // force overwrite
                             [this.decl(this._animFn)]: 'inherit', // inherit from Modal
 
+                            boxSizing    : 'border-box', // the final size is including borders & paddings
                             blockSize    : 'auto', // follows the content's height
                             maxBlockSize : '100%', // but limits the height up to the parent's height
 

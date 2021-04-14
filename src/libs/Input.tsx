@@ -48,8 +48,9 @@ export class InputStylesBuilder extends EditableTextControlStylesBuilder {
 
 
         // layout:
-        display       : 'flex',
-        alignItems    : 'center', // center items vertically
+        display        : 'flex',
+        justifyContent : 'center', // center items horizontally
+        alignItems     : 'center', // center items vertically
     
 
         // positions:
@@ -66,18 +67,27 @@ export class InputStylesBuilder extends EditableTextControlStylesBuilder {
 
 
             // layout:
-            display       : 'inherit',
-            marginInline  : [['calc(0px -', ecssProps.paddingInline, ')']],
-            marginBlock   : [['calc(0px -', ecssProps.paddingBlock, ')' ]],
-            paddingInline : ecssProps.paddingInline,
-            paddingBlock  : ecssProps.paddingBlock,
+            display       : 'block', // fill the entire parent's width
     
     
-            // strip out prop [size]:
+            // sizes:
+            // strip out input's prop [size]:
+            // span to maximum width including parent's paddings:
+            boxSizing      : 'border-box', // the final size is including borders & paddings
             inlineSize     : 'fill-available',
             fallbacks      : {
-                inlineSize : '100%',
+                inlineSize : [['calc(100% + (', ecssProps.paddingInline, ' * 2))']],
             },
+
+
+            // spacings:
+            // cancel-out parent's padding with negative margin:
+            marginInline  : [['calc(0px -', ecssProps.paddingInline, ')']],
+            marginBlock   : [['calc(0px -', ecssProps.paddingBlock,  ')']],
+
+            // copy parent's paddings:
+            paddingInline : ecssProps.paddingInline,
+            paddingBlock  : ecssProps.paddingBlock,
         },
     }}
 }
@@ -121,7 +131,7 @@ export interface Props
 
 
     // formats:
-    type?         : InputType
+    type          : InputType
     placeholder?  : string
 }
 export default function Input(props: Props) {

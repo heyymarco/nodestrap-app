@@ -97,7 +97,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
 
 
-        // the dummy text content, for making height as tall as line-height
+        // the dummy text content, for making parent's height as tall as line-height
         '&::before': {
             // layout:
             content    : '"\xa0"', // &nbsp;
@@ -188,7 +188,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
         // sizes:
         //#region children
-        // just a *dummy* element for filling the space (width)
+        // just a *dummy* element for calculating the image's width
         '& >img': {
             // appearance:
             visibility : [['hidden'], '!important'], // invisible but still filling the space

@@ -54,11 +54,13 @@ export class CardStylesBuilder extends ContentStylesBuilder {
     // styles:
     protected basicImageStyle(): JssStyle { return {
         // layout:
-        display: 'block',
+        display: 'block', // fill the entire parent's width
 
 
         // sizes:
+        // fix the image's abnormal *display=block* sizing:
         // span to maximum width including parent's paddings:
+        boxSizing      : 'border-box', // the final size is including borders & paddings
         inlineSize     : 'fill-available',
         fallbacks      : {
             inlineSize : [['calc(100% + (', ccssProps.paddingInline, ' * 2))']],
@@ -67,15 +69,15 @@ export class CardStylesBuilder extends ContentStylesBuilder {
 
         // spacings:
         // cancel-out parent's padding with negative margin:
-        marginInline : [['calc(0px - ', ccssProps.paddingInline, ')']],
-        marginBlock  : [['calc(0px - ', ccssProps.paddingBlock,  ')']],
+        marginInline : [['calc(0px -', ccssProps.paddingInline, ')']],
+        marginBlock  : [['calc(0px -', ccssProps.paddingBlock,  ')']],
 
-        // kill negative margin so the prev sibling can add spaces:
+        // kill the top negative margin so the prev sibling can add a bottom space:
         '&:not(:first-child)': {
             marginBlockStart : 0,
         },
 
-        // add an extra spaces to the next sibling:
+        // add a bottom space to the next sibling:
         '&:not(:last-child)': {
             marginBlockEnd   : ccssProps.paddingBlock,
         },
@@ -119,11 +121,13 @@ export class CardStylesBuilder extends ContentStylesBuilder {
             // children:
             '& >img': {
                 // layout:
-                display: 'block',
+                display: 'block', // fill the entire parent's width
 
 
                 // sizes:
+                // fix the image's abnormal *display=block* sizing:
                 // span to maximum width:
+                boxSizing      : 'border-box', // the final size is including borders & paddings
                 inlineSize     : 'fill-available',
                 fallbacks      : {
                     inlineSize : '100%',
@@ -201,7 +205,8 @@ const cssConfig = new CssConfig(() => {
 
 
     return {
-        blockSize         : '100%', // set height to maximum if parent container has specific height, otherwise no effect
+        boxSizing         : 'border-box', // the final size is including borders & paddings
+        blockSize         : '100%',       // set height to maximum if parent container has specific height, otherwise no effect
 
         capColor          : 'unset',
         capBackg          : 'unset',

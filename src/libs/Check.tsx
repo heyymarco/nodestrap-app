@@ -409,10 +409,10 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     
 
         // sizes:
+        boxSizing  : 'border-box', // the final size is including borders & paddings
         /* the size is exactly the same as current font size */
         inlineSize : '1em',
         blockSize  : '1em',
-        boxSizing  : 'border-box', // the size is *including* the border
         paddingInline: 0, paddingBlock: 0, // no padding
     
 
@@ -435,18 +435,14 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
             // layout:
-            content    : '""',
-            display    : 'block',
+            content   : '""',
+            display   : 'block', // fill the entire parent's width
 
 
             // sizes:
             // fill the entire parent:
-            inlineSize     : 'fill-available',
-            blockSize      : 'fill-available',
-            fallbacks      : {
-                inlineSize : '100%',
-                blockSize  : '100%',
-            },
+            boxSizing : 'border-box', // the final size is including borders & paddings
+            blockSize : '100%',
             
             
             
@@ -487,11 +483,14 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     
     
     
-        // the dummy text content, for making height as tall as line-height
+        // the dummy text content, for making parent's height as tall as line-height
         '&::before': {
+            // layout:
             content    : '"\xa0"', // &nbsp;
             display    : 'inline',
             
+
+            // appearance:
             inlineSize : 0,
             overflow   : 'hidden',
             visibility : 'hidden',
@@ -509,7 +508,9 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         [chkElm]   : {
             // hides the checkbox while still preserving animation & focus working
             opacity: 0,
-            inlineSize: 0, blockSize: 0, border: 0,
+            boxSizing  : 'border-box', // the final size is including borders & paddings
+            inlineSize: 0, blockSize: 0,
+            border: 0, padding: 0,
             marginInlineEnd: 0,
         },
 
@@ -881,9 +882,18 @@ export default function Check(props: Props) {
                 // events:
                 // onFocus, onBlur // bubble to parent (unlike on native DOM that doesn't bubble, on react *do* bubbling)
                 // onAnimationEnd  // bubble to parent, let's the parent handle the onAnimationEnd
+
+
+                // events:
+                // states:
+                onAnimationEnd={stateChkClr.handleAnimationEnd}
             />
             { (props.text || props.children) &&
-                <span onAnimationEnd={stateChkClr.handleAnimationEndPress}>
+                <span
+                    // events:
+                    // states:
+                    onAnimationEnd={stateChkClr.handleAnimationEndPress}
+                >
                     { props.text }
                     { props.children }
                 </span>
