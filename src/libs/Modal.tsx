@@ -27,7 +27,7 @@ import {
     cssDecls as ecssDecls,
 }                           from './Element'
 import {
-    styles as containerStyles,
+    cssProps as contCssProps,
 }                           from './Container'
 import {
     default  as Indicator,
@@ -52,7 +52,6 @@ import typos                from './typos/index' // configurable typography (tex
 
 // styles:
 
-const scrollElm      = '& >*';
 const cardElm        = '& >*';
 const cardItemsElm   = '& >*';
 
@@ -196,8 +195,10 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
         // layout:
         display        : 'grid',         // we use grid, so we can align the card both horizontally & vertically
+        gridAutoFlow   : 'row',
         justifyContent : 'center',       // align center horizontally
-        alignContent   : cssProps.align, // align (defaults center) vertically
+     // alignContent   : cssProps.align, // doesn't work correctly, the item(s) clipped on the top, i don't know why
+        alignItems     : cssProps.align, // align (defaults center) vertically
 
 
         // sizes:
@@ -209,12 +210,12 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         width     : '100vw',
         height    : '100vh',
         maxWidth  : 'fill-available', // hack to excluding scrollbar
-        maxHeight : 'fill-available', // hack to excluding scrollbar
+     // maxHeight : 'fill-available', // hack to excluding scrollbar // will be handle by javascript
 
             
         // scrollers:
         // scroller at modal layer & at content's body layer:
-        '&, & >* >* >.body': {
+        '&, & >* >.body': {
             overflowInline : 'hidden', // no horizontal scrolling
             overflowBlock  : 'auto',   // enable vertical scrolling
             fallbacks: {
@@ -229,62 +230,90 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
 
-        // wrapper (add scrolling paddings):
-        [scrollElm]: { // scrolling layer with additional paddings (responsive container)
-            extend: [
-                containerStyles.basicContainerStyle(), // applies responsive container functionality
-            ] as JssStyle,
-
-
+        // children:
+        //#region replacement for *collapsing marginBlock*
+        '&::before, &::after': {
             // layout:
-            display   : 'inline-block',
+            content    : '""',
+            display    : 'block',
+
+
+            // appearance:
+            visibility : 'hidden',
 
 
             // sizes:
-            boxSizing : 'border-box',  // any borders & paddings *reduces* the content size
-            blockSize : 'fit-content', // follows the content's height (or switch to the maximum available parent's height)
+            boxSizing  : 'border-box', // the final size is including borders & paddings
+        },
+        '&::before': {
+            // sizes:
+            blockSize  : contCssProps.paddingBlock,
+        },
+        '&::after': {
+            // sizes:
+            blockSize  : contCssProps.paddingBlock,
+        },
+        //#endregion replacement for *collapsing marginBlock*
+
+        
+
+        //#region card
+        ...(() => {
+            const newCardProps = this.overwriteParentProps(cssProps);
+
+            return {
+                ...this.backupProps(newCardProps), // backup cardProps
+                [cardElm]: { // card layer
+                    extend: [
+                        stripOuts.focusableElement, // clear browser's default styles
+                    ] as JssStyle,
+
+                    '&:not(._)': { // force overwrite
+                        // sizes:
+                        boxSizing : 'border-box',  // the final size is including borders & paddings
+                        blockSize : 'fit-content', // follows the content's height
+
+                        // fix bug on firefox
+                        // setting *blockSize:fit-content* guarantes the scrolling effect never occured.
+                        // but on firefox if the scrolling prop is not turned off => causing element clipped off at the top.
+                        overflow  : 'visible', // turn off the scrolling
 
 
-            // scrollers:
-            overflow  : 'hidden', // force content to shrink if overflowed
-
-
-
-            // children:
-            ...(() => {
-                const newCardProps = this.overwriteParentProps(cssProps);
-
-                return {
-                    ...this.backupProps(newCardProps), // backup cardProps
-                    [cardElm]: { // card layer
+                        // configs:
                         extend: [
-                            stripOuts.focusableElement, // clear browser's default styles
+                            newCardProps, // overwrite cardProps
                         ] as JssStyle,
 
-                        '&:not(._)': { // force overwrite
-                            [this.decl(this._animFn)]: 'inherit', // inherit from Modal
 
-                            boxSizing    : 'border-box', // the final size is including borders & paddings
-                            blockSize    : 'auto', // follows the content's height
-                            maxBlockSize : '100%', // but limits the height up to the parent's height
-
-                            extend: [
-                                newCardProps, // overwrite cardProps
-                            ] as JssStyle,
-                        },
-        
-        
-                        // card items:
-                        [cardItemsElm]: this.restoreProps(newCardProps), // restore cardProps
+                        // apply *non conditional* fn props:
+                        [this.decl(this._animFn)]: 'inherit', // inherit from Modal
                     },
-                };
-            })(),
-        },
+
+
+                    // spacings:
+                    // replaces paddings with margins:
+                    marginInline : contCssProps.paddingInline, // marginInline is never collapsing (safe)
+                 // marginBlock  : contCssProps.paddingBlock,  // not reliable *collapsing marginBlock*
+    
+    
+                    // card items:
+                    [cardItemsElm]: this.restoreProps(newCardProps), // restore cardProps
+                },
+            };
+        })(),
+        //#endregion card
     }}
     public scrollableStyle(): JssStyle { return {
-        [scrollElm]: { // scrolling layer with additional paddings (responsive container)
-            // sizes:
-            blockSize : '100%', // switch to the maximum available parent's height
+        [cardElm]: { // card layer
+            '&:not(._)': { // force overwrite
+                // sizes:
+                blockSize    : 'auto', // follows the content's height, but
+                maxBlockSize : '100%', // up to the maximum available parent's height
+
+                // this prop is not actually makes card scrollable,
+                // but makes card's body scrollable (indirect effect)
+                overflow     : 'auto', // turn on the scrolling
+            },
         },
     }}
     protected styles(): Styles<'main'|'actionBar'> {
@@ -499,7 +528,8 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
                 if ((e.target === e.currentTarget) && (e.type === 'click')) props.onClose?.('backg');
             }}
         >
-            <div>
+            {/* <div>
+            </div> */}
                 <Card<TElement>
                     // other props:
                     {...otherProps}
@@ -536,7 +566,6 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
                     header={header2}
                     footer={footer2}
                 />
-            </div>
         </Indicator>
     );
 }
