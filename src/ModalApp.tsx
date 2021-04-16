@@ -65,7 +65,8 @@ function App() {
 	const modalStyles = [undefined, 'scrollable'];
 	const [modalStyle,    setModalStyle     ] = useState<Modals.ModalStyle|undefined>(undefined);
 
-	const [longContent, setLongContent   ] = useState(false);
+	const [wideContent, setWideContent   ] = useState(false);
+	const [tallContent, setTallContent   ] = useState(false);
 
 	
 
@@ -195,16 +196,27 @@ function App() {
 					<p>
 						<label>
 							<input type='checkbox'
-								checked={longContent}
-								onChange={(e) => setLongContent(e.target.checked)}
+								checked={wideContent}
+								onChange={(e) => setWideContent(e.target.checked)}
 							/>
-							long content
+							simulate wide content
 						</label>
 					</p>
-					{longContent && <>
-						{/* <p>
+					<p>
+						<label>
+							<input type='checkbox'
+								checked={tallContent}
+								onChange={(e) => setTallContent(e.target.checked)}
+							/>
+							simulate tall content
+						</label>
+					</p>
+					{wideContent && <>
+						<p style={{whiteSpace: 'nowrap'}}>
 							Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit qui provident vero at, veniam eligendi velit, culpa odit modi cumque fugit dicta facere asperiores autem iusto tenetur saepe, accusamus cum?
-						</p> */}
+						</p>
+					</>}
+					{tallContent && <>
 						<p>
 							Lorem<br/>
 							ipsum<br/>

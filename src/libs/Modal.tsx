@@ -215,12 +215,13 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         // scrollers:
         // scroller at modal layer & at content's body layer:
         '&, & >* >.body': {
-            overflowInline : 'hidden', // no horizontal scrolling
+            /*overflowInline : 'hidden', // no horizontal scrolling
             overflowBlock  : 'auto',   // enable vertical scrolling
             fallbacks: {
                 overflowX  : 'hidden', // no horizontal scrolling
                 overflowY  : 'auto',   // enable vertical scrolling
-            },
+            },*/
+            overflow : 'auto', // enable horz & vert scrolling
         },
 
 
@@ -247,8 +248,9 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
                         // sizes:
-                        boxSizing : 'border-box',  // the final size is including borders & paddings
-                        blockSize : 'fit-content', // follows the content's height
+                        boxSizing  : 'border-box',  // the final size is including borders & paddings
+                        inlineSize : 'fit-content', // follows the content's width
+                        blockSize  : 'fit-content', // follows the content's height
 
                         // fix bug on firefox
                         // setting *blockSize:fit-content* guarantes the scrolling effect never occured.
@@ -274,12 +276,12 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         })(),
         //#endregion card
 
-        //psedudo elm for filling the end of scroll
-        '&::after': {
+
+        //psedudo elm for filling the end of horz & vert scroll
+        '&::before, &::after': {
             // layout:
-            gridArea : 'blockEnd',
-            content  : '""',
-            display  : 'block',
+            content     : '""',
+            display     : 'block',
 
 
             // sizes:
@@ -291,13 +293,23 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             // appearance:
             visibility  : 'hidden',
         },
+        '&::before': {
+            // layout:
+            gridArea    : 'inlineEnd',
+        },
+        '&::after': {
+            // layout:
+            gridArea    : 'blockEnd',
+        },
     }}
     public scrollableStyle(): JssStyle { return {
         [cardElm]: { // card layer
             '&:not(._)': { // force overwrite
                 // sizes:
-                blockSize    : 'auto', // follows the content's height, but
-                maxBlockSize : '100%', // up to the maximum available parent's height
+                inlineSize    : 'auto', // follows the content's width, but
+                maxInlineSize : '100%', // up to the maximum available parent's width
+                blockSize     : 'auto', // follows the content's height, but
+                maxBlockSize  : '100%', // up to the maximum available parent's height
 
                 // this prop is not actually makes card scrollable,
                 // but makes card's body scrollable (indirect effect)
