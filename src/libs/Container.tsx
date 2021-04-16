@@ -109,6 +109,21 @@ export class ContainerStylesBuilder extends ElementStylesBuilder {
             this.filterGeneralProps(cssProps), // apply *general* cssProps
         ] as JssStyle,
     }}
+    /**
+     * Applies responsive container functionality using css grid - without any other styling.
+     * @returns A `JssStyle` represents a responsive container style definition using css grid.
+     */
+    public basicContainerGridStyle(): JssStyle { return {
+        // layout:
+        display             : 'grid',
+        gridTemplateColumns : [[cssProps.paddingInline, 'auto', cssProps.paddingInline]],
+        gridTemplateRows    : [[cssProps.paddingBlock,  'auto', cssProps.paddingBlock ]],
+        gridTemplateAreas   : [[
+            '"...         blockStart       ..."',
+            '"inlineStart  content   inlineEnd"',
+            '"...          blockEnd        ..."',
+        ]],
+    }}
     public basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(),         // copy basicStyle from base

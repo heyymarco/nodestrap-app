@@ -27,7 +27,7 @@ import {
     cssDecls as ecssDecls,
 }                           from './Element'
 import {
-    cssProps as contCssProps,
+    styles as containerStyles,
 }                           from './Container'
 import {
     default  as Indicator,
@@ -189,16 +189,15 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     // styles:
     public basicStyle(): JssStyle { return {
         extend: [
+            containerStyles.basicContainerGridStyle(), // apply responsive container functionality using css grid
             this.filterPrefixProps(cssProps, 'backg'), // apply cssProps starting with backg***
         ] as JssStyle,
 
 
         // layout:
-        display        : 'grid',         // we use grid, so we can align the card both horizontally & vertically
-        gridAutoFlow   : 'row',
-        justifyContent : 'center',       // align center horizontally
-     // alignContent   : cssProps.align, // doesn't work correctly, the item(s) clipped on the top, i don't know why
-        alignItems     : cssProps.align, // align (defaults center) vertically
+     // display      : 'grid',             // already defined in containerStyle. we use grid, so we can align the card both horizontally & vertically
+        justifyItems : cssProps.horzAlign, // align (default center) horizontally
+        alignItems   : cssProps.vertAlign, // align (default center) vertically
 
 
         // sizes:
@@ -231,32 +230,6 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
         // children:
-        //#region replacement for *collapsing marginBlock*
-        '&::before, &::after': {
-            // layout:
-            content    : '""',
-            display    : 'block',
-
-
-            // appearance:
-            visibility : 'hidden',
-
-
-            // sizes:
-            boxSizing  : 'border-box', // the final size is including borders & paddings
-        },
-        '&::before': {
-            // sizes:
-            blockSize  : contCssProps.paddingBlock,
-        },
-        '&::after': {
-            // sizes:
-            blockSize  : contCssProps.paddingBlock,
-        },
-        //#endregion replacement for *collapsing marginBlock*
-
-        
-
         //#region card
         ...(() => {
             const newCardProps = this.overwriteParentProps(cssProps);
@@ -269,6 +242,10 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
                     ] as JssStyle,
 
                     '&:not(._)': { // force overwrite
+                        // layout:
+                        gridArea : 'content',
+
+
                         // sizes:
                         boxSizing : 'border-box',  // the final size is including borders & paddings
                         blockSize : 'fit-content', // follows the content's height
@@ -288,12 +265,6 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
                         // apply *non conditional* fn props:
                         [this.decl(this._animFn)]: 'inherit', // inherit from Modal
                     },
-
-
-                    // spacings:
-                    // replaces paddings with margins:
-                    marginInline : contCssProps.paddingInline, // marginInline is never collapsing (safe)
-                 // marginBlock  : contCssProps.paddingBlock,  // not reliable *collapsing marginBlock*
     
     
                     // card items:
@@ -302,6 +273,24 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             };
         })(),
         //#endregion card
+
+        //psedudo elm for filling the end of scroll
+        '&::after': {
+            // layout:
+            gridArea : 'blockEnd',
+            content  : '""',
+            display  : 'block',
+
+
+            // sizes:
+            // fill the entire grid area:
+            justifySelf : 'stretch',
+            alignSelf   : 'stretch',
+
+
+            // appearance:
+            visibility  : 'hidden',
+        },
     }}
     public scrollableStyle(): JssStyle { return {
         [cardElm]: { // card layer
@@ -316,7 +305,22 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             },
         },
     }}
-    protected styles(): Styles<'main'|'actionBar'> {
+    public bodyStyle(): JssStyle { return {
+        overflow: 'hidden',
+    }}
+    public actionBarStyle(): JssStyle { return {
+        // layout:
+        display        : 'flex',
+        justifyContent : 'space-between', // separates items horizontally
+        alignItems     : 'center', // center items vertically
+
+
+        // children:
+        '& :first-child:last-child': {
+            marginInlineStart: 'auto',
+        },
+    }}
+    protected styles(): Styles<'main'|'body'|'actionBar'> {
         const styles = super.styles();
         Object.assign(styles.main, {
             '&.scrollable' : this.scrollableStyle(),
@@ -324,22 +328,12 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         return {
             ...styles,
 
-            actionBar: {
-                // layout:
-                display        : 'flex',
-                justifyContent : 'space-between', // separates items horizontally
-                alignItems     : 'center', // center items vertically
-
-
-                // children:
-                '& :first-child:last-child': {
-                    marginInlineStart: 'auto',
-                },
-            },
+            body      : this.bodyStyle(),
+            actionBar : this.actionBarStyle(),
         };
     }
-    public useStyles(): Classes<'main'|'actionBar'> {
-        return super.useStyles() as Classes<'main'|'actionBar'>;
+    public useStyles(): Classes<'main'|'body'|'actionBar'> {
+        return super.useStyles() as Classes<'main'|'body'|'actionBar'>;
     }
 }
 export const styles = new ModalStylesBuilder();
@@ -393,7 +387,8 @@ const cssConfig = new CssConfig(() => {
 
 
     return {
-        align                     : center,
+        horzAlign                 : center,
+        vertAlign                 : center,
 
         backg                     : typos.backg,
         boxShadow                 : [[0, 0, '10px', 'black']],
@@ -457,9 +452,15 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
     const modRef = useRef<HTMLElement>();
     useEffect(() => {
         if (props.active) {
+            document.body.classList.add(modStyles.body);
+
+
             modRef.current?.focus(); // when actived => focus the dialog, so the user able to use [esc] key to close the dialog
         }
-    }, [props.active]);
+        else {
+            document.body.classList.remove(modStyles.body);
+        } // if
+    }, [props.active, modStyles.body]);
 
 
 

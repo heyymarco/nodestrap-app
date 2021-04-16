@@ -132,7 +132,7 @@ export class StylesBuilder {
         const cssPropsCopy: Dictionary<any> = {};
         for (const [name, prop] of Object.entries(cssProps)) {
             // excludes the entry if the name matching with following:
-            if ((/^(icon)|(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid)$|^(@)|backgGrad|anim|orientation|align/).test(name)) continue; // exclude
+            if ((/^(icon)|(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid)$|^(@)|backgGrad|anim|orientation|align|horzAlign|vertAlign/).test(name)) continue; // exclude
             
             // if not match => include it:
             cssPropsCopy[name] = prop;
