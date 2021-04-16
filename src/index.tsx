@@ -9,10 +9,11 @@ import ListGroupApp from './ListGroupApp';
 import CardApp from './CardApp';
 import ModalApp from './ModalApp';
 import FormApp from './FormApp';
+import NavbarApp from './NavbarApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ModalApp />
+    <NavbarApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -26,7 +26,7 @@ import ListGroupItem        from './ListGroupItem'
 // styles:
 
 const wrapperElm  = '& >li, & >*';
-const listItemElm = '& >*';
+const listItemElm = '& >.item';
 
 export class ListGroupStylesBuilder extends ContentStylesBuilder {
     // themes:

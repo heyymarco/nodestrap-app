@@ -19,6 +19,10 @@ export default function ListGroupItem<TElement extends HTMLElement = HTMLElement
         <Content<TElement>
             // other props:
             {...props}
+
+
+            // main:
+            mainClass='item'
         />
     );
 }
