@@ -8,6 +8,10 @@ import {
 import logo from './logo.svg';
 import './App.css';
 
+import {
+    Prop,
+}                           from './libs/Css'        // ts defs support for jss
+
 import Container from './libs/Container';
 import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
@@ -61,9 +65,13 @@ function App() {
 
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
-
+	
 	const modalStyles = [undefined, 'scrollable'];
 	const [modalStyle,    setModalStyle     ] = useState<Modals.ModalStyle|undefined>(undefined);
+
+	const aligns = [undefined, 'start', 'center', 'end'];
+	const [horzAlign,  setHorzAlign   ] = useState<Prop.JustifyItems|undefined>(undefined);
+	const [vertAlign,  setVertAlign   ] = useState<Prop.AlignItems|undefined>(undefined);
 
 	const [wideContent, setWideContent   ] = useState(false);
 	const [tallContent, setTallContent   ] = useState(false);
@@ -111,15 +119,18 @@ function App() {
 				<Button onClick={() => setActive(true)}>Show modal</Button>
 				<ButtonIcon btnStyle='link' theme='secondary' aria-label='Close' icon='close' />
 				<Modal theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}
+
 					header=
-						'Lorem ipsum dolor'
+					'Lorem ipsum dolor'
 
 					footer=
-						'dolor sit amet'
+					'dolor sit amet'
 
 					onClose={() => setActive(false)}
-					
+
 					modalStyle={modalStyle}
+					horzAlign={horzAlign}
+					vertAlign={vertAlign}
 				>
 					<p>
 						Theme:
@@ -189,6 +200,36 @@ function App() {
 										onChange={(e) => setModalStyle((e.target.value || undefined) as (Modals.ModalStyle|undefined))}
 									/>
 									{`${st}`}
+								</label>
+							)
+						}
+					</p>
+					<p>
+						horzAlign:
+						{
+							aligns.map(al =>
+								<label key={al ?? ''}>
+									<input type='radio'
+										value={al}
+										checked={horzAlign===al}
+										onChange={(e) => setHorzAlign((e.target.value || undefined) as (Prop.JustifyItems|undefined))}
+									/>
+									{`${al}`}
+								</label>
+							)
+						}
+					</p>
+					<p>
+						vertAlign:
+						{
+							aligns.map(al =>
+								<label key={al ?? ''}>
+									<input type='radio'
+										value={al}
+										checked={vertAlign===al}
+										onChange={(e) => setVertAlign((e.target.value || undefined) as (Prop.AlignItems|undefined))}
+									/>
+									{`${al}`}
 								</label>
 							)
 						}

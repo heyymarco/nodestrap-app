@@ -491,6 +491,10 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
         IndicationProps
 {
     actionCtrl?: boolean
+
+
+    // states:
+    stateActive?: [boolean, (newValue: boolean) => void]
 }
 export default function Indicator<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const indiStyles   = styles.useStyles();
@@ -498,6 +502,10 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
     // states:
     const stateEnbDis  = useStateEnableDisable(props);
     const stateActPass = useStateActivePassive(props);
+
+
+
+    props.stateActive?.[1](!!stateActPass.class); // [activating, actived, passivating]
 
     
 

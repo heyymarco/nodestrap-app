@@ -1,6 +1,7 @@
 // react (builds html using javascript):
 import
     React, {
+    useState,
     useRef,
     useEffect,
 }                           from 'react'        // base technology of our nodestrap components
@@ -12,6 +13,7 @@ import type {
     Classes,
 }                           from 'jss'          // ts defs support for jss
 import {
+    Prop,
     PropEx,
     Cust,
 }                           from './Css'        // ts defs support for jss
@@ -195,7 +197,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
         // layout:
-     // display      : 'grid',             // already defined in containerStyle. we use grid, so we can align the card both horizontally & vertically
+     // display      : 'grid',             // already defined in containerStyles. we use grid, so we can align the card both horizontally & vertically
         justifyItems : cssProps.horzAlign, // align (default center) horizontally
         alignItems   : cssProps.vertAlign, // align (default center) vertically
 
@@ -208,19 +210,13 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         top       : 0,
         width     : '100vw',
         height    : '100vh',
-        maxWidth  : 'fill-available', // hack to excluding scrollbar
-     // maxHeight : 'fill-available', // hack to excluding scrollbar // will be handle by javascript
+     // maxWidth  : 'fill-available', // hack to excluding scrollbar // not needed since all html pages are virtually full width
+     // maxHeight : 'fill-available', // hack to excluding scrollbar // will be handle by javascript soon
 
             
         // scrollers:
-        // scroller at modal layer & at content's body layer:
+        // scroller at modal layer & at card's body layer:
         '&, & >* >.body': {
-            /*overflowInline : 'hidden', // no horizontal scrolling
-            overflowBlock  : 'auto',   // enable vertical scrolling
-            fallbacks: {
-                overflowX  : 'hidden', // no horizontal scrolling
-                overflowY  : 'auto',   // enable vertical scrolling
-            },*/
             overflow : 'auto', // enable horz & vert scrolling
         },
 
@@ -232,7 +228,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
         // children:
         //#region card
-        ...(() => {
+        ...((): JssStyle => {
             const newCardProps = this.overwriteParentProps(cssProps);
 
             return {
@@ -252,10 +248,10 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
                         inlineSize : 'fit-content', // follows the content's width
                         blockSize  : 'fit-content', // follows the content's height
 
-                        // fix bug on firefox
-                        // setting *blockSize:fit-content* guarantes the scrolling effect never occured.
-                        // but on firefox if the scrolling prop is not turned off => causing element clipped off at the top.
-                        overflow  : 'visible', // turn off the scrolling
+                        // fix bug on firefox.
+                        // setting *(inline|block)Size:fit-content* guarantes the scrolling effect never occured (the *scrolling prop* will be ignored).
+                        // but on firefox if the *scrolling prop* is not turned off => causing the element clipped off at the top.
+                        overflow   : 'visible', // turn off the scrolling
 
 
                         // configs:
@@ -265,19 +261,19 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
                         // apply *non conditional* fn props:
-                        [this.decl(this._animFn)]: 'inherit', // inherit from Modal
+                        [this.decl(this._animFn)] : 'inherit', // inherit from Modal
                     },
     
     
                     // card items:
-                    [cardItemsElm]: this.restoreProps(newCardProps), // restore cardProps
+                    [cardItemsElm] : this.restoreProps(newCardProps), // restore cardProps
                 },
             };
         })(),
         //#endregion card
 
 
-        //psedudo elm for filling the end of horz & vert scroll
+        //#region psedudo elm for filling the end of horz & vert scroll
         '&::before, &::after': {
             // layout:
             content     : '""',
@@ -301,6 +297,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             // layout:
             gridArea    : 'blockEnd',
         },
+        //#endregion psedudo elm for filling the end of horz & vert scroll
     }}
     public scrollableStyle(): JssStyle { return {
         [cardElm]: { // card layer
@@ -313,18 +310,19 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
                 // this prop is not actually makes card scrollable,
                 // but makes card's body scrollable (indirect effect)
-                overflow     : 'auto', // turn on the scrolling
+                overflow      : 'auto', // turn on the scrolling
             },
         },
     }}
     public bodyStyle(): JssStyle { return {
+        // kill the scroll on the body:
         overflow: 'hidden',
     }}
     public actionBarStyle(): JssStyle { return {
         // layout:
         display        : 'flex',
         justifyContent : 'space-between', // separates items horizontally
-        alignItems     : 'center', // center items vertically
+        alignItems     : 'center',        // center items vertically
 
 
         // children:
@@ -428,11 +426,24 @@ export const cssDecls = cssConfig.decls;
 
 export type ModalStyle = 'scrollable' // might be added more styles in the future
 export interface VariantModal {
-    modalStyle?: ModalStyle
+    modalStyle? : ModalStyle
 }
 export function useVariantModal(props: VariantModal) {
     return {
         class: props.modalStyle ? props.modalStyle : null,
+    };
+}
+
+export interface AlignModal {
+    horzAlign? : Prop.JustifyItems | Cust.Ref
+    vertAlign? : Prop.AlignItems   | Cust.Ref
+}
+export function useAlignModal(props: AlignModal) {
+    return {
+        style: {
+            [cssDecls.horzAlign] : props.horzAlign,
+            [cssDecls.vertAlign] : props.vertAlign,
+        },
     };
 }
 
@@ -444,7 +455,8 @@ export type CloseType = 'ui' | 'backg' | 'shortcut';
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
         Cards.Props<TElement>,
-        VariantModal
+        VariantModal,
+        AlignModal
 {
     // accessibility:
     tabIndex?   : number
@@ -454,25 +466,28 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     onClose?    : (closeType: CloseType) => void
 }
 export default function Modal<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
-    const modStyles = styles.useStyles();
+    const modStyles   = styles.useStyles();
 
     // layouts:
-    const variModal = useVariantModal(props);
+    const variModal   = useVariantModal(props);
+    const alignModal  = useAlignModal(props);
 
 
 
-    const modRef = useRef<HTMLElement>();
+    const stateActive = useState(props.active ?? false);
+    const isActive    = stateActive[0];
+    const cardRef     = useRef<TElement>();
     useEffect(() => {
-        if (props.active) {
+        if (isActive) {
             document.body.classList.add(modStyles.body);
 
 
-            modRef.current?.focus(); // when actived => focus the dialog, so the user able to use [esc] key to close the dialog
+            cardRef.current?.focus(); // when actived => focus the dialog, so the user able to use [esc] key to close the dialog
         }
         else {
             document.body.classList.remove(modStyles.body);
         } // if
-    }, [props.active, modStyles.body]);
+    }, [isActive, modStyles.body]);
 
 
 
@@ -526,8 +541,29 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
             ]}
 
 
+            // styles:
+            style={{
+                // additionals:
+                ...(props.style ?? {}),
+
+
+                // layouts:
+                ...alignModal.style,
+            }}
+
+
             // indications:
             active={active}
+
+
+            // states:
+            stateActive={[
+                props.stateActive?.[0] ?? stateActive[0],
+                (newValue: boolean) => {
+                    props.stateActive?.[1](newValue);
+                    stateActive[1](newValue);
+                },
+            ]}
 
 
             // events:
@@ -551,7 +587,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
                     // essentials:
                     elmRef={(elm) => {
                         // @ts-ignore
-                        modRef.current = elm;
+                        cardRef.current = elm;
 
 
                         // forwards:
