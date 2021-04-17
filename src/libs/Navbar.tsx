@@ -6,19 +6,10 @@ import type {
     JssStyle,
     Styles,
 }                           from 'jss'          // ts defs support for jss
-import {
-    PropEx,
-    Cust,
-}                           from './Css'        // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-import type {
-    DictionaryOf,
-}                           from './CssConfig'  // ts defs support for jss
 
 // nodestrap (modular web components):
-import * as stripOuts       from './strip-outs'
 import colors               from './colors'     // configurable colors & theming defs
-import spacers              from './spacers'    // configurable spaces defs
 import {
     cssProps as ecssProps,
 }                           from './Element'
@@ -26,13 +17,11 @@ import {
     cssProps as contCssProps,
 }                           from './Container'
 import {
-    cssProps as icssProps,
     styles as indicatorStyles,
 }                           from './Indicator'
 import {
     default  as Control,
     ControlStylesBuilder,
-    cssProps as ccssProps,
 }                           from './Control'
 import type * as Controls   from './Control'
 import NavbarMenu           from './NavbarMenu'
@@ -164,6 +153,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     this.watchThemes(),
                     {
                         '&.outlined': {
+                            //#region forwards outlined to menu items
                             // children:
                             [menusElm]: {
                                 [menuElm]: {
@@ -172,12 +162,29 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                                     ] as JssStyle,
                                 } as JssStyle, // menu items
                             } as JssStyle, // menus
+                            //#endregion forwards outlined to menu items
+
+
+                            //#region remove double gradient to menu items
+                            '&.gradient': {
+                                // children:
+                                [menusElm]: {
+                                    [menuElm]: {
+                                        extend: [
+                                            this.toggleOffGradient(),
+                                        ] as JssStyle,
+                                    } as JssStyle, // menu items
+                                } as JssStyle, // menus
+                            },
+                            //#endregion remove double gradient to menu items
                         } as JssStyle,
                     } as JssStyle,
 
                     // watch indication state classes/pseudo-classes:
+                    //#region watchIndicationStates
                     this.indicationThemesIf(),
                     this.indicationStates(),
+                    //#endregion watchIndicationStates
                     this.applySupressManualActive(),
 
                     // after watching => use func props:
@@ -230,7 +237,9 @@ const cssConfig = new CssConfig(() => {
     return {
         paddingInline        : contCssProps.paddingInline, // override to Element
         paddingBlock         : 0,
-        border               : none,
+
+        borderInline         : none,
+        borderBlock          : none,
         borderRadius         : 0,
 
 

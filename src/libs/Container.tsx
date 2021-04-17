@@ -31,6 +31,15 @@ import { pascalCase }      from 'pascal-case'
 // configs:
 
 const cssConfig = new CssConfig(() => {
+    // common css values:
+    // const initial = 'initial';
+    // const unset   = 'unset';
+    const none    = 'none';
+    // const inherit = 'inherit';
+    // const center  = 'center';
+    // const middle  = 'middle';
+
+
     return {
         paddingInline    : '12px' as PropEx.Length,
         paddingBlock     :  '9px' as PropEx.Length,
@@ -49,6 +58,10 @@ const cssConfig = new CssConfig(() => {
     
         paddingInlineXxl : '72px' as PropEx.Length,
         paddingBlockXxl  : '54px' as PropEx.Length,
+
+        borderInline     : none,
+        borderBlock      : none,
+        borderRadius     : 0,
     };
 }, /*prefix: */'con');
 export const cssProps = cssConfig.refs;

@@ -63,7 +63,7 @@ function App() {
 	
 
     return (
-        <div className="App">
+        <div className="App" style={{background: 'url("/stone--.svg")'}}>
 			
 			<Navbar
 				theme={theme} size={size} enableGradient={enableGrad}

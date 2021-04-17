@@ -13,9 +13,6 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 // nodestrap (modular web components):
 import colors               from './colors'     // configurable colors & theming defs
 import {
-    cssProps as ecssProps,
-}                           from './Element'
-import {
     default  as EditableControl,
     EditableControlStylesBuilder,
 }                           from './EditableControl'

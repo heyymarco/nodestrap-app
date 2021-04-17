@@ -80,6 +80,7 @@ const cssConfig = new CssConfig(() => {
         paddingBlockSm    : spacers.xs,
         paddingInlineLg   : spacers.md,
         paddingBlockLg    : spacers.sm,
+        
         border            : borders.default,
         borderColor       : borders.color,
         borderRadius      : border.radiuses.md,
@@ -747,6 +748,8 @@ export class ElementStylesBuilder extends StylesBuilder {
                 this._backgIfIf, // first  priority
                 this._backgTh,   // second priority
                 this._backgIf,   // third  priority
+
+                this._backgNone, // last fallback
             ),
 
             // bottom layer:
