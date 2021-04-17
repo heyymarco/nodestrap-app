@@ -124,17 +124,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
             
-            //#region supress activating by mouse/keyboard
-            // supress activating by mouse/keyboard (:active)
-            // but still responsive activating programatically (.active & .actived)
-            this.stateActive({ // [activating, actived]
-                '&:active:not(.active):not(.actived)': {
-                    [this.decl(this._filterActivePassive)] : ecssProps.filterNone,
-                    [this.decl(this._animActivePassive)]   : ecssProps.animNone,
-                },
-            }),
-            //#endregion supress activating by mouse/keyboard
-            //#endregion specific states
+            this.applySupressManualActive(),
         ] as JssStyle,
     }}
 

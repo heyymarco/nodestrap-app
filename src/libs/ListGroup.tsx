@@ -26,7 +26,7 @@ import ListGroupItem        from './ListGroupItem'
 // styles:
 
 const wrapperElm  = '& >li, & >*';
-const listItemElm = '& >.item';
+const listItemElm = '& >*';
 
 export class ListGroupStylesBuilder extends ContentStylesBuilder {
     // themes:
@@ -109,11 +109,14 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
             [wrapperElm]: {
                 [listItemElm]: {
                     extend: [
-                        // themes:
+                        // watch theme classes:
                         this.watchThemes(), // always inherit
 
-                        // states:
+                        // watch state classes/pseudo-classes:
                         this.watchStates(/*inherit =*/true),
+
+                        // after watching => use func props:
+                        this.fnProps(),
                     ] as JssStyle,
                 },
             },

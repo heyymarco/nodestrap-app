@@ -419,7 +419,6 @@ export class StylesBuilder {
             this.iif(!inherit,
                 this.themesIf()   // conditional themes
             ),
-            this.fnProps(),       // functional  props
             this.states(inherit), // state rules
         ] as JssStyle,
     }}
@@ -443,11 +442,14 @@ export class StylesBuilder {
                 extend: [
                     this.basicStyle(), // basic style
         
-                    // themes:
+                    // watch theme classes:
                     this.watchThemes(),
         
-                    // states:
+                    // watch state classes/pseudo-classes:
                     this.watchStates(),
+
+                    // after watching => use func props:
+                    this.fnProps(),
                 ] as JssStyle,
             },
         };
@@ -718,6 +720,11 @@ export class ElementStylesBuilder extends StylesBuilder {
 
     // states:
     protected fnProps(): JssStyle { return {
+        // define a *none* background:
+        [this.decl(this._backgNone)] : this.solidBackg('transparent'),
+
+
+
         // define a *foreground* color func:
         [this.decl(this._foregFn)] : this.ref(
             this._foregOutlinedTg, // toggle outlined
@@ -794,11 +801,6 @@ export class ElementStylesBuilder extends StylesBuilder {
         extend: [
             this.iif(!inherit, {
                 //#region all initial states are none
-                // define a *none* background:
-                [this.decl(this._backgNone)]       : this.solidBackg('transparent'),
-
-
-
                 // *toggle off* the background gradient prop:
                 // but still be *toggle on* by parent (inherit)
                 ...this.toggleOffGradient(/*inherit =*/true),

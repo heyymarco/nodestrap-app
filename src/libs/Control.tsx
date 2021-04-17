@@ -39,22 +39,27 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     /**
      * focused themed box-shadow color.
      */
-    protected readonly _boxShadowFocusTh   = 'boxShadowFocusTh'
+    protected readonly _boxShadowFocusTh    = 'boxShadowFocusTh'
 
     /**
      * focused conditional box-shadow color.
      */
-    protected readonly _boxShadowFocusIfIf = 'boxShadowFocusIfIf'
+    protected readonly _boxShadowFocusIfIf  = 'boxShadowFocusIfIf'
 
     /**
      * focused conditional unthemed box-shadow color.
      */
-    protected readonly _boxShadowFocusIf   = 'boxShadowFocusIf'
+    protected readonly _boxShadowFocusIf    = 'boxShadowFocusIf'
 
     /**
      * focused functional box-shadow color.
      */
-    public    readonly _boxShadowFocusFn   = 'boxShadowFocusFn'
+    public    readonly _boxShadowFocusFn    = 'boxShadowFocusFn'
+
+    /**
+     * active focused conditional unthemed box-shadow color.
+     */
+    protected readonly _boxShadowFocusIfAct = 'boxShadowFocusIfAct'
     //#endregion boxShadow-focus
 
 
@@ -62,10 +67,10 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     // anim props:
 
  // public    readonly _filterHoverLeave   = 'filterHoverLeave' // already defined in Indicator
-    protected readonly _animHoverLeave     = 'animHoverLeave'
+    protected readonly _animHoverLeave      = 'animHoverLeave'
     
-    public    readonly _boxShadowFocusBlur = 'boxShadowFocusBlur'
-    protected readonly _animFocusBlur      = 'animFocusBlur'
+    public    readonly _boxShadowFocusBlur  = 'boxShadowFocusBlur'
+    protected readonly _animFocusBlur       = 'animFocusBlur'
     //#endregion scoped css props
 
 
@@ -155,8 +160,27 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
         
         // apply an *active* color theme:
-        [this.decl(this._boxShadowFocusIf)] : colors.primaryTransp,
+        [this.decl(this._boxShadowFocusIf)] : this.ref(this._boxShadowFocusIfAct),
     }}
+
+    /**
+     * Supress activating by mouse/keyboard (:active)  
+     * but still responsive activating programatically (.active & .actived)
+     * @returns A `JssStyle` represents a css rule for supressing mouse/keyboard activation.
+     */
+    protected applySupressManualActive(): JssStyle {
+        return this.stateActive({ // [activating, actived]
+            '&:active:not(.active):not(.actived)': {
+                [this.decl(this._filterActivePassive)] : ecssProps.filterNone,
+                [this.decl(this._animActivePassive)]   : ecssProps.animNone,
+
+
+
+                // prevent *toggle off* the outlined props:
+                '&.outlined': this.toggleOnOutlined(),
+            },
+        });
+    }
     //#endregion mixins
 
 
@@ -225,11 +249,18 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
 
         // define a *default* color theme:
-        [this.decl(this._foregIf)]          : colors.secondaryText,
-        [this.decl(this._backgIf)]          : this.solidBackg(colors.secondary),
-        [this.decl(this._borderIf)]         : colors.secondaryCont,
-        [this.decl(this._foregOutlinedIf)]  : colors.secondary,
-        [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
+        [this.decl(this._foregIf)]             : colors.secondaryText,
+        [this.decl(this._backgIf)]             : this.solidBackg(colors.secondary),
+        [this.decl(this._borderIf)]            : colors.secondaryCont,
+        [this.decl(this._foregOutlinedIf)]     : colors.secondary,
+        [this.decl(this._boxShadowFocusIf)]    : colors.secondaryTransp,
+
+        // define an *active* color theme:
+        [this.decl(this._foregIfAct)]          : colors.primaryText,
+        [this.decl(this._backgIfAct)]          : this.solidBackg(colors.primary),
+        [this.decl(this._borderIfAct)]         : colors.primaryCont,
+        [this.decl(this._foregOutlinedIfAct)]  : colors.primary,
+        [this.decl(this._boxShadowFocusIfAct)] : colors.primaryTransp,
     }}
     protected states(inherit = false): JssStyle { return {
         extend: [
@@ -576,7 +607,7 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
             // Control props:
             {...{
                 // accessibility:
-                tabIndex : props.tabIndex ?? 0,
+                tabIndex : (props.enabled ?? true) ? (props.tabIndex ?? 0) : -1,
             }}
         
 

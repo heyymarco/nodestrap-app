@@ -2,8 +2,8 @@
 import React                from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
-import Indicator            from './Indicator'
-import type * as Indicators from './Indicator'
+import Control              from './Control'
+import type * as Controls   from './Control'
 
 
 
@@ -11,12 +11,12 @@ import type * as Indicators from './Indicator'
 
 export interface Props<TElement extends HTMLElement = HTMLAnchorElement>
     extends
-        Indicators.Props<TElement>
+        Controls.Props<TElement>
 {
 }
 export default function NavbarMenu<TElement extends HTMLElement = HTMLAnchorElement>(props: Props<TElement>) {
     return (
-        <Indicator<TElement>
+        <Control<TElement>
             // default props:
             tag='a'
 
@@ -26,7 +26,7 @@ export default function NavbarMenu<TElement extends HTMLElement = HTMLAnchorElem
 
 
             // main:
-            mainClass='menu'
+            mainClass=''
         />
     );
 }

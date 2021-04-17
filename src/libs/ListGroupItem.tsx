@@ -22,7 +22,7 @@ export default function ListGroupItem<TElement extends HTMLElement = HTMLElement
 
 
             // main:
-            mainClass='item'
+            mainClass=''
         />
     );
 }

@@ -173,10 +173,10 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     }}
     public indicationThemesIf(): JssStyle { return {
         // define an *active* color theme:
-        [this.decl(this._foregIfAct)]         : colors.primaryText,
-        [this.decl(this._backgIfAct)]         : this.solidBackg(colors.primary),
-        [this.decl(this._borderIfAct)]        : colors.primaryCont,
-        [this.decl(this._foregOutlinedIfAct)] : colors.primary,
+        [this.decl(this._foregIfAct)]         : colors.secondaryText,
+        [this.decl(this._backgIfAct)]         : this.solidBackg(colors.secondary),
+        [this.decl(this._borderIfAct)]        : colors.secondaryCont,
+        [this.decl(this._foregOutlinedIfAct)] : colors.secondary,
     }}
     public indicationStates(inherit = false): JssStyle { return {
         extend: [
