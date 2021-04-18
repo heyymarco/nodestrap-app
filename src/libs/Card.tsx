@@ -101,7 +101,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         //#region children
         //#region links
         // handle <a> as card-link:
-        '& >a': {
+        '&>a': {
             '& +a': {
                 // add spaces between links:
                 marginInlineStart: spacers.default,
@@ -112,14 +112,14 @@ export class CardStylesBuilder extends ContentStylesBuilder {
 
         //#region images
         // handle <figure> & <img> as card-image:
-        '& >figure': {
+        '&>figure': {
             extend: [
                 stripOuts.figure, // clear browser's default styles
             ] as JssStyle,
 
 
             // children:
-            '& >img': {
+            '&>img': {
                 // layout:
                 display: 'block', // fill the entire parent's width
 
@@ -134,7 +134,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
                 },
             }
         },
-        '& >figure, & >img': this.basicImageStyle(),
+        '&>figure, &>img': this.basicImageStyle(),
         //#endregion images
         //#endregion children
     }}
@@ -233,6 +233,13 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
 
 
 
+    const {
+        // children:
+        children,
+        header,
+        footer,
+        ...otherProps } = props;
+
     return (
         <Content<TElement>
             // default props:
@@ -240,20 +247,20 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
 
 
             // other props:
-            {...props}
+            {...otherProps}
 
 
             // main:
             mainClass={props.mainClass ?? crdStyles.main}
         >
-            {props.header && <header>
-                { props.header }
+            {header && <header>
+                { header }
             </header>}
-            {props.children && <div className='body'>
-                { props.children }
+            {children && <div className='body'>
+                { children }
             </div>}
-            {props.footer && <footer>
-                { props.footer }
+            {footer && <footer>
+                { footer }
             </footer>}
         </Content>
     );

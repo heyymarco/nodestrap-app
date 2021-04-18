@@ -194,7 +194,7 @@ export interface Props
     onClick?     : React.MouseEventHandler<HTMLButtonElement>
 
 
-    // labels:
+    // children:
     text?        : string
     children?    : React.ReactNode
 }
@@ -234,7 +234,8 @@ export default function Button(props: Props) {
             // Button props:
             {...{
                 // actions:
-                onClick: props.onClick,
+                onClick : props.onClick,
+                type    : 'button',
             }}
         >
             { props.text }

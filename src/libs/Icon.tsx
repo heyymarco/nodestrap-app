@@ -189,7 +189,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         // sizes:
         //#region children
         // just a *dummy* element for calculating the image's width
-        '& >img': {
+        '&>img': {
             // appearance:
             visibility : [['hidden'], '!important'], // invisible but still filling the space
 

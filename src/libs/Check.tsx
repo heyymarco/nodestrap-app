@@ -42,9 +42,9 @@ import {
 
 // styles:
 
-const chkElm         = '& >:first-child';
+const chkElm         = '&>:first-child';
 const iconElm        = '&::before';
-const labelElm       = '& >:nth-child(1n+2)';
+const labelElm       = '&>:nth-child(1n+2)';
 
 export class CheckStylesBuilder extends EditableControlStylesBuilder {
     //#region scoped css props

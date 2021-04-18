@@ -72,6 +72,11 @@ export default function ButtonIcon(props: Props) {
     const {
         // appearance:
         icon,
+
+
+        // children:
+        text,
+        children,
         ...otherProps } = props;
     
     return (
@@ -84,7 +89,8 @@ export default function ButtonIcon(props: Props) {
             mainClass={props.mainClass ?? btnIcoStyles.main}
         >
             { icon && <Icon icon={icon} /> }
-            { otherProps.children }
+            { text }
+            { children }
         </Button>
     );
 }

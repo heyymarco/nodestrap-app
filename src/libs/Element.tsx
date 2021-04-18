@@ -748,8 +748,6 @@ export class ElementStylesBuilder extends StylesBuilder {
                 this._backgIfIf, // first  priority
                 this._backgTh,   // second priority
                 this._backgIf,   // third  priority
-
-                this._backgNone, // last fallback
             ),
 
             // bottom layer:

@@ -80,7 +80,7 @@ export const control : JssStyle = {
 
 
 /**
- * removes a browser's default styling on list (ul > li) & (ol > li).
+ * removes a browser's default styling on list (ul>li) & (ol>li).
  */
 export const list : JssStyle = {
     listStyleType      : none,
@@ -90,7 +90,7 @@ export const list : JssStyle = {
     marginInlineEnd    : unset,
     paddingInlineStart : unset,
 
-    '& >li': {
+    '&>li': {
         display        : unset,
         textAlign      : unset,
     }

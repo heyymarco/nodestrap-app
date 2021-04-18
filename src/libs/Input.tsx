@@ -23,7 +23,7 @@ import type * as EditableTextControls   from './EditableTextControl'
 
 // styles:
 
-const inpElm  = '& >:first-child';
+const inpElm  = '&>:first-child';
 
 export class InputStylesBuilder extends EditableTextControlStylesBuilder {
     // themes:

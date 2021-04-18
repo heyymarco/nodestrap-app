@@ -25,13 +25,16 @@ import {
 }                           from './Control'
 import type * as Controls   from './Control'
 import NavbarMenu           from './NavbarMenu'
+import TogglerButton        from './TogglerButton'
 
 
 
 // styles:
 
-const menusElm = '& .menus';
-const menuElm  = '& >*';
+const logoElm     = '& .logo';
+const togglerElm  = '& .toggler';
+const menusElm    = '& .menus';
+const menuItemElm = '& .menus>*';
 
 export class NavbarStylesBuilder extends ControlStylesBuilder {
     // themes:
@@ -77,20 +80,21 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
     public basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(),
-            this.filterGeneralProps(cssProps), // apply *general* cssProps
         ] as JssStyle,
 
 
 
         // layout:
-        display             : 'grid',   // use css grid for layouting, so we can customize the area later.
-        gridTemplateRows    : [['auto']],
-        gridTemplateColumns : [['fit-content', 'auto', 'fit-content']],
+        display             : 'grid', // use css grid for layouting, so we can customize the desired area later.
+        gridTemplateRows    : [['auto'/*fluid height*/]],
+        gridTemplateColumns : [['max-content'/*fixed width*/, 'auto'/*fluid width*/, 'max-content'/*fixed width*/]],
         gridTemplateAreas   : [[
             '"logo menus toggler"',
         ]],
-        justifyItems        : 'center', // align horizontally
-        alignItems          : 'center', // align vertically
+        // the grid's size configured as *minimum* size required => no free space left to distribute => so (justify|algin)Content is *not required*
+        // default placement for each navbar's sections:
+        justifyItems        : 'stretch', // each section fill the entire area's width
+        alignItems          : 'stretch', // each section fill the entire area's height (the shorter sections follow the tallest one)
 
 
 
@@ -100,48 +104,85 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
         // children:
-        [menusElm]: {
+        //#region children
+        [logoElm]    : {
+            gridArea       : 'logo',
+
+
+
+            // customize:
+            ...this.filterPrefixProps(cssProps, 'logo'), // apply cssProps starting with logo***
+        } as JssStyle,
+
+        [togglerElm] : {
+            gridArea       : 'toggler',
+
+
+
+            // customize:
+            ...this.filterPrefixProps(cssProps, 'toggler'), // apply cssProps starting with toggler***
+        } as JssStyle,
+
+        [menusElm]   : {
             // layout:
             gridArea       : 'menus',
+            display        : 'flex',    // use flexbox to place the menus sequentially
+            flexDirection  : 'row',     // place the menus horizontally
+            justifyContent : 'start',   // place the menus from the begining, leave a free space (if any) at the end
+            alignItems     : 'stretch', // each menu fill the entire section's height
+        } as JssStyle,
+
+        [menuItemElm] : {
+            // customize:
+            ...this.filterPrefixProps(cssProps, 'menu'), // apply cssProps starting with menu***
+        } as JssStyle,
+
+        [[
+            logoElm,
+            togglerElm,
+            menuItemElm,
+        ].join(',')]: {
+            extend: [
+                super.basicStyle(),
+                //#region overrides some base's basicStyle
+                {
+                    // typos:
+                    fontSize       : ecssProps.fontSize,
+                    fontFamily     : undefined,
+                    fontWeight     : undefined,
+                    fontStyle      : undefined,
+                    textDecoration : undefined,
+                    lineHeight     : undefined,
+        
+        
+        
+                    // borders:
+                    border         : undefined,
+                    borderRadius   : undefined,
+                },
+                //#endregion overrides some base's basicStyle
+            ] as JssStyle,
+
+
+
+            // layout:
             display        : 'flex',
-            flexDirection  : 'row',
-            justifyContent : 'start',   // child items placed starting from the begining
-            alignItems     : 'stretch', // child items height are 100% of the parent
+            flexDirection  : 'row',    // the flex direction to horz, so we can adjust the content's vertical position
+            alignItems     : 'center', // if the content's height is shorter than the section, place it at the center
+        } as JssStyle,
+
+        [[
+            logoElm,
+            togglerElm,
+        ].join(',')]: {
+            paddingInline : 0,
+        } as JssStyle,
+        //#endregion children
 
 
 
-            [menuElm]: { // main child elements
-                extend: [
-                    super.basicStyle(),
-
-                    this.filterPrefixProps(cssProps, 'menu'), // apply cssProps starting with backg***
-
-                    // this.toggleOnOutlined(),
-                ] as JssStyle,
-    
-    
-    
-                // layout:
-                display    : 'inline-flex',
-                alignItems : 'center', // if the height is stretched, place text at the center
-
-
-
-                // typos:
-                fontSize       : ecssProps.fontSize,
-                fontFamily     : undefined,
-                fontWeight     : undefined,
-                fontStyle      : undefined,
-                textDecoration : undefined,
-                lineHeight     : undefined,
-
-
-
-                // borders:
-                border         : undefined,
-                borderRadius   : undefined,
-            } as JssStyle, // menu items
-        } as JssStyle, // menus
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
     protected styles(): Styles<'main'> {
         return {
@@ -155,26 +196,22 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                         '&.outlined': {
                             //#region forwards outlined to menu items
                             // children:
-                            [menusElm]: {
-                                [menuElm]: {
-                                    extend: [
-                                        this.outlined(),
-                                    ] as JssStyle,
-                                } as JssStyle, // menu items
-                            } as JssStyle, // menus
+                            [menuItemElm]: {
+                                extend: [
+                                    this.outlined(),
+                                ] as JssStyle,
+                            } as JssStyle, // menu items
                             //#endregion forwards outlined to menu items
 
 
                             //#region remove double gradient to menu items
                             '&.gradient': {
                                 // children:
-                                [menusElm]: {
-                                    [menuElm]: {
-                                        extend: [
-                                            this.toggleOffGradient(),
-                                        ] as JssStyle,
-                                    } as JssStyle, // menu items
-                                } as JssStyle, // menus
+                                [menuItemElm]: {
+                                    extend: [
+                                        this.toggleOffGradient(),
+                                    ] as JssStyle,
+                                } as JssStyle, // menu items
                             },
                             //#endregion remove double gradient to menu items
                         } as JssStyle,
@@ -182,8 +219,10 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
                     // watch indication state classes/pseudo-classes:
                     //#region watchIndicationStates
-                    this.indicationThemesIf(),
-                    this.indicationStates(),
+                    // @ts-ignore
+                    indicatorStyles.themesIf(),
+                    // @ts-ignore
+                    indicatorStyles.states(),
                     //#endregion watchIndicationStates
                     this.applySupressManualActive(),
 
@@ -194,26 +233,25 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
 
-                [menusElm]: {
-                    [menuElm]: {
-                        extend: [
-                            // watch theme classes:
-                            this.watchThemes(), // always inherit
-        
-                            // watch state classes/pseudo-classes:
-                            this.watchStates(/*inherit =*/false),
+                // children:
+                [menuItemElm]: {
+                    extend: [
+                        // watch theme classes:
+                        this.watchThemes(), // always inherit
+    
+                        // watch state classes/pseudo-classes:
+                        this.watchStates(/*inherit =*/false),
 
-                            // force inherit for enable/disable state props:
-                            {
-                                [this.decl(this._filterEnableDisable)] : 'inherit',
-                                [this.decl(this._animEnableDisable)]   : 'inherit',
-                            },
+                        // force inherit for enable/disable state props:
+                        {
+                            [this.decl(this._filterEnableDisable)] : 'inherit',
+                            [this.decl(this._animEnableDisable)]   : 'inherit',
+                        },
 
-                            // after watching => use func props:
-                            this.fnProps(),
-                        ] as JssStyle,
-                    } as JssStyle, // menu items
-                } as JssStyle, // menus
+                        // after watching => use func props:
+                        this.fnProps(),
+                    ] as JssStyle,
+                } as JssStyle, // menu items
             },
         };
     }
@@ -262,12 +300,21 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
 {
     // children:
     children? : React.ReactNode
+    logo?     : React.ReactChild
+    toggler?  : React.ReactChild
 }
 export default function Navbar<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const navbStyles = styles.useStyles();
 
     
     
+    const {
+        // children:
+        children,
+        logo,
+        toggler,
+        ...otherProps } = props;
+
     return (
         <Control<TElement>
             // default props:
@@ -277,14 +324,15 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
 
             // other props:
-            {...props}
+            {...otherProps}
 
 
             // main:
             mainClass={props.mainClass ?? navbStyles.main}
         >
-            <div className='menus'>{
-                props.children && (Array.isArray(props.children) ? props.children : [props.children]).map((child, index) =>
+            { logo && <div className='logo'>{ logo }</div> }
+            { children && <div className='menus'>{
+                (Array.isArray(children) ? children : [children]).map((child, index) =>
                     (
                         ((child as React.ReactElement).type === NavbarMenu)
                         ?
@@ -301,7 +349,8 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                         </NavbarMenu>
                     )
                 )
-            }</div>
+            }</div> }
+            <div className='toggler'>{ toggler ?? <TogglerButton /> }</div>
         </Control>
     );
 }

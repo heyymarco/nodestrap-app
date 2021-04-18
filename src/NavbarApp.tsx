@@ -12,6 +12,7 @@ import Container from './libs/Container';
 import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
 import Content from './libs/Content';
+import ButtonIcon   from './libs/ButtonIcon';
 import Navbar, {NavbarMenu} from './libs/Navbar';
 
 
@@ -70,20 +71,19 @@ function App() {
 				outlined={outlined}
 
 				enabled={enabled} active={active}
+
+				logo={<div>Yea</div>}
+				// toggler={<ButtonIcon icon='close'>Close</ButtonIcon>}
 			>
 				<>hello</>
-				<>holla</>
-				<>hey</>
-				<NavbarMenu enabled={false}>i'm disabled</NavbarMenu>
+				<NavbarMenu enabled={false}>disabled</NavbarMenu>
 				'hoho'
-				<NavbarMenu active={true}>i'm active</NavbarMenu>
-				<>hehe</>
-				<NavbarMenu theme='danger'>i'm angry</NavbarMenu>
-				<NavbarMenu theme='success'>i'm fine</NavbarMenu>
-				<NavbarMenu size='sm'>i'm small</NavbarMenu>
-				<NavbarMenu size='lg'>i'm big</NavbarMenu>
+				<NavbarMenu active={true}>active</NavbarMenu>
+				<NavbarMenu theme='danger'>angry</NavbarMenu>
+				<NavbarMenu theme='success'>fine</NavbarMenu>
+				<NavbarMenu size='sm'>small</NavbarMenu>
+				<NavbarMenu size='lg'>big</NavbarMenu>
 				<NavbarMenu enableGradient={true}>i'm 3d</NavbarMenu>
-				<NavbarMenu outlined={true}>i'm transparent</NavbarMenu>
 			</Navbar>
             <Container>
                 <Element

@@ -47,15 +47,16 @@ import {
     cssDecls as rcssDecls,
 }                           from './Card'
 import type * as Cards      from './Card'
-import Button               from './ButtonIcon'
+import Button               from './Button'
+import CloseButton          from './CloseButton'
 import typos                from './typos/index' // configurable typography (texting) defs
 
 
 
 // styles:
 
-const cardElm        = '& >*';
-const cardItemsElm   = '& >*';
+const cardElm        = '&>*';
+const cardItemsElm   = '&>*';
 
 export class ModalStylesBuilder extends IndicatorStylesBuilder {
     //#region global css props
@@ -216,7 +217,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             
         // scrollers:
         // scroller at modal layer & at card's body layer:
-        '&, & >* >.body': {
+        '&, &>*>.body': {
             overflow : 'auto', // enable horz & vert scrolling
         },
 
@@ -245,11 +246,11 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
                         // sizes:
                         boxSizing  : 'border-box',  // the final size is including borders & paddings
-                        inlineSize : 'fit-content', // follows the content's width
-                        blockSize  : 'fit-content', // follows the content's height
+                        inlineSize : 'max-content', // follows the content's width
+                        blockSize  : 'max-content', // follows the content's height
 
                         // fix bug on firefox.
-                        // setting *(inline|block)Size:fit-content* guarantes the scrolling effect never occured (the *scrolling prop* will be ignored).
+                        // setting *(inline|block)Size:max-content* guarantes the scrolling effect never occured (the *scrolling prop* will be ignored).
                         // but on firefox if the *scrolling prop* is not turned off => causing the element clipped off at the top.
                         overflow   : 'visible', // turn off the scrolling
 
@@ -513,7 +514,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
     const header2 = ((header === undefined) || (typeof(header) === 'string')) ? (
         <h5 className={modStyles.actionBar}>
             { header }
-            <Button btnStyle='link' theme='secondary' aria-label='Close' icon='close' onClick={() => props.onClose?.('ui')} />
+            <CloseButton onClick={() => props.onClose?.('ui')} />
         </h5>
     ) : header;
 

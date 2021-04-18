@@ -25,8 +25,8 @@ import ListGroupItem        from './ListGroupItem'
 
 // styles:
 
-const wrapperElm  = '& >li, & >*';
-const listItemElm = '& >*';
+const wrapperElm  = '&>li, &>*';
+const listItemElm = '&>*';
 
 export class ListGroupStylesBuilder extends ContentStylesBuilder {
     // themes:
@@ -140,7 +140,14 @@ export default function ListGroup<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
-    const { tag, ...otherProps } = props;
+    const {
+        // essentials:
+        tag,
+
+
+        // children:
+        children,
+        ...otherProps } = props;
     const parentTag = tag ?? 'ul';
     const wrapTag   = ['ul', 'ol'].includes(parentTag) ? 'li' : 'div';
 
@@ -158,7 +165,7 @@ export default function ListGroup<TElement extends HTMLElement = HTMLElement>(pr
             mainClass={props.mainClass ?? lgStyles.main}
         >
             {
-                props.children && (Array.isArray(props.children) ? props.children : [props.children]).map((child, index) =>
+                children && (Array.isArray(children) ? children : [children]).map((child, index) =>
                     <GenericElement
                         // essentials:
                         tag={wrapTag}
