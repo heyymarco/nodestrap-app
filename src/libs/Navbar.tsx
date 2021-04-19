@@ -25,7 +25,7 @@ import {
 }                           from './Control'
 import type * as Controls   from './Control'
 import NavbarMenu           from './NavbarMenu'
-import TogglerButton        from './TogglerButton'
+import TogglerMenuButton    from './TogglerMenuButton'
 
 
 
@@ -106,6 +106,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         // children:
         //#region children
         [logoElm]    : {
+            // layout:
             gridArea       : 'logo',
 
 
@@ -115,6 +116,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         } as JssStyle,
 
         [togglerElm] : {
+            // layout:
             gridArea       : 'toggler',
 
 
@@ -339,6 +341,10 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                         child
                         :
                         <NavbarMenu
+                            // essentials:
+                            key={index}
+
+
                             // events:
                             onAnimationEnd={(e) =>
                                 // triggers ListGroup's onAnimationEnd event
@@ -350,7 +356,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                     )
                 )
             }</div> }
-            <div className='toggler'>{ toggler ?? <TogglerButton /> }</div>
+            <div className='toggler'>{ toggler ?? <TogglerMenuButton /> }</div>
         </Control>
     );
 }

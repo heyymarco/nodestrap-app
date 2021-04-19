@@ -42,9 +42,9 @@ import {
 
 // styles:
 
-const chkElm         = '&>:first-child';
-const iconElm        = '&::before';
-const labelElm       = '&>:nth-child(1n+2)';
+const chkElm   = '&>:first-child';
+const iconElm  = '&::before';
+const labelElm = '&>:nth-child(1n+2)';
 
 export class CheckStylesBuilder extends EditableControlStylesBuilder {
     //#region scoped css props
@@ -446,12 +446,12 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             
             
             
-            // apply *non conditional* fn props:
+            // apply fn props:
             anim : this.ref(this._animIconFn),
         },
     }}
     protected basicLabelStyle(): JssStyle { return {
-        // apply *non conditional* fn props:
+        // apply fn props:
         foreg : this.ref(this._foregLabelFn),
     }}
     public basicStyle(): JssStyle { return {
@@ -511,7 +511,11 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             boxSizing  : 'border-box', // the final size is including borders & paddings
             inlineSize: 0, blockSize: 0,
             border: 0, padding: 0,
-            marginInlineEnd: 0,
+
+            // spacing between check & label:
+            '&:not(:last-child)': {
+                marginInlineEnd: 0,
+            },
         },
 
         [labelElm] : buttonStyles.basicStyle(),

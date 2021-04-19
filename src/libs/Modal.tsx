@@ -222,7 +222,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         },
 
 
-        // apply *non conditional* fn props:
+        // apply fn props:
         anim : this.ref(this._animBackgFn),
 
 
@@ -261,7 +261,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
                         ] as JssStyle,
 
 
-                        // apply *non conditional* fn props:
+                        // apply fn props:
                         [this.decl(this._animFn)] : 'inherit', // inherit from Modal
                     },
     

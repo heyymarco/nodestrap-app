@@ -18,6 +18,8 @@ import EditableTextControl from './libs/EditableTextControl';
 
 import Button, * as Buttons from './libs/Button';
 import ButtonIcon from './libs/ButtonIcon';
+import CloseButton from './libs/CloseButton';
+import TogglerMenuButton from './libs/TogglerMenuButton';
 import Input from './libs/Input';
 import Check from './libs/Check';
 
@@ -173,6 +175,24 @@ function App() {
 				>
                     <span>My instagram</span>
                 </ButtonIcon>
+				<CloseButton
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+
+					focus={focus}
+
+					btnStyle={btnStyle}
+				/>
+				<TogglerMenuButton
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+
+					focus={focus}
+				/>
 				<Check
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
@@ -225,14 +245,17 @@ function App() {
 					defaultValue='yourmail'
 				/>
 				<hr style={{flexBasis: '100%'}} />
-				<Icon
-					theme={theme} size={size} enableGradient={enableGrad}
-					icon='face'
-				/>
-				<Icon
-					theme={theme} size={size} enableGradient={enableGrad}
-					icon='instagram'
-				/>
+				<p>
+					<Icon
+						theme={theme} size={size} enableGradient={enableGrad}
+						icon='face'
+					/>
+					<Icon
+						theme={theme} size={size} enableGradient={enableGrad}
+						icon='instagram'
+					/>
+					<span>Test</span>
+				</p>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:

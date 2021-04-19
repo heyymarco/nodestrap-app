@@ -826,7 +826,7 @@ export class ElementStylesBuilder extends StylesBuilder {
     
     
     
-        // apply *non conditional* fn props:
+        // apply fn props:
         foreg       : this.ref(this._foregFn),
         backg       : this.ref(this._backgFn),
         borderColor : this.ref(this._borderFn),

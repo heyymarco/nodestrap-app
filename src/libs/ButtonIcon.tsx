@@ -45,10 +45,12 @@ export class ButtonIconStylesBuilder extends ButtonStylesBuilder {
 
 
         // Icon:
+        // fill the entire parent text's height:
         [icssDecls.size]  : [['calc(1em *',
             `var(${ecssDecls.lineHeight},${typos.lineHeight})`,
         ')']],
-        [icssDecls.foreg] : this.ref(this._foregFn),
+        // set icon's color as parent's font color:
+        [icssDecls.foreg] : 'currentColor',
     }}
 }
 export const styles = new ButtonIconStylesBuilder();

@@ -72,7 +72,7 @@ function App() {
 
 				enabled={enabled} active={active}
 
-				logo={<div>Yea</div>}
+				logo={<img src="/logo.png" alt="" style={{width: '70px'}}  />}
 				// toggler={<ButtonIcon icon='close'>Close</ButtonIcon>}
 			>
 				<>hello</>

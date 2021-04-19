@@ -1,8 +1,6 @@
 // react (builds html using javascript):
 import React                 from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-
 // nodestrap (modular web components):
 import ButtonIcon            from './ButtonIcon'
 import type * as ButtonIcons from './ButtonIcon'
