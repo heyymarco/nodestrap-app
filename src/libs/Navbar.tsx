@@ -7,9 +7,13 @@ import type {
     Styles,
 }                           from 'jss'          // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
+import type {
+    DictionaryOf,
+}                           from './CssConfig'  // ts defs support for jss
 
 // nodestrap (modular web components):
 import colors               from './colors'     // configurable colors & theming defs
+import spacers              from './spacers'    // configurable spaces defs
 import {
     cssProps as ecssProps,
 }                           from './Element'
@@ -38,6 +42,20 @@ const menuItemElm = '& .menus>*';
 
 export class NavbarStylesBuilder extends ControlStylesBuilder {
     // themes:
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+        extend: super.sizeOf(size, Size, sizeProp), // copy sizes from base
+
+
+
+        // overwrite the global props with the *prop{Size}*:
+
+        [cssDecls.gapX] : (cssProps as DictionaryOf<typeof cssProps>)[`gapX${Size}`],
+        [cssDecls.gapY] : (cssProps as DictionaryOf<typeof cssProps>)[`gapY${Size}`],
+    }}
+
+
+
+    // states:
     protected themesIf(): JssStyle { return {
         extend: [
             // @ts-ignore
@@ -52,10 +70,6 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         // define an *active* color theme:
         [this.decl(this._boxShadowFocusIfAct)] : colors.secondaryTransp,
     }}
-
-
-
-    // states:
     protected states(inherit = false): JssStyle { return {
         extend: [
             super.states(inherit), // copy states from base
@@ -86,13 +100,28 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
         // layout:
         display             : 'grid', // use css grid for layouting, so we can customize the desired area later.
+
+        // explicit areas:
         gridTemplateRows    : [['auto'/*fluid height*/]],
-        gridTemplateColumns : [['max-content'/*fixed width*/, 'auto'/*fluid width*/, 'max-content'/*fixed width*/]],
+        // gridTemplateColumns : [['max-content'/*fixed width*/, 'auto'/*fluid width*/, 'max-content'/*fixed width*/]],
+        // gridTemplateAreas   : [[
+        //     '"logo menus toggler"',
+        // ]],
+        // just one explicit area: menus
+        // logo & toggler rely on implicit area
+        gridTemplateColumns : [['auto']],
         gridTemplateAreas   : [[
-            '"logo menus toggler"',
+            '"menus"',
         ]],
+
+        // implicit areas:
+        gridAutoFlow        : 'column',      // if child's grid are is not specified => place automatically at horz direction
+        gridAutoColumns     : 'max-content', // other areas than menus should take a maximum required width
+        gridAutoRows        : 'max-content', // other areas than menus should take a maximum required height
         // the grid's size configured as *minimum* size required => no free space left to distribute => so (justify|algin)Content is *not required*
         // default placement for each navbar's sections:
+
+        // child alignments:
         justifyItems        : 'stretch', // each section fill the entire area's width
         alignItems          : 'stretch', // each section fill the entire area's height (the shorter sections follow the tallest one)
 
@@ -107,7 +136,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         //#region children
         [logoElm]    : {
             // layout:
-            gridArea       : 'logo',
+            gridArea : '1 / -3', // place the same row as menus / place at the 3rd column from the right (negative columns are placed after all positive ones are placed)
 
 
 
@@ -117,7 +146,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
         [togglerElm] : {
             // layout:
-            gridArea       : 'toggler',
+            gridArea : '1 / 2', // place the same row as menus / place at the 2nd column from the left
 
 
 
@@ -275,12 +304,19 @@ const cssConfig = new CssConfig(() => {
 
 
     return {
-        paddingInline        : contCssProps.paddingInline, // override to Element
-        paddingBlock         : 0,
+        paddingInline : contCssProps.paddingInline, // override to Element
+        paddingBlock  : 0,
 
-        borderInline         : none,
-        borderBlock          : none,
-        borderRadius         : 0,
+        borderInline  : none,
+        borderBlock   : none,
+        borderRadius  : 0,
+
+        gapX          : spacers.sm,
+        gapY          : spacers.sm,
+        gapXSm        : spacers.xs,
+        gapYSm        : spacers.xs,
+        gapXLg        : spacers.md,
+        gapYLg        : spacers.md,
 
 
 
