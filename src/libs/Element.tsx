@@ -133,7 +133,7 @@ export class StylesBuilder {
         const cssPropsCopy: Dictionary<any> = {};
         for (const [name, prop] of Object.entries(cssProps)) {
             // excludes the entry if the name matching with following:
-            if ((/^(icon)|(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid)$|^(@)|backgGrad|anim|orientation|align|horzAlign|vertAlign/).test(name)) continue; // exclude
+            if ((/^(icon|logo|toggler|menu|menus)[A-Z]|(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid|Full|Compact)$|^(@)|backgGrad|anim|orientation|align|horzAlign|vertAlign/).test(name)) continue; // exclude
             
             // if not match => include it:
             cssPropsCopy[name] = prop;
@@ -153,9 +153,31 @@ export class StylesBuilder {
         for (const [name, prop] of Object.entries(cssProps)) {
             // excludes the entry if the name not starting with specified prefix:
             if (!name.startsWith(prefix)) continue; // exclude
+            if (name.length <= prefix.length) continue; // at least 1 char left;
 
             // if match => remove the prefix => normalize the case => then include it:
             cssPropsCopy[camelCase(name.substr(prefix.length))] = prop;
+        }
+        return cssPropsCopy as JssStyle;
+    }
+
+    /**
+     * Includes the prop names in the specified `cssProps` ending with specified `suffix`.
+     * @param cssProps The collection of the prop name to be filtered.  
+     * @param suffix The suffix name of the prop names to be *included*.  
+     * @returns A `JssStyle` which is the copy of the `cssProps` that only having matching suffix names.  
+     * The retuning prop names has been normalized (renamed), so it doesn't ending with `suffix`.
+     */
+    protected filterSuffixProps<TCssProps>(cssProps: TCssProps, suffix: string): JssStyle {
+        suffix = pascalCase(suffix);
+        const cssPropsCopy: Dictionary<any> = {};
+        for (const [name, prop] of Object.entries(cssProps)) {
+            // excludes the entry if the name not ending with specified suffix:
+            if (!name.endsWith(suffix)) continue; // exclude
+            if (name.length <= suffix.length) continue; // at least 1 char left;
+
+            // if match => remove the suffix => then include it:
+            cssPropsCopy[name.substr(0, name.length - suffix.length)] = prop;
         }
         return cssPropsCopy as JssStyle;
     }
@@ -184,6 +206,21 @@ export class StylesBuilder {
         const cssPropsCopy: Dictionary<any> = {};
         for (const [name] of Object.entries(cssProps)) {
             cssPropsCopy[name] = `var(${name}${backupSuff})`;
+        }
+        return cssPropsCopy as JssStyle;
+    }
+
+    /**
+     * Overwrites prop declarations from the specified `cssProps` into the specified `cssDecls`.  
+     * @param cssDecls The collection of the prop name to be overwritten. 
+     * @param cssProps The collection of the prop name to overwrite.  
+     * @returns A `JssStyle` which is the copy of the `cssProps` that overwrites the specified `cssDecls`.
+     */
+    protected overwriteProps<TCssDecls extends { [key in keyof TCssProps]: string }, TCssProps>(cssDecls: TCssDecls, cssProps: TCssProps): JssStyle {
+        const cssPropsCopy: Dictionary<any> = {};
+        for (const [name, prop] of Object.entries(cssProps)) {
+            const varDecl = (cssDecls as unknown as DictionaryOf<typeof cssDecls>)[name];
+            cssPropsCopy[varDecl] = prop;
         }
         return cssPropsCopy as JssStyle;
     }
@@ -701,7 +738,7 @@ export class ElementStylesBuilder extends StylesBuilder {
         [this.decl(this._foregOutlinedTh)] : themeColor,
     }}
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
-        // overwrite the global props with the *prop{Size}*:
+        // overwrite the global props ending with **{Size}:
 
         [cssDecls.fontSize]      : (cssProps as DictionaryOf<typeof cssProps>)[`fontSize${Size}`],
         [cssDecls.paddingInline] : (cssProps as DictionaryOf<typeof cssProps>)[`paddingInline${Size}`],

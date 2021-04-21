@@ -10,9 +10,6 @@ import type {
     Styles,
 }                           from 'jss'          // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-import type {
-    DictionaryOf,
-}                           from './CssConfig'  // ts defs support for jss
 
 // nodestrap (modular web components):
 import colors               from './colors'     // configurable colors & theming defs
@@ -67,10 +64,8 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
 
-        // overwrite the global props with the *prop{Size}*:
-
-        [cssDecls.gapX] : (cssProps as DictionaryOf<typeof cssProps>)[`gapX${Size}`],
-        [cssDecls.gapY] : (cssProps as DictionaryOf<typeof cssProps>)[`gapY${Size}`],
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
 
 
@@ -97,20 +92,63 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             //#region specific states
             //#region compact/full
             this.stateFull({
-                [togglerElm] : {
+                [logoElm]     : {
+                    // customize:
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'), 'Full'),    // apply cssProps starting with logo***    and ending with ***Full
+                } as JssStyle,
+
+                [togglerElm]  : {
+                    // appearance:
                     display: 'none', // hides toggler on full version
+
+
+
+                    // customize:
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'toggler'), 'Full'), // apply cssProps starting with toggler*** and ending with ***Full
+                } as JssStyle,
+
+                [menusElm]    : {
+                    // customize:
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menus'), 'Full'),   // apply cssProps starting with menus***   and ending with ***Full
+                } as JssStyle,
+
+                [menuItemElm] : {
+                    // customize:
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'), 'Full'),    // apply cssProps starting with menu***    and ending with ***Full
                 } as JssStyle,
             }),
             this.stateCompact({
-                [menusElm] : {
+                [logoElm]     : {
+                    // customize:
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'), 'Compact'),    // apply cssProps starting with logo***    and ending with ***Compact
+                } as JssStyle,
+
+                [togglerElm]  : {
+                    // customize:
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'toggler'), 'Compact'), // apply cssProps starting with toggler*** and ending with ***Compact
+                } as JssStyle,
+
+                [menusElm]    : {
                     // layout:
                     gridArea      : '-1 / -3 / -1 / 3',
                     flexDirection : 'column',  // place the menus vertically
+
+
+
+                    // customize:
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menus'), 'Compact'),   // apply cssProps starting with menus***   and ending with ***Compact
                 } as JssStyle,
+
+                [menuItemElm] : {
+                    // customize:
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'), 'Compact'),    // apply cssProps starting with menu***    and ending with ***Compact
+                } as JssStyle,
+
 
 
                 ...this.stateNotActivePassivating({
                     [menusElm] : {
+                        // appearance:
                         display: 'none',
                     } as JssStyle,
                 }),
@@ -219,40 +257,6 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
         // children:
         //#region children
-        [logoElm]    : {
-            // layout:
-            gridArea : '1 / -3', // place the same row as menus / place at the 3rd column from the right (negative columns are placed after all positive ones are placed)
-
-
-
-            // customize:
-            ...this.filterPrefixProps(cssProps, 'logo'), // apply cssProps starting with logo***
-        } as JssStyle,
-
-        [togglerElm] : {
-            // layout:
-            gridArea : '1 / 2', // place the same row as menus / place at the 2nd column from the left
-
-
-
-            // customize:
-            ...this.filterPrefixProps(cssProps, 'toggler'), // apply cssProps starting with toggler***
-        } as JssStyle,
-
-        [menusElm]   : {
-            // layout:
-            gridArea       : 'menus',
-            display        : 'flex',    // use flexbox to place the menus sequentially
-            flexDirection  : 'row',     // place the menus horizontally
-            justifyContent : 'start',   // place the menus from the begining, leave a free space (if any) at the end
-            alignItems     : 'stretch', // each menu fill the entire section's height
-        } as JssStyle,
-
-        [menuItemElm] : {
-            // customize:
-            ...this.filterPrefixProps(cssProps, 'menu'), // apply cssProps starting with menu***
-        } as JssStyle,
-
         [[
             logoElm,
             togglerElm,
@@ -293,6 +297,45 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             togglerElm,
         ].join(',')]: {
             paddingInline : 0,
+        } as JssStyle,
+
+        [logoElm]    : {
+            // layout:
+            gridArea : '1 / -3', // place the same row as menus / place at the 3rd column from the right (negative columns are placed after all positive ones are placed)
+
+
+
+            // customize:
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'logo')), // apply cssProps starting with logo***
+        } as JssStyle,
+
+        [togglerElm] : {
+            // layout:
+            gridArea : '1 / 2', // place the same row as menus / place at the 2nd column from the left
+
+
+
+            // customize:
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'toggler')), // apply cssProps starting with toggler***
+        } as JssStyle,
+
+        [menusElm]   : {
+            // layout:
+            gridArea       : 'menus',
+            display        : 'flex',    // use flexbox to place the menus sequentially
+            flexDirection  : 'row',     // place the menus horizontally
+            justifyContent : 'start',   // place the menus from the begining, leave a free space (if any) at the end
+            alignItems     : 'stretch', // each menu fill the entire section's height
+
+
+            
+            // customize:
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menus')), // apply cssProps starting with menus***
+        } as JssStyle,
+
+        [menuItemElm] : {
+            // customize:
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menu')), // apply cssProps starting with menu***
         } as JssStyle,
         //#endregion children
 

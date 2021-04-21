@@ -49,7 +49,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         return ['sm', 'nm', 'md', 'lg', '1em'];
     }
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
-        // overwrite the global props with the *prop{Size}*:
+        // overwrite the global props ending with **{Size}:
 
         [cssDecls.size] : (size === '1em') ? '1em' : (cssProps as DictionaryOf<typeof cssProps>)[`size${Size}`],
     }}

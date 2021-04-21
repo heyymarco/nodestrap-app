@@ -32,7 +32,7 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
 
 
 
-        // overwrite the global props with the *prop{Size}*:
+        // overwrite the global props ending with **{Size}:
 
         [cssDecls.gapX] : (cssProps as DictionaryOf<typeof cssProps>)[`gapX${Size}`],
         [cssDecls.gapY] : (cssProps as DictionaryOf<typeof cssProps>)[`gapY${Size}`],

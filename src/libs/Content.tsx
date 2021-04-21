@@ -72,7 +72,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
         [this.decl(this._backgActiveTh)]   : this.solidBackg(themeColor),
     }}
     public contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
-        // overwrite the global props with the *prop{Size}*:
+        // overwrite the global props ending with **{Size}:
 
         [cssDecls.paddingInline] : (cssProps as DictionaryOf<typeof cssProps>)[`paddingInline${Size}`],
         [cssDecls.paddingBlock]  : (cssProps as DictionaryOf<typeof cssProps>)[`paddingBlock${Size}`],
