@@ -809,7 +809,7 @@ export default function Check(props: Props) {
         value,
         defaultChecked,
         checked,
-        onChange,
+        // onChange, // let's bubbling to parent handle onChange
 
 
         // validations:

@@ -122,6 +122,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
             
             this.applySupressManualActive(),
+            //#endregion specific states
         ] as JssStyle,
     }}
 

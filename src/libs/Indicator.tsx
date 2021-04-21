@@ -301,7 +301,7 @@ const cssConfig = new CssConfig(() => {
                 styles.ref(styles._filterHoverLeave),    // first priority, but now become the second priority
                 styles.ref(styles._filterEnableDisable), // last priority, but now become the first priority
             ]],
-        }
+        },
     };
     const keyframesEnable    : PropEx.Keyframes = {
         from : keyframesDisable.to,

@@ -152,7 +152,7 @@ export default function Input(props: Props) {
         // values:
         defaultValue,
         value,
-        onChange,
+        // onChange, // let's bubbling to parent handle onChange
 
 
         // validations:

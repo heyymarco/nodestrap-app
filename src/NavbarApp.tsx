@@ -5,14 +5,14 @@ import
 import {
     jss as jssDefault,
 }                          from 'react-jss'         // base technology of our nodestrap components
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 
 import Container from './libs/Container';
 import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
 import Content from './libs/Content';
-import ButtonIcon   from './libs/ButtonIcon';
+// import ButtonIcon   from './libs/ButtonIcon';
 import Navbar, {NavbarMenu} from './libs/Navbar';
 
 
@@ -61,6 +61,11 @@ function App() {
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
 
+	const compacts = [undefined, false, true];
+	const [compact,    setCompact   ] = useState<boolean|undefined>(false);
+
+	const [hasLogo,      setHasLogo   ] = useState(true);
+
 	
 
     return (
@@ -70,9 +75,15 @@ function App() {
 				theme={theme} size={size} enableGradient={enableGrad}
 				outlined={outlined}
 
-				enabled={enabled} active={active}
+				enabled={enabled}
+				
+				// defaultActive={true}
+				active={active}
+				onActiveChange={(active) => setActive(active)}
 
-				logo={<img src="/logo.png" alt="" style={{width: '70px'}}  />}
+				compact={compact}
+
+				logo={hasLogo && <img src="/logo.png" alt="" style={{height: '30px'}}  />}
 				// toggler={<ButtonIcon icon='close'>Close</ButtonIcon>}
 			>
 				<>hello</>
@@ -173,6 +184,38 @@ function App() {
 							onChange={(e) => setActive(e.target.checked)}
 						/>
 						active
+					</label>
+				</p>
+				<p>
+					Compact:
+					{
+						compacts.map(cp =>
+							<label key={`${cp}`}>
+								<input type='radio'
+									value={`${cp}`}
+									checked={compact===cp}
+									onChange={(e) => setCompact((() => {
+										const value = e.target.value;
+										if (!value) return undefined;
+										switch (value) {
+											case 'true' : return true;
+											case 'false': return false;
+											default     : return undefined;
+										} // switch
+									})())}
+								/>
+								{`${cp ?? 'auto'}`}
+							</label>
+						)
+					}
+				</p>
+				<p>
+					<label>
+						<input type='checkbox'
+							checked={hasLogo}
+							onChange={(e) => setHasLogo(e.target.checked)}
+						/>
+						has logo
 					</label>
 				</p>
             </Container>

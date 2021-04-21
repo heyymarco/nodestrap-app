@@ -1,5 +1,8 @@
 // react (builds html using javascript):
-import React                from 'react'        // base technology of our nodestrap components
+import
+    React, {
+    useState,
+}                           from 'react'        // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
 import type {
@@ -21,13 +24,13 @@ import {
     cssProps as contCssProps,
 }                           from './Container'
 import {
+    default  as Indicator,
     styles as indicatorStyles,
 }                           from './Indicator'
+import type * as Indicators from './Indicator'
 import {
-    default  as Control,
     ControlStylesBuilder,
 }                           from './Control'
-import type * as Controls   from './Control'
 import NavbarMenu           from './NavbarMenu'
 import TogglerMenuButton    from './TogglerMenuButton'
 
@@ -40,7 +43,24 @@ const togglerElm  = '& .toggler';
 const menusElm    = '& .menus';
 const menuItemElm = '& .menus>*';
 
+// Navbar is not a Control, but an Indicator wrapping of NavbarMenu (Control)
+// We use ControlStylesBuilder for serving styling of NavbarMenu (Control)
+
 export class NavbarStylesBuilder extends ControlStylesBuilder {
+    //#region mixins
+    protected stateCompact(content: JssStyle): JssStyle { return {
+        '&.compact': content,
+    }}
+    protected stateNotCompact(content: JssStyle): JssStyle { return {
+        '&:not(.compact)': content,
+    }}
+    protected stateFull(content: JssStyle): JssStyle {
+        return this.stateNotCompact(content);
+    }
+    //#endregion mixins
+
+
+
     // themes:
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: super.sizeOf(size, Size, sizeProp), // copy sizes from base
@@ -56,10 +76,75 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
     // states:
-    protected themesIf(): JssStyle { return {
+    public navbarThemesIf(): JssStyle { return {
         extend: [
             // @ts-ignore
-            indicatorStyles.themesIf(), // copy themes from Indicator
+            indicatorStyles.themesIf(),
+        ] as JssStyle,
+    }}
+    public navbarStates(inherit = false): JssStyle { return {
+        extend: [
+            // @ts-ignore
+            indicatorStyles.states(inherit),
+
+
+
+            this.iif(!inherit, {
+            }),
+
+
+
+            //#region specific states
+            //#region compact/full
+            this.stateFull({
+                [togglerElm] : {
+                    display: 'none', // hides toggler on full version
+                } as JssStyle,
+            }),
+            this.stateCompact({
+                [menusElm] : {
+                    // layout:
+                    gridArea      : '-1 / -3 / -1 / 3',
+                    flexDirection : 'column',  // place the menus vertically
+                } as JssStyle,
+
+
+                ...this.stateNotActivePassivating({
+                    [menusElm] : {
+                        display: 'none',
+                    } as JssStyle,
+                }),
+            }),
+            //#endregion compact/full
+
+
+
+            //#region active, passive
+            this.stateActivePassivating({ // [activating, actived, passivating]
+                [this.decl(this._filterActivePassive)] : cssProps.filterActive, // override Indicator's filter active
+            }),
+            //#endregion active, passive
+
+
+
+            this.applySupressManualActive(),
+            //#endregion specific states
+        ] as JssStyle,
+    }}
+    public watchNavbarStates(inherit = false): JssStyle { return {
+        extend: [
+            this.iif(!inherit,
+                this.navbarThemesIf()   // conditional themes
+            ),
+            this.navbarStates(inherit), // state rules
+        ] as JssStyle,
+    }}
+
+    protected themesIf(): JssStyle { return {
+        extend: [
+            // super.themesIf(),        // skip using Control's theming => uses Control's base theming
+            // @ts-ignore
+            indicatorStyles.themesIf(), // copy themes from Indicator (Control's base)
         ] as JssStyle,
 
 
@@ -73,14 +158,14 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
     protected states(inherit = false): JssStyle { return {
         extend: [
             super.states(inherit), // copy states from base
-
-
-
+    
+            
+            
             //#region specific states
             //#region focus
             this.stateNotDisable({extend: [
                 this.stateFocusBlurring({
-                    zIndex: 1,
+                    zIndex: 1, // making focus-boxShadow not being clipped by nearby siblings
                 }),
             ] as JssStyle}),
             //#endregion focus
@@ -116,8 +201,8 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
         // implicit areas:
         gridAutoFlow        : 'column',      // if child's grid are is not specified => place automatically at horz direction
-        gridAutoColumns     : 'max-content', // other areas than menus should take a maximum required width
-        gridAutoRows        : 'max-content', // other areas than menus should take a maximum required height
+        gridAutoColumns     : 'min-content', // other areas than menus should take a minimum required width
+        gridAutoRows        : 'min-content', // other areas than menus should take a minimum required height
         // the grid's size configured as *minimum* size required => no free space left to distribute => so (justify|algin)Content is *not required*
         // default placement for each navbar's sections:
 
@@ -199,6 +284,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             // layout:
             display        : 'flex',
             flexDirection  : 'row',    // the flex direction to horz, so we can adjust the content's vertical position
+            justifyContent : 'center', // center the content horizontally
             alignItems     : 'center', // if the content's height is shorter than the section, place it at the center
         } as JssStyle,
 
@@ -248,14 +334,8 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                         } as JssStyle,
                     } as JssStyle,
 
-                    // watch indication state classes/pseudo-classes:
-                    //#region watchIndicationStates
-                    // @ts-ignore
-                    indicatorStyles.themesIf(),
-                    // @ts-ignore
-                    indicatorStyles.states(),
-                    //#endregion watchIndicationStates
-                    this.applySupressManualActive(),
+                    // watch navbar state classes/pseudo-classes:
+                    this.watchNavbarStates(),
 
                     // after watching => use func props:
                     this.fnProps(),           // for themes
@@ -320,6 +400,12 @@ const cssConfig = new CssConfig(() => {
 
 
 
+        // anim props:
+
+        filterActive  : ecssProps.filterNone,   // override to Indicator
+
+
+
         // menu:
         // menuPaddingInline    : ecssProps.paddingInline,
         // menuPaddingBlock     : ecssProps.paddingBlock,
@@ -330,35 +416,72 @@ export const cssDecls = cssConfig.decls;
 
 
 
+// hooks:
+
+export interface Compactable {
+    compact? : boolean
+}
+export function useCompactable(props: Compactable) {
+    return {
+        class: props.compact ? 'compact' : null,
+    };
+}
+
+
+
 // react components:
+
+// Navbar is not a Control, but an Indicator wrapping of NavbarMenu (Control)
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Controls.Props<TElement>
+        Indicators.Props<TElement>,
+        Compactable
 {
+    // accessibility:
+    defaultActive?  : boolean
+    onActiveChange? : (active: boolean) => void
+
+
+
     // children:
     children? : React.ReactNode
-    logo?     : React.ReactChild
-    toggler?  : React.ReactChild
+    logo?     : React.ReactChild | boolean
+    toggler?  : React.ReactChild | boolean
 }
 export default function Navbar<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
-    const navbStyles = styles.useStyles();
+    const navbStyles  = styles.useStyles();
+
+    // layouts:
+    const compactable = useCompactable(props);
 
     
     
     const {
+        // accessibility:
+        defaultActive,
+        active,
+        onActiveChange,
+
+
         // children:
         children,
         logo,
         toggler,
         ...otherProps } = props;
 
+    // states:
+    if ((defaultActive !== undefined) && (active !== undefined)) {
+        console.warn('defaultActive & active are both set.');
+    } // if
+    const [activeState, setActiveState] = useState<boolean>(active ?? defaultActive ?? false);
+    const currentActive = active ?? activeState;
+
     return (
-        <Control<TElement>
+        <Indicator<TElement>
             // default props:
             tag='nav'
-            actionCtrl={false}
-            tabIndex={-1}
+            active={currentActive}
 
 
             // other props:
@@ -367,6 +490,17 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
             // main:
             mainClass={props.mainClass ?? navbStyles.main}
+
+
+            // classes:
+            classes={[
+                // additionals:
+                ...(props.classes ?? []),
+
+
+                // themes:
+                compactable.class,
+            ]}
         >
             { logo && <div className='logo'>{ logo }</div> }
             { children && <div className='menus'>{
@@ -392,8 +526,20 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                     )
                 )
             }</div> }
-            <div className='toggler'>{ toggler ?? <TogglerMenuButton /> }</div>
-        </Control>
+            <div className='toggler'>{ toggler ?? (
+                <TogglerMenuButton
+                    checked={currentActive}
+                    onChange={(e) => {
+                        const newActiveState = e.target.checked;
+
+                        onActiveChange?.(newActiveState);
+
+                        // if uncontrollable prop => set new active state:
+                        if (active === undefined) setActiveState(newActiveState);
+                    }}
+                />
+            ) }</div>
+        </Indicator>
     );
 }
 
