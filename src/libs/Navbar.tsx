@@ -13,7 +13,6 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 
 // nodestrap (modular web components):
 import colors               from './colors'     // configurable colors & theming defs
-import spacers              from './spacers'    // configurable spaces defs
 import {
     cssProps as ecssProps,
 }                           from './Element'
@@ -35,10 +34,10 @@ import TogglerMenuButton    from './TogglerMenuButton'
 
 // styles:
 
-const logoElm     = '& .logo';
-const togglerElm  = '& .toggler';
-const menusElm    = '& .menus';
-const menuItemElm = '& .menus>*';
+const logoElm     = '&>.logo';
+const togglerElm  = '&>.toggler';
+const menusElm    = '&>.menus';
+const menuItemElm = '&>.menus>*';
 
 // Navbar is not a Control, but an Indicator wrapping of NavbarMenu (Control)
 // We use ControlStylesBuilder for serving styling of NavbarMenu (Control)
@@ -92,6 +91,16 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             //#region specific states
             //#region compact/full
             this.stateFull({
+                [[
+                    // all sections:
+                    logoElm,
+                    togglerElm,
+                    menusElm,
+                ].join(',')]: {
+                    // customize:
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'items'), 'Full'),   // apply cssProps starting with items***   and ending with ***Full
+                } as JssStyle,
+
                 [logoElm]     : {
                     // customize:
                     ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'), 'Full'),    // apply cssProps starting with logo***    and ending with ***Full
@@ -116,8 +125,23 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     // customize:
                     ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'), 'Full'),    // apply cssProps starting with menu***    and ending with ***Full
                 } as JssStyle,
+
+
+
+                // customize:
+                ...this.filterGeneralProps(this.filterSuffixProps(cssProps, 'Full')), // apply *general* cssProps ending with ***Full
             }),
             this.stateCompact({
+                [[
+                    // all sections:
+                    logoElm,
+                    togglerElm,
+                    menusElm,
+                ].join(',')]: {
+                    // customize:
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'items'), 'Compact'),   // apply cssProps starting with items***   and ending with ***Compact
+                } as JssStyle,
+
                 [logoElm]     : {
                     // customize:
                     ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'), 'Compact'),    // apply cssProps starting with logo***    and ending with ***Compact
@@ -132,6 +156,10 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     // layout:
                     gridArea      : '-1 / -3 / -1 / 3',
                     flexDirection : 'column',  // place the menus vertically
+
+
+
+                    // spacings:
 
 
 
@@ -152,6 +180,11 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                         display: 'none',
                     } as JssStyle,
                 }),
+
+
+
+                // customize:
+                ...this.filterGeneralProps(this.filterSuffixProps(cssProps, 'Compact')), // apply *general* cssProps ending with ***Compact
             }),
             //#endregion compact/full
 
@@ -258,6 +291,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         // children:
         //#region children
         [[
+            // wrapper elements:
             logoElm,
             togglerElm,
             menuItemElm,
@@ -293,10 +327,21 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         } as JssStyle,
 
         [[
+            // secondary sections:
             logoElm,
             togglerElm,
         ].join(',')]: {
             paddingInline : 0,
+        } as JssStyle,
+
+        [[
+            // all sections:
+            logoElm,
+            togglerElm,
+            menusElm,
+        ].join(',')]: {
+            // customize:
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'items')), // apply cssProps starting with items***
         } as JssStyle,
 
         [logoElm]    : {
@@ -428,18 +473,14 @@ const cssConfig = new CssConfig(() => {
 
     return {
         paddingInline : contCssProps.paddingInline, // override to Element
-        paddingBlock  : 0,
+        paddingBlock  : ecssProps.paddingBlock,
 
         borderInline  : none,
         borderBlock   : none,
         borderRadius  : 0,
 
-        gapX          : spacers.sm,
-        gapY          : spacers.sm,
-        gapXSm        : spacers.xs,
-        gapYSm        : spacers.xs,
-        gapXLg        : spacers.md,
-        gapYLg        : spacers.md,
+        gapX          : ecssProps.paddingInline,
+        gapY          : ecssProps.paddingBlock,
 
 
 
@@ -449,9 +490,14 @@ const cssConfig = new CssConfig(() => {
 
 
 
-        // menu:
-        // menuPaddingInline    : ecssProps.paddingInline,
-        // menuPaddingBlock     : ecssProps.paddingBlock,
+        // menus:
+        // kill margin top & bottom:
+        itemsMarginBlock        : [['calc(0px -', ecssProps.paddingBlock, ')']],
+
+        // on mobile, on the menu group, restore the margin top & bottom:
+        menusMarginBlockCompact : 0,
+        // on mobile, on the menu group, kill margin left & right:
+        menuMarginInlineCompact : [['calc(0px -', contCssProps.paddingInline, ')']],
     };
 }, /*prefix: */'navb');
 export const cssProps = cssConfig.refs;
@@ -546,6 +592,19 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
             ]}
         >
             { logo && <div className='logo'>{ logo }</div> }
+            <div className='toggler'>{ toggler ?? (
+                <TogglerMenuButton
+                    checked={currentActive}
+                    onChange={(e) => {
+                        const newActiveState = e.target.checked;
+
+                        onActiveChange?.(newActiveState);
+
+                        // if uncontrollable prop => set new active state:
+                        if (active === undefined) setActiveState(newActiveState);
+                    }}
+                />
+            ) }</div>
             { children && <div className='menus'>{
                 (Array.isArray(children) ? children : [children]).map((child, index) =>
                     (
@@ -569,19 +628,6 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                     )
                 )
             }</div> }
-            <div className='toggler'>{ toggler ?? (
-                <TogglerMenuButton
-                    checked={currentActive}
-                    onChange={(e) => {
-                        const newActiveState = e.target.checked;
-
-                        onActiveChange?.(newActiveState);
-
-                        // if uncontrollable prop => set new active state:
-                        if (active === undefined) setActiveState(newActiveState);
-                    }}
-                />
-            ) }</div>
         </Indicator>
     );
 }
