@@ -2,6 +2,8 @@
 import
     React, {
     useState,
+    useEffect,
+    useRef,
 }                           from 'react'        // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
@@ -510,9 +512,77 @@ export const cssDecls = cssConfig.decls;
 export interface Compactable {
     compact? : boolean
 }
-export function useCompactable(props: Compactable) {
+export function useCompactable<TElement extends HTMLElement = HTMLElement>(props: Compactable, navbarRef: React.MutableRefObject<TElement|undefined>) {
+    const [dynCompact, setDynCompact] = useState<boolean>(props.compact ?? false);
+    const fnCompact = props.compact ?? dynCompact;
+
+
+
+    useEffect(() => {
+        const calculateDynCompact = () => {
+            if (!navbarRef.current) return;
+
+
+
+            // prepare the condition for dom measurement:
+            const classList = navbarRef.current.classList;
+            const hasCompact = classList.contains('compact');
+            if (hasCompact) classList.remove('compact');
+
+
+
+            // measuring dom props:
+            const {
+                scrollWidth,
+                clientWidth,
+
+                scrollHeight,
+                clientHeight,
+            } = navbarRef.current;
+
+
+
+            // restore to original condition as before measurement:
+            if (hasCompact) classList.add('compact');
+
+
+
+            // decides the dynamic compact mode based on measured dom props:
+            if ((scrollWidth > clientWidth) || (scrollHeight > clientHeight)) {
+                setDynCompact(true);
+            }
+            else {
+                setDynCompact(false);
+            } // if
+        };
+        const handleWindowResize = () => {
+            calculateDynCompact();
+        };
+
+
+
+        if (navbarRef.current && (props.compact === undefined)) {
+            // calculates dync compact at the first load & every props.compact changed
+            calculateDynCompact();
+
+
+            
+            // setup window resize watchdog:
+            window.addEventListener('resize', handleWindowResize);
+
+
+
+            // clean up window resize watchdog:
+            return () => {
+                window.removeEventListener('resize', handleWindowResize);
+            };
+        } // if
+    }, [props.compact, navbarRef]);
+
+
+
     return {
-        class: props.compact ? 'compact' : null,
+        class: fnCompact ? 'compact' : null,
     };
 }
 
@@ -542,7 +612,8 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
     const navbStyles  = styles.useStyles();
 
     // layouts:
-    const compactable = useCompactable(props);
+    const navbarRef   = useRef<TElement>();
+    const compactable = useCompactable(props, navbarRef);
 
     
     
@@ -563,14 +634,14 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
     if ((defaultActive !== undefined) && (active !== undefined)) {
         console.warn('defaultActive & active are both set.');
     } // if
-    const [activeState, setActiveState] = useState<boolean>(active ?? defaultActive ?? false);
-    const currentActive = active ?? activeState;
+    const [dynActive, setDynActive] = useState<boolean>(active ?? defaultActive ?? false);
+    const fnActive = active ?? dynActive;
 
     return (
         <Indicator<TElement>
             // default props:
             tag='nav'
-            active={currentActive}
+            active={fnActive}
 
 
             // other props:
@@ -590,18 +661,38 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                 // themes:
                 compactable.class,
             ]}
+
+
+            // essentials:
+            elmRef={(elm) => {
+                // @ts-ignore
+                navbarRef.current = elm;
+
+
+                // forwards:
+                const elmRef = props.elmRef;
+                if (elmRef) {
+                    if (typeof(elmRef) === 'function') {
+                        elmRef(elm);
+                    }
+                    else {
+                        // @ts-ignore
+                        elmRef.current = elm;
+                    } // if
+                } // if
+            }}    
         >
             { logo && <div className='logo'>{ logo }</div> }
             <div className='toggler'>{ toggler ?? (
                 <TogglerMenuButton
-                    checked={currentActive}
+                    checked={fnActive}
                     onChange={(e) => {
                         const newActiveState = e.target.checked;
 
                         onActiveChange?.(newActiveState);
 
                         // if uncontrollable prop => set new active state:
-                        if (active === undefined) setActiveState(newActiveState);
+                        if (active === undefined) setDynActive(newActiveState);
                     }}
                 />
             ) }</div>
