@@ -65,8 +65,8 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
         //#region delete *unecessary* functional props from base:
         [this.decl(this._backgFn)]         : null,
-        [this.decl(this._foregOutlinedFn)] : null,
-        [this.decl(this._backgOutlinedFn)] : null,
+        [this.decl(this._outlinedForegFn)] : null,
+        [this.decl(this._outlinedBackgFn)] : null,
         [this.decl(this._animFn)]          : null,
         //#endregion delete *unecessary* functional props from base:
     }}

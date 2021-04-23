@@ -51,7 +51,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     /**
      * functional animations for the icon.
      */
-    public    readonly _animIconFn          = 'animIconFn'
+    public    readonly _iconAnimFn          = 'iconAnimFn'
 
 
     
@@ -59,38 +59,38 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     /**
      * themed foreground color for the label.
      */
-    protected readonly _foregLabelTh        = 'foregLabelTh'
+    protected readonly _labelForegTh        = 'labelForegTh'
 
     /**
      * conditional foreground color for the label.
      */
-    protected readonly _foregLabelIfIf      = 'foregLabelIfIf'
+    protected readonly _labelForegIfIf      = 'labelForegIfIf'
 
     /**
      * conditional unthemed foreground color for the label.
      */
-    protected readonly _foregLabelIf        = 'foregLabelIf'
+    protected readonly _labelForegIf        = 'labelForegIf'
 
     /**
      * functional foreground color for the label.
      */
-    public    readonly _foregLabelFn        = 'foregLabelFn'
+    public    readonly _labelForegFn        = 'labelForegFn'
 
     
     /**
      * active unthemed foreground color for the label.
      */
-    protected readonly _foregLabelIfAct     = 'foregLabelIfAct'
+    protected readonly _labelForegIfAct     = 'labelForegIfAct'
 
     /**
      * valid-state foreground color for the label.
      */
-    protected readonly _foregLabelIfVal     = 'foregLabelIfVal'
+    protected readonly _labelForegIfVal     = 'labelForegIfVal'
 
     /**
      * invalid-state foreground color for the label.
      */
-    protected readonly _foregLabelIfInv     = 'foregLabelIfInv'
+    protected readonly _labelForegIfInv     = 'labelForegIfInv'
     //#endregion foreground - label
 
 
@@ -120,13 +120,13 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     protected stateClearing(content: JssStyle): JssStyle { return {
         '&.clear': content,
     }}
-    protected stateNotClear(content: JssStyle): JssStyle { return {
+    protected stateNotClearing(content: JssStyle): JssStyle { return {
         '&:not(.clear)': content,
     }}
-    protected stateCheckClear(content: JssStyle): JssStyle { return {
+    protected stateCheckClearing(content: JssStyle): JssStyle { return {
         '&.check,&.checked,&:checked,&.clear': content,
     }}
-    protected stateNotCheckClear(content: JssStyle): JssStyle { return {
+    protected stateNotCheckClearing(content: JssStyle): JssStyle { return {
         '&:not(.check):not(.checked):not(:checked):not(.clear)': content,
     }}
     protected stateNotCheckingClearing(content: JssStyle): JssStyle { return {
@@ -146,7 +146,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
         
         // apply an *active* color theme for the label:
-        [this.decl(this._foregLabelIf)]   : this.ref(this._foregLabelIfAct),
+        [this.decl(this._labelForegIf)]   : this.ref(this._labelForegIfAct),
     }}
     protected applyStateValid(): JssStyle { return {
         // apply a *valid* color theme:
@@ -155,7 +155,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
         // apply a *valid* color theme for the label:
-        [this.decl(this._foregLabelIfIf)] : this.ref(this._foregLabelIfVal),
+        [this.decl(this._labelForegIfIf)] : this.ref(this._labelForegIfVal),
     }}
     protected applyStateInvalid(): JssStyle { return {
         // apply an *invalid* color theme:
@@ -164,7 +164,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
         // apply an *invalid* color theme for the label:
-        [this.decl(this._foregLabelIfIf)] : this.ref(this._foregLabelIfInv),
+        [this.decl(this._labelForegIfIf)] : this.ref(this._labelForegIfInv),
     }}
     protected applyStateCheck(): JssStyle { return {
         extend: [
@@ -178,12 +178,10 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
     // themes:
     protected checkThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {}; }
-
     protected labelThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props for the label:
-        [this.decl(this._foregLabelTh)]: (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
+        [this.decl(this._labelForegTh)]: (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
     }}
-
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
             super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
@@ -196,12 +194,6 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
     // states:
-    protected checkFnProps(): JssStyle { return {
-        // define an *animations* func for the icon:
-        [this.decl(this._animIconFn)]: [
-            this.ref(this._animCheckClear),
-        ],
-    }}
     protected checkThemesIf(): JssStyle { return {}; }
     protected checkStates(inherit = false): JssStyle { return {
         extend: [
@@ -237,12 +229,90 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         ] as JssStyle,
     }}
 
+    protected labelThemesIf(): JssStyle { return {
+        // define a *default* color theme for the label:
+        [this.decl(this._labelForegIf)]    : colors.secondaryCont,
+
+        // define an *active* color theme for the label:
+        [this.decl(this._labelForegIfAct)] : colors.primaryCont,
+
+
+
+        // define a *valid* color theme for the label:
+        [this.decl(this._labelForegIfVal)] : colors.successCont,
+
+        // define an *invalid* color theme for the label:
+        [this.decl(this._labelForegIfInv)] : colors.dangerCont,
+    }}
+    protected labelStates(inherit = false): JssStyle { return {
+        extend: [
+            //#region specific states
+            //#region check, clear => label active, passive
+            this.stateCheckClearing({ // [checking, checked, clearing] => label [activating, actived, passivating]
+                [labelElm]: {
+                    [this.decl(this._filterActivePassive)] : icssProps.filterActive,
+                },
+            }),
+            this.stateCheck({ // [checking, checked] => label [activating, actived]
+                [labelElm]: {
+                    [this.decl(this._animActivePassive)]   : icssProps.animActive,
+                },
+
+                extend: [
+                    this.applyStateActive(),
+                ] as JssStyle,
+            }),
+            this.stateClearing({ // [clearing] => label [passivating]
+                [labelElm]: {
+                    [this.decl(this._animActivePassive)]   : icssProps.animPassive,
+                },
+            }),
+            {
+                // [cleared] => label [actived]
+                '&.checked,&:checked:not(.check)': { // if ctrl was fully checked, disable the animation
+                    /* IF */[chkElm]: this.stateNotFocusBlurring({ // but still transfering the focus state to the "sibling" element(s):
+                        /* THEN [labelElm] */'&~*':
+                            super.applyStateNoAnimStartup(),
+                    }),
+                },
+            },
+            //#endregion check, clear => label active, passive
+            //#endregion specific states
+        ] as JssStyle,
+    }}
+
+    protected themesIf(): JssStyle { return {
+        extend: [
+            super.themesIf(), // copy themes from base
+
+            this.checkThemesIf(),
+            this.labelThemesIf(),
+        ] as JssStyle,
+    }}
+    protected states(inherit = false): JssStyle { return {
+        extend: [
+            super.states(inherit), // copy states from base
+
+            this.checkStates(inherit),
+            this.labelStates(inherit),
+        ] as JssStyle,
+    }}
+
+
+
+    // fn props:
+    protected checkFnProps(): JssStyle { return {
+        // define an *animations* func for the icon:
+        [this.decl(this._iconAnimFn)]: [
+            this.ref(this._animCheckClear),
+        ],
+    }}
     protected labelFnProps(): JssStyle { return {
         // define a *foreground* color func for the label:
-        [this.decl(this._foregLabelFn)] : this.ref(
-            this._foregLabelIfIf, // first  priority
-            this._foregLabelTh,   // second priority
-            this._foregLabelIf    // third  priority
+        [this.decl(this._labelForegFn)] : this.ref(
+            this._labelForegIfIf, // first  priority
+            this._labelForegTh,   // second priority
+            this._labelForegIf    // third  priority
         ),
 
 
@@ -282,80 +352,12 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         ] as JssStyle,
         //#endregion re-arrange the animFn at different states
     }}
-    protected labelThemesIf(): JssStyle { return {
-        // define a *default* color theme for the label:
-        [this.decl(this._foregLabelIf)]    : colors.secondaryCont,
-
-        // define an *active* color theme for the label:
-        [this.decl(this._foregLabelIfAct)] : colors.primaryCont,
-
-
-
-        // define a *valid* color theme for the label:
-        [this.decl(this._foregLabelIfVal)] : colors.successCont,
-
-        // define an *invalid* color theme for the label:
-        [this.decl(this._foregLabelIfInv)] : colors.dangerCont,
-    }}
-    protected labelStates(inherit = false): JssStyle { return {
-        extend: [
-            //#region specific states
-            //#region check, clear => label active, passive
-            this.stateCheckClear({ // [checking, checked, clearing] => label [activating, actived, passivating]
-                [labelElm]: {
-                    [this.decl(this._filterActivePassive)] : icssProps.filterActive,
-                },
-            }),
-            this.stateCheck({ // [checking, checked] => label [activating, actived]
-                [labelElm]: {
-                    [this.decl(this._animActivePassive)]   : icssProps.animActive,
-                },
-
-                extend: [
-                    this.applyStateActive(),
-                ] as JssStyle,
-            }),
-            this.stateClearing({ // [clearing] => label [passivating]
-                [labelElm]: {
-                    [this.decl(this._animActivePassive)]   : icssProps.animPassive,
-                },
-            }),
-            {
-                // [cleared] => label [actived]
-                '&.checked,&:checked:not(.check)': { // if ctrl was fully checked, disable the animation
-                    /* IF */[chkElm]: this.stateNotFocusBlurring({ // but still transfering the focus state to the "sibling" element(s):
-                        /* THEN [labelElm] */'&~*':
-                            super.applyStateNoAnimStartup(),
-                    }),
-                },
-            },
-            //#endregion check, clear => label active, passive
-            //#endregion specific states
-        ] as JssStyle,
-    }}
-
     protected fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
 
             this.checkFnProps(),
             this.labelFnProps(),
-        ] as JssStyle,
-    }}
-    protected themesIf(): JssStyle { return {
-        extend: [
-            super.themesIf(), // copy themes from base
-
-            this.checkThemesIf(),
-            this.labelThemesIf(),
-        ] as JssStyle,
-    }}
-    protected states(inherit = false): JssStyle { return {
-        extend: [
-            super.states(inherit), // copy states from base
-
-            this.checkStates(inherit),
-            this.labelStates(inherit),
         ] as JssStyle,
     }}
 
@@ -447,12 +449,12 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             
             
             // apply fn props:
-            anim : this.ref(this._animIconFn),
+            anim : this.ref(this._iconAnimFn),
         },
     }}
     protected basicLabelStyle(): JssStyle { return {
         // apply fn props:
-        foreg : this.ref(this._foregLabelFn),
+        foreg : this.ref(this._labelForegFn),
     }}
     public basicStyle(): JssStyle { return {
         extend: [

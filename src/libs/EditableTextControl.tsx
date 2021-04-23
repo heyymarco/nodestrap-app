@@ -143,7 +143,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
             extend: [
                 iconStyles.imgStyle( // apply icon
                     /*img   :*/ this.ref(this._iconValInv),
-                    /*foreg :*/ this.ref(this._foregOutlinedFn)
+                    /*foreg :*/ this.ref(this._outlinedForegFn)
                 ),
             ] as JssStyle,
     

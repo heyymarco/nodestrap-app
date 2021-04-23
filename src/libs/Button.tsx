@@ -124,7 +124,7 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         [this.decl(this._foregIf)]          : colors.primaryText,
         [this.decl(this._backgIf)]          : this.solidBackg(colors.primary),
         [this.decl(this._borderIf)]         : colors.primaryCont,
-        [this.decl(this._foregOutlinedIf)]  : colors.primary,
+        [this.decl(this._outlinedForegIf)]  : colors.primary,
         [this.decl(this._boxShadowFocusIf)] : colors.primaryTransp,
         //#endregion link styles
     }}

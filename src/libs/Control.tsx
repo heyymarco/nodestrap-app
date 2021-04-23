@@ -156,48 +156,6 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
 
     // states:
-    protected fnProps(): JssStyle { return {
-        extend: [
-            super.fnProps(), // copy functional props from base
-        ] as JssStyle,
-
-
-
-        // define a *focused box-shadow color* func:
-        [this.decl(this._boxShadowFocusFn)]: [[
-            cssProps.boxShadowFocus,
-            this.ref(
-                this._boxShadowFocusIfIf, // first  priority
-                this._boxShadowFocusTh,   // second priority
-                this._boxShadowFocusIf    // third  priority
-            )
-        ]],
-
-
-        
-        //#region re-arrange the animFn at different states
-        '&.active,&.actived': // if activated programmatically (not by user input)
-            this.stateNotDisabled({ // if ctrl was not fully disabled
-                // define an *animations* func:
-                [this.decl(this._animFn)]: [
-                    ecssProps.anim,
-                    this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
-                    this.ref(this._animHoverLeave),    // 2nd : cursor leaved
-                    this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
-                    this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
-                ],
-            }),
-
-        // define an *animations* func:
-        [this.decl(this._animFn)]: [
-            ecssProps.anim,
-            this.ref(this._animEnableDisable), // 1st : ctrl must be enable
-            this.ref(this._animHoverLeave),    // 2nd : cursor hovered over ctrl
-            this.ref(this._animFocusBlur),     // 3rd : ctrl got focused (can interrupt hover/leave)
-            this.ref(this._animActivePassive), // 4th : ctrl got pressed (can interrupt focus/blur)
-        ],
-        //#endregion re-arrange the animFn at different states
-    }}
     protected themesIf(): JssStyle { return {
         extend: [
             super.themesIf(), // copy themes from base
@@ -209,14 +167,14 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         [this.decl(this._foregIf)]             : colors.secondaryText,
         [this.decl(this._backgIf)]             : this.solidBackg(colors.secondary),
         [this.decl(this._borderIf)]            : colors.secondaryCont,
-        [this.decl(this._foregOutlinedIf)]     : colors.secondary,
+        [this.decl(this._outlinedForegIf)]     : colors.secondary,
         [this.decl(this._boxShadowFocusIf)]    : colors.secondaryTransp,
 
         // define an *active* color theme:
         [this.decl(this._foregIfAct)]          : colors.primaryText,
         [this.decl(this._backgIfAct)]          : this.solidBackg(colors.primary),
         [this.decl(this._borderIfAct)]         : colors.primaryCont,
-        [this.decl(this._foregOutlinedIfAct)]  : colors.primary,
+        [this.decl(this._outlinedForegIfAct)]  : colors.primary,
         [this.decl(this._boxShadowFocusIfAct)] : colors.primaryTransp,
     }}
     protected states(inherit = false): JssStyle { return {
@@ -279,6 +237,52 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
             //#endregion hover, leave, focus, blur
             //#endregion specific states
         ] as JssStyle,
+    }}
+
+
+
+    // fn props:
+    protected fnProps(): JssStyle { return {
+        extend: [
+            super.fnProps(), // copy functional props from base
+        ] as JssStyle,
+
+
+
+        // define a *focused box-shadow color* func:
+        [this.decl(this._boxShadowFocusFn)]: [[
+            cssProps.boxShadowFocus,
+            this.ref(
+                this._boxShadowFocusIfIf, // first  priority
+                this._boxShadowFocusTh,   // second priority
+                this._boxShadowFocusIf    // third  priority
+            )
+        ]],
+
+
+        
+        //#region re-arrange the animFn at different states
+        '&.active,&.actived': // if activated programmatically (not by user input)
+            this.stateNotDisabled({ // if ctrl was not fully disabled
+                // define an *animations* func:
+                [this.decl(this._animFn)]: [
+                    ecssProps.anim,
+                    this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
+                    this.ref(this._animHoverLeave),    // 2nd : cursor leaved
+                    this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
+                    this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
+                ],
+            }),
+
+        // define an *animations* func:
+        [this.decl(this._animFn)]: [
+            ecssProps.anim,
+            this.ref(this._animEnableDisable), // 1st : ctrl must be enable
+            this.ref(this._animHoverLeave),    // 2nd : cursor hovered over ctrl
+            this.ref(this._animFocusBlur),     // 3rd : ctrl got focused (can interrupt hover/leave)
+            this.ref(this._animActivePassive), // 4th : ctrl got pressed (can interrupt focus/blur)
+        ],
+        //#endregion re-arrange the animFn at different states
     }}
 
 

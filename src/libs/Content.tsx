@@ -32,31 +32,31 @@ import type * as Indicators from './Indicator'
 
 export class ContentStylesBuilder extends IndicatorStylesBuilder {
     //#region scoped css props
-    //#region foreground - active
+    //#region active - foreground
     /**
      * actived themed foreground color.
      */
-    public    readonly _foregActiveTh = 'foregActiveTh'
+    public    readonly _activeForegTh = 'activeForegTh'
 
     /**
      * actived functional foreground color.
      */
-    public    readonly _foregActiveFn = 'foregActiveFn'
-    //#endregion foreground - active
+    public    readonly _activeForegFn = 'activeForegFn'
+    //#endregion active - foreground
 
 
 
-    //#region background - active
+    //#region active - background
     /**
      * actived themed background.
      */
-    public    readonly _backgActiveTh = 'backgActiveTh'
+    public    readonly _activeBackgTh = 'activeBackgTh'
 
     /**
      * actived functional backgrounds.
      */
-    public    readonly _backgActiveFn = 'backgActiveFn'
-    //#endregion background - active
+    public    readonly _activeBackgFn = 'activeBackgFn'
+    //#endregion active - background
     //#endregion scoped css props
 
 
@@ -68,8 +68,8 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
         [this.decl(this._foregTh)]         :                 (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],  // light on dark backg | dark on light backg with slightly color from background
         [this.decl(this._backgTh)]         : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]), // thin opacity with slightly color from background
 
-        [this.decl(this._foregActiveTh)]   : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
-        [this.decl(this._backgActiveTh)]   : this.solidBackg(themeColor),
+        [this.decl(this._activeForegTh)]   : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
+        [this.decl(this._activeBackgTh)]   : this.solidBackg(themeColor),
     }}
     public contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrite the global props ending with **{Size}:
@@ -104,31 +104,6 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
 
 
     // states:
-    public contentFnProps(): JssStyle { return {
-        // define an actived *foreground* color func:
-        [this.decl(this._foregActiveFn)] : this.ref(
-            this._foregActiveTh, // second priority
-            this._foregIf,       // third  priority
-        ),
-
-        // define an actived *backgrounds* func:
-        [this.decl(this._backgActiveFn)] : [
-            // top layer:
-            this.ref(
-                this._backgGradTg,
-                this._backgNone,
-            ),
-
-            // middle layer:
-            this.ref(
-                this._backgActiveTh, // second priority
-                this._backgIf,       // third  priority
-            ),
-
-            // bottom layer:
-            ecssProps.backg,
-        ],
-    }}
     public contentThemesIf(): JssStyle { return {}; }
     public contentStates(inherit = false): JssStyle { return {
         extend: [
@@ -148,11 +123,11 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
         ] as JssStyle,
     }}
 
-    protected fnProps(): JssStyle { return {
+    protected themesIf(): JssStyle { return {
         extend: [
-            super.fnProps(), // copy functional props from base
+            super.themesIf(), // copy themes from base
 
-            this.contentFnProps(),
+            this.contentThemesIf(),
         ] as JssStyle,
     }}
     protected states(inherit = false): JssStyle { return {
@@ -160,6 +135,44 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
             super.states(inherit), // copy states from base
 
             this.contentStates(inherit),
+        ] as JssStyle,
+    }}
+
+
+
+    // fn props:
+    public contentFnProps(): JssStyle { return {
+        // define an actived *foreground* color func:
+        [this.decl(this._activeForegFn)] : this.ref(
+            this._foregIfIf,     // first  priority
+            this._activeForegTh, // second priority
+            this._foregIf,       // third  priority
+        ),
+
+        // define an actived *backgrounds* func:
+        [this.decl(this._activeBackgFn)] : [
+            // top layer:
+            this.ref(
+                this._backgGradTg,
+                this._backgNone,
+            ),
+
+            // middle layer:
+            this.ref(
+                this._backgIfIf,     // first  priority
+                this._activeBackgTh, // second priority
+                this._backgIf,       // third  priority
+            ),
+
+            // bottom layer:
+            ecssProps.backg,
+        ],
+    }}
+    protected fnProps(): JssStyle { return {
+        extend: [
+            super.fnProps(), // copy functional props from base
+
+            this.contentFnProps(),
         ] as JssStyle,
     }}
 
@@ -213,8 +226,8 @@ const cssConfig = new CssConfig(() => {
             ]],
             //#endregion copy from Indicator
 
-            foreg: styles.ref(styles._foregActiveFn),
-            backg: styles.ref(styles._backgActiveFn),
+            foreg: styles.ref(styles._activeForegFn),
+            backg: styles.ref(styles._activeBackgFn),
         },
     };
     const keyframesPassive   : PropEx.Keyframes = {

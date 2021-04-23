@@ -52,7 +52,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     /**
      * valid-state foreground color - at outlined state.
      */
-    protected readonly _foregOutlinedIfVal  = 'foregOutlinedIfVal'
+    protected readonly _outlinedForegIfVal  = 'outlinedForegIfVal'
 
     /**
      * valid-state focused box-shadow color.
@@ -78,7 +78,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     /**
      * invalid-state foreground color - at outlined state.
      */
-    protected readonly _foregOutlinedIfInv  = 'foregOutlinedIfInv'
+    protected readonly _outlinedForegIfInv  = 'outlinedForegIfInv'
 
     /**
      * invalid-state focused box-shadow color.
@@ -108,13 +108,13 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     protected stateUnvalidating(content: JssStyle): JssStyle { return {
         '&.unval': content,
     }}
-    protected stateNotUnvalid(content: JssStyle): JssStyle { return {
+    protected stateNotUnvalidating(content: JssStyle): JssStyle { return {
         '&:not(.unval)': content,
     }}
-    protected stateValidUnvalid(content: JssStyle): JssStyle { return {
+    protected stateValidUnvalidating(content: JssStyle): JssStyle { return {
         '&.val,&.vald,&.unval': content,
     }}
-    protected stateNotValidUnvalid(content: JssStyle): JssStyle { return {
+    protected stateNotValidUnvalidating(content: JssStyle): JssStyle { return {
         '&:not(.val):not(.vald):not(.unval)': content,
     }}
     protected stateNotValidatingUnvalidating(content: JssStyle): JssStyle { return {
@@ -133,13 +133,13 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     protected stateUninvalidating(content: JssStyle): JssStyle { return {
         '&.uninv': content,
     }}
-    protected stateNotUninvalid(content: JssStyle): JssStyle { return {
+    protected stateNotUninvalidating(content: JssStyle): JssStyle { return {
         '&:not(.uninv)': content,
     }}
-    protected stateInvalidUninvalid(content: JssStyle): JssStyle { return {
+    protected stateInvalidUninvalidating(content: JssStyle): JssStyle { return {
         '&.inv,&.invd,&.uninv': content,
     }}
-    protected stateNotInvalidUninvalid(content: JssStyle): JssStyle { return {
+    protected stateNotInvalidUninvalidating(content: JssStyle): JssStyle { return {
         '&:not(.inv):not(.invd):not(.uninv)': content,
     }}
     protected stateNotInvalidatingUninvalidating(content: JssStyle): JssStyle { return {
@@ -158,7 +158,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
         [this.decl(this._foregIfIf)]          : this.ref(this._foregIfVal),
         [this.decl(this._backgIfIf)]          : this.ref(this._backgIfVal),
         [this.decl(this._borderIfIf)]         : this.ref(this._borderIfVal),
-        [this.decl(this._foregOutlinedIfIf)]  : this.ref(this._foregOutlinedIfVal),
+        [this.decl(this._outlinedForegIfIf)]  : this.ref(this._outlinedForegIfVal),
         [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfVal),
     }}
     protected applyStateInvalid(): JssStyle { return {
@@ -166,7 +166,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
         [this.decl(this._foregIfIf)]          : this.ref(this._foregIfInv),
         [this.decl(this._backgIfIf)]          : this.ref(this._backgIfInv),
         [this.decl(this._borderIfIf)]         : this.ref(this._borderIfInv),
-        [this.decl(this._foregOutlinedIfIf)]  : this.ref(this._foregOutlinedIfInv),
+        [this.decl(this._outlinedForegIfIf)]  : this.ref(this._outlinedForegIfInv),
         [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfInv),
     }}
     //#endregion mixins
@@ -179,38 +179,19 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
 
 
     // states:
-    public validationFnProps(): JssStyle { return {
-        //#region re-arrange the animFn at different states
-        ...this.stateValid({
-            // define an *animations* func:
-            [this.decl(this._animFn)]: [
-                ecssProps.anim,
-                this.ref(this._animInvUninv),
-                this.ref(this._animValUnval),
-            ],
-        }),
-
-        // define an *animations* func:
-        [this.decl(this._animFn)]: [
-            ecssProps.anim,
-            this.ref(this._animValUnval),
-            this.ref(this._animInvUninv),
-        ],
-        //#endregion re-arrange the animFn at different states
-    }}
     public validationThemesIf(): JssStyle { return {
         // define a *valid* color theme:
         [this.decl(this._foregIfVal)]           : colors.successText,
         [this.decl(this._backgIfVal)]           : this.solidBackg(colors.success),
         [this.decl(this._borderIfVal)]          : colors.successCont,
-        [this.decl(this._foregOutlinedIfVal)]   : colors.success,
+        [this.decl(this._outlinedForegIfVal)]   : colors.success,
         [this.decl(this._boxShadowFocusIfVal)]  : colors.successTransp,
 
         // define an *invalid* color theme:
         [this.decl(this._foregIfInv)]           : colors.dangerText,
         [this.decl(this._backgIfInv)]           : this.solidBackg(colors.danger),
         [this.decl(this._borderIfInv)]          : colors.dangerCont,
-        [this.decl(this._foregOutlinedIfInv)]   : colors.danger,
+        [this.decl(this._outlinedForegIfInv)]   : colors.danger,
         [this.decl(this._boxShadowFocusIfInv)]  : colors.dangerTransp,
     }}
     public validationStates(inherit = false): JssStyle { return {
@@ -244,6 +225,47 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
         ] as JssStyle,
     }}
 
+    protected themesIf(): JssStyle { return {
+        extend: [
+            super.themesIf(),          // copy themes from base
+
+
+
+            this.validationThemesIf(), // copy themes from validation
+        ] as JssStyle,
+    }}
+    protected states(inherit = false): JssStyle { return {
+        extend: [
+            super.states(inherit),          // copy states from base
+
+
+
+            this.validationStates(inherit), // copy states from validation
+        ] as JssStyle,
+    }}
+
+
+
+    // fn props:
+    public validationFnProps(): JssStyle { return {
+        //#region re-arrange the animFn at different states
+        ...this.stateValid({
+            // define an *animations* func:
+            [this.decl(this._animFn)]: [
+                ecssProps.anim,
+                this.ref(this._animInvUninv),
+                this.ref(this._animValUnval),
+            ],
+        }),
+
+        // define an *animations* func:
+        [this.decl(this._animFn)]: [
+            ecssProps.anim,
+            this.ref(this._animValUnval),
+            this.ref(this._animInvUninv),
+        ],
+        //#endregion re-arrange the animFn at different states
+    }}
     protected fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
@@ -301,24 +323,6 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
             this.ref(this._animActivePassive), // 4th : ctrl got pressed (can interrupt focus/blur)
         ],
         //#endregion re-arrange the animFn at different states
-    }}
-    protected themesIf(): JssStyle { return {
-        extend: [
-            super.themesIf(),          // copy themes from base
-
-
-
-            this.validationThemesIf(), // copy themes from validation
-        ] as JssStyle,
-    }}
-    protected states(inherit = false): JssStyle { return {
-        extend: [
-            super.states(inherit),          // copy states from base
-
-
-
-            this.validationStates(inherit), // copy states from validation
-        ] as JssStyle,
     }}
 
 

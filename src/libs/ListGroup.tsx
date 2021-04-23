@@ -6,6 +6,7 @@ import type {
     JssStyle,
     Styles,
 }                           from 'jss'          // ts defs support for jss
+import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
 import * as stripOuts       from './strip-outs'
@@ -42,7 +43,8 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
     // styles:
     public basicStyle(): JssStyle { return {
         extend: [
-            stripOuts.list, // clear browser's default styles
+            stripOuts.list,                    // clear browser's default styles
+            this.filterGeneralProps(cssProps), // apply *general* cssProps
         ] as JssStyle,
 
 
@@ -125,6 +127,26 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
     }
 }
 export const styles = new ListGroupStylesBuilder();
+
+
+
+// configs:
+
+const cssConfig = new CssConfig(() => {
+    // common css values:
+    // const initial = 'initial';
+    // const unset   = 'unset';
+    // const none    = 'none';
+    // const inherit = 'inherit';
+    // const center  = 'center';
+    // const middle  = 'middle';
+
+
+    return {
+    };
+}, /*prefix: */'lg');
+export const cssProps = cssConfig.refs;
+export const cssDecls = cssConfig.decls;
 
 
 

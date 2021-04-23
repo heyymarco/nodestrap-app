@@ -46,7 +46,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     /**
      * active unthemed foreground color - at outlined state.
      */
-    protected readonly _foregOutlinedIfAct  = 'foregOutlinedIfAct'
+    protected readonly _outlinedForegIfAct  = 'outlinedForegIfAct'
 
 
 
@@ -133,7 +133,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
         [this.decl(this._foregIf)]         : this.ref(this._foregIfAct),
         [this.decl(this._backgIf)]         : this.ref(this._backgIfAct),
         [this.decl(this._borderIf)]        : this.ref(this._borderIfAct),
-        [this.decl(this._foregOutlinedIf)] : this.ref(this._foregOutlinedIfAct),
+        [this.decl(this._outlinedForegIf)] : this.ref(this._outlinedForegIfAct),
 
 
         
@@ -152,32 +152,12 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
 
     // states:
-    public indicationFnProps(): JssStyle { return {
-        //#region re-arrange the animFn at different states
-        '&.active,&.actived': // if activated programmatically (not by user input)
-            this.stateNotDisabled({ // if ctrl was not fully disabled
-                // define an *animations* func:
-                [this.decl(this._animFn)]: [
-                    ecssProps.anim,
-                    this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
-                    this.ref(this._animEnableDisable), // 4th : ctrl enable/disable
-                ],
-            }),
-
-        // define an *animations* func:
-        [this.decl(this._animFn)]: [
-            ecssProps.anim,
-            this.ref(this._animEnableDisable), // 1st : ctrl must be enable
-            this.ref(this._animActivePassive), // 4th : ctrl got pressed
-        ],
-        //#endregion re-arrange the animFn at different states
-    }}
     public indicationThemesIf(): JssStyle { return {
         // define an *active* color theme:
         [this.decl(this._foregIfAct)]         : colors.secondaryText,
         [this.decl(this._backgIfAct)]         : this.solidBackg(colors.secondary),
         [this.decl(this._borderIfAct)]        : colors.secondaryCont,
-        [this.decl(this._foregOutlinedIfAct)] : colors.secondary,
+        [this.decl(this._outlinedForegIfAct)] : colors.secondary,
     }}
     public indicationStates(inherit = false): JssStyle { return {
         extend: [
@@ -238,13 +218,6 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
         ] as JssStyle,
     }}
 
-    protected fnProps(): JssStyle { return {
-        extend: [
-            super.fnProps(), // copy functional props from base
-
-            this.indicationFnProps(),
-        ] as JssStyle,
-    }}
     protected themesIf(): JssStyle { return {
         extend: [
             super.themesIf(), // copy themes from base
@@ -257,6 +230,37 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
             super.states(inherit), // copy states from base
     
             this.indicationStates(inherit),
+        ] as JssStyle,
+    }}
+
+
+
+    // fn props:
+    public indicationFnProps(): JssStyle { return {
+        //#region re-arrange the animFn at different states
+        '&.active,&.actived': // if activated programmatically (not by user input)
+            this.stateNotDisabled({ // if ctrl was not fully disabled
+                // define an *animations* func:
+                [this.decl(this._animFn)]: [
+                    ecssProps.anim,
+                    this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
+                    this.ref(this._animEnableDisable), // 4th : ctrl enable/disable
+                ],
+            }),
+
+        // define an *animations* func:
+        [this.decl(this._animFn)]: [
+            ecssProps.anim,
+            this.ref(this._animEnableDisable), // 1st : ctrl must be enable
+            this.ref(this._animActivePassive), // 4th : ctrl got pressed
+        ],
+        //#endregion re-arrange the animFn at different states
+    }}
+    protected fnProps(): JssStyle { return {
+        extend: [
+            super.fnProps(), // copy functional props from base
+
+            this.indicationFnProps(),
         ] as JssStyle,
     }}
 

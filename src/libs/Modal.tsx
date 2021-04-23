@@ -83,13 +83,13 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     /**
      * functional animations for the modal's background.
      */
-    public    readonly _animBackgFn            = 'animBackgFn'
+    public    readonly _backgAnimFn            = 'backgAnimFn'
 
 
 
     // anim props:
 
-    protected readonly _animBackgActivePassive = 'animBackgActivePassive'
+    protected readonly _backgAnimActivePassive = 'backgAnimActivePassive'
     //#endregion scoped css props
 
 
@@ -105,34 +105,21 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {}; }
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {}; }
     public gradient(): JssStyle { return {}; }
-    public outlined(): JssStyle  { return {}; }
+    public outlined(): JssStyle { return {}; }
 
 
 
     // states:
-    public indicationFnProps(): JssStyle { return {}; }
     public indicationThemesIf(): JssStyle { return {}; }
     public indicationStates(inherit = false): JssStyle { return {}; }
 
-    public modalFnProps(): JssStyle { return {
-        // define an *animations* func for the modal's content:
-        [this.decl(this._animFn)]: [
-            ecssProps.anim,
-            this.ref(this._animActivePassive),
-        ],
-
-        // define an *animations* func for the modal's background:
-        [this.decl(this._animBackgFn)]: [
-            this.ref(this._animBackgActivePassive),
-        ],
-    }}
     public modalThemesIf(): JssStyle { return {}; }
     public modalStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit, {
                 //#region all initial states are none
                 [this.decl(this._animActivePassive)]      : ecssProps.animNone,
-                [this.decl(this._animBackgActivePassive)] : ecssProps.animNone,
+                [this.decl(this._backgAnimActivePassive)] : ecssProps.animNone,
                 //#endregion all initial states are none
             }),
 
@@ -142,7 +129,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             //#region active, passive
             this.stateActive({ // [activating, actived]
                 [this.decl(this._animActivePassive)]      : cssProps.animActive,
-                [this.decl(this._animBackgActivePassive)] : cssProps.animBackgActive,
+                [this.decl(this._backgAnimActivePassive)] : cssProps.backgAnimActive,
     
                 extend: [
                     this.applyStateActive(),
@@ -150,7 +137,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             }),
             this.statePassivating({ // [passivating]
                 [this.decl(this._animActivePassive)]      : cssProps.animPassive,
-                [this.decl(this._animBackgActivePassive)] : cssProps.animBackgPassive,
+                [this.decl(this._backgAnimActivePassive)] : cssProps.backgAnimPassive,
             }),
             this.stateNotActivePassivating({ // hides the modal if not [activating, actived, passivating]
                 display: 'none',
@@ -165,13 +152,6 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         ] as JssStyle,
     }}
 
-    protected fnProps(): JssStyle { return {
-        extend: [
-            super.fnProps(), // copy functional props from base
-
-            this.modalFnProps(),
-        ] as JssStyle,
-    }}
     protected themesIf(): JssStyle { return {
         extend: [
             super.themesIf(), // copy themes from base
@@ -184,6 +164,30 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             super.states(inherit), // copy states from base
     
             this.modalStates(inherit),
+        ] as JssStyle,
+    }}
+
+
+
+    // fn props:
+    public indicationFnProps(): JssStyle { return {}; }
+    public modalFnProps(): JssStyle { return {
+        // define an *animations* func for the modal's content:
+        [this.decl(this._animFn)]: [
+            ecssProps.anim,
+            this.ref(this._animActivePassive),
+        ],
+
+        // define an *animations* func for the modal's background:
+        [this.decl(this._backgAnimFn)]: [
+            this.ref(this._backgAnimActivePassive),
+        ],
+    }}
+    protected fnProps(): JssStyle { return {
+        extend: [
+            super.fnProps(), // copy functional props from base
+
+            this.modalFnProps(),
         ] as JssStyle,
     }}
 
@@ -223,7 +227,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
         // apply fn props:
-        anim : this.ref(this._animBackgFn),
+        anim : this.ref(this._backgAnimFn),
 
 
 
@@ -414,8 +418,8 @@ const cssConfig = new CssConfig(() => {
 
         '@keyframes backgActive'  : keyframesBackgActive,
         '@keyframes backgPassive' : keyframesBackgPassive,
-        animBackgActive           : [['300ms', 'ease-out', 'both', keyframesBackgActive ]],
-        animBackgPassive          : [['500ms', 'ease-out', 'both', keyframesBackgPassive]],
+        backgAnimActive           : [['300ms', 'ease-out', 'both', keyframesBackgActive ]],
+        backgAnimPassive          : [['500ms', 'ease-out', 'both', keyframesBackgPassive]],
     };
 }, /*prefix: */'mod');
 export const cssProps = cssConfig.refs;

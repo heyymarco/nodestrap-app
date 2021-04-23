@@ -42,8 +42,8 @@ export class FormStylesBuilder extends ElementStylesBuilder {
 
             contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor),
             {
-                [contentStyles.decl(contentStyles._foregActiveTh)] : undefined as unknown as null, // delete
-                [contentStyles.decl(contentStyles._backgActiveTh)] : undefined as unknown as null, // delete
+                [contentStyles.decl(contentStyles._activeForegTh)] : undefined as unknown as null, // delete
+                [contentStyles.decl(contentStyles._activeBackgTh)] : undefined as unknown as null, // delete
             },
         ] as JssStyle,
     }}

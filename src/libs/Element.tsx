@@ -649,46 +649,46 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
 
-    //#region foreground - outlined
+    //#region outlined - foreground
     /**
      * themed foreground color - at outlined state.
      */
-    protected readonly _foregOutlinedTh   = 'foregOutlinedTh'
+    protected readonly _outlinedForegTh   = 'outlinedForegTh'
 
     /**
      * conditional foreground color - at outlined state.
      */
-    protected readonly _foregOutlinedIfIf = 'foregOutlinedIfIf'
+    protected readonly _outlinedForegIfIf = 'outlinedForegIfIf'
 
     /**
      * conditional unthemed foreground color - at outlined state.
      */
-    protected readonly _foregOutlinedIf   = 'foregOutlinedIf'
+    protected readonly _outlinedForegIf   = 'outlinedForegIf'
 
     /**
      * functional foreground color - at outlined state.
      */
-    public    readonly _foregOutlinedFn   = 'foregOutlinedFn'
+    public    readonly _outlinedForegFn   = 'outlinedForegFn'
 
     /**
      * toggles *on* foreground color - at outlined state.
      */
-    protected readonly _foregOutlinedTg   = 'foregOutlinedTg'
-    //#endregion foreground - outlined
+    protected readonly _outlinedForegTg   = 'outlinedForegTg'
+    //#endregion outlined - foreground
 
 
 
-    //#region background - outlined
+    //#region outlined - background
     /**
      * functional backgrounds - at outlined state.
      */
-    public    readonly _backgOutlinedFn   = 'backgOutlinedFn'
+    public    readonly _outlinedBackgFn   = 'outlinedBackgFn'
 
     /**
      * toggles *on* backgrounds - at outlined state.
      */
-    protected readonly _backgOutlinedTg   = 'backgOutlinedTg'
-    //#endregion background - outlined
+    protected readonly _outlinedBackgTg   = 'outlinedBackgTg'
+    //#endregion outlined - background
 
 
 
@@ -716,13 +716,13 @@ export class ElementStylesBuilder extends StylesBuilder {
 
     protected toggleOnOutlined(): JssStyle { return {
         // *toggle on* the outlined props:
-        [this.decl(this._foregOutlinedTg)] : this.ref(this._foregOutlinedFn),
-        [this.decl(this._backgOutlinedTg)] : this.ref(this._backgOutlinedFn),
+        [this.decl(this._outlinedForegTg)] : this.ref(this._outlinedForegFn),
+        [this.decl(this._outlinedBackgTg)] : this.ref(this._outlinedBackgFn),
     }}
     protected toggleOffOutlined(inherit = false): JssStyle { return {
         // *toggle off* the outlined props:
-        [this.decl(this._foregOutlinedTg)] : inherit ? 'unset' : 'initial',
-        [this.decl(this._backgOutlinedTg)] : inherit ? 'unset' : 'initial',
+        [this.decl(this._outlinedForegTg)] : inherit ? 'unset' : 'initial',
+        [this.decl(this._outlinedBackgTg)] : inherit ? 'unset' : 'initial',
     }}
     //#endregion mixins
 
@@ -735,7 +735,7 @@ export class ElementStylesBuilder extends StylesBuilder {
         [this.decl(this._foregTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
         [this.decl(this._backgTh)]         : this.solidBackg(themeColor),
         [this.decl(this._borderTh)]        : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
-        [this.decl(this._foregOutlinedTh)] : themeColor,
+        [this.decl(this._outlinedForegTh)] : themeColor,
     }}
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrite the global props ending with **{Size}:
@@ -765,7 +765,7 @@ export class ElementStylesBuilder extends StylesBuilder {
 
         // define a *foreground* color func:
         [this.decl(this._foregFn)] : this.ref(
-            this._foregOutlinedTg, // toggle outlined
+            this._outlinedForegTg, // toggle outlined
 
             this._foregIfIf, // first  priority
             this._foregTh,   // second priority
@@ -792,14 +792,14 @@ export class ElementStylesBuilder extends StylesBuilder {
         ],
         // define a *backgrounds* func:
         [this.decl(this._backgFn)] : this.ref(
-            this._backgOutlinedTg, // toggle outlined
+            this._outlinedBackgTg, // toggle outlined
 
             this._backgLy,
         ),
 
         // define a *border* color func:
         [this.decl(this._borderFn)] : this.ref(
-            this._foregOutlinedTg, // toggle outlined
+            this._outlinedForegTg, // toggle outlined
             
             this._borderIfIf, // first  priority
             this._borderTh,   // second priority
@@ -809,14 +809,14 @@ export class ElementStylesBuilder extends StylesBuilder {
     
     
         // define a *foreground* color func - at *outlined* state:
-        [this.decl(this._foregOutlinedFn)] : this.ref(
-            this._foregOutlinedIfIf, // first  priority
-            this._foregOutlinedTh,   // second priority
-            this._foregOutlinedIf,   // third  priority
+        [this.decl(this._outlinedForegFn)] : this.ref(
+            this._outlinedForegIfIf, // first  priority
+            this._outlinedForegTh,   // second priority
+            this._outlinedForegIf,   // third  priority
         ),
     
         // define a *backgrounds* func - at *outlined* state:
-        [this.decl(this._backgOutlinedFn)] : this.ref(
+        [this.decl(this._outlinedBackgFn)] : this.ref(
             this._backgGradTg,
             this._backgNone,
         ),
@@ -833,7 +833,7 @@ export class ElementStylesBuilder extends StylesBuilder {
         [this.decl(this._foregIf)]         : cssProps.foreg,
         [this.decl(this._backgIf)]         : this.ref(this._backgNone),
         [this.decl(this._borderIf)]        : cssProps.borderColor,
-        [this.decl(this._foregOutlinedIf)] : cssProps.foreg,
+        [this.decl(this._outlinedForegIf)] : cssProps.foreg,
     }}
     protected states(inherit = false): JssStyle { return {
         extend: [
