@@ -65,7 +65,6 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
     // states:
-    public contentFnProps(): JssStyle { return {}; }
     public contentThemesIf(): JssStyle { return {
         //#region overwrite base's themes with *softer* colors
         // define a *default* color theme:
@@ -89,13 +88,6 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
     }}
     public contentStates(inherit = false): JssStyle { return {}; }
 
-    protected fnProps(): JssStyle { return {
-        extend: [
-            super.fnProps(), // copy functional props from base
-
-            this.contentFnProps(),
-        ] as JssStyle,
-    }}
     protected themesIf(): JssStyle { return {
         extend: [
             super.themesIf(), // copy themes from base
@@ -125,6 +117,18 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
                 [this.decl(this._iconValInv)] : cssProps.iconInvalid, // apply an *invalid* icon indicator
             }),
             //#endregion specific states
+        ] as JssStyle,
+    }}
+
+
+
+    // fn props:
+    public contentFnProps(): JssStyle { return {}; }
+    protected fnProps(): JssStyle { return {
+        extend: [
+            super.fnProps(), // copy functional props from base
+
+            this.contentFnProps(),
         ] as JssStyle,
     }}
 

@@ -58,6 +58,14 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
 
     // states:
+    protected themesIf(): JssStyle { return {
+        // define a *default* color theme:
+        [this.decl(this._foregIf)] : cssProps.foreg,
+    }}
+
+
+
+    // fn props:
     protected fnProps(): JssStyle { return {
         extend: super.fnProps(), // copy functional props from base
 
@@ -69,10 +77,6 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         [this.decl(this._outlinedBackgFn)] : null,
         [this.decl(this._animFn)]          : null,
         //#endregion delete *unecessary* functional props from base:
-    }}
-    protected themesIf(): JssStyle { return {
-        // define a *default* color theme:
-        [this.decl(this._foregIf)] : cssProps.foreg,
     }}
 
 

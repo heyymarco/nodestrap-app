@@ -65,14 +65,6 @@ export class FormStylesBuilder extends ElementStylesBuilder {
 
 
     // states:
-    protected fnProps(): JssStyle { return {
-        extend: [
-            super.fnProps(),                               // copy functional props from base
-
-            editableTextControlStyles.validationFnProps(), // copy functional props from validation
-            editableTextControlStyles.contentFnProps(),
-        ] as JssStyle,
-    }}
     protected themesIf(): JssStyle { return {
         extend: [
             super.themesIf(),                               // copy themes from base
@@ -87,6 +79,18 @@ export class FormStylesBuilder extends ElementStylesBuilder {
 
             editableTextControlStyles.validationStates(inherit), // copy states from validation
             editableTextControlStyles.contentStates(inherit),
+        ] as JssStyle,
+    }}
+
+
+
+    // fn props:
+    protected fnProps(): JssStyle { return {
+        extend: [
+            super.fnProps(),                               // copy functional props from base
+
+            editableTextControlStyles.validationFnProps(), // copy functional props from validation
+            editableTextControlStyles.contentFnProps(),
         ] as JssStyle,
     }}
 

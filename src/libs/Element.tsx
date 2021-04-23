@@ -429,12 +429,6 @@ export class StylesBuilder {
 
     // states:
     /**
-     * Creates functional prop definitions in which the values *depends on* another *scoped css props* and/or *global css props* using *fallback* strategy.
-     * @returns A `JssStyle` represents the functional prop definitions.
-     */
-    protected fnProps(): JssStyle  { return {}; }
-
-    /**
      * Creates conditional color definitions for every *specific* condition (state).
      * @returns A `JssStyle` represents the conditional color definitions for every *specific* condition (state).
      */
@@ -460,6 +454,15 @@ export class StylesBuilder {
             this.states(inherit), // state rules
         ] as JssStyle,
     }}
+
+
+
+    // fn props:
+    /**
+     * Creates functional prop definitions in which the values *depends on* themes and/or states using *fallback* strategy.
+     * @returns A `JssStyle` represents the functional prop definitions.
+     */
+    protected fnProps(): JssStyle  { return {}; }
 
 
 
@@ -757,6 +760,34 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
     // states:
+    protected themesIf(): JssStyle { return {
+        // define a *default* color theme:
+        [this.decl(this._foregIf)]         : cssProps.foreg,
+        [this.decl(this._backgIf)]         : this.ref(this._backgNone),
+        [this.decl(this._borderIf)]        : cssProps.borderColor,
+        [this.decl(this._outlinedForegIf)] : cssProps.foreg,
+    }}
+    protected states(inherit = false): JssStyle { return {
+        extend: [
+            this.iif(!inherit, {
+                //#region all initial states are none
+                // *toggle off* the background gradient prop:
+                // but still be *toggle on* by parent (inherit)
+                ...this.toggleOffGradient(/*inherit =*/true),
+
+
+
+                // *toggle off* the outlined props:
+                // but still be *toggle on* by parent (inherit)
+                ...this.toggleOffOutlined(/*inherit =*/true),
+                //#endregion all initial states are none
+            }),
+        ] as JssStyle,
+    }}
+
+
+
+    // fn props:
     protected fnProps(): JssStyle { return {
         // define a *none* background:
         [this.decl(this._backgNone)] : this.solidBackg('transparent'),
@@ -827,30 +858,6 @@ export class ElementStylesBuilder extends StylesBuilder {
         [this.decl(this._animFn)] : [
             cssProps.anim,
         ],
-    }}
-    protected themesIf(): JssStyle { return {
-        // define a *default* color theme:
-        [this.decl(this._foregIf)]         : cssProps.foreg,
-        [this.decl(this._backgIf)]         : this.ref(this._backgNone),
-        [this.decl(this._borderIf)]        : cssProps.borderColor,
-        [this.decl(this._outlinedForegIf)] : cssProps.foreg,
-    }}
-    protected states(inherit = false): JssStyle { return {
-        extend: [
-            this.iif(!inherit, {
-                //#region all initial states are none
-                // *toggle off* the background gradient prop:
-                // but still be *toggle on* by parent (inherit)
-                ...this.toggleOffGradient(/*inherit =*/true),
-
-
-
-                // *toggle off* the outlined props:
-                // but still be *toggle on* by parent (inherit)
-                ...this.toggleOffOutlined(/*inherit =*/true),
-                //#endregion all initial states are none
-            }),
-        ] as JssStyle,
     }}
 
 
