@@ -40,6 +40,12 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
 
+    //#region mixins
+    protected actionCtrl() { return false; }
+    //#endregion mixins
+
+
+
     // themes:
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
@@ -118,10 +124,6 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
             this.stateInvalid({
                 [this.decl(this._iconValInv)] : cssProps.iconInvalid, // apply an *invalid* icon indicator
             }),
-
-
-            
-            this.applySupressManualActive(),
             //#endregion specific states
         ] as JssStyle,
     }}

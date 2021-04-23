@@ -11,6 +11,9 @@ import type {
     JssStyle,
     Styles,
 }                           from 'jss'          // ts defs support for jss
+import {
+    PropEx,
+}                           from './Css'        // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
@@ -45,7 +48,24 @@ const menuItemElm = '&>.menus>*';
 // We use ControlStylesBuilder for serving styling of NavbarMenu (Control)
 
 export class NavbarStylesBuilder extends ControlStylesBuilder {
+    //#region scoped css props
+    /**
+     * functional animations for the navbar's menus.
+     */
+    public    readonly _menusAnimFn            = 'menusAnimFn'
+
+
+
+    // anim props:
+
+    protected readonly _menusAnimActivePassive = 'menusAnimActivePassive'
+    //#endregion scoped css props
+
+
+
     //#region mixins
+    protected actionCtrl() { return false; }
+
     protected stateCompact(content: JssStyle): JssStyle { return {
         '&.compact': content,
     }}
@@ -56,6 +76,23 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         return this.stateNotCompact(content);
     }
     //#endregion mixins
+
+
+
+    // fn props:
+    public navbarFnProps(): JssStyle { return {
+        // define an *animations* func for the modal's background:
+        [this.decl(this._menusAnimFn)]: [
+            this.ref(this._menusAnimActivePassive),
+        ],
+    }}
+    protected fnProps(): JssStyle { return {
+        extend: [
+            super.fnProps(), // copy functional props from base
+
+            this.navbarFnProps(),
+        ] as JssStyle,
+    }}
 
 
 
@@ -86,6 +123,9 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
             this.iif(!inherit, {
+                //#region all initial states are none
+                [this.decl(this._menusAnimActivePassive)] : ecssProps.animNone,
+                //#endregion all initial states are none
             }),
 
 
@@ -176,12 +216,30 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
 
-                ...this.stateNotActivePassivating({
-                    [menusElm] : {
-                        // appearance:
-                        display: 'none',
-                    } as JssStyle,
-                }),
+                extend: [
+                    //#region specific states
+                    //#region compact && (active, passive)
+                    this.stateActive({ // [activating, actived]
+                        [this.decl(this._menusAnimActivePassive)] : cssProps.menusAnimActive,
+                    }, /*actionCtrl =*/false),
+                    this.statePassivating({ // [passivating]
+                        [this.decl(this._menusAnimActivePassive)] : cssProps.menusAnimPassive,
+                    }),
+                    this.stateNotActivePassivating({
+                        [menusElm] : {
+                            // appearance:
+                            display: 'none',
+                        } as JssStyle,
+                    }, /*actionCtrl =*/false),
+                    {
+                        // [actived]
+                        '&.actived': { // if activated programmatically (not by user input), disable the animation
+                            [menusElm] : this.applyStateNoAnimStartup(),
+                        }
+                    },
+                    //#region compact && (active, passive)
+                    //#endregion specific states
+                ] as JssStyle,
 
 
 
@@ -195,12 +253,8 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             //#region active, passive
             this.stateActivePassivating({ // [activating, actived, passivating]
                 [this.decl(this._filterActivePassive)] : cssProps.filterActive, // override Indicator's filter active
-            }),
+            }, /*actionCtrl =*/false),
             //#endregion active, passive
-
-
-
-            this.applySupressManualActive(),
             //#endregion specific states
         ] as JssStyle,
     }}
@@ -298,34 +352,17 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             togglerElm,
             menuItemElm,
         ].join(',')]: {
-            extend: [
-                super.basicStyle(),
-                //#region overrides some base's basicStyle
-                {
-                    // typos:
-                    fontSize       : ecssProps.fontSize,
-                    fontFamily     : undefined,
-                    fontWeight     : undefined,
-                    fontStyle      : undefined,
-                    textDecoration : undefined,
-                    lineHeight     : undefined,
-        
-        
-        
-                    // borders:
-                    border         : undefined,
-                    borderRadius   : undefined,
-                },
-                //#endregion overrides some base's basicStyle
-            ] as JssStyle,
-
-
-
             // layout:
             display        : 'flex',
             flexDirection  : 'row',    // the flex direction to horz, so we can adjust the content's vertical position
             justifyContent : 'center', // center the content horizontally
             alignItems     : 'center', // if the content's height is shorter than the section, place it at the center
+
+
+
+            // spacings:
+            paddingInline  : ecssProps.paddingInline,
+            paddingBlock   : ecssProps.paddingBlock,
         } as JssStyle,
 
         [[
@@ -375,12 +412,49 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             alignItems     : 'stretch', // each menu fill the entire section's height
 
 
+
+            // sizes:
+            inlineSize     : 'fill-available',
+            fallbacks      : {
+                inlineSize : '-moz-available',
+            },
+
+
             
+            // apply fn props:
+            backg : this.ref(this._backgFn),
+            anim  : this.ref(this._menusAnimFn),
+
+
+
             // customize:
             ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menus')), // apply cssProps starting with menus***
         } as JssStyle,
 
         [menuItemElm] : {
+            extend: [
+                super.basicStyle(),
+                //#region overrides some base's basicStyle
+                {
+                    // typos:
+                    fontSize       : ecssProps.fontSize,
+                    fontFamily     : undefined,
+                    fontWeight     : undefined,
+                    fontStyle      : undefined,
+                    textDecoration : undefined,
+                    lineHeight     : undefined,
+        
+        
+        
+                    // borders:
+                    border         : undefined,
+                    borderRadius   : undefined,
+                },
+                //#endregion overrides some base's basicStyle
+            ] as JssStyle,
+
+
+
             // customize:
             ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menu')), // apply cssProps starting with menu***
         } as JssStyle,
@@ -400,27 +474,35 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     // watch theme classes:
                     this.watchThemes(),
                     {
+                        // TODO: fix the outlined behavior
+                        
                         '&.outlined': {
-                            //#region forwards outlined to menu items
+                            //#region forwards outlined to menu group & menu items
                             // children:
-                            [menuItemElm]: {
+                            [[
+                                menusElm, // includes menu group so we can disable the gradient at outlined
+                                menuItemElm,
+                            ].join(',')]: {
                                 extend: [
                                     this.outlined(),
                                 ] as JssStyle,
-                            } as JssStyle, // menu items
-                            //#endregion forwards outlined to menu items
+                            } as JssStyle,
+                            //#endregion forwards outlined to menu group & menu items
 
 
-                            //#region remove double gradient to menu items
+                            //#region remove double gradient to menu group & menu items
                             '&.gradient': {
                                 // children:
-                                [menuItemElm]: {
+                                [[
+                                    menusElm,
+                                    menuItemElm,
+                                ].join(',')]: {
                                     extend: [
                                         this.toggleOffGradient(),
                                     ] as JssStyle,
-                                } as JssStyle, // menu items
+                                } as JssStyle,
                             },
-                            //#endregion remove double gradient to menu items
+                            //#endregion remove double gradient to menu group & menu items
                         } as JssStyle,
                     } as JssStyle,
 
@@ -435,6 +517,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
                 // children:
+                [menusElm]: this.fnProps(), // use func props so we can disable the gradient
                 [menuItemElm]: {
                     extend: [
                         // watch theme classes:
@@ -452,7 +535,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                         // after watching => use func props:
                         this.fnProps(),
                     ] as JssStyle,
-                } as JssStyle, // menu items
+                } as JssStyle,
             },
         };
     }
@@ -473,7 +556,31 @@ const cssConfig = new CssConfig(() => {
     // const middle  = 'middle';
 
 
+    const keyframesMenusActive  : PropEx.Keyframes = {
+        from: {
+            overflow     : 'hidden',
+            maxBlockSize : 0,
+        },
+        '99%': {
+            overflow     : 'hidden',
+            maxBlockSize : '100vh',
+        },
+        to: {
+            overflow     : 'unset',
+            maxBlockSize : 'unset',
+        },
+    };
+    const keyframesMenusPassive : PropEx.Keyframes = {
+        from : keyframesMenusActive.to,
+        '1%' : keyframesMenusActive['99%'],
+        to   : keyframesMenusActive.from,
+    };
+
+
     return {
+        zIndex        : 1020,
+        position      : 'sticky',
+
         paddingInline : contCssProps.paddingInline, // override to Element
         paddingBlock  : ecssProps.paddingBlock,
 
@@ -490,16 +597,38 @@ const cssConfig = new CssConfig(() => {
 
         filterActive  : ecssProps.filterNone,   // override to Indicator
 
+        '@keyframes menusActive'  : keyframesMenusActive,
+        '@keyframes menusPassive' : keyframesMenusPassive,
+        menusAnimActive           : [['300ms', 'ease-out', 'both', keyframesMenusActive ]],
+        menusAnimPassive          : [['300ms', 'ease-out', 'both', keyframesMenusPassive]],
+
 
 
         // menus:
         // kill margin top & bottom:
-        itemsMarginBlock        : [['calc(0px -', ecssProps.paddingBlock, ')']],
+        itemsMarginBlock          : [['calc(0px -', ecssProps.paddingBlock, ')']],
+
+        // on mobile, on the menu group, kill margin left & right:
+        menusMarginInlineCompact  : [['calc(0px -', contCssProps.paddingInline, ')']],
 
         // on mobile, on the menu group, restore the margin top & bottom:
-        menusMarginBlockCompact : 0,
-        // on mobile, on the menu group, kill margin left & right:
-        menuMarginInlineCompact : [['calc(0px -', contCssProps.paddingInline, ')']],
+        menusMarginBlockCompact   : 0,
+
+
+
+        //#region making menus floating (on mobile), not shifting the content
+        ...{
+            // do not make row spacing when the menus shown (we'll make the menus as ghost element, floating in front of the contents below the navbar)
+            gapY: 0,
+
+
+
+            // menus:
+            menusPositionCompact         : 'absolute',
+            menusMarginBlockStartCompact : ecssProps.paddingBlock,
+            menusPaddingBlockEndCompact  : ecssProps.paddingBlock,
+        } as JssStyle,
+        //#endregion making menus floating (on mobile), not shifting the content
     };
 }, /*prefix: */'navb');
 export const cssProps = cssConfig.refs;

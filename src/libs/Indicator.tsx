@@ -95,14 +95,15 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     }}
     
     // non-pseudo active only
+    protected actionCtrl() { return false; }
     protected stateActivating(content: JssStyle): JssStyle { return {
         '&.active': content,
     }}
-    protected stateActive(content: JssStyle): JssStyle { return {
-        '&.active,&.actived': content,
+    protected stateActive(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
+        [actionCtrl ? '&.active,&.actived,&:active:not(.disable):not(.disabled):not(:disabled)' : '&.active,&.actived']: content,
     }}
-    protected stateNotActive(content: JssStyle): JssStyle { return {
-        '&:not(.active):not(.actived)': content,
+    protected stateNotActive(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
+        [actionCtrl ? '&:not(.active):not(.actived):not(:active), &:not(.active):not(.actived).disable, &:not(.active):not(.actived).disabled, &:not(.active):not(.actived):disabled' : '&:not(.active):not(.actived)']: content,
     }}
     protected statePassivating(content: JssStyle): JssStyle { return {
         '&.passive': content,
@@ -110,11 +111,11 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     protected stateNotPassivating(content: JssStyle): JssStyle { return {
         '&:not(.passive)': content,
     }}
-    protected stateActivePassivating(content: JssStyle): JssStyle { return {
-        '&.active,&.actived,&.passive': content,
+    protected stateActivePassivating(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
+        [actionCtrl ? '&.active,&.actived,&:active:not(.disable):not(.disabled):not(:disabled),&.passive' : '&.active,&.actived,&.passive']: content,
     }}
-    protected stateNotActivePassivating(content: JssStyle): JssStyle { return {
-        '&:not(.active):not(.actived):not(.passive)': content,
+    protected stateNotActivePassivating(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
+        [actionCtrl ? '&:not(.active):not(.actived):not(:active):not(.passive), &:not(.active):not(.actived).disable:not(.passive), &:not(.active):not(.actived).disabled:not(.passive), &:not(.active):not(.actived):disabled:not(.passive)' : '&:not(.active):not(.actived):not(.passive)']: content,
     }}
     protected stateNotActivatingPassivating(content: JssStyle): JssStyle { return {
         '&:not(.active):not(.passive)': content,

@@ -83,13 +83,13 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     /**
      * functional animations for the modal's background.
      */
-    public    readonly _animBackgFn              = 'animBackgFn'
+    public    readonly _animBackgFn            = 'animBackgFn'
 
 
 
     // anim props:
 
-    protected readonly _animBackgActivePassive   = 'animBackgActivePassive'
+    protected readonly _animBackgActivePassive = 'animBackgActivePassive'
     //#endregion scoped css props
 
 

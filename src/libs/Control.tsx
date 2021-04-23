@@ -118,31 +118,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         '&:not(.focus):not(:focus):not(.blur)': content,
     }}
     
-    // override base: non-pseudo + pseudo active
-    protected stateActivating(content: JssStyle): JssStyle { return {
-        '&.active': content,
-    }}
-    protected stateActive(content: JssStyle): JssStyle { return {
-        '&.active,&.actived,&:active:not(.disable):not(.disabled):not(:disabled)': content,
-    }}
-    protected stateNotActive(content: JssStyle): JssStyle { return {
-        '&:not(.active):not(.actived):not(:active), &:not(.active):not(.actived).disable, &:not(.active):not(.actived).disabled, &:not(.active):not(.actived):disabled': content,
-    }}
-    protected statePassivating(content: JssStyle): JssStyle { return {
-        '&.passive': content,
-    }}
-    protected stateNotPassivating(content: JssStyle): JssStyle { return {
-        '&:not(.passive)': content,
-    }}
-    protected stateActivePassivating(content: JssStyle): JssStyle { return {
-        '&.active,&.actived,&:active:not(.disable):not(.disabled):not(:disabled),&.passive': content,
-    }}
-    protected stateNotActivePassivating(content: JssStyle): JssStyle { return {
-        '&:not(.active):not(.actived):not(:active):not(.passive), &:not(.active):not(.actived).disable:not(.passive), &:not(.active):not(.actived).disabled:not(.passive), &:not(.active):not(.actived):disabled:not(.passive)': content,
-    }}
-    protected stateNotActivatingPassivating(content: JssStyle): JssStyle { return {
-        '&:not(.active):not(.passive)': content,
-    }}
+    protected actionCtrl() { return true; }
     
     // override base: pseudo + non-pseudo active
     protected applyStateNoAnimStartup(): JssStyle {
@@ -162,25 +138,6 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         // apply an *active* color theme:
         [this.decl(this._boxShadowFocusIf)] : this.ref(this._boxShadowFocusIfAct),
     }}
-
-    /**
-     * Supress activating by mouse/keyboard (:active)  
-     * but still responsive activating programatically (.active & .actived)
-     * @returns A `JssStyle` represents a css rule for supressing mouse/keyboard activation.
-     */
-    protected applySupressManualActive(): JssStyle {
-        return this.stateActive({ // [activating, actived]
-            '&:active:not(.active):not(.actived)': {
-                [this.decl(this._filterActivePassive)] : ecssProps.filterNone,
-                [this.decl(this._animActivePassive)]   : ecssProps.animNone,
-
-
-
-                // prevent *toggle off* the outlined props:
-                '&.outlined': this.toggleOnOutlined(),
-            },
-        });
-    }
     //#endregion mixins
 
 

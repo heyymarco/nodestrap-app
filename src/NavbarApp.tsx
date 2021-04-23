@@ -62,7 +62,7 @@ function App() {
 	const [active,      setActive   ] = useState(false);
 
 	const compacts = [undefined, false, true];
-	const [compact,    setCompact   ] = useState<boolean|undefined>(false);
+	const [compact,    setCompact   ] = useState<boolean|undefined>(undefined);
 
 	const [hasLogo,      setHasLogo   ] = useState(true);
 
