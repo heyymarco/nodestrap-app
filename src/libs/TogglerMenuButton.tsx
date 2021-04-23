@@ -33,50 +33,36 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
     /**
      * functional animations for the toggler top.
      */
-    public    readonly _animTogglerTopFn    = 'animTogglerTopFn'
+    public    readonly _togglerTopAnimFn    = 'togglerTopAnimFn'
     /**
      * functional animations for the toggler middle.
      */
-    public    readonly _animTogglerMidFn    = 'animTogglerMidFn'
+    public    readonly _togglerMidAnimFn    = 'togglerMidAnimFn'
     /**
      * functional animations for the toggler bottom.
      */
-    public    readonly _animTogglerBtmFn    = 'animTogglerBtmFn'
+    public    readonly _togglerBtmAnimFn    = 'togglerBtmAnimFn'
 
 
 
     // anim props:
 
-    protected readonly _animTogglerTopOnOff = 'animTogglerTopOnOff'
-    protected readonly _animTogglerMidOnOff = 'animTogglerMidOnOff'
-    protected readonly _animTogglerBtmOnOff = 'animTogglerBtmOnOff'
+    protected readonly _togglerTopAnimOnOff = 'togglerTopAnimOnOff'
+    protected readonly _togglerMidAnimOnOff = 'togglerMidAnimOnOff'
+    protected readonly _togglerBtmAnimOnOff = 'togglerBtmAnimOnOff'
     //#endregion scoped css props
 
 
 
     // states:
-    protected togglerFnProps(): JssStyle { return {
-        // define an *animations* func for the toggler top:
-        [this.decl(this._animTogglerTopFn)]: [
-            this.ref(this._animTogglerTopOnOff),
-        ],
-        // define an *animations* func for the toggler middle:
-        [this.decl(this._animTogglerMidFn)]: [
-            this.ref(this._animTogglerMidOnOff),
-        ],
-        // define an *animations* func for the toggler bottom:
-        [this.decl(this._animTogglerBtmFn)]: [
-            this.ref(this._animTogglerBtmOnOff),
-        ],
-    }}
     protected togglerThemesIf(): JssStyle { return {}; }
     protected togglerStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit, {
                 //#region all initial states are none
-                [this.decl(this._animTogglerTopOnOff)] : ecssProps.animNone,
-                [this.decl(this._animTogglerMidOnOff)] : ecssProps.animNone,
-                [this.decl(this._animTogglerBtmOnOff)] : ecssProps.animNone,
+                [this.decl(this._togglerTopAnimOnOff)] : ecssProps.animNone,
+                [this.decl(this._togglerMidAnimOnOff)] : ecssProps.animNone,
+                [this.decl(this._togglerBtmAnimOnOff)] : ecssProps.animNone,
                 //#endregion all initial states are none
             }),
 
@@ -85,14 +71,14 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
             //#region specific states
             //#region check, clear
             this.stateCheck({ // [checking, checked]
-                [this.decl(this._animTogglerTopOnOff)] : cssProps.togglerAnimOnTop,
-                [this.decl(this._animTogglerMidOnOff)] : cssProps.togglerAnimOnMid,
-                [this.decl(this._animTogglerBtmOnOff)] : cssProps.togglerAnimOnBtm,
+                [this.decl(this._togglerTopAnimOnOff)] : cssProps.togglerTopAnimOn,
+                [this.decl(this._togglerMidAnimOnOff)] : cssProps.togglerMidAnimOn,
+                [this.decl(this._togglerBtmAnimOnOff)] : cssProps.togglerBtmAnimOn,
             }),
             this.stateNotCheck({ // [not-checking, not-checked] => [clearing, cleared]
-                [this.decl(this._animTogglerTopOnOff)] : cssProps.togglerAnimOffTop,
-                [this.decl(this._animTogglerMidOnOff)] : cssProps.togglerAnimOffMid,
-                [this.decl(this._animTogglerBtmOnOff)] : cssProps.togglerAnimOffBtm,
+                [this.decl(this._togglerTopAnimOnOff)] : cssProps.togglerTopAnimOff,
+                [this.decl(this._togglerMidAnimOnOff)] : cssProps.togglerMidAnimOff,
+                [this.decl(this._togglerBtmAnimOnOff)] : cssProps.togglerBtmAnimOff,
             }),
             this.stateNotCheckingClearing({ // if ctrl was fully checked/unchecked, disable the animation
                 [btnElm]: {
@@ -104,13 +90,6 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
         ] as JssStyle,
     }}
 
-    protected fnProps(): JssStyle { return {
-        extend: [
-            super.fnProps(), // copy functional props from base
-
-            this.togglerFnProps(),
-        ] as JssStyle,
-    }}
     protected themesIf(): JssStyle { return {
         extend: [
             super.themesIf(), // copy themes from base
@@ -123,6 +102,31 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
             super.states(inherit), // copy states from base
 
             this.togglerStates(inherit),
+        ] as JssStyle,
+    }}
+
+
+
+    // fn props:
+    protected togglerFnProps(): JssStyle { return {
+        // define an *animations* func for the toggler top:
+        [this.decl(this._togglerTopAnimFn)]: [
+            this.ref(this._togglerTopAnimOnOff),
+        ],
+        // define an *animations* func for the toggler middle:
+        [this.decl(this._togglerMidAnimFn)]: [
+            this.ref(this._togglerMidAnimOnOff),
+        ],
+        // define an *animations* func for the toggler bottom:
+        [this.decl(this._togglerBtmAnimFn)]: [
+            this.ref(this._togglerBtmAnimOnOff),
+        ],
+    }}
+    protected fnProps(): JssStyle { return {
+        extend: [
+            super.fnProps(), // copy functional props from base
+
+            this.togglerFnProps(),
         ] as JssStyle,
     }}
 
@@ -151,13 +155,13 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
                 
                 // apply fn props:
                 '&:nth-child(1)': {
-                    anim : this.ref(this._animTogglerTopFn),
+                    anim : this.ref(this._togglerTopAnimFn),
                 },
                 '&:nth-child(2)': {
-                    anim : this.ref(this._animTogglerMidFn),
+                    anim : this.ref(this._togglerMidAnimFn),
                 },
                 '&:nth-child(3)': {
-                    anim : this.ref(this._animTogglerBtmFn),
+                    anim : this.ref(this._togglerBtmAnimFn),
                 },
             },
         },
@@ -189,7 +193,7 @@ const cssConfig = new CssConfig(() => {
 
 
     // transform hamburger menu to cross menu
-    const keyframesTogglerOnTop  : PropEx.Keyframes = {
+    const keyframesTogglerTopOn  : PropEx.Keyframes = {
         from: {
             transformOrigin: '50% 50%',
 
@@ -207,7 +211,7 @@ const cssConfig = new CssConfig(() => {
             transform: [['rotate(-45deg)', 'scaleX(1.35)', 'translate(0, 37.5%)',]],
         },
     };
-    const keyframesTogglerOnMid  : PropEx.Keyframes = {
+    const keyframesTogglerMidOn  : PropEx.Keyframes = {
         from: {
             transformOrigin: '50% 50%',
 
@@ -222,7 +226,7 @@ const cssConfig = new CssConfig(() => {
             transform: [['scaleX(0)',   ]],
         },
     };
-    const keyframesTogglerOnBtm  : PropEx.Keyframes = {
+    const keyframesTogglerBtmOn  : PropEx.Keyframes = {
         from: {
             transformOrigin: '50% 50%',
 
@@ -241,46 +245,46 @@ const cssConfig = new CssConfig(() => {
         },
     };
 
-    const keyframesTogglerOffTop : PropEx.Keyframes = {
-        from : keyframesTogglerOnTop.to,
-        '43%': keyframesTogglerOnTop.from,
+    const keyframesTogglerTopOff : PropEx.Keyframes = {
+        from : keyframesTogglerTopOn.to,
+        '43%': keyframesTogglerTopOn.from,
         '71%': {
             transformOrigin: '91.7% 12.5%',
             transform: [['rotate(30deg)',  'scaleX(1)',    'translate(0, 0)',    ]],
         },
-        to   : keyframesTogglerOnTop.from,
+        to   : keyframesTogglerTopOn.from,
     };
-    const keyframesTogglerOffMid : PropEx.Keyframes = {
-        from : keyframesTogglerOnMid.to,
-        '81%': keyframesTogglerOnMid['19%'],
-        to   : keyframesTogglerOnMid.from,
+    const keyframesTogglerMidOff : PropEx.Keyframes = {
+        from : keyframesTogglerMidOn.to,
+        '81%': keyframesTogglerMidOn['19%'],
+        to   : keyframesTogglerMidOn.from,
     };
-    const keyframesTogglerOffBtm : PropEx.Keyframes = {
-        from : keyframesTogglerOnBtm.to,
-        '43%': keyframesTogglerOnBtm.from,
+    const keyframesTogglerBtmOff : PropEx.Keyframes = {
+        from : keyframesTogglerBtmOn.to,
+        '43%': keyframesTogglerBtmOn.from,
         '71%': {
             transformOrigin: '91.7% 87.5%',
             transform: [['rotate(-30deg)', 'scaleX(1)',    'translate(0, 0)',     ]],
         },
-        to   : keyframesTogglerOnBtm.from,
+        to   : keyframesTogglerBtmOn.from,
     };
 
     return {
         // anim props:
 
-        '@keyframes togglerOnTop'  : keyframesTogglerOnTop,
-        '@keyframes togglerOnMid'  : keyframesTogglerOnMid,
-        '@keyframes togglerOnBtm'  : keyframesTogglerOnBtm,
-        '@keyframes togglerOffTop' : keyframesTogglerOffTop,
-        '@keyframes togglerOffMid' : keyframesTogglerOffMid,
-        '@keyframes togglerOffBtm' : keyframesTogglerOffBtm,
+        '@keyframes togglerTopOn'  : keyframesTogglerTopOn,
+        '@keyframes togglerMidOn'  : keyframesTogglerMidOn,
+        '@keyframes togglerBtmOn'  : keyframesTogglerBtmOn,
+        '@keyframes togglerTopOff' : keyframesTogglerTopOff,
+        '@keyframes togglerMidOff' : keyframesTogglerMidOff,
+        '@keyframes togglerBtmOff' : keyframesTogglerBtmOff,
         togglerAnimDuration        :   '300ms',
-        togglerAnimOnTop           : [['300ms', 'ease-out', 'both', keyframesTogglerOnTop ]],
-        togglerAnimOnMid           : [['300ms', 'ease-out', 'both', keyframesTogglerOnMid ]],
-        togglerAnimOnBtm           : [['300ms', 'ease-out', 'both', keyframesTogglerOnBtm ]],
-        togglerAnimOffTop          : [['300ms', 'ease-out', 'both', keyframesTogglerOffTop]],
-        togglerAnimOffMid          : [['300ms', 'ease-out', 'both', keyframesTogglerOffMid]],
-        togglerAnimOffBtm          : [['300ms', 'ease-out', 'both', keyframesTogglerOffBtm]],
+        togglerTopAnimOn           : [['300ms', 'ease-out', 'both', keyframesTogglerTopOn ]],
+        togglerMidAnimOn           : [['300ms', 'ease-out', 'both', keyframesTogglerMidOn ]],
+        togglerBtmAnimOn           : [['300ms', 'ease-out', 'both', keyframesTogglerBtmOn ]],
+        togglerTopAnimOff          : [['300ms', 'ease-out', 'both', keyframesTogglerTopOff]],
+        togglerMidAnimOff          : [['300ms', 'ease-out', 'both', keyframesTogglerMidOff]],
+        togglerBtmAnimOff          : [['300ms', 'ease-out', 'both', keyframesTogglerBtmOff]],
     };
 }, /*prefix: */'tgmn');
 export const cssProps = cssConfig.refs;

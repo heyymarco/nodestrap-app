@@ -79,23 +79,6 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
 
-    // fn props:
-    public navbarFnProps(): JssStyle { return {
-        // define an *animations* func for the modal's background:
-        [this.decl(this._menusAnimFn)]: [
-            this.ref(this._menusAnimActivePassive),
-        ],
-    }}
-    protected fnProps(): JssStyle { return {
-        extend: [
-            super.fnProps(), // copy functional props from base
-
-            this.navbarFnProps(),
-        ] as JssStyle,
-    }}
-
-
-
     // themes:
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: super.sizeOf(size, Size, sizeProp), // copy sizes from base
@@ -237,7 +220,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                             [menusElm] : this.applyStateNoAnimStartup(),
                         }
                     },
-                    //#region compact && (active, passive)
+                    //#endregion compact && (active, passive)
                     //#endregion specific states
                 ] as JssStyle,
 
@@ -297,6 +280,23 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             ] as JssStyle}),
             //#endregion focus
             //#endregion specific states
+        ] as JssStyle,
+    }}
+
+
+
+    // fn props:
+    public navbarFnProps(): JssStyle { return {
+        // define an *animations* func for the modal's background:
+        [this.decl(this._menusAnimFn)]: [
+            this.ref(this._menusAnimActivePassive),
+        ],
+    }}
+    protected fnProps(): JssStyle { return {
+        extend: [
+            super.fnProps(), // copy functional props from base
+
+            this.navbarFnProps(),
         ] as JssStyle,
     }}
 
