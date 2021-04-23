@@ -7,9 +7,6 @@ import type {
     Styles,
 }                           from 'jss'          // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-import type {
-    DictionaryOf,
-}                           from './CssConfig'   // ts defs support for jss
 
 // nodestrap (modular web components):
 import colors               from './colors'     // configurable colors & theming defs
@@ -28,14 +25,14 @@ import type * as Controls   from './Control'
 export class ButtonStylesBuilder extends ControlStylesBuilder {
     // themes:
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
-        extend: super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        extend: [
+            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        ] as JssStyle,
 
 
 
-        // overwrite the global props ending with **{Size}:
-
-        [cssDecls.gapX] : (cssProps as DictionaryOf<typeof cssProps>)[`gapX${Size}`],
-        [cssDecls.gapY] : (cssProps as DictionaryOf<typeof cssProps>)[`gapY${Size}`],
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
 
 
@@ -48,8 +45,7 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
     // styles:
     public basicStyle(): JssStyle { return {
         extend: [
-            super.basicStyle(),                // copy basicStyle from base
-            this.filterGeneralProps(cssProps), // apply *general* cssProps
+            super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
 
 
@@ -76,9 +72,16 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
 
         // accessibility:
         userSelect     : 'none', // disable selecting button's text
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
     public linkStyle(): JssStyle { return {
-        extend: this.outlined(), // copy outlined style from base
+        extend: [
+            this.outlined(), // copy outlined style from base
+        ] as JssStyle,
 
 
 
@@ -127,6 +130,11 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         [this.decl(this._outlinedForegIf)]  : colors.primary,
         [this.decl(this._boxShadowFocusIf)] : colors.primaryTransp,
         //#endregion link styles
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'link')), // apply cssProps starting with link***
     }}
     protected styles(): Styles<'main'> {
         const styles = super.styles();

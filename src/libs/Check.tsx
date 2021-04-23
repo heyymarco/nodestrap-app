@@ -177,6 +177,17 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
     // themes:
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+        extend: [
+            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+    }}
+
     protected checkThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {}; }
     protected labelThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props for the label:
@@ -385,19 +396,8 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     }}
     protected basicCheckStyle(): JssStyle { return {
         extend: [
-            super.basicStyle(),                // copy basicStyle from base
-            this.inheritStyle(),               // force some props inherited from parent
-            
-            {
-                ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-                
-                //#region remove some cssProps
-                spacing            : undefined, // delete
-                img                : undefined, // delete
-                switchImg          : undefined, // delete
-                switchBorderRadius : undefined, // delete
-                //#endregion remove some cssProps
-            }
+            super.basicStyle(),  // copy basicStyle from base
+            this.inheritStyle(), // force some props inherited from parent
         ] as JssStyle,
     
 
@@ -451,6 +451,11 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             // apply fn props:
             anim : this.ref(this._iconAnimFn),
         },
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
     protected basicLabelStyle(): JssStyle { return {
         // apply fn props:
@@ -520,7 +525,16 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             },
         },
 
-        [labelElm] : buttonStyles.basicStyle(),
+        [labelElm] : {
+            extend: [
+                buttonStyles.basicStyle(),
+            ] as JssStyle,
+
+
+
+            // customize:
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'btn')), // apply cssProps starting with btn***
+        },
     }}
     public switchStyle(): JssStyle { return {
         //#region specific states
@@ -547,8 +561,8 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
         // children:
         [chkElm]: {
-            inlineSize   : '2em', // make the width twice the height
-            borderRadius : cssProps.switchBorderRadius,
+            inlineSize   : '2em',   // makes the width twice the height
+            borderRadius : '0.5em', // makes circle corners
 
 
 
@@ -556,6 +570,11 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             [iconElm]: {
                 [iconStyles.decl(iconStyles._img)] : cssProps.switchImg,
             },
+
+
+
+            // customize:
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'switch')), // apply cssProps starting with switch***
         },
     }}
     protected styles(): Styles<'main'> {
@@ -659,7 +678,6 @@ const cssConfig = new CssConfig(() => {
         
         // forked from Bootstrap 5:
         switchImg                : `url("data:image/svg+xml,${styles.escapeSvg("<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='#000'/></svg>")}")`,
-        switchBorderRadius       : '0.5em',
         
         
         

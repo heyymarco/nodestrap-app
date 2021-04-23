@@ -54,6 +54,20 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
 
 
 
+    // themes:
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+        extend: [
+            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+    }}
+
+
+
     // states:
     protected togglerThemesIf(): JssStyle { return {}; }
     protected togglerStates(inherit = false): JssStyle { return {
@@ -174,6 +188,11 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
 
         
         [btnElm] : this.basicTogglerStyle(),
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
 export const styles = new TogglerMenuButtonStylesBuilder();

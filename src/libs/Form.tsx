@@ -53,6 +53,11 @@ export class FormStylesBuilder extends ElementStylesBuilder {
 
             contentStyles.contentSizeOf(size, Size, sizeProp),
         ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
     public outlined(): JssStyle { return {
         extend: [
@@ -99,9 +104,13 @@ export class FormStylesBuilder extends ElementStylesBuilder {
     // styles:
     public basicStyle(): JssStyle { return {
         extend: [
-            super.basicStyle(),                // copy basicStyle from base
-            this.filterGeneralProps(cssProps), // apply *general* cssProps
+            super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
 export const styles = new FormStylesBuilder();
