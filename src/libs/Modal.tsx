@@ -18,9 +18,6 @@ import {
     Cust,
 }                           from './Css'        // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-import type {
-    Dictionary,
-}                          from './CssConfig'   // ts defs support for jss
 
 // nodestrap (modular web components):
 import * as stripOuts       from './strip-outs'
@@ -34,16 +31,13 @@ import {
 import {
     default  as Indicator,
     IndicatorStylesBuilder,
-    cssProps as icssProps,
     cssDecls as icssDecls,
 }                           from './Indicator'
 import {
-    cssProps as ccssProps,
     cssDecls as ccssDecls,
 }                           from './Content'
 import {
     default  as Card,
-    cssProps as rcssProps,
     cssDecls as rcssDecls,
 }                           from './Card'
 import type * as Cards      from './Card'
@@ -59,37 +53,17 @@ const cardElm        = '&>*';
 const cardItemsElm   = '&>*';
 
 export class ModalStylesBuilder extends IndicatorStylesBuilder {
-    //#region global css props
-    protected overwriteParentProps<TCssProps>(cssProps: TCssProps): JssStyle {
-        const cssPropsCopy: Dictionary<any> = {};
-        for (const [name, prop] of Object.entries(this.filterGeneralProps(cssProps))) {
-            cssPropsCopy[
-                (((() => {
-                         if (name in rcssProps) return rcssDecls; // parent: Card
-                    else if (name in ccssProps) return ccssDecls; // parent: Content
-                    else if (name in icssProps) return icssDecls; // parent: Indicator
-                    else if (name in ecssProps) return ecssDecls; // parent: Element
-                    else                        return null;      // no parent found
-                })() ?? name) as Dictionary<any>)[name]
-            ] = prop;
-        }
-        return cssPropsCopy as JssStyle;
-    }
-    //#endregion global css props
-
-
-
     //#region scoped css props
     /**
-     * functional animations for the modal's background.
+     * functional animations for the modal's overlay.
      */
-    public    readonly _backgAnimFn            = 'backgAnimFn'
+    public    readonly _overlayAnimFn            = 'overlayAnimFn'
 
 
 
     // anim props:
 
-    protected readonly _backgAnimActivePassive = 'backgAnimActivePassive'
+    protected readonly _overlayAnimActivePassive = 'overlayAnimActivePassive'
     //#endregion scoped css props
 
 
@@ -118,8 +92,8 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         extend: [
             this.iif(!inherit, {
                 //#region all initial states are none
-                [this.decl(this._animActivePassive)]      : ecssProps.animNone,
-                [this.decl(this._backgAnimActivePassive)] : ecssProps.animNone,
+                [this.decl(this._animActivePassive)]        : ecssProps.animNone,
+                [this.decl(this._overlayAnimActivePassive)] : ecssProps.animNone,
                 //#endregion all initial states are none
             }),
 
@@ -128,16 +102,16 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             //#region specific states
             //#region active, passive
             this.stateActive({ // [activating, actived]
-                [this.decl(this._animActivePassive)]      : cssProps.animActive,
-                [this.decl(this._backgAnimActivePassive)] : cssProps.backgAnimActive,
+                [this.decl(this._animActivePassive)]        : cssProps.animActive,
+                [this.decl(this._overlayAnimActivePassive)] : cssProps.overlayAnimActive,
     
                 extend: [
                     this.applyStateActive(),
                 ] as JssStyle,
             }),
             this.statePassivating({ // [passivating]
-                [this.decl(this._animActivePassive)]      : cssProps.animPassive,
-                [this.decl(this._backgAnimActivePassive)] : cssProps.backgAnimPassive,
+                [this.decl(this._animActivePassive)]        : cssProps.animPassive,
+                [this.decl(this._overlayAnimActivePassive)] : cssProps.overlayAnimPassive,
             }),
             this.stateNotActivePassivating({ // hides the modal if not [activating, actived, passivating]
                 display: 'none',
@@ -178,9 +152,9 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             this.ref(this._animActivePassive),
         ],
 
-        // define an *animations* func for the modal's background:
-        [this.decl(this._backgAnimFn)]: [
-            this.ref(this._backgAnimActivePassive),
+        // define an *animations* func for the modal's overlay:
+        [this.decl(this._overlayAnimFn)]: [
+            this.ref(this._overlayAnimActivePassive),
         ],
     }}
     protected fnProps(): JssStyle { return {
@@ -197,14 +171,15 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     public basicStyle(): JssStyle { return {
         extend: [
             containerStyles.basicContainerGridStyle(), // apply responsive container functionality using css grid
-            this.filterPrefixProps(cssProps, 'backg'), // apply cssProps starting with backg***
         ] as JssStyle,
+
 
 
         // layout:
      // display      : 'grid',             // already defined in containerStyles. we use grid, so we can align the card both horizontally & vertically
         justifyItems : cssProps.horzAlign, // align (default center) horizontally
         alignItems   : cssProps.vertAlign, // align (default center) vertically
+
 
 
         // sizes:
@@ -226,26 +201,42 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         },
 
 
+
         // apply fn props:
-        anim : this.ref(this._backgAnimFn),
+        anim : this.ref(this._overlayAnimFn),
 
 
 
         // children:
         //#region card
         ...((): JssStyle => {
-            const newCardProps = this.overwriteParentProps(cssProps);
+            const newCardProps = this.overwriteParentProps(
+                this.filterGeneralProps(cssProps), // apply *general* cssProps
+
+                rcssDecls, // Card
+                ccssDecls, // Content
+                icssDecls, // Indicator
+                ecssDecls, // Element
+            );
+
+
 
             return {
                 ...this.backupProps(newCardProps), // backup cardProps
+
+
+
                 [cardElm]: { // card layer
                     extend: [
                         stripOuts.focusableElement, // clear browser's default styles
                     ] as JssStyle,
 
+
+
                     '&:not(._)': { // force overwrite
                         // layout:
                         gridArea : 'content',
+
 
 
                         // sizes:
@@ -259,23 +250,25 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
                         overflow   : 'visible', // turn off the scrolling
 
 
-                        // configs:
-                        extend: [
-                            newCardProps, // overwrite cardProps
-                        ] as JssStyle,
-
 
                         // apply fn props:
                         [this.decl(this._animFn)] : 'inherit', // inherit from Modal
+
+
+
+                        // customize:
+                        ...newCardProps, // overwrite cardProps
                     },
     
     
+
                     // card items:
                     [cardItemsElm] : this.restoreProps(newCardProps), // restore cardProps
                 },
             };
         })(),
         //#endregion card
+
 
 
         //#region psedudo elm for filling the end of horz & vert scroll
@@ -303,6 +296,11 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             gridArea    : 'blockEnd',
         },
         //#endregion psedudo elm for filling the end of horz & vert scroll
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'overlay')), // apply *general* cssProps starting with overlay***
     }}
     public scrollableStyle(): JssStyle { return {
         [cardElm]: { // card layer
@@ -330,8 +328,9 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         alignItems     : 'center',        // center items vertically
 
 
+
         // children:
-        '& :first-child:last-child': {
+        '&>:first-child:last-child': {
             marginInlineStart: 'auto',
         },
     }}
@@ -367,7 +366,7 @@ const cssConfig = new CssConfig(() => {
     // const middle  = 'middle';
 
 
-    const keyframesActive       : PropEx.Keyframes = {
+    const keyframesActive         : PropEx.Keyframes = {
         from: {
             opacity   : 0,
             transform : 'scale(0)',
@@ -380,13 +379,13 @@ const cssConfig = new CssConfig(() => {
             transform : 'scale(1)',
         },
     };
-    const keyframesPassive      : PropEx.Keyframes = {
+    const keyframesPassive        : PropEx.Keyframes = {
         from  : keyframesActive.to,
         '30%' : keyframesActive['70%'],
         to    : keyframesActive.from,
     };
 
-    const keyframesBackgActive  : PropEx.Keyframes = {
+    const keyframesOverlayActive  : PropEx.Keyframes = {
         from: {
             opacity: 0,
         },
@@ -395,33 +394,33 @@ const cssConfig = new CssConfig(() => {
             background: 'rgba(0,0,0, 0.5)',
         },
     };
-    const keyframesBackgPassive : PropEx.Keyframes = {
-        from : keyframesBackgActive.to,
-        to   : keyframesBackgActive.from,
+    const keyframesOverlayPassive : PropEx.Keyframes = {
+        from : keyframesOverlayActive.to,
+        to   : keyframesOverlayActive.from,
     };
 
 
     return {
-        horzAlign                 : center,
-        vertAlign                 : center,
+        horzAlign                   : center,
+        vertAlign                   : center,
 
-        backg                     : typos.backg,
-        boxShadow                 : [[0, 0, '10px', 'black']],
+        backg                       : typos.backg,
+        boxShadow                   : [[0, 0, '10px', 'black']],
         
 
         // anim props:
 
-        '@keyframes active'       : keyframesActive,
-        '@keyframes passive'      : keyframesPassive,
-        animActive                : [['300ms', 'ease-out', 'both', keyframesActive ]],
-        animPassive               : [['500ms', 'ease-out', 'both', keyframesPassive]],
+        '@keyframes active'         : keyframesActive,
+        '@keyframes passive'        : keyframesPassive,
+        animActive                  : [['300ms', 'ease-out', 'both', keyframesActive ]],
+        animPassive                 : [['500ms', 'ease-out', 'both', keyframesPassive]],
 
-        '@keyframes backgActive'  : keyframesBackgActive,
-        '@keyframes backgPassive' : keyframesBackgPassive,
-        backgAnimActive           : [['300ms', 'ease-out', 'both', keyframesBackgActive ]],
-        backgAnimPassive          : [['500ms', 'ease-out', 'both', keyframesBackgPassive]],
+        '@keyframes overlayActive'  : keyframesOverlayActive,
+        '@keyframes overlayPassive' : keyframesOverlayPassive,
+        overlayAnimActive           : [['300ms', 'ease-out', 'both', keyframesOverlayActive ]],
+        overlayAnimPassive          : [['500ms', 'ease-out', 'both', keyframesOverlayPassive]],
     };
-}, /*prefix: */'mod');
+}, /*prefix: */'mdl');
 export const cssProps = cssConfig.refs;
 export const cssDecls = cssConfig.decls;
 
@@ -456,7 +455,7 @@ export function useAlignModal(props: AlignModal) {
 
 // react components:
 
-export type CloseType = 'ui' | 'backg' | 'shortcut';
+export type CloseType = 'ui' | 'overlay' | 'shortcut';
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
         Cards.Props<TElement>,
@@ -566,7 +565,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
                 props.stateActive?.[0] ?? stateActive[0],
                 (newValue: boolean) => {
                     props.stateActive?.[1](newValue);
-                    stateActive[1](newValue);
+                            stateActive[1](newValue);
                 },
             ]}
 
@@ -577,9 +576,9 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
                 if ((e.code === 'Escape') || (e.key === 'Escape')) props.onClose?.('shortcut');
             }}
 
-            // watch left click on the backg only (not at the card):
+            // watch left click on the overlay only (not at the card):
             onClick={(e) => {
-                if ((e.target === e.currentTarget) && (e.type === 'click')) props.onClose?.('backg');
+                if ((e.target === e.currentTarget) && (e.type === 'click')) props.onClose?.('overlay');
             }}
         >
             {/* <div>

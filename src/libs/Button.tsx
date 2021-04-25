@@ -134,7 +134,7 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
 
 
         // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'link')), // apply cssProps starting with link***
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'link')), // apply *general* cssProps starting with link***
     }}
     protected styles(): Styles<'main'> {
         const styles = super.styles();
@@ -193,12 +193,15 @@ export function useVariantButton(props: VariantButton) {
 
 // react components:
 
+export type BtnType = 'button'|'submit'|'reset'
+
 export interface Props
     extends
         Controls.Props<HTMLButtonElement>,
         VariantButton
 {
     // actions:
+    type?        : BtnType
     onClick?     : React.MouseEventHandler<HTMLButtonElement>
 
 
@@ -214,14 +217,26 @@ export default function Button(props: Props) {
 
 
 
+    const {
+        // essentials:
+        tag,
+
+
+        // actions:
+        type,
+        ...otherProps } = props;
+    
+    const tag2  = tag  ?? 'button';
+    const type2 = type ?? (['button', 'input'].includes(tag2) ? 'button' : undefined);
+
     return (
         <Control<HTMLButtonElement>
             // default props:
-            tag='button'
+            tag={tag2}
 
 
             // other props:
-            {...props}
+            {...otherProps}
 
 
             // main:
@@ -242,8 +257,8 @@ export default function Button(props: Props) {
             // Button props:
             {...{
                 // actions:
+                type    : type2,
                 onClick : props.onClick,
-                type    : 'button',
             }}
         >
             { props.text }

@@ -133,7 +133,45 @@ export class StylesBuilder {
         const cssPropsCopy: Dictionary<any> = {};
         for (const [name, prop] of Object.entries(cssProps)) {
             // excludes the entry if the name matching with following:
-            if ((/^(icon|items|logo|toggler|menu|menus|switch|btn|link)[A-Z]|(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid|Full|Compact)$|^(@)|backgGrad|anim|orientation|align|horzAlign|vertAlign|spacing|img/).test(name)) continue; // exclude
+
+            // prefixes:
+            /**
+             * For sub-component-variant
+             * Eg:
+             * fooSomething
+             * booSomething
+             * logoBackgColor
+             * logoOpacity
+             */
+            if ((/^(icon|img|items|logo|toggler|menu|menus|switch|btn|link|overlay|caption|header|footer|body)[A-Z]/).test(name)) continue; // exclude
+
+            // suffixes:
+            /**
+             * For size-variant or state-variant
+             * Eg:
+             * somethingFoo
+             * somethingBoo
+             * animValid
+             * animInvalid
+             */
+            if ((/(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid|Full|Compact)$/).test(name)) continue; // exclude
+
+            // special props:
+            /**
+             * Eg:
+             * foo
+             * boo
+             * size
+             * orientation
+             * valid   => (icon)Valid   => valid
+             * invalid => (icon)Invalid => invalid
+             */
+            if ((/backgGrad|anim|orientation|align|horzAlign|vertAlign|spacing|img|size|valid|invalid/).test(name)) continue; // exclude
+
+            // @keyframes:
+            if ((/@/).test(name)) continue; // exclude
+            
+
             
             // if not match => include it:
             cssPropsCopy[name] = prop;
@@ -220,6 +258,28 @@ export class StylesBuilder {
         const cssPropsCopy: Dictionary<any> = {};
         for (const [name, prop] of Object.entries(cssProps)) {
             const varDecl = (cssDecls as unknown as DictionaryOf<typeof cssDecls>)[name];
+            cssPropsCopy[varDecl] = prop;
+        }
+        return cssPropsCopy as JssStyle;
+    }
+
+    /**
+     * Overwrites prop declarations from the specified `cssProps` into the specified `cssDeclss`.  
+     * @param cssDeclss The list of the parent's collection prop name to be overwritten.  
+     * The order must be from the most specific parent to the least specific one.  
+     * @param cssProps The collection of the prop name to overwrite.  
+     * @returns A `JssStyle` which is the copy of the `cssProps` that overwrites the specified `cssDeclss`.
+     */
+    protected overwriteParentProps<TCssProps>(cssProps: TCssProps, ...cssDeclss: { [key in keyof unknown]: string }[]): JssStyle {
+        const cssPropsCopy: Dictionary<any> = {};
+        for (const [name, prop] of Object.entries(cssProps)) {
+            const varDecl = ((): string => {
+                for (const cssDecls of cssDeclss) {
+                    if (name in cssDecls) return (cssDecls as DictionaryOf<typeof cssDecls>)[name]; // found => replace the cssDecl
+                } // for
+
+                return name; // not found => use the original decl name
+            })();
             cssPropsCopy[varDecl] = prop;
         }
         return cssPropsCopy as JssStyle;

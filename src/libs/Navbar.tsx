@@ -123,12 +123,12 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     menusElm,
                 ].join(',')]: {
                     // customize:
-                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'items'), 'Full'),   // apply cssProps starting with items***   and ending with ***Full
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'items'), 'Full'),   // apply *general* cssProps starting with items***   and ending with ***Full
                 } as JssStyle,
 
                 [logoElm]     : {
                     // customize:
-                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'), 'Full'),    // apply cssProps starting with logo***    and ending with ***Full
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'), 'Full'),    // apply *general* cssProps starting with logo***    and ending with ***Full
                 } as JssStyle,
 
                 [togglerElm]  : {
@@ -138,17 +138,17 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
                     // customize:
-                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'toggler'), 'Full'), // apply cssProps starting with toggler*** and ending with ***Full
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'toggler'), 'Full'), // apply *general* cssProps starting with toggler*** and ending with ***Full
                 } as JssStyle,
 
                 [menusElm]    : {
                     // customize:
-                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menus'), 'Full'),   // apply cssProps starting with menus***   and ending with ***Full
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menus'), 'Full'),   // apply *general* cssProps starting with menus***   and ending with ***Full
                 } as JssStyle,
 
                 [menuItemElm] : {
                     // customize:
-                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'), 'Full'),    // apply cssProps starting with menu***    and ending with ***Full
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'), 'Full'),    // apply *general* cssProps starting with menu***    and ending with ***Full
                 } as JssStyle,
 
 
@@ -164,17 +164,17 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     menusElm,
                 ].join(',')]: {
                     // customize:
-                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'items'), 'Compact'),   // apply cssProps starting with items***   and ending with ***Compact
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'items'), 'Compact'),   // apply *general* cssProps starting with items***   and ending with ***Compact
                 } as JssStyle,
 
                 [logoElm]     : {
                     // customize:
-                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'), 'Compact'),    // apply cssProps starting with logo***    and ending with ***Compact
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'), 'Compact'),    // apply *general* cssProps starting with logo***    and ending with ***Compact
                 } as JssStyle,
 
                 [togglerElm]  : {
                     // customize:
-                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'toggler'), 'Compact'), // apply cssProps starting with toggler*** and ending with ***Compact
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'toggler'), 'Compact'), // apply *general* cssProps starting with toggler*** and ending with ***Compact
                 } as JssStyle,
 
                 [menusElm]    : {
@@ -189,12 +189,12 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
                     // customize:
-                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menus'), 'Compact'),   // apply cssProps starting with menus***   and ending with ***Compact
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menus'), 'Compact'),   // apply *general* cssProps starting with menus***   and ending with ***Compact
                 } as JssStyle,
 
                 [menuItemElm] : {
                     // customize:
-                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'), 'Compact'),    // apply cssProps starting with menu***    and ending with ***Compact
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'), 'Compact'),    // apply *general* cssProps starting with menu***    and ending with ***Compact
                 } as JssStyle,
 
 
@@ -380,7 +380,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             menusElm,
         ].join(',')]: {
             // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'items')), // apply cssProps starting with items***
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'items')), // apply *general* cssProps starting with items***
         } as JssStyle,
 
         [logoElm]    : {
@@ -390,7 +390,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
             // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'logo')), // apply cssProps starting with logo***
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'logo')), // apply *general* cssProps starting with logo***
         } as JssStyle,
 
         [togglerElm] : {
@@ -400,7 +400,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
             // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'toggler')), // apply cssProps starting with toggler***
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'toggler')), // apply *general* cssProps starting with toggler***
         } as JssStyle,
 
         [menusElm]   : {
@@ -428,7 +428,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
             // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menus')), // apply cssProps starting with menus***
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menus')), // apply *general* cssProps starting with menus***
         } as JssStyle,
 
         [menuItemElm] : {
@@ -456,7 +456,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
             // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menu')), // apply cssProps starting with menu***
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menu')), // apply *general* cssProps starting with menu***
         } as JssStyle,
         //#endregion children
 

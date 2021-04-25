@@ -2,6 +2,7 @@
 import
     React, {
     useState,
+    useEffect,
 }                          from 'react'        // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
@@ -510,7 +511,9 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
-    props.stateActive?.[1](!!stateActPass.class); // [activating, actived, passivating]
+    useEffect(() => { // guarantees the DOM has been fully rendered:
+        props.stateActive?.[1](!!stateActPass.class); // [activating, actived, passivating]
+    });
 
     
 

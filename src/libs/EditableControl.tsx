@@ -174,7 +174,16 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
 
 
     // themes:
-    /* -- same as parent -- */
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+        extend: [
+            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+    }}
 
 
 
@@ -330,9 +339,13 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder {
     // styles:
     public basicStyle(): JssStyle { return {
         extend: [
-            super.basicStyle(),                // copy basicStyle from base
-            this.filterGeneralProps(cssProps), // apply *general* cssProps
+            super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
 export const styles = new EditableControlStylesBuilder();

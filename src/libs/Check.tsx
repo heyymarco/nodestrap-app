@@ -533,7 +533,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
             // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'btn')), // apply cssProps starting with btn***
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'btn')), // apply *general* cssProps starting with btn***
         },
     }}
     public switchStyle(): JssStyle { return {
@@ -574,7 +574,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
             // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'switch')), // apply cssProps starting with switch***
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'switch')), // apply *general* cssProps starting with switch***
         },
     }}
     protected styles(): Styles<'main'> {

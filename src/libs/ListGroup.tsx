@@ -57,6 +57,11 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
 
+        // sizes:
+        minInlineSize  : 0, // See https://github.com/twbs/bootstrap/pull/22740#issuecomment-305868106
+
+
+
         // children:
         [wrapperElm]: { // wrapper element
             // layout:
@@ -66,21 +71,22 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
     
             // borders:
             //#region make a nicely rounded corners
-            //#region border-strokes
+            //#region border-strokes as a separator
             border      : ecssProps.border,         // moved in from children
             borderColor : this.ref(this._borderFn), // moved in from children
 
-            '&:not(:first-child)': { // only first-child having top-border
+            // remove double border by removing top-border starting from the second-child to the last-child
+            '&:not(:first-child)': {
                 borderBlockStartWidth: 0,
             },
-            //#endregion border-strokes
+            //#endregion border-strokes as a separator
 
 
 
             //#region border radiuses
             '&:first-child' : border.radius.top(ecssProps.borderRadius),    // moved in from children
             '&:last-child'  : border.radius.bottom(ecssProps.borderRadius), // moved in from children
-            overflow        : 'hidden', // clip overflowed children at the rounded corner
+            overflow        : 'hidden', // clip the children at the rounded corners
             //#endregion border radiuses
             //#endregion make a nicely rounded corners
     

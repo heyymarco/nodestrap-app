@@ -152,6 +152,16 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     
         [this.decl(this._boxShadowFocusTh)]: (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
     }}
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+        extend: [
+            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+    }}
 
 
 
@@ -293,8 +303,12 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
             stripOuts.control, // clear browser's default styles
 
             super.basicStyle(),                // copy basicStyle from base
-            this.filterGeneralProps(cssProps), // apply *general* cssProps
         ] as JssStyle,
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
 export const styles = new ControlStylesBuilder();

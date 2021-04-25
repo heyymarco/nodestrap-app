@@ -54,6 +54,16 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
             contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor), // copy themes from Content
         ] as JssStyle,
     }}
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+        extend: [
+            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+    }}
     public outlined(): JssStyle { return {
         extend: [
             super.outlined(),
@@ -137,8 +147,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
     // styles:
     public basicStyle(): JssStyle { return {
         extend: [
-            super.basicStyle(),                // copy basicStyle from base
-            this.filterGeneralProps(cssProps), // apply *general* cssProps
+            super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
 
 
@@ -165,7 +174,17 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
             // accessibility:
             pointerEvents          : 'none', // just an overlayed element, no mouse interaction
+
+
+
+            // customize:
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'icon')), // apply *general* cssProps starting with icon***
         },
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
 export const styles = new EditableTextControlStylesBuilder();
