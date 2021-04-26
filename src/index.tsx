@@ -13,7 +13,7 @@ import NavbarApp from './NavbarApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <CardApp />
+    <ListGroupApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

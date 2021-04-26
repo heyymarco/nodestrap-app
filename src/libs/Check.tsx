@@ -150,7 +150,9 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     }}
     protected applyStateValid(): JssStyle { return {
         // apply a *valid* color theme:
-        extend: super.applyStateValid(), // copy valid theme from base
+        extend: [
+            super.applyStateValid(), // copy valid theme from base
+        ] as JssStyle,
 
 
 
@@ -159,7 +161,9 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     }}
     protected applyStateInvalid(): JssStyle { return {
         // apply an *invalid* color theme:
-        extend: super.applyStateInvalid(), // copy invalid theme from base
+        extend: [
+            super.applyStateInvalid(), // copy invalid theme from base
+        ] as JssStyle,
 
 
 

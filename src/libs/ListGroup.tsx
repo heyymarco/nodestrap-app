@@ -31,7 +31,16 @@ const listItemElm = '&>*';
 
 export class ListGroupStylesBuilder extends ContentStylesBuilder {
     // themes:
-    /* -- same as parent -- */
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+        extend: [
+            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+    }}
 
 
 
@@ -41,10 +50,40 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
     // styles:
+    protected basicListItemsStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(), // copy basicStyle from base
+        ] as JssStyle,
+
+
+
+        // layout:
+        display      : 'block',
+
+
+
+        // borders:
+        //#region stripping out borders
+        /*
+            border & borderRadius are moved from here to parent,
+            for making consistent border color when the element's color are filtered.
+            so we need to disable the border & borderRadius here.
+        */
+
+
+
+        borderWidth  : 0,
+        borderRadius : 0,
+        //#endregion stripping out borders
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'items')), // apply *general* cssProps starting with items***
+    }}
     public basicStyle(): JssStyle { return {
         extend: [
-            stripOuts.list,                    // clear browser's default styles
-            this.filterGeneralProps(cssProps), // apply *general* cssProps
+            stripOuts.list, // clear browser's default styles
         ] as JssStyle,
 
 
@@ -62,7 +101,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
 
-        // children:
+        //#region children
         [wrapperElm]: { // wrapper element
             // layout:
             display: 'block',
@@ -71,13 +110,21 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
     
             // borders:
             //#region make a nicely rounded corners
+            /*
+                border & borderRadius are moved from children to here,
+                for making consistent border color when the children's color are filtered.
+                so we need to reconstruct the border & borderRadius here.
+            */
+
+
+
             //#region border-strokes as a separator
             border      : ecssProps.border,         // moved in from children
             borderColor : this.ref(this._borderFn), // moved in from children
 
             // remove double border by removing top-border starting from the second-child to the last-child
             '&:not(:first-child)': {
-                borderBlockStartWidth: 0,
+                borderBlockStartWidth : 0,
             },
             //#endregion border-strokes as a separator
 
@@ -86,30 +133,20 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
             //#region border radiuses
             '&:first-child' : border.radius.top(ecssProps.borderRadius),    // moved in from children
             '&:last-child'  : border.radius.bottom(ecssProps.borderRadius), // moved in from children
-            overflow        : 'hidden', // clip the children at the rounded corners
+            overflow        : 'hidden',                                     // clip the children at the rounded corners
             //#endregion border radiuses
             //#endregion make a nicely rounded corners
     
     
     
-            [listItemElm]: { // main child elements
-                extend: [
-                    super.basicStyle(), // copy basicStyle from base
-                ] as JssStyle,
-    
-
-
-                // layout:
-                display      : 'block',
-    
-
-
-                // borders:
-                border       : [['none'], '!important'], // moved out to wrapper & prevent @keyframes to set the border
-                borderColor  : undefined,                // moved out to wrapper
-                borderRadius : [[0],      '!important'], // moved out to wrapper & prevent @keyframes to set the border radius
-            } as JssStyle, // main child elements
+            [listItemElm]: this.basicListItemsStyle(),
         } as JssStyle, // wrapper element
+        //#endregion children
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
     protected styles(): Styles<'main'> {
         const styles = super.styles();

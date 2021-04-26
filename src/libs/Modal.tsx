@@ -77,7 +77,16 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     // themes:
     // disable themes:
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {}; }
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {}; }
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+        // extend: [
+        //     super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        // ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+    }}
     public gradient(): JssStyle { return {}; }
     public outlined(): JssStyle { return {}; }
 

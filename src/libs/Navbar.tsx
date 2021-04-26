@@ -39,10 +39,10 @@ import TogglerMenuButton    from './TogglerMenuButton'
 
 // styles:
 
-const logoElm     = '&>.logo';
-const togglerElm  = '&>.toggler';
-const menusElm    = '&>.menus';
-const menuItemElm = '&>.menus>*';
+const logoElm    = '&>.logo';
+const togglerElm = '&>.toggler';
+const menusElm   = '&>.menus';
+const menuElm    = '&>.menus>*';
 
 // Navbar is not a Control, but an Indicator wrapping of NavbarMenu (Control)
 // We use ControlStylesBuilder for serving styling of NavbarMenu (Control)
@@ -81,7 +81,9 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
     // themes:
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
-        extend: super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        extend: [
+            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        ] as JssStyle,
 
 
 
@@ -121,17 +123,17 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     logoElm,
                     togglerElm,
                     menusElm,
-                ].join(',')]: {
+                ].join(',')] : {
                     // customize:
                     ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'items'), 'Full'),   // apply *general* cssProps starting with items***   and ending with ***Full
                 } as JssStyle,
 
-                [logoElm]     : {
+                [logoElm]    : {
                     // customize:
                     ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'), 'Full'),    // apply *general* cssProps starting with logo***    and ending with ***Full
                 } as JssStyle,
 
-                [togglerElm]  : {
+                [togglerElm] : {
                     // appearance:
                     display: 'none', // hides toggler on full version
 
@@ -141,12 +143,12 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'toggler'), 'Full'), // apply *general* cssProps starting with toggler*** and ending with ***Full
                 } as JssStyle,
 
-                [menusElm]    : {
+                [menusElm]   : {
                     // customize:
                     ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menus'), 'Full'),   // apply *general* cssProps starting with menus***   and ending with ***Full
                 } as JssStyle,
 
-                [menuItemElm] : {
+                [menuElm]    : {
                     // customize:
                     ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'), 'Full'),    // apply *general* cssProps starting with menu***    and ending with ***Full
                 } as JssStyle,
@@ -162,22 +164,22 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     logoElm,
                     togglerElm,
                     menusElm,
-                ].join(',')]: {
+                ].join(',')] : {
                     // customize:
                     ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'items'), 'Compact'),   // apply *general* cssProps starting with items***   and ending with ***Compact
                 } as JssStyle,
 
-                [logoElm]     : {
+                [logoElm]    : {
                     // customize:
                     ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'), 'Compact'),    // apply *general* cssProps starting with logo***    and ending with ***Compact
                 } as JssStyle,
 
-                [togglerElm]  : {
+                [togglerElm] : {
                     // customize:
                     ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'toggler'), 'Compact'), // apply *general* cssProps starting with toggler*** and ending with ***Compact
                 } as JssStyle,
 
-                [menusElm]    : {
+                [menusElm]   : {
                     // layout:
                     gridArea      : '-1 / -3 / -1 / 3',
                     flexDirection : 'column',  // place the menus vertically
@@ -192,7 +194,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menus'), 'Compact'),   // apply *general* cssProps starting with menus***   and ending with ***Compact
                 } as JssStyle,
 
-                [menuItemElm] : {
+                [menuElm]    : {
                     // customize:
                     ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'), 'Compact'),    // apply *general* cssProps starting with menu***    and ending with ***Compact
                 } as JssStyle,
@@ -303,6 +305,98 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
     // styles:
+    protected basicWrapperStyle(): JssStyle { return {
+        // layout:
+        display        : 'flex',
+        flexDirection  : 'row',    // the flex direction to horz, so we can adjust the content's vertical position
+        justifyContent : 'center', // center the content horizontally
+        alignItems     : 'center', // if the content's height is shorter than the section, place it at the center
+
+
+
+        // spacings:
+        paddingInline  : ecssProps.paddingInline,
+        paddingBlock   : ecssProps.paddingBlock,
+    }}
+    protected basicNavbarSecondaryItemsStyle(): JssStyle { return {
+        paddingInline : 0,
+    }}
+    protected basicNavbarItemsStyle(): JssStyle { return {
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'items')), // apply *general* cssProps starting with items***
+    }}
+    protected basicNavbarLogoStyle(): JssStyle { return {
+        // layout:
+        gridArea : '1 / -3', // place the same row as menus / place at the 3rd column from the right (negative columns are placed after all positive ones are placed)
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'logo')), // apply *general* cssProps starting with logo***
+    }}
+    protected basicNavbarTogglerStyle(): JssStyle { return {
+        // layout:
+        gridArea : '1 / 2', // place the same row as menus / place at the 2nd column from the left
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'toggler')), // apply *general* cssProps starting with toggler***
+    }}
+    protected basicNavbarMenusStyle(): JssStyle { return {
+        // layout:
+        gridArea       : 'menus',
+        display        : 'flex',    // use flexbox to place the menus sequentially
+        flexDirection  : 'row',     // place the menus horizontally
+        justifyContent : 'start',   // place the menus from the begining, leave a free space (if any) at the end
+        alignItems     : 'stretch', // each menu fill the entire section's height
+
+
+
+        // sizes:
+        inlineSize     : 'fill-available',
+        fallbacks      : {
+            inlineSize : '-moz-available',
+        },
+
+
+        
+        // apply fn props:
+        backg : this.ref(this._backgFn),
+        anim  : this.ref(this._menusAnimFn),
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menus')), // apply *general* cssProps starting with menus***
+    }}
+    protected basicNavbarMenuStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(),
+            //#region overrides some base's basicStyle
+            {
+                // typos:
+                fontSize       : ecssProps.fontSize,
+                fontFamily     : undefined,
+                fontWeight     : undefined,
+                fontStyle      : undefined,
+                textDecoration : undefined,
+                lineHeight     : undefined,
+    
+    
+    
+                // borders:
+                border         : undefined,
+                borderRadius   : undefined,
+            },
+            //#endregion overrides some base's basicStyle
+        ] as JssStyle,
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menu')), // apply *general* cssProps starting with menu***
+    }}
     public basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(),
@@ -350,114 +444,29 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             // wrapper elements:
             logoElm,
             togglerElm,
-            menuItemElm,
-        ].join(',')]: {
-            // layout:
-            display        : 'flex',
-            flexDirection  : 'row',    // the flex direction to horz, so we can adjust the content's vertical position
-            justifyContent : 'center', // center the content horizontally
-            alignItems     : 'center', // if the content's height is shorter than the section, place it at the center
-
-
-
-            // spacings:
-            paddingInline  : ecssProps.paddingInline,
-            paddingBlock   : ecssProps.paddingBlock,
-        } as JssStyle,
+            menuElm,
+        ].join(',')] : this.basicWrapperStyle(),
 
         [[
             // secondary sections:
             logoElm,
             togglerElm,
-        ].join(',')]: {
-            paddingInline : 0,
-        } as JssStyle,
+        ].join(',')] : this.basicNavbarSecondaryItemsStyle(),
 
         [[
             // all sections:
             logoElm,
             togglerElm,
             menusElm,
-        ].join(',')]: {
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'items')), // apply *general* cssProps starting with items***
-        } as JssStyle,
+        ].join(',')] : this.basicNavbarItemsStyle(),
 
-        [logoElm]    : {
-            // layout:
-            gridArea : '1 / -3', // place the same row as menus / place at the 3rd column from the right (negative columns are placed after all positive ones are placed)
+        [logoElm]    : this.basicNavbarLogoStyle(),
 
+        [togglerElm] : this.basicNavbarTogglerStyle(),
 
+        [menusElm]   : this.basicNavbarMenusStyle(),
 
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'logo')), // apply *general* cssProps starting with logo***
-        } as JssStyle,
-
-        [togglerElm] : {
-            // layout:
-            gridArea : '1 / 2', // place the same row as menus / place at the 2nd column from the left
-
-
-
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'toggler')), // apply *general* cssProps starting with toggler***
-        } as JssStyle,
-
-        [menusElm]   : {
-            // layout:
-            gridArea       : 'menus',
-            display        : 'flex',    // use flexbox to place the menus sequentially
-            flexDirection  : 'row',     // place the menus horizontally
-            justifyContent : 'start',   // place the menus from the begining, leave a free space (if any) at the end
-            alignItems     : 'stretch', // each menu fill the entire section's height
-
-
-
-            // sizes:
-            inlineSize     : 'fill-available',
-            fallbacks      : {
-                inlineSize : '-moz-available',
-            },
-
-
-            
-            // apply fn props:
-            backg : this.ref(this._backgFn),
-            anim  : this.ref(this._menusAnimFn),
-
-
-
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menus')), // apply *general* cssProps starting with menus***
-        } as JssStyle,
-
-        [menuItemElm] : {
-            extend: [
-                super.basicStyle(),
-                //#region overrides some base's basicStyle
-                {
-                    // typos:
-                    fontSize       : ecssProps.fontSize,
-                    fontFamily     : undefined,
-                    fontWeight     : undefined,
-                    fontStyle      : undefined,
-                    textDecoration : undefined,
-                    lineHeight     : undefined,
-        
-        
-        
-                    // borders:
-                    border         : undefined,
-                    borderRadius   : undefined,
-                },
-                //#endregion overrides some base's basicStyle
-            ] as JssStyle,
-
-
-
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menu')), // apply *general* cssProps starting with menu***
-        } as JssStyle,
+        [menuElm]    : this.basicNavbarMenuStyle(),
         //#endregion children
 
 
@@ -481,7 +490,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                             // children:
                             [[
                                 menusElm, // includes menu group so we can disable the gradient at outlined
-                                menuItemElm,
+                                menuElm,
                             ].join(',')]: {
                                 extend: [
                                     this.outlined(),
@@ -495,7 +504,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                                 // children:
                                 [[
                                     menusElm,
-                                    menuItemElm,
+                                    menuElm,
                                 ].join(',')]: {
                                     extend: [
                                         this.toggleOffGradient(),
@@ -517,8 +526,8 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
                 // children:
-                [menusElm]: this.fnProps(), // use func props so we can disable the gradient
-                [menuItemElm]: {
+                [menusElm] : this.fnProps(), // use func props so we can disable the gradient
+                [menuElm]  : {
                     extend: [
                         // watch theme classes:
                         this.watchThemes(), // always inherit

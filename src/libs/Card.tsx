@@ -98,7 +98,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         },
         //#endregion border-strokes as a separator
     }}
-    protected basicCardItemStyle(): JssStyle { return {
+    protected basicCardItemsStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
@@ -111,10 +111,10 @@ export class CardStylesBuilder extends ContentStylesBuilder {
 
 
         // borders:
-        //#region make a nicely rounded corners
+        //#region stripping out borders
         /*
             border & borderRadius are moved from here to parent,
-            to make consistent border color when the element's color are filtered.
+            for making consistent border color when the element's color are filtered.
             so we need to disable the border & borderRadius here.
         */
 
@@ -127,7 +127,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         // and
         // remove double border by removing top-border starting from the second-child to the last-child
         // and
-        // exception for the second-child, do not remove, we need it as the replacement for the header's bottom-border
+        // *exception* for the second-child, do not remove, we need it as the replacement for the header's bottom-border
         // assumes the card *always* have a body, so the second-child always a body
         // a rare case the card only have a header & a footer, so the separator is from footer (affected by footer's css filter)
         '&:not(:nth-child(2))': {
@@ -146,7 +146,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         //#region border radiuses
         borderRadius : 0,
         //#endregion border radiuses
-        //#endregion make a nicely rounded corners
+        //#endregion stripping out borders
 
 
 
@@ -201,6 +201,40 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         },
         //#endregion images
         //#endregion children
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'items')), // apply *general* cssProps starting with items***
+    }}
+    protected basicCardCaptionStyle(): JssStyle { return {
+        // sizes:
+        // default card items' height are unresizeable (excepts for card's body):
+        flex: [[0, 0, 'auto']], // not shrinking, not growing
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'caption')), // apply *general* cssProps starting with caption***
+    }}
+    protected basicCardHeaderStyle(): JssStyle { return {
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'header')), // apply *general* cssProps starting with header***
+    }}
+    protected basicCardFooterStyle(): JssStyle { return {
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'footer')), // apply *general* cssProps starting with footer***
+    }}
+    protected basicCardBodyStyle(): JssStyle { return {
+        // sizes:
+        // Enable `flex-grow: 1` for decks and groups so that card blocks take up
+        // as much space as possible, ensuring footers are aligned to the bottom.
+        flex: [[1, 1, 'auto']],
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'body')), // apply *general* cssProps starting with body***
     }}
     public basicStyle(): JssStyle { return {
         // layout:
@@ -220,7 +254,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         //#region make a nicely rounded corners
         /*
             border & borderRadius are moved from children to here,
-            to make consistent border color when the children's color are filtered.
+            for making consistent border color when the children's color are filtered.
             so we need to reconstruct the border & borderRadius here.
         */
 
@@ -234,44 +268,19 @@ export class CardStylesBuilder extends ContentStylesBuilder {
 
 
         //#region border radiuses
-        borderRadius : ecssProps.borderRadius,
-        overflow     : 'hidden', // clip the children at the rounded corners
+        borderRadius : ecssProps.borderRadius,   // moved in from children
+        overflow     : 'hidden',                 // clip the children at the rounded corners
         //#endregion border radiuses
         //#endregion make a nicely rounded corners
 
 
 
         //#region children
-        '&>header, &>.body, &>footer': this.basicCardItemStyle(),
-        '&>header, &>footer': {
-            // sizes:
-            // default card items' height are unresizeable (excepts for card's body):
-            flex: [[0, 0, 'auto']], // not shrinking, not growing
-
-
-
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'caption')), // apply *general* cssProps starting with caption***
-        },
-        '&>header': {
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'header')), // apply *general* cssProps starting with header***
-        },
-        '&>footer': {
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'footer')), // apply *general* cssProps starting with footer***
-        },
-        '&>.body': {
-            // sizes:
-            // Enable `flex-grow: 1` for decks and groups so that card blocks take up
-            // as much space as possible, ensuring footers are aligned to the bottom.
-            flex: [[1, 1, 'auto']],
-
-
-
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'body')), // apply *general* cssProps starting with body***
-        },
+        '&>header, &>.body, &>footer' : this.basicCardItemsStyle(),
+        '&>header, &>footer'          : this.basicCardCaptionStyle(),
+        '&>header'                    : this.basicCardHeaderStyle(),
+        '&>footer'                    : this.basicCardFooterStyle(),
+        '&>.body'                     : this.basicCardBodyStyle(),
         //#endregion children
 
 

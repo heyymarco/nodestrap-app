@@ -144,7 +144,9 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
     // themes:
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
-        extend: super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
+        extend: [
+            super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
+        ] as JssStyle,
 
 
 
