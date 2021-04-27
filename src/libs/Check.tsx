@@ -501,7 +501,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             display    : 'inline',
             
 
-            // appearance:
+            // appearances:
             inlineSize : 0,
             overflow   : 'hidden',
             visibility : 'hidden',

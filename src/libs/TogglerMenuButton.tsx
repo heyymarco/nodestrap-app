@@ -160,7 +160,7 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
 
             // children:
             '&>*': {
-                // appearance:
+                // appearances:
                 stroke        : 'currentColor', // set menu color as parent's font color
                 strokeWidth   : 4,              // set menu thickness, 4 of 24 might enough
                 strokeLinecap : 'square',       // set menu edges square

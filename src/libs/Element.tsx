@@ -154,7 +154,7 @@ export class StylesBuilder {
              * animValid
              * animInvalid
              */
-            if ((/(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid|Full|Compact)$/).test(name)) continue; // exclude
+            if ((/(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|[0-9]+em|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid|Full|Compact)$/).test(name)) continue; // exclude
 
             // special props:
             /**
@@ -166,7 +166,7 @@ export class StylesBuilder {
              * valid   => (icon)Valid   => valid
              * invalid => (icon)Invalid => invalid
              */
-            if ((/backgGrad|anim|orientation|align|horzAlign|vertAlign|spacing|img|size|valid|invalid/).test(name)) continue; // exclude
+            if ((/backgGrad|orientation|align|horzAlign|vertAlign|spacing|img|size|valid|invalid/).test(name)) continue; // exclude
 
             // @keyframes:
             if ((/@/).test(name)) continue; // exclude
@@ -801,12 +801,8 @@ export class ElementStylesBuilder extends StylesBuilder {
         [this.decl(this._outlinedForegTh)] : themeColor,
     }}
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
-        // overwrite the global props ending with **{Size}:
-
-        [cssDecls.fontSize]      : (cssProps as DictionaryOf<typeof cssProps>)[`fontSize${Size}`],
-        [cssDecls.paddingInline] : (cssProps as DictionaryOf<typeof cssProps>)[`paddingInline${Size}`],
-        [cssDecls.paddingBlock]  : (cssProps as DictionaryOf<typeof cssProps>)[`paddingBlock${Size}`],
-        [cssDecls.borderRadius]  : (cssProps as DictionaryOf<typeof cssProps>)[`borderRadius${Size}`],
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
     public gradient(): JssStyle {
         // *toggle on* the background gradient prop:
@@ -924,9 +920,8 @@ export class ElementStylesBuilder extends StylesBuilder {
 
     // styles:
     public basicStyle(): JssStyle { return {
-        extend: [
-            this.filterGeneralProps(cssProps), // apply *general* cssProps
-        ] as JssStyle,
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     
     
     

@@ -63,7 +63,7 @@ export interface Props
     extends
         Buttons.Props
 {
-    // appearance:
+    // appearances:
     icon?: string
 }
 export default function ButtonIcon(props: Props) {
@@ -72,7 +72,7 @@ export default function ButtonIcon(props: Props) {
 
 
     const {
-        // appearance:
+        // appearances:
         icon,
 
 

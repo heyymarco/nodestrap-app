@@ -72,10 +72,8 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
         [this.decl(this._activeBackgTh)]   : this.solidBackg(themeColor),
     }}
     public contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
-        // overwrite the global props ending with **{Size}:
-
-        [cssDecls.paddingInline] : (cssProps as DictionaryOf<typeof cssProps>)[`paddingInline${Size}`],
-        [cssDecls.paddingBlock]  : (cssProps as DictionaryOf<typeof cssProps>)[`paddingBlock${Size}`],
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
     public contentOutlined(): JssStyle { return {}; }
 
@@ -182,8 +180,12 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
     public basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(),
-            this.filterGeneralProps(cssProps), // apply *general* cssProps
         ] as JssStyle,
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
 export const styles = new ContentStylesBuilder();

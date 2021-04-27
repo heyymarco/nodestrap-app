@@ -13,9 +13,6 @@ import {
     Cust,
 }                          from './Css'        // ts defs support for jss
 import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-import type {
-    DictionaryOf,
-}                          from './CssConfig'   // ts defs support for jss
 
 // nodestrap (modular web components):
 import fontMaterial        from './Icon-font-material'
@@ -49,9 +46,14 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         return ['sm', 'nm', 'md', 'lg', '1em'];
     }
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
-        // overwrite the global props ending with **{Size}:
+        // extend: [
+        //     super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        // ] as JssStyle,
 
-        [cssDecls.size] : (size === '1em') ? '1em' : (cssProps as DictionaryOf<typeof cssProps>)[`size${Size}`],
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
     public outlined(): JssStyle  { return {}; } // remove outlined style
 
@@ -85,12 +87,6 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
     // styles:
     public basicStyle(): JssStyle { return {
-        extend: [
-            this.filterGeneralProps(cssProps), // apply *general* cssProps
-        ] as JssStyle,
-
-
-
         // layout:
         display       : 'inline-flex',
         alignItems    : 'center', // center items vertically
@@ -110,7 +106,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
             display    : 'inline',
             
 
-            // appearance:
+            // appearances:
             inlineSize : 0,
             overflow   : 'hidden',
             visibility : 'hidden',
@@ -118,11 +114,10 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
 
 
-        // colors:
-        foreg         : null, // delete from cssProps; in img-icon: foreg => backgColor ; in font-icon: foreg => foreg => color (font-color)
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
 
-        // sizes:
-        size          : null, // delete from cssProps, in img-icon: size => [width, height] ; in font-icon: size => fontSize
+        foreg         : null, // delete from cssProps; in img-icon: foreg => backgColor ; in font-icon: foreg => foreg => color (font-color)
     }}
     public basicFontStyle(): JssStyle { return {
         '&::after': {
@@ -196,7 +191,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         //#region children
         // just a *dummy* element for calculating the image's width
         '&>img': {
-            // appearance:
+            // appearances:
             visibility : [['hidden'], '!important'], // invisible but still filling the space
 
 
@@ -313,10 +308,11 @@ const cssConfig = new CssConfig(() => {
 
     return {
         ...basics,
-        size   :            basics.sizeNm,
-        sizeSm : [['calc(', basics.sizeNm, '*', 0.75  , ')']],
-        sizeMd : [['calc(', basics.sizeNm, '*', 1.50  , ')']],
-        sizeLg : [['calc(', basics.sizeNm, '*', 2.00  , ')']],
+        size    :            basics.sizeNm,
+        sizeSm  : [['calc(', basics.sizeNm, '*', 0.75  , ')']],
+        sizeMd  : [['calc(', basics.sizeNm, '*', 1.50  , ')']],
+        sizeLg  : [['calc(', basics.sizeNm, '*', 2.00  , ')']],
+        size1em : '1em',
     };
 }, /*prefix: */'ico');
 export const cssProps = cssConfig.refs;
@@ -395,7 +391,7 @@ export function useIcon<TElement extends HTMLElement = HTMLElement>(props: Props
             class: imgIcon ? 'img' : (isFontIcon ? 'font' : null),
 
             style: {
-                // appearance:
+                // appearances:
                 [styles.decl(styles._img)] : imgIcon ? `url("${imgIcon}")` : `"${props.icon}"`,
             },
 
@@ -416,13 +412,13 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
         Elements.Props<TElement>
 {
-    // appearance:
+    // appearances:
     icon: string
 }
 export default function Icon<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const icoStyles = styles.useStyles();
 
-    // appearance:
+    // appearances:
     const icon      = useIcon(props);
 
 
@@ -447,12 +443,12 @@ export default function Icon<TElement extends HTMLElement = HTMLElement>(props: 
                 ...(props.classes ?? []),
 
 
-                // appearance:
+                // appearances:
                 icon.class,
             ]}
 
 
-            // appearance:
+            // appearances:
             style={{
                 ...icon.style,
                 ...props.style,

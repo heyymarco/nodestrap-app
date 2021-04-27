@@ -293,7 +293,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             alignSelf   : 'stretch',
 
 
-            // appearance:
+            // appearances:
             visibility  : 'hidden',
         },
         '&::before': {

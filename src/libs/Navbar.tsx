@@ -134,7 +134,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                 } as JssStyle,
 
                 [togglerElm] : {
-                    // appearance:
+                    // appearances:
                     display: 'none', // hides toggler on full version
 
 
@@ -212,7 +212,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     }),
                     this.stateNotActivePassivating({
                         [menusElm] : {
-                            // appearance:
+                            // appearances:
                             display: 'none',
                         } as JssStyle,
                     }, /*actionCtrl =*/false),

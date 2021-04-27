@@ -103,7 +103,22 @@ createJss().setup({plugins:[
 
 export class ContainerStylesBuilder extends ElementStylesBuilder {
     // themes:
-    /* -- same as parent -- */
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+        extend: [
+            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, (() => {
+            const cssPropsSize = this.filterSuffixProps(cssProps, Size);
+            delete cssPropsSize.paddingInline;
+            delete cssPropsSize.paddingBlock;
+
+            return cssPropsSize;
+        })()),
+    }}
 
 
 
@@ -118,9 +133,8 @@ export class ContainerStylesBuilder extends ElementStylesBuilder {
      * @returns A `JssStyle` represents a responsive container style definition.
      */
     public basicContainerStyle(): JssStyle { return {
-        extend: [
-            this.filterGeneralProps(cssProps), // apply *general* cssProps
-        ] as JssStyle,
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
     /**
      * Applies responsive container functionality using css grid - without any other styling.
@@ -136,6 +150,14 @@ export class ContainerStylesBuilder extends ElementStylesBuilder {
             '"inlineStart  content   inlineEnd"',
             '"...          blockEnd        ..."',
         ]],
+
+
+        
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+
+        paddingInline : null,
+        paddingBlock  : null,
     }}
     public basicStyle(): JssStyle { return {
         extend: [
