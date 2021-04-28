@@ -75,7 +75,6 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
-    public contentOutlined(): JssStyle { return {}; }
 
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
@@ -89,13 +88,6 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
 
             this.contentSizeOf(size, Size, sizeProp),
-        ] as JssStyle,
-    }}
-    public outlined(): JssStyle { return {
-        extend: [
-            super.outlined(),
-
-            this.contentOutlined(),
         ] as JssStyle,
     }}
 

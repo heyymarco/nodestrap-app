@@ -17,7 +17,6 @@ import {
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
-import colors               from './colors'     // configurable colors & theming defs
 import {
     cssProps as ecssProps,
 }                           from './Element'
@@ -258,14 +257,6 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             // @ts-ignore
             indicatorStyles.themesIf(), // copy themes from Indicator (Control's base)
         ] as JssStyle,
-
-
-
-        // define a *default* color theme:
-        [this.decl(this._boxShadowFocusIf)]    : colors.secondaryTransp,
-
-        // define an *active* color theme:
-        [this.decl(this._boxShadowFocusIfAct)] : colors.secondaryTransp,
     }}
     protected states(inherit = false): JssStyle { return {
         extend: [

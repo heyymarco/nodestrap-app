@@ -256,7 +256,8 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
                         // fix bug on firefox.
                         // setting *(inline|block)Size:max-content* guarantes the scrolling effect never occured (the *scrolling prop* will be ignored).
                         // but on firefox if the *scrolling prop* is not turned off => causing the element clipped off at the top.
-                        overflow   : 'visible', // turn off the scrolling
+                     // overflow   : 'visible', // turn off the scrolling; side effect the rounded corners won't be clipped
+                     // overflow   : '-moz-hidden-unscrollable', // not working; use JS solution
 
 
 
@@ -492,12 +493,24 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
     const cardRef     = useRef<TElement>();
     useEffect(() => {
         if (isActive) {
+            if (cardRef.current && navigator.userAgent.toLowerCase().includes('firefox')) {
+                cardRef.current.style.overflow = 'visible';
+
+                // setTimeout(() => {
+                //     if (cardRef.current) cardRef.current.style.overflow = 'clip';
+                // }, 0);
+            } // if firefox
+
             document.body.classList.add(modStyles.body);
 
 
             cardRef.current?.focus(); // when actived => focus the dialog, so the user able to use [esc] key to close the dialog
         }
         else {
+            if (cardRef.current && navigator.userAgent.toLowerCase().includes('firefox')) {
+                cardRef.current.style.overflow = '';
+            } // if firefox
+
             document.body.classList.remove(modStyles.body);
         } // if
     }, [isActive, modStyles.body]);
@@ -533,7 +546,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
     const footer2 = ((footer === undefined) || (typeof(footer) === 'string')) ? (
         <p className={modStyles.actionBar}>
             { footer }
-            <Button theme='primary' text='Close' onClick={() => props.onClose?.('ui')} />
+            <Button text='Close' onClick={() => props.onClose?.('ui')} />
         </p>
     ) : footer;
 

@@ -45,6 +45,11 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     protected readonly _borderIfAct         = 'borderIfAct'
 
     /**
+     * active focused conditional unthemed box-shadow color.
+     */
+    protected readonly _boxShadowFocusIfAct = 'boxShadowFocusIfAct'
+
+    /**
      * active unthemed foreground color - at outlined state.
      */
     protected readonly _outlinedForegIfAct  = 'outlinedForegIfAct'
@@ -131,10 +136,11 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     }
     protected applyStateActive(): JssStyle { return {
         // apply an *active* color theme:
-        [this.decl(this._foregIf)]         : this.ref(this._foregIfAct),
-        [this.decl(this._backgIf)]         : this.ref(this._backgIfAct),
-        [this.decl(this._borderIf)]        : this.ref(this._borderIfAct),
-        [this.decl(this._outlinedForegIf)] : this.ref(this._outlinedForegIfAct),
+        [this.decl(this._foregIf)]          : this.ref(this._foregIfAct),
+        [this.decl(this._backgIf)]          : this.ref(this._backgIfAct),
+        [this.decl(this._borderIf)]         : this.ref(this._borderIfAct),
+        [this.decl(this._boxShadowFocusIf)] : this.ref(this._boxShadowFocusIfAct),
+        [this.decl(this._outlinedForegIf)]  : this.ref(this._outlinedForegIfAct),
 
 
         
@@ -164,10 +170,11 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
     // states:
     public indicationThemesIf(): JssStyle { return {
         // define an *active* color theme:
-        [this.decl(this._foregIfAct)]         : colors.secondaryText,
-        [this.decl(this._backgIfAct)]         : this.solidBackg(colors.secondary),
-        [this.decl(this._borderIfAct)]        : colors.secondaryCont,
-        [this.decl(this._outlinedForegIfAct)] : colors.secondary,
+        [this.decl(this._foregIfAct)]          : colors.secondaryText,
+        [this.decl(this._backgIfAct)]          : this.solidBackg(colors.secondary),
+        [this.decl(this._borderIfAct)]         : colors.secondaryCont,
+        [this.decl(this._boxShadowFocusIfAct)] : colors.secondaryTransp,
+        [this.decl(this._outlinedForegIfAct)]  : colors.secondary,
     }}
     public indicationStates(inherit = false): JssStyle { return {
         extend: [

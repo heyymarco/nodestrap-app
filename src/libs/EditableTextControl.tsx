@@ -64,13 +64,6 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
-    public outlined(): JssStyle { return {
-        extend: [
-            super.outlined(),
-
-            contentStyles.contentOutlined(),
-        ] as JssStyle,
-    }}
 
 
 

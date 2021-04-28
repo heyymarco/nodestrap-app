@@ -101,7 +101,8 @@ const cssConfig = new CssConfig(() => {
 
         boxShadowNone     : [[0, 0, 'transparent']],
         boxShadow         : [[0, 0, 'transparent']],
-
+        boxShadowFocus    : [[0, 0, 0, '0.25rem' ]],
+        
         filterNone        : 'brightness(100%)',
         filter            : 'brightness(100%)',
 
@@ -629,22 +630,22 @@ export class ElementStylesBuilder extends StylesBuilder {
     /**
      * themed foreground color.
      */
-    protected readonly _foregTh           = 'foregTh'
+    protected readonly _foregTh            = 'foregTh'
 
     /**
      * conditional foreground color.
      */
-    protected readonly _foregIfIf         = 'foregIfIf'
+    protected readonly _foregIfIf          = 'foregIfIf'
 
     /**
      * conditional unthemed foreground color.
      */
-    protected readonly _foregIf           = 'foregIf'
+    protected readonly _foregIf            = 'foregIf'
 
     /**
      * functional foreground color.
      */
-    public    readonly _foregFn           = 'foregFn'
+    public    readonly _foregFn            = 'foregFn'
     //#endregion foreground
 
     
@@ -653,37 +654,37 @@ export class ElementStylesBuilder extends StylesBuilder {
     /**
      * none background.
      */
-    protected readonly _backgNone         = 'backgNone'
+    protected readonly _backgNone          = 'backgNone'
 
     /**
      * themed background.
      */
-    protected readonly _backgTh           = 'backgTh'
+    protected readonly _backgTh            = 'backgTh'
 
     /**
      * conditional background.
      */
-    protected readonly _backgIfIf         = 'backgIfIf'
+    protected readonly _backgIfIf          = 'backgIfIf'
 
     /**
      * conditional unthemed background.
      */
-    protected readonly _backgIf           = 'backgIf'
+    protected readonly _backgIf            = 'backgIf'
 
     /**
      * functional backgrounds.
      */
-    public    readonly _backgFn           = 'backgFn'
+    public    readonly _backgFn            = 'backgFn'
 
     /**
      * layered backgrounds.
      */
-    public    readonly _backgLy           = 'backgLy'
+    public    readonly _backgLy            = 'backgLy'
 
     /**
      * toggles background gradient.
      */
-    protected readonly _backgGradTg       = 'backgGradTg'
+    protected readonly _backgGradTg        = 'backgGradTg'
     //#endregion background
 
 
@@ -692,23 +693,53 @@ export class ElementStylesBuilder extends StylesBuilder {
     /**
      * themed border color.
      */
-    protected readonly _borderTh          = 'borderTh'
+    protected readonly _borderTh           = 'borderTh'
 
     /**
      * conditional border color.
      */
-    protected readonly _borderIfIf        = 'borderIfIf'
+    protected readonly _borderIfIf         = 'borderIfIf'
 
     /**
      * conditional unthemed border color.
      */
-    protected readonly _borderIf          = 'borderIf'
+    protected readonly _borderIf           = 'borderIf'
 
     /**
      * functional border color.
      */
-    public    readonly _borderFn          = 'borderFn'
+    public    readonly _borderFn           = 'borderFn'
     //#endregion border
+
+
+
+    //#region boxShadow-focus
+    /**
+     * Supports for Control
+     */
+
+
+
+    /**
+     * focused themed box-shadow color.
+     */
+    protected readonly _boxShadowFocusTh   = 'boxShadowFocusTh'
+
+    /**
+     * focused conditional box-shadow color.
+     */
+    protected readonly _boxShadowFocusIfIf = 'boxShadowFocusIfIf'
+
+    /**
+     * focused conditional unthemed box-shadow color.
+     */
+    protected readonly _boxShadowFocusIf   = 'boxShadowFocusIf'
+
+    /**
+     * focused functional box-shadow color.
+     */
+    public    readonly _boxShadowFocusFn   = 'boxShadowFocusFn'
+    //#endregion boxShadow-focus
 
 
 
@@ -716,27 +747,27 @@ export class ElementStylesBuilder extends StylesBuilder {
     /**
      * themed foreground color - at outlined state.
      */
-    protected readonly _outlinedForegTh   = 'outlinedForegTh'
+    protected readonly _outlinedForegTh    = 'outlinedForegTh'
 
     /**
      * conditional foreground color - at outlined state.
      */
-    protected readonly _outlinedForegIfIf = 'outlinedForegIfIf'
+    protected readonly _outlinedForegIfIf  = 'outlinedForegIfIf'
 
     /**
      * conditional unthemed foreground color - at outlined state.
      */
-    protected readonly _outlinedForegIf   = 'outlinedForegIf'
+    protected readonly _outlinedForegIf    = 'outlinedForegIf'
 
     /**
      * functional foreground color - at outlined state.
      */
-    public    readonly _outlinedForegFn   = 'outlinedForegFn'
+    public    readonly _outlinedForegFn    = 'outlinedForegFn'
 
     /**
      * toggles *on* foreground color - at outlined state.
      */
-    protected readonly _outlinedForegTg   = 'outlinedForegTg'
+    protected readonly _outlinedForegTg    = 'outlinedForegTg'
     //#endregion outlined - foreground
 
 
@@ -745,12 +776,12 @@ export class ElementStylesBuilder extends StylesBuilder {
     /**
      * functional backgrounds - at outlined state.
      */
-    public    readonly _outlinedBackgFn   = 'outlinedBackgFn'
+    public    readonly _outlinedBackgFn    = 'outlinedBackgFn'
 
     /**
      * toggles *on* backgrounds - at outlined state.
      */
-    protected readonly _outlinedBackgTg   = 'outlinedBackgTg'
+    protected readonly _outlinedBackgTg    = 'outlinedBackgTg'
     //#endregion outlined - background
 
 
@@ -758,7 +789,7 @@ export class ElementStylesBuilder extends StylesBuilder {
     /**
      * functional animations.
      */
-    public    readonly _animFn            = 'animFn'
+    public    readonly _animFn             = 'animFn'
     //#endregion scoped css props
 
 
@@ -795,10 +826,11 @@ export class ElementStylesBuilder extends StylesBuilder {
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props:
     
-        [this.decl(this._foregTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
-        [this.decl(this._backgTh)]         : this.solidBackg(themeColor),
-        [this.decl(this._borderTh)]        : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
-        [this.decl(this._outlinedForegTh)] : themeColor,
+        [this.decl(this._foregTh)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
+        [this.decl(this._backgTh)]          : this.solidBackg(themeColor),
+        [this.decl(this._borderTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
+        [this.decl(this._boxShadowFocusTh)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
+        [this.decl(this._outlinedForegTh)]  : themeColor,
     }}
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrites propName = propName{Size}:
@@ -818,10 +850,11 @@ export class ElementStylesBuilder extends StylesBuilder {
     // states:
     protected themesIf(): JssStyle { return {
         // define a *default* color theme:
-        [this.decl(this._foregIf)]         : cssProps.foreg,
-        [this.decl(this._backgIf)]         : this.ref(this._backgNone),
-        [this.decl(this._borderIf)]        : cssProps.borderColor,
-        [this.decl(this._outlinedForegIf)] : cssProps.foreg,
+        [this.decl(this._foregIf)]          : cssProps.foreg,
+        [this.decl(this._backgIf)]          : this.ref(this._backgNone),
+        [this.decl(this._borderIf)]         : cssProps.borderColor,
+        [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
+        [this.decl(this._outlinedForegIf)]  : cssProps.foreg,
     }}
     protected states(inherit = false): JssStyle { return {
         extend: [
@@ -892,6 +925,18 @@ export class ElementStylesBuilder extends StylesBuilder {
             this._borderTh,   // second priority
             this._borderIf,   // third  priority
         ),
+
+        // define a *focused box-shadow color* func:
+        [this.decl(this._boxShadowFocusFn)]: [[
+            cssProps.boxShadowFocus,      // box-shadow pos, width, spread, etc
+
+            // box-shadow color:
+            this.ref(
+                this._boxShadowFocusIfIf, // first  priority
+                this._boxShadowFocusTh,   // second priority
+                this._boxShadowFocusIf    // third  priority
+            )
+        ]],
     
     
     

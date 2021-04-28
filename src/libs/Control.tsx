@@ -10,12 +10,8 @@ import type {
 }                           from 'jss'          // ts defs support for jss
 import {
     PropEx,
-    Cust,
 }                           from './Css'        // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-import type {
-    DictionaryOf,
-}                           from './CssConfig'  // ts defs support for jss
 
 // nodestrap (modular web components):
 import * as stripOuts       from './strip-outs'
@@ -35,35 +31,6 @@ import type * as Indicators from './Indicator'
 
 export class ControlStylesBuilder extends IndicatorStylesBuilder {
     //#region scoped css props
-    //#region boxShadow-focus
-    /**
-     * focused themed box-shadow color.
-     */
-    protected readonly _boxShadowFocusTh    = 'boxShadowFocusTh'
-
-    /**
-     * focused conditional box-shadow color.
-     */
-    protected readonly _boxShadowFocusIfIf  = 'boxShadowFocusIfIf'
-
-    /**
-     * focused conditional unthemed box-shadow color.
-     */
-    protected readonly _boxShadowFocusIf    = 'boxShadowFocusIf'
-
-    /**
-     * focused functional box-shadow color.
-     */
-    public    readonly _boxShadowFocusFn    = 'boxShadowFocusFn'
-
-    /**
-     * active focused conditional unthemed box-shadow color.
-     */
-    protected readonly _boxShadowFocusIfAct = 'boxShadowFocusIfAct'
-    //#endregion boxShadow-focus
-
-
-    
     // anim props:
 
  // public    readonly _filterHoverLeave   = 'filterHoverLeave' // already defined in Indicator
@@ -128,32 +95,11 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
             )
         );
     }
-    protected applyStateActive(): JssStyle { return {
-        extend: [
-            super.applyStateActive(), // copy active theme from base
-        ] as JssStyle,
-        
-
-        
-        // apply an *active* color theme:
-        [this.decl(this._boxShadowFocusIf)] : this.ref(this._boxShadowFocusIfAct),
-    }}
     //#endregion mixins
 
 
 
     // themes:
-    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
-        extend: [
-            super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
-        ] as JssStyle,
-
-
-
-        // customize the *themed* props:
-    
-        [this.decl(this._boxShadowFocusTh)]: (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
-    }}
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
@@ -179,15 +125,15 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         [this.decl(this._foregIf)]             : colors.secondaryText,
         [this.decl(this._backgIf)]             : this.solidBackg(colors.secondary),
         [this.decl(this._borderIf)]            : colors.secondaryCont,
-        [this.decl(this._outlinedForegIf)]     : colors.secondary,
         [this.decl(this._boxShadowFocusIf)]    : colors.secondaryTransp,
+        [this.decl(this._outlinedForegIf)]     : colors.secondary,
 
         // define an *active* color theme:
         [this.decl(this._foregIfAct)]          : colors.primaryText,
         [this.decl(this._backgIfAct)]          : this.solidBackg(colors.primary),
         [this.decl(this._borderIfAct)]         : colors.primaryCont,
-        [this.decl(this._outlinedForegIfAct)]  : colors.primary,
         [this.decl(this._boxShadowFocusIfAct)] : colors.primaryTransp,
+        [this.decl(this._outlinedForegIfAct)]  : colors.primary,
     }}
     protected states(inherit = false): JssStyle { return {
         extend: [
@@ -258,18 +204,6 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         extend: [
             super.fnProps(), // copy functional props from base
         ] as JssStyle,
-
-
-
-        // define a *focused box-shadow color* func:
-        [this.decl(this._boxShadowFocusFn)]: [[
-            cssProps.boxShadowFocus,
-            this.ref(
-                this._boxShadowFocusIfIf, // first  priority
-                this._boxShadowFocusTh,   // second priority
-                this._boxShadowFocusIf    // third  priority
-            )
-        ]],
 
 
         
@@ -379,7 +313,6 @@ const cssConfig = new CssConfig(() => {
 
         // anim props:
 
-        boxShadowFocus     : [[0, 0, 0, '0.25rem']],
         filterHover        : [['brightness(85%)']],
 
         '@keyframes hover' : keyframesHover,
