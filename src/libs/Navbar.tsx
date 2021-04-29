@@ -476,6 +476,12 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     {
                         // TODO: fix the outlined behavior
                         
+                        /**
+                         * -- fix imperfection by design --
+                         * because outlined() depended on toggleOnOutlined() depended on fnProps()
+                         * and we re-define fnProps() on [menusElm|menuElm]
+                         * so we need to re-define outlined() on [menusElm|menuElm]
+                         */
                         '&.outlined': {
                             //#region forwards outlined to menu group & menu items
                             // children:

@@ -346,9 +346,17 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     }}
     protected styles(): Styles<'main'|'body'|'actionBar'> {
         const styles = super.styles();
-        Object.assign(styles.main, {
-            '&.scrollable' : this.scrollableStyle(),
-        });
+        styles.main = {
+            extend: [
+                styles.main,
+                {
+                    '&.scrollable' : this.scrollableStyle(),
+                },
+            ] as JssStyle,
+        };
+
+
+
         return {
             ...styles,
 

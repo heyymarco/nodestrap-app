@@ -144,10 +144,8 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
 
         
-        extend: [
-            // *toggle off* the outlined props:
-            this.toggleOffOutlined(),
-        ] as JssStyle,
+        // *toggle off* the outlined props:
+        '&:not(._)': this.toggleOffOutlined(),
     }}
     //#endregion mixins
 

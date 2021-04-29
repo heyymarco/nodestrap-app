@@ -111,7 +111,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
 
 
         // borders:
-        //#region stripping out borders
+        //#region strip out borders partially
         /*
             border & borderRadius are moved from here to parent,
             for making consistent border color when the element's color are filtered.
@@ -146,7 +146,13 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         //#region border radiuses
         borderRadius : 0,
         //#endregion border radiuses
-        //#endregion stripping out borders
+        //#endregion strip out borders partially
+
+
+
+        // strip out shadows:
+        // moved from here to parent,
+        boxShadow : undefined,
 
 
 
@@ -272,6 +278,11 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         overflow     : 'hidden',                 // clip the children at the rounded corners
         //#endregion border radiuses
         //#endregion make a nicely rounded corners
+
+
+
+        // shadows:
+        boxShadow    : ecssProps.boxShadow,      // moved in from children
 
 
 

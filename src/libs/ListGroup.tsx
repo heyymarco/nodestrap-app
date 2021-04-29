@@ -10,7 +10,6 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 
 // nodestrap (modular web components):
 import * as stripOuts       from './strip-outs'
-import * as border          from './borders'     // configurable borders & border radiuses defs
 import {
     GenericElement,
     cssProps as ecssProps,
@@ -63,7 +62,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
         // borders:
-        //#region stripping out borders
+        //#region strip out borders completely
         /*
             border & borderRadius are moved from here to parent,
             for making consistent border color when the element's color are filtered.
@@ -74,7 +73,13 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
         borderWidth  : 0,
         borderRadius : 0,
-        //#endregion stripping out borders
+        //#endregion strip out borders completely
+
+
+
+        // strip out shadows:
+        // moved from here to parent,
+        boxShadow : undefined,
 
 
 
@@ -101,6 +106,36 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
 
+        // borders:
+        //#region make a nicely rounded corners
+        /*
+            border & borderRadius are moved from children to here,
+            for making consistent border color when the children's color are filtered.
+            so we need to reconstruct the border & borderRadius here.
+        */
+
+
+
+        //#region border-strokes
+        border       : ecssProps.border,         // moved in from children
+        borderColor  : this.ref(this._borderFn), // moved in from children
+        //#endregion border-strokes
+
+
+
+        //#region border radiuses
+        borderRadius : ecssProps.borderRadius,   // moved in from children
+        overflow     : 'hidden',                 // clip the children at the rounded corners
+        //#endregion border radiuses
+        //#endregion make a nicely rounded corners
+
+
+
+        // shadows:
+        boxShadow      : ecssProps.boxShadow, // moved in from children
+
+
+
         //#region children
         [wrapperElm]: { // wrapper element
             // layout:
@@ -119,22 +154,21 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
             //#region border-strokes as a separator
-            border      : ecssProps.border,         // moved in from children
-            borderColor : this.ref(this._borderFn), // moved in from children
+            border       : ecssProps.border,         // moved in from children
+            borderColor  : this.ref(this._borderFn), // moved in from children
 
+            borderInlineWidth         : 0,  // remove  (left|right)-border for all-wrapper
+
+            // remove top-border at the first-child, so that it wouldn't collide with the listGroup's top-border
+            // and
             // remove double border by removing top-border starting from the second-child to the last-child
-            '&:not(:first-child)': {
-                borderBlockStartWidth : 0,
+            borderBlockStartWidth     : 0,
+
+            // remove bottom-border at the last-child, so that it wouldn't collide with the listGroup's bottom-border
+            '&:last-child': {
+                borderBlockEndWidth   : 0,
             },
             //#endregion border-strokes as a separator
-
-
-
-            //#region border radiuses
-            '&:first-child' : border.radius.top(ecssProps.borderRadius),    // moved in from children
-            '&:last-child'  : border.radius.bottom(ecssProps.borderRadius), // moved in from children
-            overflow        : 'hidden',                                     // clip the children at the rounded corners
-            //#endregion border radiuses
             //#endregion make a nicely rounded corners
     
     
@@ -150,22 +184,54 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
     }}
     protected styles(): Styles<'main'> {
         const styles = super.styles();
-        Object.assign(styles.main, {
-            [wrapperElm]: {
-                [listItemElm]: {
-                    extend: [
-                        // watch theme classes:
-                        this.watchThemes(), // always inherit
-
-                        // watch state classes/pseudo-classes:
-                        this.watchStates(/*inherit =*/true),
-
-                        // after watching => use func props:
-                        this.fnProps(),
-                    ] as JssStyle,
+        styles.main = {
+            extend: [
+                styles.main,
+                {
+                    //#region forwards outlined to list items
+                    /**
+                     * -- fix imperfection by design --
+                     * because outlined() depended on toggleOnOutlined() depended on fnProps()
+                     * and we re-define fnProps() on [wrapperElm]>[listItemElm]
+                     * so we need to re-define outlined() on [wrapperElm]>[listItemElm]
+                     */
+                    '&.outlined': {
+                        [wrapperElm]: {
+                            [listItemElm]: this.outlined(),
+                        },
+                    },
+                    ...this.stateActive({
+                        [wrapperElm]: {
+                            [listItemElm]: {
+                                '&:not(._)': this.toggleOffOutlined(),
+                            },
+                        },
+                    }),
+                    //#endregion forwards outlined to list items
+        
+        
+        
+                    // children:
+                    [wrapperElm]: {
+                        [listItemElm]: {
+                            extend: [
+                                // watch theme classes:
+                                this.watchThemes(), // always inherit
+        
+                                // watch state classes/pseudo-classes:
+                                this.watchStates(/*inherit =*/true),
+        
+                                // after watching => use func props:
+                                this.fnProps(),
+                            ] as JssStyle,
+                        },
+                    },
                 },
-            },
-        });
+            ] as JssStyle,
+        };
+        
+
+        
         return styles;
     }
 }

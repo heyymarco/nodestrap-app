@@ -41,10 +41,6 @@ export class FormStylesBuilder extends ElementStylesBuilder {
             super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
 
             contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor),
-            {
-                [contentStyles.decl(contentStyles._activeForegTh)] : undefined as unknown as null, // delete
-                [contentStyles.decl(contentStyles._activeBackgTh)] : undefined as unknown as null, // delete
-            },
         ] as JssStyle,
     }}
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
