@@ -138,9 +138,17 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
     }}
     protected styles(): Styles<'main'> {
         const styles = super.styles();
-        Object.assign(styles.main, {
-            '&.link' : this.linkStyle(),
-        });
+        styles.main = {
+            extend: [
+                styles.main,
+                {
+                    '&.link' : this.linkStyle(),
+                },
+            ] as JssStyle,
+        };
+
+
+
         return styles;
     }
 }

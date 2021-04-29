@@ -235,10 +235,18 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
     protected styles(): Styles<'main'> {
         const styles = super.styles();
-        Object.assign(styles.main, {
-            '&.font' : this.basicFontStyle(),
-            '&.img'  : this.basicImgStyle(),
-        });
+        styles.main = {
+            extend: [
+                styles.main,
+                {
+                    '&.font' : this.basicFontStyle(),
+                    '&.img'  : this.basicImgStyle(),
+                },
+            ] as JssStyle,
+        };
+
+
+
         return styles;
     }
 

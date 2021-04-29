@@ -583,10 +583,18 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     }}
     protected styles(): Styles<'main'> {
         const styles = super.styles();
-        Object.assign(styles.main, {
-            '&.btn'    : this.buttonStyle(),
-            '&.switch' : this.switchStyle(),
-        });
+        styles.main = {
+            extend: [
+                styles.main,
+                {
+                    '&.btn'    : this.buttonStyle(),
+                    '&.switch' : this.switchStyle(),
+                },
+            ] as JssStyle,
+        };
+
+
+
         return styles;
     }
 }
