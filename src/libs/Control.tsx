@@ -44,14 +44,16 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
     //#region mixins
     protected stateHover(content: JssStyle): JssStyle { return {
+        // hover: hover by mouse || hover by keyboard (focus)
         '&:hover,&.focus,&:focus': content,
     }}
     protected stateNotHover(content: JssStyle): JssStyle { return {
         '&:not(:hover):not(.focus):not(:focus)': content,
     }}
     protected stateLeaving(content: JssStyle): JssStyle {
-        // mouse leave but still focus => not leave
-        // blur but mouse  still hover => not leave
+        // leave: leave by mouse && leave by keyboard (blur)
+        // mouse-leave but still keybd-focus => not leave
+        // keybd-blur  but still mouse-hover => not leave
         return this.stateNotHover({
             '&.leave,&.blur': content,
         });
@@ -236,9 +238,9 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
     // styles:
     public basicStyle(): JssStyle { return {
         extend: [
-            stripOuts.control, // clear browser's default styles
+            stripOuts.control,  // clear browser's default styles
 
-            super.basicStyle(),                // copy basicStyle from base
+            super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
 
 
@@ -332,65 +334,6 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export function useStateLeave<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
-    const stateEnabled = (props.enabled!==false);
-
-    const [hovered, setHovered] = useState(false);
-    const [leaving, setLeaving] = useState(false);
-
-
-    const handleChangeInternal = (newHover: boolean) => {
-        if (hovered !== newHover) { // changes detected => apply the changes & start animating
-            setHovered(newHover);
-    
-            if (newHover) {
-                setLeaving(false); // stop  leaving anim
-            }
-            else {
-                setLeaving(true);  // start leaving anim
-            } // if
-        }
-    }
-
-
-    if (!stateEnabled && hovered) {
-        // loosing hover because of the control has been disabled
-        handleChangeInternal(/*newHover =*/false);
-    } // if
-    
-
-    const handleHover = () => {
-        // control disabled => no response
-        // onMouseEnter can be triggered by custom control, because it doesn't have "native :disabled" state
-        if (!stateEnabled) return;
-
-        handleChangeInternal(/*newHover =*/true);
-    }
-    const handleLeaving = () => {
-        // control disabled => no response
-        // onMouseLeave can be triggered by custom control, because it doesn't have "native :disabled" state
-        if (!stateEnabled) return;
-
-        handleChangeInternal(/*newHover =*/false);
-    }
-    const handleIdle = () => {
-        // clean up expired animations
-
-        if (leaving) setLeaving(false);
-    }
-    return {
-        class: leaving ? 'leave': null,
-        handleMouseEnter   : handleHover,
-        handleMouseLeave   : handleLeaving,
-        handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
-            if (e.target !== e.currentTarget) return; // no bubbling
-            if (/((?<![a-z])(leave)|(?<=[a-z])(Leave))(?![a-z])/.test(e.animationName)) {
-                handleIdle();
-            }
-        },
-    };
-}
-
 export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const stateEnabled = (props.enabled!==false);
 
@@ -451,7 +394,12 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
         /**
          * partially/fully focus
         */
-        focus  : focused,
+        focus    : focused,
+
+        /**
+         * blurring
+         */
+        blurring : blurring,
 
         class: blurring ? 'blur' : (focused ? ((props.focus !== undefined) ? 'focus' : null) : null),
         handleFocus        : handleFocus,
@@ -459,6 +407,78 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
             if (/((?<![a-z])(blur)|(?<=[a-z])(Blur))(?![a-z])/.test(e.animationName)) {
+                handleIdle();
+            }
+        },
+    };
+}
+
+export function useStateLeave<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>, stateFocusBlur: { focus: boolean, blurring: boolean }) {
+    const stateEnabled = (props.enabled!==false);
+
+    const [hovered, setHovered] = useState(false);
+    const [leaving, setLeaving] = useState(false);
+
+
+    const handleChangeInternal = (newHover: boolean) => {
+        if (hovered !== newHover) { // changes detected => apply the changes & start animating
+            setHovered(newHover);
+    
+            if (newHover) {
+                setLeaving(false); // stop  leaving anim
+            }
+            else {
+                setLeaving(true);  // start leaving anim
+            } // if
+        }
+    }
+
+
+    if (!stateEnabled && hovered) {
+        // loosing hover because of the control has been disabled
+        handleChangeInternal(/*newHover =*/false);
+    } // if
+    
+
+    const handleHover = () => {
+        // control disabled => no response
+        // onMouseEnter can be triggered by custom control, because it doesn't have "native :disabled" state
+        if (!stateEnabled) return;
+
+        handleChangeInternal(/*newHover =*/true);
+    }
+    const handleLeaving = () => {
+        // control disabled => no response
+        // onMouseLeave can be triggered by custom control, because it doesn't have "native :disabled" state
+        if (!stateEnabled) return;
+
+        handleChangeInternal(/*newHover =*/false);
+    }
+    const handleIdle = () => {
+        // clean up expired animations
+
+        if (leaving) setLeaving(false);
+    }
+    return {
+        /**
+         * partially/fully hover
+        */
+        hover   : hovered,
+
+        /**
+         * leaving
+         */
+        leaving : leaving,
+
+        /// leave: leave by mouse && leave by keyboard (blur)
+        // mouse-leave but still keybd-focus => not leave
+        // keybd-blur  but still mouse-hover => not leave
+        class: ((leaving && !stateFocusBlur.focus) || (stateFocusBlur.blurring && !hovered)) ? 'leave': null,
+        handleMouseEnter   : handleHover,
+        handleMouseLeave   : handleLeaving,
+        handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
+            if (e.target !== e.currentTarget) return; // no bubbling
+            if (/((?<![a-z])(leave)|(?<=[a-z])(Leave))(?![a-z])/.test(e.animationName)) {
                 handleIdle();
             }
         },
@@ -481,8 +501,8 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
     const ctrlStyles     = styles.useStyles();
 
     // states:
-    const stateLeave     = useStateLeave(props);
     const stateFocusBlur = useStateFocusBlur(props);
+    const stateLeave     = useStateLeave(props, stateFocusBlur);
 
     
 
@@ -507,10 +527,10 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
 
 
                 // states:
-                stateLeave.class,
-
                 // if [tabIndex] is negative => treats Control as *wrapper* element, so there's no *:focus* => replace with synthetic *.focus*
                 (stateFocusBlur.class ?? ((stateFocusBlur.focus && ((props.tabIndex ?? 0) < 0)) ? 'focus' : null)),
+
+                stateLeave.class,
             ]}
 
 
@@ -522,14 +542,14 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
         
 
             // events:
-            onMouseEnter=   {(e) => { stateLeave.handleMouseEnter(); props.onMouseEnter?.(e); }}
-            onMouseLeave=   {(e) => { stateLeave.handleMouseLeave(); props.onMouseLeave?.(e); }}
             onFocus=        {(e) => { stateFocusBlur.handleFocus();  props.onFocus?.(e);      }}
             onBlur=         {(e) => { stateFocusBlur.handleBlur();   props.onBlur?.(e);       }}
+            onMouseEnter=   {(e) => { stateLeave.handleMouseEnter(); props.onMouseEnter?.(e); }}
+            onMouseLeave=   {(e) => { stateLeave.handleMouseLeave(); props.onMouseLeave?.(e); }}
             onAnimationEnd= {(e) => {
                 // states:
-                stateLeave.handleAnimationEnd(e);
                 stateFocusBlur.handleAnimationEnd(e);
+                stateLeave.handleAnimationEnd(e);
 
 
                 // forwards:

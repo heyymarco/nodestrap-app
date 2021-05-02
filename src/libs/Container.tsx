@@ -132,7 +132,7 @@ export class ContainerStylesBuilder extends ElementStylesBuilder {
      * Applies responsive container functionality - without any other styling.
      * @returns A `JssStyle` represents a responsive container style definition.
      */
-    public basicContainerStyle(): JssStyle { return {
+    public containerBasicStyle(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
@@ -140,7 +140,7 @@ export class ContainerStylesBuilder extends ElementStylesBuilder {
      * Applies responsive container functionality using css grid - without any other styling.
      * @returns A `JssStyle` represents a responsive container style definition using css grid.
      */
-    public basicContainerGridStyle(): JssStyle { return {
+    public containerGridBasicStyle(): JssStyle { return {
         // layout:
         display             : 'grid',
         gridTemplateColumns : [[cssProps.paddingInline, 'auto', cssProps.paddingInline]],
@@ -163,7 +163,7 @@ export class ContainerStylesBuilder extends ElementStylesBuilder {
         extend: [
             super.basicStyle(),         // copy basicStyle from base
 
-            this.basicContainerStyle(), // applies responsive container functionality
+            this.containerBasicStyle(), // applies responsive container functionality
         ] as JssStyle,
     }}
 }

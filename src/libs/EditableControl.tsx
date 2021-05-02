@@ -577,7 +577,7 @@ export function useStateValidInvalid(props: Val.Validation, validator?: Validato
         (valContext.enableValidation === false) ||
         (valContext.isValid === null) ||
         (props.enableValidation === false) ||
-        (props.isValid !== null) ||
+        (props.isValid === null) ||
         (!validator);
     return {
         /**

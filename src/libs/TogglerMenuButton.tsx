@@ -154,7 +154,7 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
             blockSize  : [['calc(1em *',
                 `var(${ecssDecls.lineHeight},${typos.lineHeight})`,
             ')']],
-            inlineSize : 'auto',    // calculates the width by [height * aspect-ratio]
+            inlineSize : 'auto', // calculates the width by [height * aspect-ratio]
 
 
 

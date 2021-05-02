@@ -46,7 +46,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
 
 
     // styles:
-    protected basicImageStyle(): JssStyle { return {
+    protected imageBasicStyle(): JssStyle { return {
         // layout:
         display: 'block', // fill the entire parent's width
 
@@ -98,7 +98,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         },
         //#endregion border-strokes as a separator
     }}
-    protected basicCardItemsStyle(): JssStyle { return {
+    protected cardItemsBasicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
@@ -200,7 +200,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
                 },
             }
         },
-        '&>figure, &>img': this.basicImageStyle(), // figure & img are special content
+        '&>figure, &>img': this.imageBasicStyle(), // figure & img are special content
         '&>figure>img, &>img': {
             // customize:
             ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'img')), // apply *general* cssProps starting with img***
@@ -213,7 +213,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'items')), // apply *general* cssProps starting with items***
     }}
-    protected basicCardCaptionStyle(): JssStyle { return {
+    protected cardCaptionBasicStyle(): JssStyle { return {
         // sizes:
         // default card items' height are unresizeable (excepts for card's body):
         flex: [[0, 0, 'auto']], // not shrinking, not growing
@@ -223,15 +223,15 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'caption')), // apply *general* cssProps starting with caption***
     }}
-    protected basicCardHeaderStyle(): JssStyle { return {
+    protected cardHeaderBasicStyle(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'header')), // apply *general* cssProps starting with header***
     }}
-    protected basicCardFooterStyle(): JssStyle { return {
+    protected cardFooterBasicStyle(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'footer')), // apply *general* cssProps starting with footer***
     }}
-    protected basicCardBodyStyle(): JssStyle { return {
+    protected cardBodyBasicStyle(): JssStyle { return {
         // sizes:
         // Enable `flex-grow: 1` for decks and groups so that card blocks take up
         // as much space as possible, ensuring footers are aligned to the bottom.
@@ -286,13 +286,12 @@ export class CardStylesBuilder extends ContentStylesBuilder {
 
 
 
-        //#region children
-        '&>header, &>.body, &>footer' : this.basicCardItemsStyle(),
-        '&>header, &>footer'          : this.basicCardCaptionStyle(),
-        '&>header'                    : this.basicCardHeaderStyle(),
-        '&>footer'                    : this.basicCardFooterStyle(),
-        '&>.body'                     : this.basicCardBodyStyle(),
-        //#endregion children
+        // children:
+        '&>header, &>.body, &>footer' : this.cardItemsBasicStyle(),
+        '&>header, &>footer'          : this.cardCaptionBasicStyle(),
+        '&>header'                    : this.cardHeaderBasicStyle(),
+        '&>footer'                    : this.cardFooterBasicStyle(),
+        '&>.body'                     : this.cardBodyBasicStyle(),
 
 
 
@@ -356,6 +355,11 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
         header,
         footer,
         ...otherProps } = props;
+    
+    const handleAnimationEnd = (e: React.AnimationEvent<HTMLElement>) => {
+        // triggers Card's onAnimationEnd event
+        e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }))
+    };
 
     return (
         <Content<TElement>
@@ -370,10 +374,16 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
             // main:
             mainClass={props.mainClass ?? crdStyles.main}
         >
-            {header && <header>
+            {header && <header
+                // triggers Card's onAnimationEnd event
+                onAnimationEnd={handleAnimationEnd}
+            >
                 { header }
             </header>}
-            {children && <div className='body'>
+            {children && <div className='body'
+                // triggers Card's onAnimationEnd event
+                onAnimationEnd={handleAnimationEnd}
+            >
                 {
                     (Array.isArray(children) ? children : [children]).map((child, index) =>
                         (React.isValidElement(child) && child.type === 'a') ?
@@ -395,7 +405,10 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
                     )
                 }
             </div>}
-            {footer && <footer>
+            {footer && <footer
+                // triggers Card's onAnimationEnd event
+                onAnimationEnd={handleAnimationEnd}
+            >
                 { footer }
             </footer>}
         </Content>

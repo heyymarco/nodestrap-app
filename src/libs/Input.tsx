@@ -50,19 +50,24 @@ export class InputStylesBuilder extends EditableTextControlStylesBuilder {
         extend: [
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
-    
-        [ecssDecls.backgGrad]: cssProps.backgGrad, // overwrite base's backGrad
         
 
 
         // layout:
-        display        : 'flex',
+        display        : 'flex',   // use flexbox as the layout
+        flexDirection  : 'row',    // child items stacked horizontally
         justifyContent : 'center', // center items horizontally
         alignItems     : 'center', // center items vertically
     
 
+
         // positions:
-        verticalAlign : 'baseline', // input's text should be aligned with sibling text, so the input behave like <span> wrapper
+        verticalAlign  : 'baseline', // input's text should be aligned with sibling text, so the input behave like <span> wrapper
+    
+
+
+        // backgrounds:
+        [ecssDecls.backgGrad]: cssProps.backgGrad, // overwrite base's backGrad
 
 
 
@@ -75,9 +80,10 @@ export class InputStylesBuilder extends EditableTextControlStylesBuilder {
 
 
             // layout:
-            display       : 'block', // fill the entire parent's width
+            display        : 'block', // fill the entire parent's width
     
     
+
             // sizes:
             // strip out input's prop [size]:
             // span to maximum width including parent's paddings:
@@ -88,6 +94,7 @@ export class InputStylesBuilder extends EditableTextControlStylesBuilder {
             },
 
 
+            
             // spacings:
             // cancel-out parent's padding with negative margin:
             marginInline  : [['calc(0px -', ecssProps.paddingInline, ')']],
@@ -234,7 +241,6 @@ export default function Input(props: Props) {
 
                 // events:
                 // onFocus, onBlur // bubble to parent (unlike on native DOM that doesn't bubble, on react *do* bubbling)
-                // onAnimationEnd  // bubble to parent, let's the parent handle the onAnimationEnd
             />
         </EditableTextControl>
     );

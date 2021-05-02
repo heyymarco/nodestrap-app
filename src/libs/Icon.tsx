@@ -103,13 +103,18 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         '&::before': {
             // layout:
             content    : '"\xa0"', // &nbsp;
-            display    : 'inline',
+            display    : 'inline-block', // use inline-block, so we can kill the width
             
 
+
             // appearances:
-            inlineSize : 0,
-            overflow   : 'hidden',
-            visibility : 'hidden',
+            overflow   : 'hidden', // crop the text (&nbsp;)
+            visibility : 'hidden', // hide the element, but still consume the dimension
+
+            
+            
+            // sizes:
+            inlineSize : 0,        // kill the width, we just need the height
         },
 
 
@@ -119,7 +124,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
         foreg         : null, // delete from cssProps; in img-icon: foreg => backgColor ; in font-icon: foreg => foreg => color (font-color)
     }}
-    public basicFontStyle(): JssStyle { return {
+    public fontBasicStyle(): JssStyle { return {
         '&::after': {
             // layout:
             content    : this.ref(this._img),
@@ -178,7 +183,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
             //#endregion fonts
         },
     }}
-    public basicImgStyle(): JssStyle { return {
+    public imgBasicStyle(): JssStyle { return {
         // colors:
         backg         : this.ref(this._foregFn), // setup icon's color
         
@@ -191,8 +196,14 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         //#region children
         // just a *dummy* element for calculating the image's width
         '&>img': {
+            // layout:
+            display    : 'inline-block', // use inline-block
+
+
+
             // appearances:
-            visibility : [['hidden'], '!important'], // invisible but still filling the space
+            visibility : 'hidden', // hide the element, but still consume the dimension
+
 
 
             // sizes:
@@ -200,8 +211,10 @@ export class IconStylesBuilder extends ElementStylesBuilder {
             inlineSize : 'auto',        // calculates the width by [height * aspect-ratio]
 
 
+
             // transition:
             transition : 'inherit',
+
 
 
             // accessibility:
@@ -221,7 +234,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
     public imgStyle(img: Cust.Ref, foreg?: Cust.Ref): JssStyle { return {
         extend: [
             this.basicStyle(),
-            this.basicImgStyle(),
+            this.imgBasicStyle(),
         ] as JssStyle,
 
 
@@ -239,8 +252,8 @@ export class IconStylesBuilder extends ElementStylesBuilder {
             extend: [
                 styles.main,
                 {
-                    '&.font' : this.basicFontStyle(),
-                    '&.img'  : this.basicImgStyle(),
+                    '&.font' : this.fontBasicStyle(),
+                    '&.img'  : this.imgBasicStyle(),
                 },
             ] as JssStyle,
         };

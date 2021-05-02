@@ -60,6 +60,9 @@ function App() {
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
 
+	const [childEnabled,    setChildEnabled   ] = useState(false);
+	const [childActive,      setChildActive   ] = useState(true);
+
 	
 
     return (
@@ -109,9 +112,21 @@ function App() {
 					<>hello</>
 					<>holla</>
 					<>hey</>
-					<ListGroupItem enabled={false}>i'm disabled</ListGroupItem>
+					<ListGroupItem enabled={childEnabled}>
+						i'm {childEnabled ? 'enabled' : 'disabled'}
+						<input type='checkbox'
+							checked={childEnabled}
+							onChange={(e) => setChildEnabled(e.target.checked)}
+						/>
+					</ListGroupItem>
 					'hoho'
-					<ListGroupItem active={true}>i'm active</ListGroupItem>
+					<ListGroupItem active={childActive}>
+						i'm {childActive ? 'active' : 'passive'}
+						<input type='checkbox'
+							checked={childActive}
+							onChange={(e) => setChildActive(e.target.checked)}
+						/>
+					</ListGroupItem>
 					<>hehe</>
 					<ListGroupItem theme='danger'>i'm angry</ListGroupItem>
 					<ListGroupItem theme='success'>i'm fine</ListGroupItem>

@@ -51,23 +51,27 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
 
 
         // layout:
-        display        : 'inline-flex',
-        flexDirection  : cssProps.orientation,
-        justifyContent : 'center', // center items horizontally
-        alignItems     : 'center', // center items vertically
+        display        : 'inline-flex',        // use flexbox as the layout
+        flexDirection  : cssProps.orientation, // customizable orientation
+        justifyContent : 'center',             // center items horizontally
+        alignItems     : 'center',             // center items vertically
 
         
+
         // positions:
         verticalAlign  : 'baseline', // button's text should be aligned with sibling text, so the button behave like <span> wrapper
 
 
+
         // sizes:
-        /* -- auto size depends on the text/content's size -- */
+        /* -- auto size depends on the text's/content's size -- */
         boxSizing      : 'content-box', // the final size is excluding borders & paddings
+
 
 
         // typos:
         textAlign      : 'center',
+
 
 
         // accessibility:
@@ -85,7 +89,9 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
 
 
 
+        //#region fully link style without outlined
         '&:not(.outlined)' : {
+            //#region disable dynamic outlined
             extend: [
                 this.stateActive( // [activating, actived]
                     // always *toggle on* the outlined props:
@@ -102,13 +108,19 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
                     ),
                 ] as JssStyle}),
             ] as JssStyle,
+            //#endregion disable dynamic outlined
 
 
-            borderColor    : 'transparent', // hides the border if not outlined
+
+            // borders:
+            borderWidth  : 0, // hides the border if not outlined
 
 
+
+            // backgrounds:
             [this.decl(this._backgGradTg)] : 'initial', // gradient is not supported if not outlined
         },
+        //#endregion fully link style without outlined
 
 
 
@@ -118,9 +130,15 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         lineHeight     : 1,
 
 
-        // borders:
+
+        // spacings:
         padding        : spacers.xs,
+
+
+
+        // borders:
         borderRadius   : border.radiuses.sm,
+
 
 
         // re-define a *default* color theme:

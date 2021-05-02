@@ -70,8 +70,10 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
     public contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props:
     
+        //#region overwrite base's themes with *softer* colors
         [this.decl(this._passiveForegTh)]  :                 (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],  // light on dark backg | dark on light backg with slightly color from background
         [this.decl(this._passiveBackgTh)]  : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]), // thin opacity with slightly color from background
+        //#endregion overwrite base's themes with *softer* colors
     }}
     public contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrites propName = propName{Size}:
@@ -179,13 +181,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
 
 
     // styles:
-    public basicStyle(): JssStyle { return {
-        extend: [
-            super.basicStyle(),
-        ] as JssStyle,
-
-
-
+    public contentBasicStyle(): JssStyle { return {
         // apply fn props:
         foreg : this.ref(this._passiveForegFn),
         backg : this.ref(this._passiveBackgFn),
@@ -194,6 +190,13 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder {
 
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    public basicStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(), // copy basicStyle from base
+
+            this.contentBasicStyle(),
+        ] as JssStyle,
     }}
 }
 export const styles = new ContentStylesBuilder();

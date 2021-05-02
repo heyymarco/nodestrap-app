@@ -11,15 +11,10 @@ import type {
 }                           from 'jss'          // ts defs support for jss
 import {
     PropEx,
-    Cust,
 }                           from './Css'        // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-import type {
-    DictionaryOf,
-}                           from './CssConfig'  // ts defs support for jss
 
 // nodestrap (modular web components):
-import colors               from './colors'     // configurable colors & theming defs
 import {
     cssProps as ecssProps,
 }                           from './Element'
@@ -52,46 +47,6 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
      * functional animations for the icon.
      */
     public    readonly _iconAnimFn          = 'iconAnimFn'
-
-
-    
-    //#region foreground - label
-    /**
-     * themed foreground color for the label.
-     */
-    protected readonly _labelForegTh        = 'labelForegTh'
-
-    /**
-     * conditional foreground color for the label.
-     */
-    protected readonly _labelForegIfIf      = 'labelForegIfIf'
-
-    /**
-     * conditional unthemed foreground color for the label.
-     */
-    protected readonly _labelForegIf        = 'labelForegIf'
-
-    /**
-     * functional foreground color for the label.
-     */
-    public    readonly _labelForegFn        = 'labelForegFn'
-
-    
-    /**
-     * active unthemed foreground color for the label.
-     */
-    protected readonly _labelForegIfAct     = 'labelForegIfAct'
-
-    /**
-     * valid-state foreground color for the label.
-     */
-    protected readonly _labelForegIfVal     = 'labelForegIfVal'
-
-    /**
-     * invalid-state foreground color for the label.
-     */
-    protected readonly _labelForegIfInv     = 'labelForegIfInv'
-    //#endregion foreground - label
 
 
 
@@ -138,38 +93,6 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             super.applyStateNoAnimStartup()
         );
     }
-    protected applyStateActive(): JssStyle { return {
-        extend: [
-            super.applyStateActive(), // copy active theme from base
-        ] as JssStyle,
-        
-
-        
-        // apply an *active* color theme for the label:
-        [this.decl(this._labelForegIf)]   : this.ref(this._labelForegIfAct),
-    }}
-    protected applyStateValid(): JssStyle { return {
-        // apply a *valid* color theme:
-        extend: [
-            super.applyStateValid(), // copy valid theme from base
-        ] as JssStyle,
-
-
-
-        // apply a *valid* color theme for the label:
-        [this.decl(this._labelForegIfIf)] : this.ref(this._labelForegIfVal),
-    }}
-    protected applyStateInvalid(): JssStyle { return {
-        // apply an *invalid* color theme:
-        extend: [
-            super.applyStateInvalid(), // copy invalid theme from base
-        ] as JssStyle,
-
-
-
-        // apply an *invalid* color theme for the label:
-        [this.decl(this._labelForegIfIf)] : this.ref(this._labelForegIfInv),
-    }}
     protected applyStateCheck(): JssStyle { return {
         extend: [
             // *toggle off* the outlined props:
@@ -190,20 +113,6 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
-    }}
-
-    protected checkThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {}; }
-    protected labelThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
-        // customize the *themed* props for the label:
-        [this.decl(this._labelForegTh)]: (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
-    }}
-    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
-        extend: [
-            super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
-
-            this.checkThemeOf(theme, Theme, themeProp, themeColor),
-            this.labelThemeOf(theme, Theme, themeProp, themeColor),
-        ] as JssStyle,
     }}
 
 
@@ -244,21 +153,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         ] as JssStyle,
     }}
 
-    protected labelThemesIf(): JssStyle { return {
-        // define a *default* color theme for the label:
-        [this.decl(this._labelForegIf)]    : colors.secondaryCont,
-
-        // define an *active* color theme for the label:
-        [this.decl(this._labelForegIfAct)] : colors.primaryCont,
-
-
-
-        // define a *valid* color theme for the label:
-        [this.decl(this._labelForegIfVal)] : colors.successCont,
-
-        // define an *invalid* color theme for the label:
-        [this.decl(this._labelForegIfInv)] : colors.dangerCont,
-    }}
+    protected labelThemesIf(): JssStyle { return {}; }
     protected labelStates(inherit = false): JssStyle { return {
         extend: [
             //#region specific states
@@ -322,51 +217,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             this.ref(this._animCheckClear),
         ],
     }}
-    protected labelFnProps(): JssStyle { return {
-        // define a *foreground* color func for the label:
-        [this.decl(this._labelForegFn)] : this.ref(
-            this._labelForegIfIf, // first  priority
-            this._labelForegTh,   // second priority
-            this._labelForegIf    // third  priority
-        ),
-
-
-
-        //#region re-arrange the animFn at different states
-        extend: [
-            this.stateCheck(
-                this.stateNotDisabled({ // if ctrl was not fully disabled
-                    ...this.stateValid({
-                        [labelElm]: {
-                            // define an *animations* func:
-                            [this.decl(this._animFn)]: [
-                                ecssProps.anim,
-                                this.ref(this._animInvUninv),
-                                this.ref(this._animValUnval),
-                                this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
-                                this.ref(this._animHoverLeave),    // 2nd : cursor leaved
-                                this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
-                                this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
-                            ],
-                        },
-                    }),
-                    [labelElm]: {
-                        // define an *animations* func:
-                        [this.decl(this._animFn)]: [
-                            ecssProps.anim,
-                            this.ref(this._animValUnval),
-                            this.ref(this._animInvUninv),
-                            this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
-                            this.ref(this._animHoverLeave),    // 2nd : cursor leaved
-                            this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
-                            this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
-                        ],
-                    },
-                })
-            ),
-        ] as JssStyle,
-        //#endregion re-arrange the animFn at different states
-    }}
+    protected labelFnProps(): JssStyle { return {}; }
     protected fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
@@ -379,29 +230,9 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
     // styles:
-    protected inheritStyle(): JssStyle { return {
-        // typos:
-        fontSize           : null,      // default inherit
-        fontFamily         : null,      // default inherit
-        fontWeight         : null,      // default inherit
-        fontStyle          : null,      // default inherit
-        textDecoration     : 'inherit', // force   inherit
-        lineHeight         : null,      // default inherit
-
-        // appearances:
-        foreg              : null,      // default inherit
-        color              : null,      // default inherit
-        opacity            : null,      // pseudo  inherit
-        transition         : 'inherit', // force   inherit
-        filter             : null,      // pseudo  inherit
-
-        // accessibility:
-        cursor             : 'inherit', // force   inherit
-    }}
-    protected basicCheckStyle(): JssStyle { return {
+    protected checkBasicStyle(): JssStyle { return {
         extend: [
-            super.basicStyle(),  // copy basicStyle from base
-            this.inheritStyle(), // force some props inherited from parent
+            super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
     
 
@@ -410,31 +241,38 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         display       : 'inline-block',
 
 
+
         // positions:
-        verticalAlign : 'baseline',
+        verticalAlign : 'baseline', // check's icon should be aligned with sibling text, so the check behave like <span> wrapper
     
 
+
         // sizes:
-        boxSizing  : 'border-box', // the final size is including borders & paddings
+        boxSizing     : 'border-box', // the final size is including borders & paddings
         /* the size is exactly the same as current font size */
-        inlineSize : '1em',
-        blockSize  : '1em',
-        paddingInline: 0, paddingBlock: 0, // no padding
-    
+        inlineSize    : '1em',
+        blockSize     : '1em',
+
+
+
+        // spacings:
+        paddingInline : undefined as unknown as null,
+        paddingBlock  : undefined as unknown as null,
 
         // spacing between check & label:
         '&:not(:last-child)': {
-            marginInlineEnd: cssProps.spacing,
+            marginInlineEnd : cssProps.spacing,
         },
     
     
     
-        overflow: 'hidden', // clip the icon at borderRadius
+        overflow      : 'hidden', // clip the icon at borderRadius
     
+        // children:
         [iconElm]: {
             extend: [
                 iconStyles.imgStyle( // apply icon
-                    /*img   :*/ cssProps.img
+                    /*img :*/ cssProps.img
                 ),
             ] as JssStyle,
 
@@ -445,6 +283,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             display   : 'block', // fill the entire parent's width
 
 
+
             // sizes:
             // fill the entire parent:
             boxSizing : 'border-box', // the final size is including borders & paddings
@@ -453,7 +292,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             
             
             // apply fn props:
-            anim : this.ref(this._iconAnimFn),
+            anim      : this.ref(this._iconAnimFn),
         },
 
 
@@ -461,69 +300,120 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected basicLabelStyle(): JssStyle { return {
-        // apply fn props:
-        foreg : this.ref(this._labelForegFn),
-    }}
-    public basicStyle(): JssStyle { return {
+    protected labelBasicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
     
-        
 
-        // force backgroundless:
-        backg         : [['none'], '!important'],
-        boxShadow     : [['none'], '!important'],
-        paddingInline : undefined as unknown as null, // delete
-        paddingBlock  : undefined as unknown as null, // delete
-        border        : undefined as unknown as null, // delete
-        borderRadius  : undefined as unknown as null, // delete
-        
-    
-        
+
         // layout:
-        display       : 'inline-flex',
-        alignItems    : 'center', // center items vertically
-        flexWrap      : 'wrap',
+        display       : 'inline',
 
 
 
         // positions:
         verticalAlign : 'baseline', // check's text should be aligned with sibling text, so the check behave like <span> wrapper
+
+
+
+        // spacings:
+        paddingInline : undefined as unknown as null,
+        paddingBlock  : undefined as unknown as null,
+
+
+
+        // borders:
+        border        : undefined as unknown as null,
+        borderRadius  : undefined as unknown as null,
+        
+    
+        
+        // apply fn props:
+        foreg         : this.ref(this._borderFn),
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'label')), // apply *general* cssProps starting with label***
+    }}
+    public basicStyle(): JssStyle { return {
+        // layout:
+        display        : 'inline-flex', // use flexbox as the layout
+        flexDirection  : 'row',         // child items stacked horizontally
+        justifyContent : 'start',       // child items placed starting from the left
+        alignItems     : 'center',      // child items placed at the middle vertically
+        flexWrap       : 'wrap',
+
+
+
+        // positions:
+        verticalAlign  : 'baseline', // check's text should be aligned with sibling text, so the check behave like <span> wrapper
     
     
     
         // the dummy text content, for making parent's height as tall as line-height
+        // the flex's first-child is used for calibrating the flex's vertical position
         '&::before': {
             // layout:
             content    : '"\xa0"', // &nbsp;
-            display    : 'inline',
+            display    : 'inline-block', // use inline-block, so we can kill the width
             
 
+
             // appearances:
-            inlineSize : 0,
-            overflow   : 'hidden',
-            visibility : 'hidden',
+            overflow   : 'hidden', // crop the text (&nbsp;)
+            visibility : 'hidden', // hide the element, but still consume the dimension
+            
+            
+            
+            // sizes:
+            inlineSize : 0,        // kill the width, we just need the height
         },
     
     
     
         // children:
-        [chkElm]   : this.basicCheckStyle(),
-        [labelElm] : this.basicLabelStyle(),
+        [chkElm]       : this.checkBasicStyle(),
+        [labelElm]     : this.labelBasicStyle(),
+        '&:not(.btn)'  : {
+            [labelElm] : {
+                // backgroundless on check/switch mode, but not in btn mode:
+                backg     : [['none'], '!important'], // no valid/invalid animation
+                boxShadow : [['none'], '!important'], // no focus animation
+            },
+        },
     }}
     public buttonStyle(): JssStyle { return {
         // children:
 
         [chkElm]   : {
-            // hides the checkbox while still preserving animation & focus working
-            opacity: 0,
-            boxSizing  : 'border-box', // the final size is including borders & paddings
-            inlineSize: 0, blockSize: 0,
-            border: 0, padding: 0,
+            //#region hides the checkbox while still preserving animation & focus working
+            // appearances:
+            opacity    : 0,
 
-            // spacing between check & label:
+
+
+            // sizes:
+            boxSizing  : 'border-box', // the final size is including borders & paddings
+            inlineSize : 0,
+            blockSize  : 0,
+
+
+
+            // spacings:
+            padding    : 0,
+
+
+
+            // borders:
+            border     : 0,
+            //#endregion hides the checkbox while still preserving animation & focus working
+
+
+
+            // spacings:
+            // kill spacing between check & label:
             '&:not(:last-child)': {
                 marginInlineEnd: 0,
             },
@@ -565,7 +455,12 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
         // children:
         [chkElm]: {
+            // sizes:
             inlineSize   : '2em',   // makes the width twice the height
+
+
+
+            // borders:
             borderRadius : '0.5em', // makes circle corners
 
 
@@ -770,12 +665,6 @@ export function useStateCheckClear(props: Props) {
                 handleIdle();
             }
         },
-        handleAnimationEndPress : (e: React.AnimationEvent<HTMLElement>) => {
-            if (e.target !== e.currentTarget) return; // no bubbling
-            if (/((?<![a-z])(active|passive)|(?<=[a-z])(Active|Passive))(?![a-z])/.test(e.animationName)) {
-                handleIdle();
-            }
-        },
     };
 }
 
@@ -917,19 +806,17 @@ export default function Check(props: Props) {
 
                 // events:
                 // onFocus, onBlur // bubble to parent (unlike on native DOM that doesn't bubble, on react *do* bubbling)
-                // onAnimationEnd  // bubble to parent, let's the parent handle the onAnimationEnd
+                onAnimationEnd={(e) => {
+                    // states:
+                    stateChkClr.handleAnimationEnd(e);
 
 
-                // events:
-                // states:
-                onAnimationEnd={stateChkClr.handleAnimationEnd}
+                    // triggers ListGroup's onAnimationEnd event
+                    e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
+                }}
             />
             { (props.text || props.children) &&
-                <span
-                    // events:
-                    // states:
-                    onAnimationEnd={stateChkClr.handleAnimationEndPress}
-                >
+                <span>
                     { props.text }
                     { props.children }
                 </span>

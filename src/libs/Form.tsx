@@ -36,18 +36,25 @@ import type * as Val       from './validations'
 
 export class FormStylesBuilder extends ElementStylesBuilder {
     // themes:
+    public contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
+        return editableTextControlStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from EditableTextControl
+    }
+    public contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle {
+        return contentStyles.contentSizeOf(size, Size, sizeProp); // copy sizes from Content
+    }
+
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
             super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
 
-            contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor),
+            this.contentThemeOf(theme, Theme, themeProp, themeColor),
         ] as JssStyle,
     }}
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
 
-            contentStyles.contentSizeOf(size, Size, sizeProp),
+            this.contentSizeOf(size, Size, sizeProp),
         ] as JssStyle,
 
 
@@ -59,41 +66,69 @@ export class FormStylesBuilder extends ElementStylesBuilder {
 
 
     // states:
+    public validationThemesIf(): JssStyle {
+        return editableTextControlStyles.validationThemesIf(); // copy themes from EditableTextControl
+    }
+    public validationStates(inherit = false): JssStyle {
+        return editableTextControlStyles.validationStates(inherit); // copy states from EditableTextControl
+    }
+
+    public contentThemesIf(): JssStyle {
+        return editableTextControlStyles.contentThemesIf(); // copy themes from EditableTextControl
+    }
+    public contentStates(inherit = false): JssStyle {
+        return editableTextControlStyles.contentStates(inherit); // copy states from EditableTextControl
+    }
+
     protected themesIf(): JssStyle { return {
         extend: [
-            super.themesIf(),                               // copy themes from base
+            super.themesIf(), // copy themes from base
 
-            editableTextControlStyles.validationThemesIf(), // copy themes from validation
-            editableTextControlStyles.contentThemesIf(),
+            this.validationThemesIf(),
+            this.contentThemesIf(),
         ] as JssStyle,
     }}
     protected states(inherit = false): JssStyle { return {
         extend: [
-            super.states(inherit),                               // copy states from base
+            super.states(inherit), // copy states from base
 
-            editableTextControlStyles.validationStates(inherit), // copy states from validation
-            editableTextControlStyles.contentStates(inherit),
+            this.validationStates(inherit),
+            this.contentStates(inherit),
         ] as JssStyle,
     }}
 
 
 
     // fn props:
+    public validationFnProps(): JssStyle {
+        return editableTextControlStyles.validationFnProps(); // copy functional props from EditableTextControl
+    }
+
+    public contentFnProps(): JssStyle {
+        return editableTextControlStyles.contentFnProps(); // copy functional props from EditableTextControl
+    }
+
     protected fnProps(): JssStyle { return {
         extend: [
-            super.fnProps(),                               // copy functional props from base
+            super.fnProps(), // copy functional props from base
 
-            editableTextControlStyles.validationFnProps(), // copy functional props from validation
-            editableTextControlStyles.contentFnProps(),
+            this.validationFnProps(),
+            this.contentFnProps(),
         ] as JssStyle,
     }}
 
 
 
     // styles:
+    public contentBasicStyle(): JssStyle {
+        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
+    }
+
     public basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
+
+            this.contentBasicStyle(),
         ] as JssStyle,
 
 
@@ -255,7 +290,7 @@ export default function Form(props: Props) {
                     } // if
                 } // if
             }}
-            onChange={(e: React.ChangeEvent<HTMLFormElement>) => { // watch change event from current element or bubbling from children
+            onChange={(e: React.ChangeEvent<HTMLFormElement>) => { // watch change event bubbling from children
                 // validations:
                 formValidator.handleChange(e);
 

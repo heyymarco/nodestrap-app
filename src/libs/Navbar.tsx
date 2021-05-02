@@ -93,13 +93,13 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
     // states:
-    public navbarThemesIf(): JssStyle { return {
+    protected navbarThemesIf(): JssStyle { return {
         extend: [
             // @ts-ignore
             indicatorStyles.themesIf(),
         ] as JssStyle,
     }}
-    public navbarStates(inherit = false): JssStyle { return {
+    protected navbarStates(inherit = false): JssStyle { return {
         extend: [
             // @ts-ignore
             indicatorStyles.states(inherit),
@@ -242,7 +242,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             //#endregion specific states
         ] as JssStyle,
     }}
-    public watchNavbarStates(inherit = false): JssStyle { return {
+    protected navbarWatchStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit,
                 this.navbarThemesIf()   // conditional themes
@@ -253,7 +253,8 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
     protected themesIf(): JssStyle { return {
         extend: [
-            // super.themesIf(),        // skip using Control's theming => uses Control's base theming
+            // super.themesIf(),        // skip using Control's theming => uses Control's base's theming
+            
             // @ts-ignore
             indicatorStyles.themesIf(), // copy themes from Indicator (Control's base)
         ] as JssStyle,
@@ -279,8 +280,8 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
     // fn props:
-    public navbarFnProps(): JssStyle { return {
-        // define an *animations* func for the modal's background:
+    protected navbarFnProps(): JssStyle { return {
+        // define an *animations* func for the navbar's menus:
         [this.decl(this._menusAnimFn)]: [
             this.ref(this._menusAnimActivePassive),
         ],
@@ -363,7 +364,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
     }}
     protected basicNavbarMenuStyle(): JssStyle { return {
         extend: [
-            super.basicStyle(),
+            super.basicStyle(), // copy basicStyle from base
             //#region overrides some base's basicStyle
             {
                 // typos:
@@ -390,7 +391,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
     }}
     public basicStyle(): JssStyle { return {
         extend: [
-            super.basicStyle(),
+            super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
 
 
@@ -513,7 +514,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     } as JssStyle,
 
                     // watch navbar state classes/pseudo-classes:
-                    this.watchNavbarStates(),
+                    this.navbarWatchStates(),
 
                     // after watching => use func props:
                     this.fnProps(),           // for themes

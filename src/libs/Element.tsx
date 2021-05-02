@@ -144,7 +144,7 @@ export class StylesBuilder {
              * logoBackgColor
              * logoOpacity
              */
-            if ((/^(icon|img|items|logo|toggler|menu|menus|switch|btn|link|overlay|caption|header|footer|body)[A-Z]/).test(name)) continue; // exclude
+            if ((/^(icon|img|items|logo|toggler|menu|menus|label|btn|switch|link|overlay|caption|header|footer|body)[A-Z]/).test(name)) continue; // exclude
 
             // suffixes:
             /**

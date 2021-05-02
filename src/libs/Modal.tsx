@@ -179,7 +179,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     // styles:
     public basicStyle(): JssStyle { return {
         extend: [
-            containerStyles.basicContainerGridStyle(), // apply responsive container functionality using css grid
+            containerStyles.containerGridBasicStyle(), // apply responsive container functionality using css grid
         ] as JssStyle,
 
 

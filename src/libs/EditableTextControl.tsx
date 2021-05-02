@@ -47,16 +47,29 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
     // themes:
+    public contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
+        return contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from Content
+    }
+    public contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle {
+        const contentSize = contentStyles.contentSizeOf(size, Size, sizeProp); // copy sizes from Content
+        delete contentSize.paddingInline;
+        delete contentSize.paddingBlock;
+
+        return contentSize;
+    }
+
     public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
             super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
             
-            contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor), // copy themes from Content
+            this.contentThemeOf(theme, Theme, themeProp, themeColor),
         ] as JssStyle,
     }}
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
+
+            this.contentSizeOf(size, Size, sizeProp),
         ] as JssStyle,
 
 
@@ -68,18 +81,14 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
     // states:
-    public contentThemesIf(): JssStyle { return {
+    public /*override*/ validationThemesIf(): JssStyle { return {
+        extend: [
+            super.validationThemesIf(), // copy validationThemesIf from base
+        ] as JssStyle,
+
+
+
         //#region overwrite base's themes with *softer* colors
-        // define a *default* color theme:
-        [this.decl(this._foregIf)]    : colors.secondaryCont,
-        [this.decl(this._backgIf)]    : this.solidBackg(colors.secondaryThin),
-
-        // define an *active* color theme:
-        [this.decl(this._foregIfAct)] : colors.primaryCont,
-        [this.decl(this._backgIfAct)] : this.solidBackg(colors.primaryThin),
-
-
-
         // define a *valid* color theme:
         [this.decl(this._foregIfVal)] : colors.successCont,
         [this.decl(this._backgIfVal)] : this.solidBackg(colors.successThin),
@@ -89,24 +98,15 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         [this.decl(this._backgIfInv)] : this.solidBackg(colors.dangerThin),
         //#endregion overwrite base's themes with *softer* colors
     }}
-    public contentStates(inherit = false): JssStyle { return {}; }
-
-    protected themesIf(): JssStyle { return {
+    public /*override*/ validationStates(inherit = false): JssStyle { return {
         extend: [
-            super.themesIf(), // copy themes from base
-
-            this.contentThemesIf(),
-        ] as JssStyle,
-    }}
-    protected states(inherit = false): JssStyle { return {
-        extend: [
-            super.states(inherit), // copy states from base
+            super.validationStates(inherit), // copy validationStates from base
 
 
 
             this.iif(!inherit, {
                 //#region all initial states are none
-                [this.decl(this._iconValInv)]     : this.ref(this._backgNone),
+                [this.decl(this._iconValInv)] : this.ref(this._backgNone),
                 //#endregion all initial states are none
             }),
             
@@ -123,10 +123,48 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         ] as JssStyle,
     }}
 
+    public contentThemesIf(): JssStyle { return {
+        extend: [
+            contentStyles.contentThemesIf(), // copy themes from Content
+        ] as JssStyle,
+
+
+
+        //#region overwrite base's themes with *softer* colors
+        // define a *default* color theme:
+        [this.decl(this._foregIf)]    : colors.secondaryCont,
+        [this.decl(this._backgIf)]    : this.solidBackg(colors.secondaryThin),
+
+        // define an *active* color theme:
+        [this.decl(this._foregIfAct)] : colors.primaryCont,
+        [this.decl(this._backgIfAct)] : this.solidBackg(colors.primaryThin),
+        //#endregion overwrite base's themes with *softer* colors
+    }}
+    public contentStates(inherit = false): JssStyle {
+        return contentStyles.contentStates(inherit); // copy states from Content
+    }
+
+    protected themesIf(): JssStyle { return {
+        extend: [
+            super.themesIf(), // copy themes from base
+
+            this.contentThemesIf(),
+        ] as JssStyle,
+    }}
+    protected states(inherit = false): JssStyle { return {
+        extend: [
+            super.states(inherit), // copy states from base
+
+            this.contentStates(inherit),
+        ] as JssStyle,
+    }}
+
 
 
     // fn props:
-    public contentFnProps(): JssStyle { return {}; }
+    public contentFnProps(): JssStyle {
+        return contentStyles.contentFnProps(); // copy functional props from Content
+    }
     protected fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
@@ -138,13 +176,23 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
     // styles:
+    public contentBasicStyle(): JssStyle {
+        const contentBasicStyle = contentStyles.contentBasicStyle(); // copy basicStyle from Content
+        delete contentBasicStyle.paddingInline;
+        delete contentBasicStyle.paddingBlock;
+
+        return contentBasicStyle;
+    }
     public basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
+
+            this.contentBasicStyle(),
         ] as JssStyle,
 
 
 
+        //#region children
         [iconElm]: {
             extend: [
                 iconStyles.imgStyle( // apply icon
@@ -173,6 +221,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
             // customize:
             ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'icon')), // apply *general* cssProps starting with icon***
         },
+        //#endregion children
 
 
 
