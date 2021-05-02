@@ -147,7 +147,7 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
 
 
     // styles:
-    protected basicTogglerStyle(): JssStyle { return {
+    protected togglerBasicStyle(): JssStyle { return {
         '&>svg': {
             // sizes:
             // fill the entire parent text's height:
@@ -187,7 +187,7 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
 
 
         
-        [btnElm] : this.basicTogglerStyle(),
+        [btnElm] : this.togglerBasicStyle(),
 
 
 

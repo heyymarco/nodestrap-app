@@ -49,7 +49,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
     // styles:
-    protected basicListItemsStyle(): JssStyle { return {
+    protected listItemsBasicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
@@ -173,7 +173,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
     
     
     
-            [listItemElm]: this.basicListItemsStyle(),
+            [listItemElm]: this.listItemsBasicStyle(),
         } as JssStyle, // wrapper element
         //#endregion children
 

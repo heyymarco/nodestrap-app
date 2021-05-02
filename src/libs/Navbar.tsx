@@ -297,7 +297,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
     // styles:
-    protected basicWrapperStyle(): JssStyle { return {
+    protected wrapperBasicStyle(): JssStyle { return {
         // layout:
         display        : 'flex',
         flexDirection  : 'row',    // the flex direction to horz, so we can adjust the content's vertical position
@@ -310,14 +310,14 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         paddingInline  : ecssProps.paddingInline,
         paddingBlock   : ecssProps.paddingBlock,
     }}
-    protected basicNavbarSecondaryItemsStyle(): JssStyle { return {
+    protected navbarSecondaryItemsBasicStyle(): JssStyle { return {
         paddingInline : 0,
     }}
-    protected basicNavbarItemsStyle(): JssStyle { return {
+    protected navbarItemsBasicStyle(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'items')), // apply *general* cssProps starting with items***
     }}
-    protected basicNavbarLogoStyle(): JssStyle { return {
+    protected navbarLogoBasicStyle(): JssStyle { return {
         // layout:
         gridArea : '1 / -3', // place the same row as menus / place at the 3rd column from the right (negative columns are placed after all positive ones are placed)
 
@@ -326,7 +326,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'logo')), // apply *general* cssProps starting with logo***
     }}
-    protected basicNavbarTogglerStyle(): JssStyle { return {
+    protected navbarTogglerBasicStyle(): JssStyle { return {
         // layout:
         gridArea : '1 / 2', // place the same row as menus / place at the 2nd column from the left
 
@@ -335,7 +335,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'toggler')), // apply *general* cssProps starting with toggler***
     }}
-    protected basicNavbarMenusStyle(): JssStyle { return {
+    protected navbarMenusBasicStyle(): JssStyle { return {
         // layout:
         gridArea       : 'menus',
         display        : 'flex',    // use flexbox to place the menus sequentially
@@ -362,7 +362,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menus')), // apply *general* cssProps starting with menus***
     }}
-    protected basicNavbarMenuStyle(): JssStyle { return {
+    protected navbarMenuBasicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
             //#region overrides some base's basicStyle
@@ -437,28 +437,28 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             logoElm,
             togglerElm,
             menuElm,
-        ].join(',')] : this.basicWrapperStyle(),
+        ].join(',')] : this.wrapperBasicStyle(),
 
         [[
             // secondary sections:
             logoElm,
             togglerElm,
-        ].join(',')] : this.basicNavbarSecondaryItemsStyle(),
+        ].join(',')] : this.navbarSecondaryItemsBasicStyle(),
 
         [[
             // all sections:
             logoElm,
             togglerElm,
             menusElm,
-        ].join(',')] : this.basicNavbarItemsStyle(),
+        ].join(',')] : this.navbarItemsBasicStyle(),
 
-        [logoElm]    : this.basicNavbarLogoStyle(),
+        [logoElm]    : this.navbarLogoBasicStyle(),
 
-        [togglerElm] : this.basicNavbarTogglerStyle(),
+        [togglerElm] : this.navbarTogglerBasicStyle(),
 
-        [menusElm]   : this.basicNavbarMenusStyle(),
+        [menusElm]   : this.navbarMenusBasicStyle(),
 
-        [menuElm]    : this.basicNavbarMenuStyle(),
+        [menuElm]    : this.navbarMenuBasicStyle(),
         //#endregion children
 
 
