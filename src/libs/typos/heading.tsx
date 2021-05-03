@@ -2,6 +2,9 @@
 import type { JssStyle }   from 'jss'           // ts defs support for jss
 import { Prop, Cust, }     from '../Css'        // ts defs support for jss
 import CssConfig           from '../CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
+import type {
+    Dictionary,
+}                          from '../CssConfig'  // ts defs support for jss
 
 // nodestrap (modular web components):
 import * as base           from './base'
@@ -53,62 +56,75 @@ export default cssProps;
 
 
 // define the css using configurable cssProps:
-export function createCss<TCssProps extends typeof cssProps>(cssProps: TCssProps, classLevelDecl: (level: number) => string): JssStyle {
-    const levels = [1,2,3,4,5,6];
-    const stylesBuilder: { [key:string]: JssStyle[keyof JssStyle] } = {};
-    
+export function createStyle<TCssProps extends typeof cssProps>(cssProps: TCssProps, classLevelDecl: (level: number) => string[], levels = [1,2,3,4,5,6]): JssStyle { return {
+    //#region global styles for the [h1,h2,...,h6]
+    [levels.map(classLevelDecl).map((clss) => clss.join(',')).join(',')]: {
+        // layout:
+        display : 'block',
 
 
-    // global styles for the [h1,h2,...,h6]
-    stylesBuilder[levels.map(classLevelDecl).join(',')] = {
-        extend     : cssProps as JssStyle,
-        
-        // delete unecessary prop:
-        fontSize1  : null,
-        fontSize2  : null,
-        fontSize3  : null,
-        fontSize4  : null,
-        fontSize5  : null,
-        fontSize6  : null,
-        subOpacity : null,
 
-        display    : 'block',
-
-        // kill the last margin-end for the last element:
+        // spacings:
         '&:last-child': {
-            marginBlockEnd: 0,
+            marginBlockEnd: 0, // kill the last marginEnd for the last element
         },
 
         
-        // make sub-title near the main title and apply margin to sub-title:
-        [levels.reverse().map(classLevelDecl).map(cls => `& +${cls}`).join(',')]: {
+
+        //#region make sub-title closer to the main-title
+        /**
+         * treats the next title as sub-title
+         * makes it closer to the main-title by applying a negative marginStart into it
+         * makes the content after sub-title even further by applying main-title's marginEnd into it
+         */
+        [levels.map(classLevelDecl).map((clss) => clss.map((cls) => `&+${cls}`).join(',')).join(',')]: {
+            // appearances:
             opacity: cssProps.subOpacity,
 
 
 
-            // take over margin-start & margin-end for the next sub-title:
+            // spacings:
+            //#region take over marginStart & marginEnd to the next sub-title
+            // make sub-title closer to the main-title:
+            marginBlockStart: [['calc(0px -', cssProps.marginBlockEnd, ')']], // cancel-out parent's marginEnd with negative marginStart
 
-            // make sub-title near the main title:
-            marginBlockStart: [['calc(0px -', cssProps.marginBlockEnd, ')']], // ignore the parent's margin-end by combating with *negative* margin-start
-
-            // apply margin-end to sub-title:
+            // apply new marginEnd to sub-title:
             '&:not(:last-child)': {
                 marginBlockEnd: cssProps.marginBlockEnd,
             },
+            //#endregion take over marginStart & marginEnd to the next sub-title
         },
-    } as JssStyle;
+        //#endregion make sub-title closer to the main-title
 
 
 
-    // specific styles for *each* [h1,h2,...,h6]:
-    for (const level of levels) {
-        stylesBuilder[classLevelDecl(level)] = {
-            fontSize: (cssProps as { [key:string]: any })[`fontSize${level}`],
-        }
-    }
+        // customize:
+        ...cssProps,
+        
+        //#region delete unecessary props
+        fontSize1  : undefined as unknown as null,
+        fontSize2  : undefined as unknown as null,
+        fontSize3  : undefined as unknown as null,
+        fontSize4  : undefined as unknown as null,
+        fontSize5  : undefined as unknown as null,
+        fontSize6  : undefined as unknown as null,
+        subOpacity : undefined as unknown as null,
+        //#endregion delete unecessary props
+    },
+    //#endregion global styles for the [h1,h2,...,h6]
 
 
 
-    return stylesBuilder as JssStyle;
-}
-base.declareCss(createCss(cssProps, (level) => `h${level},.h${level}`));
+    //#region specific styles for *each* [h1,h2,...,h6]
+    ...((): JssStyle => {
+        const styles: Dictionary<JssStyle> = {};
+        for (const level of levels) {
+            styles[classLevelDecl(level).join(',')] = {
+                fontSize: (cssProps as Dictionary<Cust.Ref>)[`fontSize${level}`],
+            };
+        } // for
+        return styles as JssStyle;
+    })(),
+    //#endregion specific styles for *each* [h1,h2,...,h6]
+}}
+base.declareCss(createStyle(cssProps, (level) => [`h${level}`, `.h${level}`]));

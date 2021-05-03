@@ -111,6 +111,7 @@ base.declareCss({
             // if not match => include it:
             cssPropsCopy[name] = prop;
         }
+        
         return cssPropsCopy as JssStyle;
     })()
 });

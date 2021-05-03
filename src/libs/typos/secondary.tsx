@@ -1,5 +1,4 @@
 // jss   (builds css  using javascript):
-import type { JssStyle }   from 'jss'           // ts defs support for jss
 import { Prop, Cust, }     from '../Css'        // ts defs support for jss
 import CssConfig           from '../CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
@@ -41,5 +40,5 @@ export default cssProps;
 
 // define the css using configurable cssProps:
 base.declareCss({
-    'small, .txt-sec': cssProps as JssStyle,
+    'small, .txt-sec': cssProps,
 });

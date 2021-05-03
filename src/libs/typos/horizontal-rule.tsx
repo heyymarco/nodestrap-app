@@ -43,12 +43,31 @@ export default cssProps;
 // define the css using configurable cssProps:
 base.declareCss({
     'hr': {
-        extend          : cssProps,
-        width           : null, // delete from cssProps. width means blockSize (the height of the <hr>)
-        
+        // layout:
         display         : 'block',
-        backgroundColor : 'currentColor',
+
+
+
+        // sizes:
         blockSize       : cssProps.width,
+
+
+
+        // borders:
         border          : 0,
+
+
+        
+        // backgrounds:
+        backgroundColor : 'currentColor',
+        
+
+        
+        // customize:
+        ...cssProps,
+
+        //#region delete unecessary props
+        width : undefined as unknown as null, // delete from cssProps. width means blockSize (the height of the <hr>)
+        //#endregion delete unecessary props
     },
 });

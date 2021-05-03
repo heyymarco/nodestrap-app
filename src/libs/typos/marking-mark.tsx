@@ -50,7 +50,12 @@ export default cssProps;
 // define the css using configurable cssProps:
 base.declareCss({
     'mark,.mark': {
-        extend  : cssProps,
+        // layout:
         display : 'inline',
+
+
+
+        // customize:
+        ...cssProps,
     },
 });

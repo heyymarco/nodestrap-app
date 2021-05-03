@@ -46,12 +46,19 @@ export default cssProps;
 // define the css using configurable cssProps:
 base.declareCss({
     'blockquote,.blockquote': {
-        extend  : cssProps,
+        // layout:
         display : 'block',
 
 
+
+        // spacings:
         '&:last-child': {
-            marginBlockEnd: 0,
+            marginBlockEnd: 0, // kill the last marginEnd for the last element
         },
+
+
+
+        // customize:
+        ...cssProps,
     },
 });

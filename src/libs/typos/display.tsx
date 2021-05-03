@@ -54,4 +54,4 @@ export default cssProps;
 
 
 // define the css using configurable cssProps:
-base.declareCss(head.createCss(cssProps, (level) => `.display-${level}`));
+base.declareCss(head.createStyle(cssProps, (level) => [`.display-${level}`]));
