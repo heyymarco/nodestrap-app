@@ -10,10 +10,11 @@ import CardApp from './CardApp';
 import ModalApp from './ModalApp';
 import FormApp from './FormApp';
 import NavbarApp from './NavbarApp';
+import CarouselApp from './CarouselApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <NavbarApp />
+    <CarouselApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

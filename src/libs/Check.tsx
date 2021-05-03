@@ -778,6 +778,10 @@ export default function Check(props: Props) {
                 ref={elmRef}
 
 
+                // arias:
+                aria-hidden={isBtnStyle} // if btnStyle => hides the check
+
+
                 // accessibility:
                 disabled={props.enabled === false}
                 tabIndex={tabIndex}
@@ -798,10 +802,6 @@ export default function Check(props: Props) {
 
                 // formats:
                 type={type ?? 'checkbox'}
-
-
-                // labels:
-                aria-hidden={isBtnStyle}
 
 
                 // events:

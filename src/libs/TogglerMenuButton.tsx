@@ -325,9 +325,15 @@ export default function TogglerMenuButton(props: Props) {
 
     return (
         <Check
-            // default props:
+            // arias:
             aria-label='Toggle navigation'
+
+
+            // themes:
             chkStyle='btn'
+
+
+            // validations:
             enableValidation={false}
 
 

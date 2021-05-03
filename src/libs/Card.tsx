@@ -363,7 +363,7 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
 
     return (
         <Content<TElement>
-            // default props:
+            // essentials:
             tag='article'
 
 
@@ -386,14 +386,14 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
             >
                 {
                     (Array.isArray(children) ? children : [children]).map((child, index) =>
-                        (React.isValidElement(child) && child.type === 'a') ?
+                        (React.isValidElement(child) && (child.type === 'a')) ?
                         <Button
                             // essentials:
                             key={index}
-
-
-                            // default props:
                             tag='a'
+
+
+                            // themes:
                             btnStyle='link'
 
 

@@ -782,8 +782,11 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
     return (
         <Indicator<TElement>
-            // default props:
+            // essentials:
             tag='nav'
+
+
+            // accessibility:
             active={fnActive}
 
 
@@ -848,7 +851,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
             { children && <div className='menus'>{
                 (Array.isArray(children) ? children : [children]).map((child, index) =>
                     (
-                        ((child as React.ReactElement).type === NavbarMenu)
+                        (React.isValidElement(child) && (child.type === NavbarMenu))
                         ?
                         child
                         :

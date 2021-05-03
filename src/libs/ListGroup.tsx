@@ -284,7 +284,7 @@ export default function ListGroup<TElement extends HTMLElement = HTMLElement>(pr
 
     return (
         <Content<TElement>
-            // default props:
+            // essentials:
             tag={parentTag}
 
 
@@ -299,11 +299,11 @@ export default function ListGroup<TElement extends HTMLElement = HTMLElement>(pr
                 children && (Array.isArray(children) ? children : [children]).map((child, index) =>
                     <GenericElement
                         // essentials:
-                        tag={wrapTag}
                         key={index}
+                        tag={wrapTag}
                     >
                         {
-                            ((child as React.ReactElement).type === ListGroupItem) ?
+                            (React.isValidElement(child) && (child.type === ListGroupItem)) ?
                             child
                             :
                             <ListGroupItem

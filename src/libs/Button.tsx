@@ -257,7 +257,7 @@ export default function Button(props: Props) {
 
     return (
         <Control<HTMLButtonElement>
-            // default props:
+            // essentials:
             tag={tag2}
 
 

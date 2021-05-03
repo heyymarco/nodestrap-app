@@ -17,9 +17,15 @@ export interface Props
 export default function CloseButton(props: Props) {
     return (
         <ButtonIcon
-            // default props:
+            // arias:
             aria-label='Close'
+
+
+            // appearances:
             icon='close'
+
+
+            // themes:
             btnStyle='link'
             theme='secondary'
 
