@@ -773,6 +773,13 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
     const [dynActive, setDynActive] = useState<boolean>(active ?? defaultActive ?? false);
     const fnActive = active ?? dynActive;
 
+    const handleActiveChange = (newActive: boolean) => {
+        onActiveChange?.(newActive);
+
+        // if uncontrollable prop => set new active state:
+        if (active === undefined) setDynActive(newActive);
+    };
+
     return (
         <Indicator<TElement>
             // default props:
@@ -816,19 +823,25 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                         elmRef.current = elm;
                     } // if
                 } // if
-            }}    
+            }}
+
+
+            // events:
+            // watch [escape key] on the whole navbar, including menus & toggler:
+            onKeyDown={(e) => {
+                if (fnActive && ((e.code === 'Escape') || (e.key === 'Escape'))) handleActiveChange(false);
+
+
+                // forwards:
+                props.onKeyDown?.(e);
+            }}
         >
             { logo && <div className='logo'>{ logo }</div> }
             <div className='toggler'>{ toggler ?? (
                 <TogglerMenuButton
                     checked={fnActive}
                     onChange={(e) => {
-                        const newActiveState = e.target.checked;
-
-                        onActiveChange?.(newActiveState);
-
-                        // if uncontrollable prop => set new active state:
-                        if (active === undefined) setDynActive(newActiveState);
+                        handleActiveChange(e.target.checked);
                     }}
                 />
             ) }</div>
