@@ -516,17 +516,11 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
             {...props}
 
 
-            // main:
-            mainClass={props.mainClass ?? ctrlStyles.main}
-
-
             // classes:
-            classes={[
-                // additionals:
-                ...(props.classes ?? []),
-
-
+            mainClass={props.mainClass ?? ctrlStyles.main}
+            stateClasses={[...(props.stateClasses ?? []),
                 // states:
+                
                 // if [tabIndex] is negative => treats Control as *wrapper* element, so there's no *:focus* => replace with synthetic *.focus*
                 (stateFocusBlur.class ?? ((stateFocusBlur.focus && ((props.tabIndex ?? 0) < 0)) ? 'focus' : null)),
 

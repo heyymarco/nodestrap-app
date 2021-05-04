@@ -649,16 +649,9 @@ export default function EditableControl<TElement extends EditableControlElement 
             {...props}
 
 
-            // main:
-            mainClass={props.mainClass ?? ectrlStyles.main}
-
-
             // classes:
-            classes={[
-                // additionals:
-                ...(props.classes ?? []),
-
-
+            mainClass={props.mainClass ?? ectrlStyles.main}
+            stateClasses={[...(props.stateClasses ?? []),
                 // validations:
                 stateValInval.class,
             ]}

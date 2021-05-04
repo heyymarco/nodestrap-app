@@ -256,16 +256,9 @@ export default function Form(props: Props) {
             {...props}
 
 
-            // main:
-            mainClass={props.mainClass ?? formStyles.main}
-
-
             // classes:
-            classes={[
-                // additionals:
-                ...(props.classes ?? []),
-
-
+            mainClass={props.mainClass ?? formStyles.main}
+            stateClasses={[...(props.stateClasses ?? []),
                 // validations:
                 stateValInval.class,
             ]}

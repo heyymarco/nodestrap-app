@@ -555,16 +555,9 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
             {...props}
 
 
-            // main:
-            mainClass={props.mainClass ?? indiStyles.main}
-
-
             // classes:
-            classes={[
-                // additionals:
-                ...(props.classes ?? []),
-
-
+            mainClass={props.mainClass ?? indiStyles.main}
+            stateClasses={[...(props.stateClasses ?? []),
                 // states:
                 (stateEnbDis.class ?? ((stateEnbDis.disabled && !isHtmlCtrl) ? 'disabled' : null)),
                 stateActPass.class,

@@ -371,7 +371,7 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
             {...otherProps}
 
 
-            // main:
+            // classes:
             mainClass={props.mainClass ?? crdStyles.main}
         >
             {header && <header

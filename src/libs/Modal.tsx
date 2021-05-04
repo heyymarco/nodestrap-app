@@ -560,16 +560,9 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
     return (
         <Indicator
-            // main:
-            mainClass={props.mainClass ?? modStyles.main}
-
-
             // classes:
-            classes={[
-                // additionals:
-                ...(props.classes ?? []),
-
-
+            mainClass={props.mainClass ?? modStyles.main}
+            themeClasses={[...(props.themeClasses ?? []),
                 // themes:
                 variModal.class,
             ]}

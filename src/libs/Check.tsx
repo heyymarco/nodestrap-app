@@ -751,24 +751,17 @@ export default function Check(props: Props) {
             {...otherProps}
 
 
-            // main:
-            mainClass={props.mainClass ?? chkStyles.main}
-
-
             // unchanged props:
             tabIndex={-1}
 
 
             // classes:
-            classes={[
-                // additionals:
-                ...(props.classes ?? []),
-
-
+            mainClass={props.mainClass ?? chkStyles.main}
+            themeClasses={[...(props.themeClasses ?? []),
                 // themes:
                 variCheck.class,
-
-
+            ]}
+            stateClasses={[...(props.stateClasses ?? []),
                 // states:
                 stateChkClr.class ?? (stateChkClr.checked ? 'checked' : null),
             ]}

@@ -265,16 +265,9 @@ export default function Button(props: Props) {
             {...otherProps}
 
 
-            // main:
-            mainClass={props.mainClass ?? btnStyles.main}
-
-
             // classes:
-            classes={[
-                // additionals:
-                ...(props.classes ?? []),
-
-
+            mainClass={props.mainClass ?? btnStyles.main}
+            themeClasses={[...(props.themeClasses ?? []),
                 // themes:
                 variButton.class,
             ]}

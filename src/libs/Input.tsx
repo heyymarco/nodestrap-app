@@ -201,7 +201,7 @@ export default function Input(props: Props) {
             {...otherProps}
 
 
-            // main:
+            // classes:
             mainClass={props.mainClass ?? inpStyles.main}
 
 

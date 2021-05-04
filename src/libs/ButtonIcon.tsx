@@ -87,7 +87,7 @@ export default function ButtonIcon(props: Props) {
             {...otherProps}
 
 
-            // main:
+            // classes:
             mainClass={props.mainClass ?? btnIcoStyles.main}
         >
             { icon && <Icon icon={icon} /> }

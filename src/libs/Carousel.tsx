@@ -269,19 +269,8 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
             {...otherProps}
 
 
-            // main:
-            mainClass={props.mainClass ?? crslStyles.main}
-
-
             // classes:
-            classes={[
-                // additionals:
-                ...(props.classes ?? []),
-
-
-                // states:
-                // TODO: add states here
-            ]}
+            mainClass={props.mainClass ?? crslStyles.main}
         
 
             // events:
@@ -339,11 +328,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
 
                     // classes:
-                    classes={[
-                        // additionals:
-                        ...(props.classes ?? []),
-
-
+                    classes={[...(props.classes ?? []),
                         // ids:
                         'prevBtn',
                     ]}

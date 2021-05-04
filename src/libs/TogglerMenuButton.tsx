@@ -341,7 +341,7 @@ export default function TogglerMenuButton(props: Props) {
             {...props}
 
 
-            // main:
+            // classes:
             mainClass={props.mainClass ?? togglerStyles.main}
         >
             { props.children || (

@@ -292,7 +292,7 @@ export default function Content<TElement extends HTMLElement = HTMLElement>(prop
             {...props}
 
 
-            // main:
+            // classes:
             mainClass={props.mainClass ?? ctStyles.main}
         />
     );

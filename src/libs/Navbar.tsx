@@ -794,16 +794,9 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
             {...otherProps}
 
 
-            // main:
-            mainClass={props.mainClass ?? navbStyles.main}
-
-
             // classes:
-            classes={[
-                // additionals:
-                ...(props.classes ?? []),
-
-
+            mainClass={props.mainClass ?? navbStyles.main}
+            themeClasses={[...(props.themeClasses ?? []),
                 // themes:
                 compactable.class,
             ]}

@@ -25,8 +25,8 @@ export default function NavbarMenu<TElement extends HTMLElement = HTMLAnchorElem
             {...props}
 
 
-            // main:
-            mainClass=''
+            // classes:
+            mainClass={props.mainClass ?? ''}
         />
     );
 }

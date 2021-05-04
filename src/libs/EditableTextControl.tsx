@@ -289,7 +289,7 @@ export default function EditableTextControl<TElement extends EditableTextControl
             {...props}
 
 
-            // main:
+            // classes:
             mainClass={props.mainClass ?? etctrlStyles.main}
         />
     );

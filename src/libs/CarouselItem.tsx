@@ -25,8 +25,8 @@ export default function CarouselItem<TElement extends HTMLElement = HTMLAnchorEl
             {...props}
 
 
-            // main:
-            mainClass=''
+            // classes:
+            mainClass={props.mainClass ?? ''}
         />
     );
 }

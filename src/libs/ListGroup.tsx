@@ -299,7 +299,7 @@ export default function ListGroup<TElement extends HTMLElement = HTMLElement>(pr
             {...otherProps}
 
 
-            // main:
+            // classes:
             mainClass={props.mainClass ?? lgStyles.main}
         >
             {

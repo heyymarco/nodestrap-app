@@ -191,7 +191,7 @@ export default function Container<TElement extends HTMLElement = HTMLElement>(pr
             {...props}
 
 
-            // main:
+            // classes:
             mainClass={props.mainClass ?? conStyles.main}
         />
     );

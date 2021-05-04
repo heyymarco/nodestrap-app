@@ -454,16 +454,9 @@ export default function Icon<TElement extends HTMLElement = HTMLElement>(props: 
             {...props}
 
 
-            // main:
-            mainClass={props.mainClass ?? icoStyles.main}
-
-
             // classes:
-            classes={[
-                // additionals:
-                ...(props.classes ?? []),
-
-
+            mainClass={props.mainClass ?? icoStyles.main}
+            classes={[...(props.classes ?? []),
                 // appearances:
                 icon.class,
             ]}
