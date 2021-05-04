@@ -25,13 +25,17 @@ import {
 }                          from './Element'
 import type * as Elements  from './Element'
 import CarouselItem        from './CarouselItem'
+import Button              from './ButtonIcon'
 
 
 
 // styles:
 
-const itemsElm = '&>.items';
-const itemElm  = '&>.items>li, &>.items>*';
+const itemsElm     = '&>.items';                // .items is the slideList
+const itemElm      = '&>.items>li, &>.items>*'; // any children inside the slideList are slideItem
+const indicatorElm = '&>.indicators';
+const prevBtnElm   = '&>.prevBtn';
+const nextBtnElm   = '&>.nextBtn';
 
 export class CarouselStylesBuilder extends ElementStylesBuilder {
     // styles:
@@ -135,6 +139,14 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
+    protected prevBtnBasicStyle(): JssStyle { return {
+        // layout:
+        gridArea : 'prevBtn',
+    }}
+    protected nextBtnBasicStyle(): JssStyle { return {
+        // layout:
+        gridArea : 'nextBtn',
+    }}
     public basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
@@ -147,11 +159,14 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
 
         // explicit areas:
         gridTemplateRows    : [[
-            'auto',
+            '1fr',
             'min-content',
-            '5%',
         ]],
         gridTemplateColumns : [['15%', 'auto', '15%']],
+        gridTemplateAreas   : [[
+            '"prevBtn main nextBtn"',
+            '".... indicator ...."',
+        ]],
 
         // child alignments:
         justifyItems        : 'stretch', // each section fill the entire area's width
@@ -166,9 +181,11 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
 
         // children:
         //#region children
-        [itemsElm] : this.carouselItemsBasicStyle(),
+        [itemsElm]   : this.carouselItemsBasicStyle(),
+        [itemElm]    : this.carouselItemBasicStyle(),
 
-        [itemElm]  : this.carouselItemBasicStyle(),
+        [prevBtnElm] : this.prevBtnBasicStyle(),
+        [nextBtnElm] : this.nextBtnBasicStyle(),
         //#endregion children
 
 
@@ -211,10 +228,17 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
         Elements.Props<TElement>
 {
-    
     // essentials:
     itemsTag? : keyof JSX.IntrinsicElements
     itemTag?  : keyof JSX.IntrinsicElements
+
+
+
+    // children:
+    children?  : React.ReactNode
+    prevBtn?   : React.ReactChild | boolean
+    nextBtn?   : React.ReactChild | boolean
+    indicator? : React.ReactChild | boolean
 }
 export default function Carousel<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const crslStyles = styles.useStyles();
@@ -232,6 +256,9 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
         // children:
         children,
+        prevBtn,
+        nextBtn,
+        indicator,
         ...otherProps } = props;
     const itemsTag2 = itemsTag ?? 'ul';
     const itemTag2  = itemTag  ?? ['ul', 'ol'].includes(itemsTag2) ? 'li' : 'div';
@@ -260,7 +287,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
             // events:
             // TODO: add events here
         >
-            { children && <GenericElement tag={itemsTag2} mainClass='items'>{
+            <GenericElement tag={itemsTag2} mainClass='items'>{
                 (Array.isArray(children) ? children : [children]).map((child, index) =>
                     (
                         (React.isValidElement(child) && (child.type === CarouselItem))
@@ -284,7 +311,46 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                         </CarouselItem>
                     )
                 )
-            }</GenericElement> }
+            }</GenericElement>
+
+            {
+                React.isValidElement(prevBtn)
+                &&
+                (
+                    (Array.isArray(prevBtn.props.classes) && prevBtn.props.classes.includes('prevBtn'))
+                    ||
+                    (/(?<!\w)prevBtn(?!\w)/).test(prevBtn.props.className)
+                )
+                ?
+                prevBtn
+                :
+                <Button
+                    // arias:
+                    aria-label='Close'
+
+
+                    // appearances:
+                    icon='arrow_back_ios'
+
+
+                    // themes:
+                    btnStyle='link'
+                    size='lg'
+
+
+                    // classes:
+                    classes={[
+                        // additionals:
+                        ...(props.classes ?? []),
+
+
+                        // ids:
+                        'prevBtn',
+                    ]}
+                >
+                    { prevBtn }
+                </Button>
+            }
         </Element>
     );
 }
