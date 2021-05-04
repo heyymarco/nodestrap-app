@@ -108,8 +108,10 @@ function App() {
                 </Content>
 				<Carousel theme={theme} size={size} enableGradient={enableGrad} outlined={outlined}
 				>
-					<CarouselItem>First slide</CarouselItem>
-					<CarouselItem>Second slide</CarouselItem>
+					<CarouselItem><img src='https://picsum.photos/400/600' alt='' /></CarouselItem>
+					<CarouselItem><img src='https://picsum.photos/600/400' alt='' /></CarouselItem>
+					<CarouselItem><img src='https://picsum.photos/400/400' alt='' /></CarouselItem>
+					<CarouselItem><img src='https://picsum.photos/600/600' alt='' /></CarouselItem>
 				</Carousel>
                 <hr style={{flexBasis: '100%'}} />
 				<p>

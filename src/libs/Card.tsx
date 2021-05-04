@@ -47,13 +47,18 @@ export class CardStylesBuilder extends ContentStylesBuilder {
 
     // styles:
     protected imageBasicStyle(): JssStyle { return {
+        extend: [
+            stripOuts.image, // removes browser's default styling on image
+        ] as JssStyle,
+
+
+
         // layout:
         display: 'block', // fill the entire parent's width
 
 
 
         // sizes:
-        // fix the image's abnormal *display=block* sizing:
         // span to maximum width including parent's paddings:
         boxSizing      : 'border-box', // the final size is including borders & paddings
         inlineSize     : 'fill-available',
@@ -98,7 +103,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         },
         //#endregion border-strokes as a separator
     }}
-    protected cardItemsBasicStyle(): JssStyle { return {
+    protected cardItemBasicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
@@ -185,20 +190,15 @@ export class CardStylesBuilder extends ContentStylesBuilder {
 
             // children:
             '&>img': {
+                extend: [
+                    stripOuts.image, // removes browser's default styling on image
+                ] as JssStyle,
+
+
+
                 // layout:
                 display: 'block', // fill the entire parent's width
-
-
-
-                // sizes:
-                // fix the image's abnormal *display=block* sizing:
-                // span to maximum width:
-                boxSizing      : 'border-box', // the final size is including borders & paddings
-                inlineSize     : 'fill-available',
-                fallbacks      : {
-                    inlineSize : '100%',
-                },
-            }
+            },
         },
         '&>figure, &>img': this.imageBasicStyle(), // figure & img are special content
         '&>figure>img, &>img': {
@@ -211,12 +211,12 @@ export class CardStylesBuilder extends ContentStylesBuilder {
 
 
         // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'items')), // apply *general* cssProps starting with items***
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
     protected cardCaptionBasicStyle(): JssStyle { return {
         // sizes:
         // default card items' height are unresizeable (excepts for card's body):
-        flex: [[0, 0, 'auto']], // not shrinking, not growing
+        flex: [[0, 0]], // not growing, not shrinking
 
 
 
@@ -235,7 +235,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         // sizes:
         // Enable `flex-grow: 1` for decks and groups so that card blocks take up
         // as much space as possible, ensuring footers are aligned to the bottom.
-        flex: [[1, 1, 'auto']],
+        flex: [[1, 1]], // allows growing, allows shrinking
 
 
 
@@ -287,7 +287,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
 
 
         // children:
-        '&>header, &>.body, &>footer' : this.cardItemsBasicStyle(),
+        '&>header, &>.body, &>footer' : this.cardItemBasicStyle(),
         '&>header, &>footer'          : this.cardCaptionBasicStyle(),
         '&>header'                    : this.cardHeaderBasicStyle(),
         '&>footer'                    : this.cardFooterBasicStyle(),

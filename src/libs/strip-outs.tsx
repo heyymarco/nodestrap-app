@@ -11,7 +11,7 @@ const none  = 'none';
 
 
 /**
- * removes a browser's default styling on hyperlink.
+ * removes browser's default styling on hyperlink.
  */
 export const link : JssStyle = {
     color             : unset, // reset blue color
@@ -30,7 +30,7 @@ export const link : JssStyle = {
 
 
 /**
- * removes a browser's default styling on control (input, textarea, button, etc).
+ * removes browser's default styling on control (input, textarea, button, etc).
  */
 export const control : JssStyle = {
     appearance        : none,
@@ -58,7 +58,7 @@ export const control : JssStyle = {
 };
 
 /**
- * removes a browser's default styling on input[type=**text**].
+ * removes browser's default styling on input[type=**text**].
  * **text** = text|number|email|tel|password|search|url|date|time|datetime-local|week|month
  */
  export const textbox : JssStyle = {
@@ -80,7 +80,7 @@ export const control : JssStyle = {
 
 
 /**
- * removes a browser's default styling on list (ul>li) & (ol>li).
+ * removes browser's default styling on list (ul>li) & (ol>li).
  */
 export const list : JssStyle = {
     listStyleType      : none,
@@ -97,7 +97,7 @@ export const list : JssStyle = {
 };
 
 /**
- * removes a browser's default styling on figure.
+ * removes browser's default styling on figure.
  */
 export const figure : JssStyle = {
     display           : unset,
@@ -108,10 +108,40 @@ export const figure : JssStyle = {
 };
 
 /**
- * removes a browser's default styling on focusable element.
+ * removes browser's default styling on focusable element.
  */
 export const focusableElement : JssStyle = {
     '&:focus': {
         outline: unset,
     }
+};
+
+/**
+ * hides browser's default scrollbar.
+ */
+ export const scrollbar : JssStyle = {
+     '&::-webkit-scrollbar': {
+         display         : none,
+     },
+     scrollbarWidth      : none,
+    '-ms-overflow-style' : none,
+};
+
+/**
+ * removes browser's default styling on image.
+ */
+export const image : JssStyle = {
+    // layout:
+    display: 'block', // fill the entire parent's width
+
+
+
+    // sizes:
+    // fix the image's abnormal *display=block* sizing:
+    // span to maximum width:
+    boxSizing      : 'border-box', // the final size is including borders & paddings
+    inlineSize     : 'fill-available',
+    fallbacks      : {
+        inlineSize : '100%',
+    },
 };

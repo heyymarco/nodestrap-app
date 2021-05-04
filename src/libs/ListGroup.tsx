@@ -49,7 +49,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
     // styles:
-    protected listItemsBasicStyle(): JssStyle { return {
+    protected listItemBasicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
@@ -84,11 +84,18 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
         // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'items')), // apply *general* cssProps starting with items***
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
     public basicStyle(): JssStyle { return {
         extend: [
-            stripOuts.list, // clear browser's default styles
+            //#region clear browser's default styles
+            (() => {
+                const style = stripOuts.list;
+                delete (style as any)['&>li'].display;
+
+                return style;
+            })(),
+            //#endregion clear browser's default styles
         ] as JssStyle,
 
 
@@ -173,7 +180,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
     
     
     
-            [listItemElm]: this.listItemsBasicStyle(),
+            [listItemElm]: this.listItemBasicStyle(),
         } as JssStyle, // wrapper element
         //#endregion children
 

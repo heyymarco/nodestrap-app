@@ -124,7 +124,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     menusElm,
                 ].join(',')] : {
                     // customize:
-                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'items'), 'Full'),   // apply *general* cssProps starting with items***   and ending with ***Full
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'item'), 'Full'),    // apply *general* cssProps starting with item***    and ending with ***Full
                 } as JssStyle,
 
                 [logoElm]    : {
@@ -165,7 +165,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     menusElm,
                 ].join(',')] : {
                     // customize:
-                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'items'), 'Compact'),   // apply *general* cssProps starting with items***   and ending with ***Compact
+                    ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'item'), 'Compact'),    // apply *general* cssProps starting with item***    and ending with ***Compact
                 } as JssStyle,
 
                 [logoElm]    : {
@@ -313,9 +313,9 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
     protected navbarSecondaryItemsBasicStyle(): JssStyle { return {
         paddingInline : 0,
     }}
-    protected navbarItemsBasicStyle(): JssStyle { return {
+    protected navbarItemBasicStyle(): JssStyle { return {
         // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'items')), // apply *general* cssProps starting with items***
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
     protected navbarLogoBasicStyle(): JssStyle { return {
         // layout:
@@ -450,7 +450,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             logoElm,
             togglerElm,
             menusElm,
-        ].join(',')] : this.navbarItemsBasicStyle(),
+        ].join(',')] : this.navbarItemBasicStyle(),
 
         [logoElm]    : this.navbarLogoBasicStyle(),
 
@@ -613,7 +613,7 @@ const cssConfig = new CssConfig(() => {
 
         // menus:
         // kill margin top & bottom:
-        itemsMarginBlock          : [['calc(0px -', ecssProps.paddingBlock, ')']],
+        itemMarginBlock           : [['calc(0px -', ecssProps.paddingBlock, ')']],
 
         // on mobile, on the menu group, kill margin left & right:
         menusMarginInlineCompact  : [['calc(0px -', contCssProps.paddingInline, ')']],
