@@ -362,6 +362,28 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
                     // appearances:
                     icon='arrow_back_ios'
+
+
+                    // events:
+                    onClick={(e) => {
+                        const itemsElm = e.currentTarget.parentElement?.querySelector('.items') as HTMLElement;
+                        if (!itemsElm) return;
+
+
+
+                        const colGap = Number.parseInt(itemsElm.style.columnGap || '0');
+                        if (itemsElm.scrollLeft > 0) {
+                            const scrollMove = ((itemsElm.clientWidth + colGap) / 2) + 1;
+                            itemsElm.scrollBy(-scrollMove, 0); // move to left a half, the scrollSnap will help scrolling to the prev slide
+                        }
+                        else {
+                            const lastItem = itemsElm.lastElementChild as HTMLElement;
+                            if (lastItem) {
+                                const scrollPos = lastItem.offsetLeft - ((lastItem.offsetWidth + colGap) / 2) + 1;
+                                itemsElm.scroll(scrollPos, 0); // move to a bit after the middle pos of the last slide, the scrollSnap will help scrolling to the last pos
+                            } // if
+                        } // if
+                    }}
                 >
                     { prevBtn }
                 </NavButton>
@@ -388,6 +410,28 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
                     // appearances:
                     icon='arrow_forward_ios'
+
+
+                    // events:
+                    onClick={(e) => {
+                        const itemsElm = e.currentTarget.parentElement?.querySelector('.items') as HTMLElement;
+                        if (!itemsElm) return;
+
+
+
+                        const colGap = Number.parseInt(itemsElm.style.columnGap || '0');
+                        if (itemsElm.scrollLeft < (itemsElm.scrollWidth - itemsElm.clientWidth)) {
+                            const scrollMove = ((itemsElm.clientWidth + colGap) / 2) + 1;
+                            itemsElm.scrollBy(scrollMove, 0); // move to right a half, the scrollSnap will help scrolling to the next slide
+                        }
+                        else {
+                            const firstItem = itemsElm.firstElementChild as HTMLElement;
+                            if (firstItem) {
+                                const scrollPos = firstItem.offsetLeft + ((firstItem.offsetWidth + colGap) / 2) - 1;
+                                itemsElm.scroll(scrollPos, 0); // move to a bit before the middle pos of the first slide, the scrollSnap will help scrolling to the zero pos
+                            } // if
+                        } // if
+                    }}
                 >
                     { nextBtn }
                 </NavButton>
