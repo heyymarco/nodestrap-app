@@ -78,7 +78,7 @@ function App() {
 	const [enableVal, setEnableVal  ] = useState(true);
 	const [isValid,   setIsValid    ] = useState<boolean|null|undefined>(undefined);
 
-	const btnStyles = [undefined, 'link'];
+	const btnStyles = [undefined, 'link', 'ghost'];
 	const [btnStyle,    setBtnStyle     ] = useState<Buttons.BtnStyle|undefined>(undefined);
 
 

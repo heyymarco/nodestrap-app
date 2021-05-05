@@ -82,17 +82,10 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    public linkStyle(): JssStyle { return {
-        extend: [
-            this.outlined(), // copy outlined style from base
-        ] as JssStyle,
-
-
-
-        //#region fully link style without outlined
+    protected staticOutlinedStyle(): JssStyle { return {
         '&:not(.outlined)' : {
-            //#region disable dynamic outlined
             extend: [
+                //#region disable dynamic outlined
                 this.stateActive( // [activating, actived]
                     // always *toggle on* the outlined props:
                     this.toggleOnOutlined(),
@@ -107,8 +100,22 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
                         this.toggleOnOutlined(),
                     ),
                 ] as JssStyle}),
+                //#endregion disable dynamic outlined
             ] as JssStyle,
-            //#endregion disable dynamic outlined
+        },
+    }}
+    public linkStyle(): JssStyle { return {
+        extend: [
+            this.outlined(), // copy outlined style from base
+        ] as JssStyle,
+
+
+
+        //#region fully link style without outlined
+        '&:not(.outlined)' : {
+            extend: [
+                this.staticOutlinedStyle(), // disable dynamic outlined
+            ] as JssStyle,
 
 
 
@@ -156,39 +163,40 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
     }}
     public ghostStyle(): JssStyle { return {
         extend: [
-            this.linkStyle(), // copy outlined style from linkStyle
+            this.outlined(), // copy outlined style from base
 
 
 
-            //#region specific states
-            //#region hover
+            //#region fully opaque if enable & hover
             this.stateNotDisable({extend: [
                 this.stateHover({
                     opacity: cssProps.ghostOpacityHover,
                 }),
             ] as JssStyle}),
-            //#endregion hover
-            //#endregion specific states
+            //#endregion fully opaque if enable & hover
         ] as JssStyle,
 
 
 
         //#region fully ghost style without outlined
         '&:not(.outlined)' : {
-            // backgrounds:
-            [this.decl(this._backgGradTg)] : undefined as unknown as null, // support back gradient
-            
-
-
             extend: [
-                //#region specific states
-                //#region hover
+                this.staticOutlinedStyle(), // disable dynamic outlined
+
+
+
+                //#region enable gradient only if hover
                 {'&:not(:hover)': {
-                    [this.decl(this._backgGradTg)] : 'initial', // gradient is not supported if not hover
+                    // backgrounds:
+                    [this.decl(this._backgGradTg)] : 'initial', // gradient is not supported if not outlined and not hover
                 }},
-                //#endregion hover
-                //#endregion specific states
+                //#endregion enable gradient only if hover
             ] as JssStyle,
+
+
+
+            // borders:
+            borderWidth  : 0, // hides the border if not outlined
         },
         //#endregion fully ghost style without outlined
 
