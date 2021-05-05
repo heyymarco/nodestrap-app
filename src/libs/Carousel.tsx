@@ -26,6 +26,7 @@ import {
 import type * as Elements  from './Element'
 import CarouselItem        from './CarouselItem'
 import Button              from './ButtonIcon'
+import type * as Buttons   from './ButtonIcon'
 
 
 
@@ -38,6 +39,20 @@ const prevBtnElm   = '&>.prevBtn';
 const nextBtnElm   = '&>.nextBtn';
 
 export class CarouselStylesBuilder extends ElementStylesBuilder {
+    // themes:
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+        extend: [
+            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+    }}
+
+
+
     // styles:
     protected carouselItemsBasicStyle(): JssStyle { return {
         extend: [
@@ -72,8 +87,8 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
 
         // spacings:
         // cancel-out parent's padding with negative margin:
-        marginInline   : [['calc(0px -', ecssProps.paddingInline, ')']],
-        marginBlock    : [['calc(0px -', ecssProps.paddingBlock,  ')']],
+        marginInline   : [['calc(0px -', cssProps.paddingInline, ')']],
+        marginBlock    : [['calc(0px -', cssProps.paddingBlock,  ')']],
 
 
 
@@ -139,13 +154,27 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
+    protected navBtnBasicStyle(): JssStyle { return {
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'navBtn')), // apply *general* cssProps starting with navBtn***
+    }}
     protected prevBtnBasicStyle(): JssStyle { return {
         // layout:
         gridArea : 'prevBtn',
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'prevBtn')), // apply *general* cssProps starting with prevBtn***
     }}
     protected nextBtnBasicStyle(): JssStyle { return {
         // layout:
         gridArea : 'nextBtn',
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'nextBtn')), // apply *general* cssProps starting with nextBtn***
     }}
     public basicStyle(): JssStyle { return {
         extend: [
@@ -184,6 +213,10 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
         [itemsElm]   : this.carouselItemsBasicStyle(),
         [itemElm]    : this.carouselItemBasicStyle(),
 
+        [[
+            prevBtnElm,
+            nextBtnElm,
+        ].join(',')] : this.navBtnBasicStyle(),
         [prevBtnElm] : this.prevBtnBasicStyle(),
         [nextBtnElm] : this.nextBtnBasicStyle(),
         //#endregion children
@@ -211,6 +244,12 @@ const cssConfig = new CssConfig(() => {
 
 
     return {
+        paddingInline      : 0,
+        paddingBlock       : 0,
+
+
+
+        navBtnBorderRadius : 0
     };
 }, /*prefix: */'crsl');
 export const cssProps = cssConfig.refs;
@@ -313,30 +352,75 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                 ?
                 prevBtn
                 :
-                <Button
-                    // arias:
-                    aria-label='Close'
+                <NavButton
+                    id='prevBtn'
+
+
+                    // accessibility:
+                    label='Previous'
 
 
                     // appearances:
                     icon='arrow_back_ios'
-
-
-                    // themes:
-                    btnStyle='link'
-                    size='lg'
-
-
-                    // classes:
-                    classes={[...(props.classes ?? []),
-                        // ids:
-                        'prevBtn',
-                    ]}
                 >
                     { prevBtn }
-                </Button>
+                </NavButton>
+            }
+
+            {
+                React.isValidElement(nextBtn)
+                &&
+                (
+                    (Array.isArray(nextBtn.props.classes) && nextBtn.props.classes.includes('nextBtn'))
+                    ||
+                    (/(?<!\w)nextBtn(?!\w)/).test(nextBtn.props.className)
+                )
+                ?
+                nextBtn
+                :
+                <NavButton
+                    id='nextBtn'
+
+
+                    // accessibility:
+                    label='Next'
+
+
+                    // appearances:
+                    icon='arrow_forward_ios'
+                >
+                    { nextBtn }
+                </NavButton>
             }
         </Element>
+    );
+}
+
+interface NavButtonProps
+    extends
+        Buttons.Props
+{
+    id? : string
+}
+function NavButton(props: NavButtonProps) {
+    return (
+        <Button
+            // themes:
+            size='lg'
+            enableGradient={true}
+            btnStyle='ghost'
+
+
+            // other props:
+            {...props}
+
+
+            // classes:
+            classes={[...(props.classes ?? []),
+                // ids:
+                props.id,
+            ]}
+        />
     );
 }
 

@@ -154,6 +154,52 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'link')), // apply *general* cssProps starting with link***
     }}
+    public ghostStyle(): JssStyle { return {
+        extend: [
+            this.linkStyle(), // copy outlined style from linkStyle
+
+
+
+            //#region specific states
+            //#region hover
+            this.stateHover({
+                opacity: cssProps.ghostOpacityHover,
+            }),
+            //#endregion hover
+            //#endregion specific states
+        ] as JssStyle,
+
+
+
+        //#region fully ghost style without outlined
+        '&:not(.outlined)' : {
+            // backgrounds:
+            [this.decl(this._backgGradTg)] : undefined as unknown as null, // support back gradient
+            
+
+
+            extend: [
+                //#region specific states
+                //#region hover
+                this.stateNotHover({
+                    [this.decl(this._backgGradTg)] : 'initial', // gradient is not supported if not hover
+                }),
+                //#endregion hover
+                //#endregion specific states
+            ] as JssStyle,
+        },
+        //#endregion fully ghost style without outlined
+
+
+
+        // borders:
+        boxShadow : [['none'], '!important'], // no focus animation
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'ghost')), // apply *general* cssProps starting with ghost***
+    }}
     protected styles(): Styles<'main'> {
         const styles = super.styles();
         styles.main = {
@@ -161,6 +207,7 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
                 styles.main,
                 {
                     '&.link' : this.linkStyle(),
+                    '&.ghost' : this.ghostStyle(),
                 },
             ] as JssStyle,
         };
@@ -196,6 +243,11 @@ const cssConfig = new CssConfig(() => {
         gapYSm      : spacers.xs,
         gapXLg      : spacers.md,
         gapYLg      : spacers.md,
+
+
+
+        ghostOpacity      : 0.5,
+        ghostOpacityHover : 1,
     };
 }, /*prefix: */'btn');
 export const cssProps = cssConfig.refs;
@@ -205,7 +257,7 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export type BtnStyle = 'link' // might be added more styles in the future
+export type BtnStyle = 'link'|'ghost' // might be added more styles in the future
 export interface VariantButton {
     btnStyle?: BtnStyle
 }
@@ -229,10 +281,14 @@ export interface Props
     // actions:
     type?        : BtnType
     onClick?     : React.MouseEventHandler<HTMLButtonElement>
+    
+    
+    // accessibility:
+    label?       : string
+    text?        : string
 
 
     // children:
-    text?        : string
     children?    : React.ReactNode
 }
 export default function Button(props: Props) {
@@ -257,6 +313,10 @@ export default function Button(props: Props) {
 
     return (
         <Control<HTMLButtonElement>
+            // arias:
+            aria-label={props.label ?? props.text}
+
+
             // essentials:
             tag={tag2}
 

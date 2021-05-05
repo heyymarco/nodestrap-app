@@ -74,10 +74,13 @@ export default function ButtonIcon(props: Props) {
     const {
         // appearances:
         icon,
+    
+    
+        // accessibility:
+        text,
 
 
         // children:
-        text,
         children,
         ...otherProps } = props;
     

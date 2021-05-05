@@ -14,7 +14,7 @@ import CarouselApp from './CarouselApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <CarouselApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -97,6 +97,7 @@ const cssConfig = new CssConfig(() => {
             ['inline-size', '300ms', 'ease-out'],
             ['block-size' , '300ms', 'ease-out'],
             ['font-size'  , '300ms', 'ease-out'],
+            ['opacity'    , '300ms', 'ease-out'],
         ],
 
         boxShadowNone     : [[0, 0, 'transparent']],
@@ -144,7 +145,7 @@ export class StylesBuilder {
              * logoBackgColor
              * logoOpacity
              */
-            if ((/^(icon|img|items|item|logo|toggler|menu|menus|label|btn|switch|link|overlay|caption|header|footer|body)[A-Z]/).test(name)) continue; // exclude
+            if ((/^(icon|img|items|item|logo|toggler|menu|menus|label|btn|navBtn|prevBtn|nextBtn|switch|link|ghost|overlay|caption|header|footer|body)[A-Z]/).test(name)) continue; // exclude
 
             // suffixes:
             /**
@@ -1167,10 +1168,10 @@ export interface GenericProps<TElement extends HTMLElement = HTMLElement>
     elmRef?       : React.Ref<TElement>
 
     // classes:
-    mainClass?    : string|null
-    classes?      : (string|null)[]
-    themeClasses? : (string|null)[]
-    stateClasses? : (string|null)[]
+    mainClass?    :  string|null|undefined
+    classes?      : (string|null|undefined)[]
+    themeClasses? : (string|null|undefined)[]
+    stateClasses? : (string|null|undefined)[]
 }
 export function GenericElement<TElement extends HTMLElement = HTMLElement>(props: GenericProps<TElement>) {
     const htmlProps = useMemo(() => {
