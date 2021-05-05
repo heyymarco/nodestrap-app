@@ -162,9 +162,11 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
 
             //#region specific states
             //#region hover
-            this.stateHover({
-                opacity: cssProps.ghostOpacityHover,
-            }),
+            this.stateNotDisable({extend: [
+                this.stateHover({
+                    opacity: cssProps.ghostOpacityHover,
+                }),
+            ] as JssStyle}),
             //#endregion hover
             //#endregion specific states
         ] as JssStyle,
@@ -181,9 +183,9 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
             extend: [
                 //#region specific states
                 //#region hover
-                this.stateNotHover({
+                {'&:not(:hover)': {
                     [this.decl(this._backgGradTg)] : 'initial', // gradient is not supported if not hover
-                }),
+                }},
                 //#endregion hover
                 //#endregion specific states
             ] as JssStyle,
