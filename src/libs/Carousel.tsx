@@ -85,6 +85,11 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
 
 
 
+        // positions:
+        position       : [['relative'], '!important'], // makes calculating slide's pos easier
+
+
+
         // spacings:
         // cancel-out parent's padding with negative margin:
         marginInline   : [['calc(0px -', cssProps.paddingInline, ')']],
@@ -316,32 +321,31 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
             // TODO: add events here
         >
             <GenericElement tag={itemsTag2} mainClass='items'>{
-                (Array.isArray(children) ? children : [children]).map((child, index) =>
-                    (
-                        (React.isValidElement(child) && (child.type === CarouselItem))
-                        ?
-                        <child.type
-                            // essentials:
-                            key={index}
-                            tag={itemTag2}
+                (Array.isArray(children) ? children : [children]).map((child, index) => (
+                    (React.isValidElement(child) && (child.type === CarouselItem))
+                    ?
+                    <CarouselItem
+                        // essentials:
+                        key={index}
+                        tag={itemTag2}
 
 
-                            // other props:
-                            {...child.props}
-                        />
-                        :
-                        <CarouselItem
-                            // essentials:
-                            key={index}
-                            tag={itemTag2}
-                        >
-                            { child }
-                        </CarouselItem>
-                    )
-                )
+                        // other props:
+                        {...child.props}
+                    />
+                    :
+                    <CarouselItem
+                        // essentials:
+                        key={index}
+                        tag={itemTag2}
+                    >
+                        { child }
+                    </CarouselItem>
+                ))
             }</GenericElement>
 
             {
+                //#region has class prevBtn
                 React.isValidElement(prevBtn)
                 &&
                 (
@@ -349,6 +353,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                     ||
                     (/(?<!\w)prevBtn(?!\w)/).test(prevBtn.props.className)
                 )
+                //#endregion has class prevBtn
                 ?
                 prevBtn
                 :
@@ -371,7 +376,8 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
 
 
-                        const colGap = Number.parseInt(itemsElm.style.columnGap || '0');
+                        const colGap      = Number.parseInt(itemsElm.style.columnGap || '0');
+                        const paddingLeft = Number.parseInt(itemsElm.style.paddingInlineStart || '0');
                         if (itemsElm.scrollLeft > 0) {
                             const scrollMove = ((itemsElm.clientWidth + colGap) / 2) + 1;
                             itemsElm.scrollBy(-scrollMove, 0); // move to left a half, the scrollSnap will help scrolling to the prev slide
@@ -379,7 +385,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                         else {
                             const lastItem = itemsElm.lastElementChild as HTMLElement;
                             if (lastItem) {
-                                const scrollPos = lastItem.offsetLeft - ((lastItem.offsetWidth + colGap) / 2) + 1;
+                                const scrollPos = (lastItem.offsetLeft - paddingLeft) - ((lastItem.offsetWidth + colGap) / 2) + 1;
                                 itemsElm.scroll(scrollPos, 0); // move to a bit after the middle pos of the last slide, the scrollSnap will help scrolling to the last pos
                             } // if
                         } // if
@@ -390,6 +396,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
             }
 
             {
+                //#region has class nextBtn
                 React.isValidElement(nextBtn)
                 &&
                 (
@@ -397,6 +404,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                     ||
                     (/(?<!\w)nextBtn(?!\w)/).test(nextBtn.props.className)
                 )
+                //#endregion has class nextBtn
                 ?
                 nextBtn
                 :
@@ -419,7 +427,8 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
 
 
-                        const colGap = Number.parseInt(itemsElm.style.columnGap || '0');
+                        const colGap      = Number.parseInt(itemsElm.style.columnGap || '0');
+                        const paddingLeft = Number.parseInt(itemsElm.style.paddingInlineStart || '0');
                         if (itemsElm.scrollLeft < (itemsElm.scrollWidth - itemsElm.clientWidth)) {
                             const scrollMove = ((itemsElm.clientWidth + colGap) / 2) + 1;
                             itemsElm.scrollBy(scrollMove, 0); // move to right a half, the scrollSnap will help scrolling to the next slide
@@ -427,7 +436,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                         else {
                             const firstItem = itemsElm.firstElementChild as HTMLElement;
                             if (firstItem) {
-                                const scrollPos = firstItem.offsetLeft + ((firstItem.offsetWidth + colGap) / 2) - 1;
+                                const scrollPos = (firstItem.offsetLeft - paddingLeft) + ((firstItem.offsetWidth + colGap) / 2) - 1;
                                 itemsElm.scroll(scrollPos, 0); // move to a bit before the middle pos of the first slide, the scrollSnap will help scrolling to the zero pos
                             } // if
                         } // if

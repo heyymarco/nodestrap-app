@@ -9,12 +9,12 @@ import type * as Elements   from './Element'
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLAnchorElement>
+export interface Props<TElement extends HTMLElement = HTMLDivElement>
     extends
         Elements.GenericProps<TElement>
 {
 }
-export default function CarouselItem<TElement extends HTMLElement = HTMLAnchorElement>(props: Props<TElement>) {
+export default function CarouselItem<TElement extends HTMLElement = HTMLDivElement>(props: Props<TElement>) {
     return (
         <GenericElement<TElement>
             // default props:

@@ -842,27 +842,43 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                 />
             ) }</div>
             { children && <div className='menus'>{
-                (Array.isArray(children) ? children : [children]).map((child, index) =>
-                    (
-                        (React.isValidElement(child) && (child.type === NavbarMenu))
-                        ?
-                        child
-                        :
-                        <NavbarMenu
-                            // essentials:
-                            key={index}
+                (Array.isArray(children) ? children : [children]).map((child, index) => (
+                    (React.isValidElement(child) && (child.type === NavbarMenu))
+                    ?
+                    <NavbarMenu
+                        // essentials:
+                        key={index}
 
 
-                            // events:
-                            onAnimationEnd={(e) =>
-                                // triggers ListGroup's onAnimationEnd event
-                                e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }))
-                            }
-                        >
-                            { child }
-                        </NavbarMenu>
-                    )
-                )
+                        // other props:
+                        {...child.props}
+
+                        
+                        // events:
+                        onAnimationEnd={(e) => {
+                            // triggers Navbar's onAnimationEnd event
+                            e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
+
+
+                            // forwards:
+                            child.props.onAnimationEnd?.(e);
+                        }}
+                    />
+                    :
+                    <NavbarMenu
+                        // essentials:
+                        key={index}
+
+
+                        // events:
+                        onAnimationEnd={(e) =>
+                            // triggers Navbar's onAnimationEnd event
+                            e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }))
+                        }
+                    >
+                        { child }
+                    </NavbarMenu>
+                ))
             }</div> }
         </Indicator>
     );

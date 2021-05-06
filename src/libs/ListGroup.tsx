@@ -303,15 +303,30 @@ export default function ListGroup<TElement extends HTMLElement = HTMLElement>(pr
             mainClass={props.mainClass ?? lgStyles.main}
         >
             {
-                children && (Array.isArray(children) ? children : [children]).map((child, index) =>
+                children && (Array.isArray(children) ? children : [children]).map((child, index) => (
                     <GenericElement
                         // essentials:
                         key={index}
                         tag={wrapTag}
                     >
                         {
-                            (React.isValidElement(child) && (child.type === ListGroupItem)) ?
-                            child
+                            (React.isValidElement(child) && (child.type === ListGroupItem))
+                            ?
+                            <ListGroupItem
+                                // other props:
+                                {...child.props}
+
+                                
+                                // events:
+                                onAnimationEnd={(e) => {
+                                    // triggers ListGroup's onAnimationEnd event
+                                    e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
+
+
+                                    // forwards:
+                                    child.props.onAnimationEnd?.(e);
+                                }}
+                            />
                             :
                             <ListGroupItem
                                 // events:
@@ -324,7 +339,7 @@ export default function ListGroup<TElement extends HTMLElement = HTMLElement>(pr
                             </ListGroupItem>
                         }
                     </GenericElement>
-                )
+                ))
             }
         </Content>
     );

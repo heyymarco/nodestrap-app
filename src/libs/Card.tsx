@@ -384,26 +384,25 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
                 // triggers Card's onAnimationEnd event
                 onAnimationEnd={handleAnimationEnd}
             >
-                {
-                    (Array.isArray(children) ? children : [children]).map((child, index) =>
-                        (React.isValidElement(child) && (child.type === 'a')) ?
-                        <Button
-                            // essentials:
-                            key={index}
-                            tag='a'
+                {(Array.isArray(children) ? children : [children]).map((child, index) => (
+                    (React.isValidElement(child) && (child.type === 'a'))
+                    ?
+                    <Button
+                        // essentials:
+                        key={index}
+                        tag='a'
 
 
-                            // themes:
-                            btnStyle='link'
+                        // themes:
+                        btnStyle='link'
 
 
-                            // other props:
-                            {...child.props}
-                        />
-                        :
-                        child
-                    )
-                }
+                        // other props:
+                        {...child.props}
+                    />
+                    :
+                    child
+                ))}
             </div>}
             {footer && <footer
                 // triggers Card's onAnimationEnd event

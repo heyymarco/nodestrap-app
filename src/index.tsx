@@ -11,10 +11,11 @@ import ModalApp from './ModalApp';
 import FormApp from './FormApp';
 import NavbarApp from './NavbarApp';
 import CarouselApp from './CarouselApp';
+import NavscrollApp from './NavscrollApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <CarouselApp />
+    <NavscrollApp />
   </React.StrictMode>,
   document.getElementById('root')
 );
