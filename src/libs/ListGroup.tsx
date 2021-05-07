@@ -61,6 +61,10 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
 
+        blockSize    : '100%', // block to vertical direction too (supports for .inline orientation)
+
+
+
         // borders:
         //#region strip out borders completely
         /*
@@ -189,6 +193,25 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
+    public inlineStyle(): JssStyle { return {
+        // flip writingMode for <ul> & <li>:
+        writingMode     : 'vertical-lr',
+        '&:dir(ltr)'    : {
+            writingMode : 'vertical-lr',
+        },
+        '&:dir(rtl)'    : {
+            writingMode : 'vertical-rl',
+        },
+
+
+        
+        [wrapperElm] : {
+            [listItemElm] : {
+                // cancel out inheritance of writingMode for wrapper:
+                writingMode : 'initial',
+            },
+        },
+    }}
     protected styles(): Styles<'main'> {
         const styles = super.styles();
         styles.main = {
@@ -234,6 +257,9 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
                         },
                     },
                 },
+                {
+                    '&.inline' : this.inlineStyle(),
+                },
             ] as JssStyle,
         };
         
@@ -266,15 +292,45 @@ export const cssDecls = cssConfig.decls;
 
 
 
+// hooks:
+
+export type OrientationStyle = 'block'|'inline'
+export interface VariantOrientation {
+    orientation?: OrientationStyle
+}
+export function useVariantOrientation(props: VariantOrientation) {
+    return {
+        class: props.orientation ? props.orientation : null,
+    };
+}
+
+export type ListStyle = 'bullet' // might be added more styles in the future
+export interface VariantList {
+    listStyle?: ListStyle
+}
+export function useVariantList(props: VariantList) {
+    return {
+        class: props.listStyle ? props.listStyle : null,
+    };
+}
+
+
+
 // react components:
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Contents.Props<TElement>
+        Contents.Props<TElement>,
+        VariantOrientation,
+        VariantList
 {
 }
 export default function ListGroup<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const lgStyles = styles.useStyles();
+
+    // themes:
+    const variOrientation = useVariantOrientation(props);
+    const variList        = useVariantList(props);
 
 
 
@@ -301,6 +357,11 @@ export default function ListGroup<TElement extends HTMLElement = HTMLElement>(pr
 
             // classes:
             mainClass={props.mainClass ?? lgStyles.main}
+            themeClasses={[...(props.themeClasses ?? []),
+                // themes:
+                variOrientation.class,
+                variList.class,
+            ]}
         >
             {children && (Array.isArray(children) ? children : [children]).map((child, index) => (
                 <GenericElement

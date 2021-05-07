@@ -110,7 +110,7 @@ function App() {
 					enabled={enabled} active={active}
 				>
 					<>hello</>
-					<>holla</>
+					<></>
 					<>hey</>
 					<ListGroupItem enabled={childEnabled}>
 						i'm {childEnabled ? 'enabled' : 'disabled'}

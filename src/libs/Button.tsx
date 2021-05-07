@@ -216,7 +216,7 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
             extend: [
                 styles.main,
                 {
-                    '&.link' : this.linkStyle(),
+                    '&.link'  : this.linkStyle(),
                     '&.ghost' : this.ghostStyle(),
                 },
             ] as JssStyle,
