@@ -10,6 +10,8 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 
 // nodestrap (modular web components):
 import * as stripOuts       from './strip-outs'
+import spacers              from './spacers'    // configurable spaces defs
+import * as border          from './borders'    // configurable borders & border radiuses defs
 import {
     GenericElement,
     cssProps as ecssProps,
@@ -188,6 +190,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
     
     
     
+            // children:
             [listItemElm]: this.listItemBasicStyle(),
         } as JssStyle, // wrapper of listItem
         //#endregion children
@@ -233,6 +236,60 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
             },
             //#endregion border-strokes as a separator
             //#endregion make a nicely rounded corners
+        } as JssStyle, // wrapper of listItem
+        //#endregion children
+    }}
+    public bulletStyle(): JssStyle { return {
+        // layout:
+        alignItems   : 'center', // child items are centered horizontally
+
+
+
+        // borders:
+        // kill borders surrounding ListGroup:
+        borderWidth  : 0,
+        borderRadius : 0,
+        overflow     : 'unset',
+
+
+
+        // spacings:
+        // add space between bullets:
+        gap          : cssProps.bulletSpacing,
+
+
+
+        //#region children
+        '&, &.inline': { // for normal and .inline style
+            [wrapperElm]: { // wrapper of listItem
+                // kill separator between bullets:
+                borderWidth : 0,
+            },
+        } as JssStyle, // wrapper of listItem
+
+        [wrapperElm]: { // wrapper of listItem
+            // children:
+            [listItemElm]: {
+                // borders:
+                //#region bullet style border
+                //#region border-strokes
+                border       : ecssProps.border,         // moved in from children
+                borderColor  : this.ref(this._borderFn), // moved in from children
+                //#endregion border-strokes
+
+
+
+                //#region border radiuses
+                borderRadius : border.radiuses.pill, // big rounded corner
+                overflow     : 'hidden',             // clip the children at the rounded corners
+                //#endregion border radiuses
+                //#endregion bullet style border
+
+
+
+                // customize:
+                ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'bullet')), // apply *general* cssProps starting with bullet***
+            } as JssStyle,
         } as JssStyle, // wrapper of listItem
         //#endregion children
     }}
@@ -283,6 +340,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
                 },
                 {
                     '&.inline' : this.inlineStyle(),
+                    '&.bullet' : this.bulletStyle(),
                 },
             ] as JssStyle,
         };
@@ -309,6 +367,13 @@ const cssConfig = new CssConfig(() => {
 
 
     return {
+        bulletSpacing   : spacers.sm,
+        bulletSpacingSm : spacers.xs,
+        bulletSpacingLg : spacers.md,
+        
+        bulletPadding   : spacers.xs,
+        bulletPaddingSm : spacers.xxs,
+        bulletPaddingLg : spacers.sm,
     };
 }, /*prefix: */'lg');
 export const cssProps = cssConfig.refs;

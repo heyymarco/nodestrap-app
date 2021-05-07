@@ -25,8 +25,10 @@ const cssConfig = new CssConfig(() => {
         ...basics,
         ...defaults,
         
+        xxs     : [['calc(', basics.md, '/', 8  , ')']] as Length,
         xs      : [['calc(', basics.md, '/', 4  , ')']] as Length,
         sm      : [['calc(', basics.md, '/', 2  , ')']] as Length,
+
         lg      : [['calc(', basics.md, '*', 1.5, ')']] as Length,
         xl      : [['calc(', basics.md, '*', 3  , ')']] as Length,
     };

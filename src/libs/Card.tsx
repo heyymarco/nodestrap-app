@@ -166,6 +166,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         // handle <a> as card-link:
         '&>a': {
             '&+a': {
+                // spacings:
                 // add a space between links:
                 marginInlineStart: cssProps.linkSpacing,
             },

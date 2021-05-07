@@ -67,6 +67,9 @@ function App() {
 	const orientations = [undefined, 'block', 'inline'];
 	const [orientation,    setOrientation     ] = useState<ListGroups.OrientationStyle|undefined>(undefined);
 
+	const listStyles = [undefined, 'bullet'];
+	const [listStyle,    setListStyle     ] = useState<ListGroups.ListStyle|undefined>(undefined);
+
 	
 
     return (
@@ -113,6 +116,7 @@ function App() {
 
 					enabled={enabled} active={active}
 					orientation={orientation}
+					listStyle={listStyle}
 				>
 					<>hello</>
 					<></>
@@ -208,20 +212,35 @@ function App() {
 					</label>
 				</p>
 				<p>
-						OrientationStyle:
-						{
-							orientations.map(ori =>
-								<label key={ori ?? ''}>
-									<input type='radio'
-										value={ori}
-										checked={orientation===ori}
-										onChange={(e) => setOrientation((e.target.value || undefined) as (ListGroups.OrientationStyle|undefined))}
-									/>
-									{`${ori}`}
-								</label>
-							)
-						}
-					</p>
+					OrientationStyle:
+					{
+						orientations.map(ori =>
+							<label key={ori ?? ''}>
+								<input type='radio'
+									value={ori}
+									checked={orientation===ori}
+									onChange={(e) => setOrientation((e.target.value || undefined) as (ListGroups.OrientationStyle|undefined))}
+								/>
+								{`${ori}`}
+							</label>
+						)
+					}
+				</p>
+				<p>
+					ListStyle:
+					{
+						listStyles.map(st =>
+							<label key={st ?? ''}>
+								<input type='radio'
+									value={st}
+									checked={listStyle===st}
+									onChange={(e) => setListStyle((e.target.value || undefined) as (ListGroups.ListStyle|undefined))}
+								/>
+								{`${st}`}
+							</label>
+						)
+					}
+				</p>
             </Container>
         </div>
     );
