@@ -13,6 +13,7 @@ import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
 import Content from './libs/Content';
 import ListGroup, {ListGroupItem} from './libs/ListGroup';
+import * as ListGroups from './libs/ListGroup';
 
 
 
@@ -63,6 +64,9 @@ function App() {
 	const [childEnabled,    setChildEnabled   ] = useState(false);
 	const [childActive,      setChildActive   ] = useState(true);
 
+	const orientations = [undefined, 'block', 'inline'];
+	const [orientation,    setOrientation     ] = useState<ListGroups.OrientationStyle|undefined>(undefined);
+
 	
 
     return (
@@ -108,6 +112,7 @@ function App() {
 					outlined={outlined}
 
 					enabled={enabled} active={active}
+					orientation={orientation}
 				>
 					<>hello</>
 					<></>
@@ -202,6 +207,21 @@ function App() {
 						active
 					</label>
 				</p>
+				<p>
+						OrientationStyle:
+						{
+							orientations.map(ori =>
+								<label key={ori ?? ''}>
+									<input type='radio'
+										value={ori}
+										checked={orientation===ori}
+										onChange={(e) => setOrientation((e.target.value || undefined) as (ListGroups.OrientationStyle|undefined))}
+									/>
+									{`${ori}`}
+								</label>
+							)
+						}
+					</p>
             </Container>
         </div>
     );

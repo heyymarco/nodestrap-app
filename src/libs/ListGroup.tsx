@@ -61,7 +61,8 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
 
-        blockSize    : '100%', // block to vertical direction too (supports for .inline orientation)
+        // sizes:
+        flex         : [[1, 1]], // growable & shrinkable, the size fills the wrapper
 
 
 
@@ -83,7 +84,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
         // strip out shadows:
         // moved from here to parent,
-        boxShadow : undefined,
+        boxShadow : undefined as unknown as null,
 
 
 
@@ -148,9 +149,12 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
         //#region children
-        [wrapperElm]: { // wrapper element
+        [wrapperElm]: { // wrapper of listItem
             // layout:
-            display: 'block',
+            display        : 'flex',    // use flexbox as the layout
+            flexDirection  : 'row',     // listItem stacked horizontally (or change to vertically, the listItem is just one, the direction is not matter)
+            justifyContent : 'stretch', // listItem width  is 100% of the wrapper (the listItem also need to have growable & shrinkable)
+            alignItems     : 'stretch', // listItem height is 100% of the wrapper
     
     
     
@@ -185,7 +189,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
     
     
             [listItemElm]: this.listItemBasicStyle(),
-        } as JssStyle, // wrapper element
+        } as JssStyle, // wrapper of listItem
         //#endregion children
 
 
@@ -194,23 +198,43 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
     public inlineStyle(): JssStyle { return {
-        // flip writingMode for <ul> & <li>:
-        writingMode     : 'vertical-lr',
-        '&:dir(ltr)'    : {
-            writingMode : 'vertical-lr',
-        },
-        '&:dir(rtl)'    : {
-            writingMode : 'vertical-rl',
-        },
+        // layout:
+        display        : 'inline-flex', // use flexbox as the layout
+        flexDirection  : 'row',         // child items stacked horizontally
 
 
-        
-        [wrapperElm] : {
-            [listItemElm] : {
-                // cancel out inheritance of writingMode for wrapper:
-                writingMode : 'initial',
+
+        //#region children
+        [wrapperElm]: { // wrapper of listItem
+            // borders:
+            //#region make a nicely rounded corners
+            /*
+                border & borderRadius are moved from children to here,
+                for making consistent border color when the children's color are filtered.
+                so we need to reconstruct the border & borderRadius here.
+            */
+
+
+
+            //#region border-strokes as a separator
+            border       : ecssProps.border,         // moved in from children
+            borderColor  : this.ref(this._borderFn), // moved in from children
+
+            borderBlockWidth          : 0,  // remove  (top|bottom)-border for all-wrapper
+
+            // remove left-border at the first-child, so that it wouldn't collide with the listGroup's left-border
+            // and
+            // remove double border by removing left-border starting from the second-child to the last-child
+            borderInlineStartWidth    : 0,
+
+            // remove right-border at the last-child, so that it wouldn't collide with the listGroup's right-border
+            '&:last-child': {
+                borderInlineEndWidth  : 0,
             },
-        },
+            //#endregion border-strokes as a separator
+            //#endregion make a nicely rounded corners
+        } as JssStyle, // wrapper of listItem
+        //#endregion children
     }}
     protected styles(): Styles<'main'> {
         const styles = super.styles();
