@@ -3,6 +3,7 @@ import
     React, {
     useState,
     useEffect,
+    useRef,
 }                          from 'react'        // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
@@ -27,16 +28,17 @@ import type * as Elements  from './Element'
 import CarouselItem        from './CarouselItem'
 import Button              from './ButtonIcon'
 import type * as Buttons   from './ButtonIcon'
+import Navscroll           from './Navscroll'
 
 
 
 // styles:
 
-const itemsElm     = '&>.items';                // .items is the slideList
-const itemElm      = '&>.items>li, &>.items>*'; // any children inside the slideList are slideItem
-const indicatorElm = '&>.indicators';
-const prevBtnElm   = '&>.prevBtn';
-const nextBtnElm   = '&>.nextBtn';
+const itemsElm   = '&>.items';                // .items is the slideList
+const itemElm    = '&>.items>li, &>.items>*'; // any children inside the slideList are slideItem
+const navElm     = '&>.nav';
+const prevBtnElm = '&>.prevBtn';
+const nextBtnElm = '&>.nextBtn';
 
 export class CarouselStylesBuilder extends ElementStylesBuilder {
     // themes:
@@ -181,6 +183,15 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'nextBtn')), // apply *general* cssProps starting with nextBtn***
     }}
+    protected navBasicStyle(): JssStyle { return {
+        // layout:
+        gridArea : 'nav',
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'nav')), // apply *general* cssProps starting with nav***
+    }}
     public basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
@@ -199,7 +210,7 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
         gridTemplateColumns : [['15%', 'auto', '15%']],
         gridTemplateAreas   : [[
             '"prevBtn main nextBtn"',
-            '".... indicator ...."',
+            '"....... nav  ......."',
         ]],
 
         // child alignments:
@@ -224,6 +235,8 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
         ].join(',')] : this.navBtnBasicStyle(),
         [prevBtnElm] : this.prevBtnBasicStyle(),
         [nextBtnElm] : this.nextBtnBasicStyle(),
+
+        [navElm]     : this.navBasicStyle(),
         //#endregion children
 
 
@@ -279,16 +292,21 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
 
 
     // children:
-    children?  : React.ReactNode
-    prevBtn?   : React.ReactChild | boolean
-    nextBtn?   : React.ReactChild | boolean
-    indicator? : React.ReactChild | boolean
+    children? : React.ReactNode
+    prevBtn?  : React.ReactChild | boolean
+    nextBtn?  : React.ReactChild | boolean
+    nav?      : React.ReactChild | boolean
 }
 export default function Carousel<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const crslStyles = styles.useStyles();
 
     // states:
     // TODO: add states here
+
+
+
+    // spy:
+    const listRef = useRef<HTMLElement>(null);
 
 
 
@@ -302,7 +320,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
         children,
         prevBtn,
         nextBtn,
-        indicator,
+        nav,
         ...otherProps } = props;
     const itemsTag2 = itemsTag ?? 'ul';
     const itemTag2  = itemTag  ?? ['ul', 'ol'].includes(itemsTag2) ? 'li' : 'div';
@@ -316,7 +334,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
             // classes:
             mainClass={props.mainClass ?? crslStyles.main}
         >
-            { children && <GenericElement tag={itemsTag2} mainClass='items'>
+            { children && <GenericElement tag={itemsTag2} mainClass='items' elmRef={listRef}>
                 {(Array.isArray(children) ? children : [children]).map((child, index) => (
                     (React.isValidElement(child) && (child.type === CarouselItem))
                     ?
@@ -440,6 +458,64 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                 >
                     { nextBtn }
                 </NavButton>
+            }
+
+            {
+                nav
+                ?
+                (
+                    React.isValidElement(nav)
+                    ?
+                    <nav.type
+                        // essentials:
+                        key={nav.key}
+
+
+                        // other props:
+                        {...nav.props}
+
+
+                        // classes:
+                        classes={[...(nav.props.classes ?? []),
+                            'nav',
+                        ]}
+
+
+                        // NavScroll props:
+                        {...((nav.type === Navscroll) ? {
+                            // spy:
+                            targetRef: listRef,
+                        } : {})}
+                    />
+                    :
+                    nav
+                )
+                :
+                <Navscroll
+                    // themes:
+                    theme={props.theme}
+                    size={props.size}
+                    listStyle='bullet'
+                    orientation='inline'
+
+
+                    // classes:
+                    classes={[
+                        'nav',
+                    ]}
+
+
+                    // spy:
+                    targetRef={listRef}
+                >
+                    {children && (Array.isArray(children) ? children : [children]).map((child, index) => (
+                        React.isValidElement(child)
+                        ?
+                        ''
+                        :
+                        ''
+                    ))}
+                </Navscroll>
             }
         </Element>
     );

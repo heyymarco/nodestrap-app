@@ -110,7 +110,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
         // layout:
         display        : 'flex',    // use flexbox as the layout
         flexDirection  : 'column',  // child items stacked vertically
-        justifyContent : 'start',   // child items placed starting from the top
+        justifyContent : 'center',  // child items placed starting from the center and then spread to both sides
         alignItems     : 'stretch', // child items width are 100% of the parent
 
 
