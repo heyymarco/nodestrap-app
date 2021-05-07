@@ -315,10 +315,6 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
             // classes:
             mainClass={props.mainClass ?? crslStyles.main}
-        
-
-            // events:
-            // TODO: add events here
         >
             { children && <GenericElement tag={itemsTag2} mainClass='items'>
                 {(Array.isArray(children) ? children : [children]).map((child, index) => (

@@ -5,20 +5,9 @@ import
     useEffect,
 }                           from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-    Styles,
-}                           from 'jss'          // ts defs support for jss
-import {
-    PropEx,
-}                           from './Css'        // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-
 // nodestrap (modular web components):
 import {
     default  as ListGroup,
-    cssProps as lcssProps,
     ListGroupItem,
 }                           from './ListGroup'
 import type * as ListGroups from './ListGroup'
@@ -59,10 +48,10 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                 const vTop    = target2.scrollTop;
                 const vRight  = vLeft + target2.clientWidth;
                 const vBottom = vTop  + target2.clientHeight;
-                
-    
-    
-                return (Array.from(target2.children) as HTMLElement[]).findIndex((child): boolean => {
+
+
+
+                const isInsideViewport = (child: HTMLElement): boolean => {
                     // child area:
                     const cLeft   = child.offsetLeft;
                     const cTop    = child.offsetTop;
@@ -79,29 +68,49 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
     
     
     
-                    // cropped child is still visible if rLeft not exceeds rRight && rTop not exceeds rBottom
+                    
                     // zero pixel is considered as visible
-                    return (rLeft <= rRight) && (rTop <= rBottom);
-                });
+                    return (
+                        ((rLeft < rRight) && (rTop < rBottom)) // cropped child is still considered visible if has positive width && positive height
+                        ||
+                        (
+                            // rare case:
+                            // consider zero width/height as visible if inside the viewport area:
+
+                            ((cLeft >= vLeft) && (cRight  <= vRight ))
+                            &&
+                            ((cTop  >= vTop ) && (cBottom <= vBottom))
+                        )
+                    );
+                };
+                
+    
+    
+                const children = Array.from(target2.children) as HTMLElement[];
+                const isLastScroll =
+                    (vLeft === (target2.scrollWidth  - target2.clientWidth ))
+                    &&
+                    (vTop  === (target2.scrollHeight - target2.clientHeight))
+                    ;
+                return (
+                    isLastScroll
+                    ?
+                    ((): number => {
+                        let index = children.length;
+                        while ((index--) > 0) {
+                            if (isInsideViewport(children[index])) return index; // found
+                        } // while
+
+                        return -1; // not found
+                    })()
+                    :
+                    children.findIndex(isInsideViewport)
+                );
             })();
 
 
 
             setActiveIndex(firstVisibleChildIndex);
-            // (Array.from(navList.children) as HTMLElement[])
-            // .map((child) => child.firstElementChild! as HTMLElement)
-            // .forEach((item, index) => {
-            //     if (index === firstVisibleChildIndex) {
-            //         if (!item.classList.contains('active') && !item.classList.contains('actived')) {
-            //             item.classList.add('active');
-            //         } // if not active
-            //     }
-            //     else {
-            //         if (item.classList.contains('active') || item.classList.contains('actived')) {
-            //             item.classList.remove('active', 'actived');
-            //         } // if active
-            //     } // if
-            // });
         };
         target?.addEventListener('scroll', handleScroll);
         if (target) handleScroll(); // trigger for the first time
@@ -119,6 +128,10 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
     const {
         // accessibility:
         readOnly,
+
+
+        // children:
+        children,
         ...otherProps } = props;
     
     return (
@@ -126,7 +139,33 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
             // other props:
             {...otherProps}
         >
-            
+            {children && (Array.isArray(children) ? children : [children]).map((child, index) => (
+                (React.isValidElement(child) && (child.type === ListGroupItem))
+                ?
+                <ListGroupItem
+                    // essentials:
+                    key={index}
+
+
+                    // accessibility:
+                    active={index === activeIndex}
+
+
+                    // other props:
+                    {...child.props}
+                />
+                :
+                <ListGroupItem
+                    // essentials:
+                    key={index}
+
+                    
+                    // accessibility:
+                    active={index === activeIndex}
+                >
+                    { child }
+                </ListGroupItem>
+            ))}
         </ListGroup>
     );
 }

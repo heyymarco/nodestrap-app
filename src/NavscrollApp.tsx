@@ -76,10 +76,12 @@ function App() {
 
 					targetRef={articleRef}
 				>
+					<NavscrollItem>Empty content</NavscrollItem>
 					<>First heading</>
 					<>Second heading</>
 					<NavscrollItem theme='success'>Thrid heading</NavscrollItem>
 					<NavscrollItem>Fourth heading</NavscrollItem>
+					<NavscrollItem>Empty content</NavscrollItem>
                 </Navscroll>
 				<article
 					ref={articleRef}
@@ -93,22 +95,24 @@ function App() {
 						position: 'relative',
 					}}
 				>
+					<section></section>
 					<section>
 						<h3>First heading</h3>
-						<p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
+						<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam odit ipsam veniam qui distinctio exercitationem, perspiciatis numquam necessitatibus commodi accusantium, suscipit tenetur eum hic cupiditate iste adipisci nemo expedita libero?</p>
 					</section>
 					<section>
 						<h3>Second heading</h3>
-						<p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
+						<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam odit ipsam veniam qui </p>
 					</section>
 					<section>
 						<h3>Thrid heading</h3>
-						<p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
+						<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam odit ipsam veniam qui distinctio exercitationem, perspiciatis numquam necessitatibus commodi accusantium, suscipit </p>
 					</section>
 					<section>
 						<h3>Fourth heading</h3>
-						<p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
+						<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam odit ipsam veniam qui distinctio exercitationem, perspiciatis numquam necessitatibus commodi accusantium, suscipit tenetur eum hic cupiditate iste adipisci nemo expedita libero? perspiciatis numquam necessitatibus commodi accusantium, suscipit tenetur eum hic cupiditate iste adipisci nemo</p>
 					</section>
+					<section></section>
 				</article>
                 <hr style={{flexBasis: '100%'}} />
 				<p>

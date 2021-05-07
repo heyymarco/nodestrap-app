@@ -15,7 +15,7 @@ import NavscrollApp from './NavscrollApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <NavscrollApp />
+    <CardApp />
   </React.StrictMode>,
   document.getElementById('root')
 );
