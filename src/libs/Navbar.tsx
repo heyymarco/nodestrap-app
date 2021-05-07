@@ -648,7 +648,7 @@ export const cssDecls = cssConfig.decls;
 export interface Compactable {
     compact? : boolean
 }
-export function useCompactable<TElement extends HTMLElement = HTMLElement>(props: Compactable, navbarRef: React.MutableRefObject<TElement|undefined>) {
+export function useCompactable<TElement extends HTMLElement = HTMLElement>(props: Compactable, navbarRef: React.MutableRefObject<TElement|null>) {
     const [dynCompact, setDynCompact] = useState<boolean>(props.compact ?? false);
     const fnCompact = props.compact ?? dynCompact;
 
@@ -748,7 +748,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
     const navbStyles  = styles.useStyles();
 
     // layouts:
-    const navbarRef   = useRef<TElement>();
+    const navbarRef   = useRef<TElement>(null);
     const compactable = useCompactable(props, navbarRef);
 
     
@@ -840,9 +840,9 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                         handleActiveChange(e.target.checked);
                     }}
                 />
-            ) }</div>
-            { children && <div className='menus'>{
-                (Array.isArray(children) ? children : [children]).map((child, index) => (
+            )}</div>
+            { children && <div className='menus'>
+                {(Array.isArray(children) ? children : [children]).map((child, index) => (
                     (React.isValidElement(child) && (child.type === NavbarMenu))
                     ?
                     <NavbarMenu
@@ -878,8 +878,8 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                     >
                         { child }
                     </NavbarMenu>
-                ))
-            }</div> }
+                ))}
+            </div> }
         </Indicator>
     );
 }

@@ -85,7 +85,7 @@ function App() {
 					ref={articleRef}
 					
 					style={{
-						height: '180px',
+						height: '160px',
 						width: '400px',
 						border: 'solid 1px black',
 						overflowY: 'auto',

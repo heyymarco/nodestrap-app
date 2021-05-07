@@ -346,7 +346,7 @@ export default function TogglerMenuButton(props: Props) {
         >
             { props.children || (
                 <svg viewBox='0 0 24 24'><polyline points='2,3 22,3' /><polyline points='2,12 22,12' /><polyline points='2,21 22,21' /></svg>
-            ) }
+            )}
         </Check>
     );
 }

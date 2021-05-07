@@ -498,7 +498,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
     const stateActive = useState(props.active ?? false);
     const isActive    = stateActive[0];
-    const cardRef     = useRef<TElement>();
+    const cardRef     = useRef<TElement>(null);
     useEffect(() => {
         if (isActive) {
             if (cardRef.current && navigator.userAgent.toLowerCase().includes('firefox')) {

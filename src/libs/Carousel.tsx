@@ -320,8 +320,8 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
             // events:
             // TODO: add events here
         >
-            <GenericElement tag={itemsTag2} mainClass='items'>{
-                (Array.isArray(children) ? children : [children]).map((child, index) => (
+            { children && <GenericElement tag={itemsTag2} mainClass='items'>
+                {(Array.isArray(children) ? children : [children]).map((child, index) => (
                     (React.isValidElement(child) && (child.type === CarouselItem))
                     ?
                     <CarouselItem
@@ -341,8 +341,8 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                     >
                         { child }
                     </CarouselItem>
-                ))
-            }</GenericElement>
+                ))}
+            </GenericElement> }
 
             {
                 //#region has class prevBtn

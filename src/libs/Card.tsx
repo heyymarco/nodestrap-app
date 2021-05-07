@@ -374,13 +374,13 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
             // classes:
             mainClass={props.mainClass ?? crdStyles.main}
         >
-            {header && <header
+            { header && <header
                 // triggers Card's onAnimationEnd event
                 onAnimationEnd={handleAnimationEnd}
             >
                 { header }
-            </header>}
-            {children && <div className='body'
+            </header> }
+            { children && <div className='body'
                 // triggers Card's onAnimationEnd event
                 onAnimationEnd={handleAnimationEnd}
             >
@@ -403,13 +403,13 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
                     :
                     child
                 ))}
-            </div>}
-            {footer && <footer
+            </div> }
+            { footer && <footer
                 // triggers Card's onAnimationEnd event
                 onAnimationEnd={handleAnimationEnd}
             >
                 { footer }
-            </footer>}
+            </footer> }
         </Content>
     );
 }

@@ -3,7 +3,6 @@ import
     React, {
     useState,
     useEffect,
-    useRef,
 }                           from 'react'        // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
@@ -42,22 +41,24 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     readOnly?        : boolean
 }
 export default function Navscroll<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
-    const listRef = useRef<TElement>();
+    const [activeIndex, setActiveIndex] = useState(-1);
+
+
+
     useEffect(() => {
         const target = props.targetRef?.current;
         const handleScroll = () => {
-            const navList = listRef.current;
             const target2 = target;
-            if (!navList || !target2) return;
+            if (!target2) return;
 
 
 
             const firstVisibleChildIndex = ((): number => {
                 // viewport area:
-                const vLeft  = target2.scrollLeft;
-                const vTop   = target2.scrollTop;
-                const vRight = vLeft + target2.clientWidth;
-                const vBottom= vTop  + target2.clientHeight;
+                const vLeft   = target2.scrollLeft;
+                const vTop    = target2.scrollTop;
+                const vRight  = vLeft + target2.clientWidth;
+                const vBottom = vTop  + target2.clientHeight;
                 
     
     
@@ -79,26 +80,28 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
     
     
                     // cropped child is still visible if rLeft not exceeds rRight && rTop not exceeds rBottom
+                    // zero pixel is considered as visible
                     return (rLeft <= rRight) && (rTop <= rBottom);
                 });
             })();
 
 
 
-            (Array.from(navList.children) as HTMLElement[])
-            .map((child) => child.firstElementChild! as HTMLElement)
-            .forEach((item, index) => {
-                if (index === firstVisibleChildIndex) {
-                    if (!item.classList.contains('active') && !item.classList.contains('actived')) {
-                        item.classList.add('active');
-                    } // if not active
-                }
-                else {
-                    if (item.classList.contains('active') || item.classList.contains('actived')) {
-                        item.classList.remove('active', 'actived');
-                    } // if active
-                } // if
-            });
+            setActiveIndex(firstVisibleChildIndex);
+            // (Array.from(navList.children) as HTMLElement[])
+            // .map((child) => child.firstElementChild! as HTMLElement)
+            // .forEach((item, index) => {
+            //     if (index === firstVisibleChildIndex) {
+            //         if (!item.classList.contains('active') && !item.classList.contains('actived')) {
+            //             item.classList.add('active');
+            //         } // if not active
+            //     }
+            //     else {
+            //         if (item.classList.contains('active') || item.classList.contains('actived')) {
+            //             item.classList.remove('active', 'actived');
+            //         } // if active
+            //     } // if
+            // });
         };
         target?.addEventListener('scroll', handleScroll);
         if (target) handleScroll(); // trigger for the first time
@@ -122,27 +125,9 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
         <ListGroup
             // other props:
             {...otherProps}
-
-
-            // essentials:
-            elmRef={(elm) => {
-                // @ts-ignore
-                listRef.current = elm;
-
-
-                // forwards:
-                const elmRef = props.elmRef;
-                if (elmRef) {
-                    if (typeof(elmRef) === 'function') {
-                        elmRef(elm);
-                    }
-                    else {
-                        // @ts-ignore
-                        elmRef.current = elm;
-                    } // if
-                } // if
-            }}
-        />
+        >
+            
+        </ListGroup>
     );
 }
 
