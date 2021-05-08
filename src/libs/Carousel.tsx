@@ -1,8 +1,6 @@
 // react (builds html using javascript):
 import
     React, {
-    useState,
-    useEffect,
     useRef,
 }                          from 'react'        // base technology of our nodestrap components
 
@@ -10,25 +8,23 @@ import
 import type {
     JssStyle,
 }                          from 'jss'          // ts defs support for jss
-import {
-    PropEx,
-}                          from './Css'        // ts defs support for jss
 import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
 import * as stripOuts      from './strip-outs'
-import colors              from './colors'     // configurable colors & theming defs
 import {
     default  as Element,
     GenericElement,
-    cssProps as ecssProps,
     ElementStylesBuilder,
 }                          from './Element'
 import type * as Elements  from './Element'
 import CarouselItem        from './CarouselItem'
 import Button              from './ButtonIcon'
 import type * as Buttons   from './ButtonIcon'
-import Navscroll           from './Navscroll'
+import {
+    default as Navscroll,
+    NavscrollItem,
+}                          from './Navscroll'
 
 
 
@@ -210,7 +206,7 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
         gridTemplateColumns : [['15%', 'auto', '15%']],
         gridTemplateAreas   : [[
             '"prevBtn main nextBtn"',
-            '"....... nav  ......."',
+            '"prevBtn nav  nextBtn"',
         ]],
 
         // child alignments:
@@ -312,6 +308,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
     const {
         // essentials:
+        elmRef,
         itemsTag,
         itemTag,
 
@@ -325,6 +322,64 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
     const itemsTag2 = itemsTag ?? 'ul';
     const itemTag2  = itemTag  ?? ['ul', 'ol'].includes(itemsTag2) ? 'li' : 'div';
 
+    const scrollTo = (index: number) => {
+        const itemsElm = listRef.current;
+        if (!itemsElm) return;
+
+
+
+        // get target slide:
+        const targetElm = ((): HTMLElement | null => {
+            const children = Array.from(itemsElm.children) as HTMLElement[];
+            if (index < 0) return children[children.length + index] ?? null;
+            return children[index] ?? null;
+        })();
+        if (!targetElm) return;
+
+
+
+        // get list states:
+        const colGap       = Number.parseInt(itemsElm.style.columnGap || '0');
+        const paddingLeft  = Number.parseInt(itemsElm.style.paddingInlineStart || '0');
+        const oldScrollPos = itemsElm.scrollLeft;
+
+
+
+        // get target's scroll pos:
+        const targetScrollPos = targetElm.offsetLeft - paddingLeft;
+
+        // critical scroll pos: a scrolling pos boundary between target's scroll pos and prev's/next's scroll pos
+        const criticalScrollPos =
+            targetScrollPos
+            +
+            ((): number => {
+                const criticalLength = (targetElm.offsetWidth + colGap) / 2;
+
+
+
+                if (targetScrollPos > oldScrollPos) { // target on the right
+                    // shift to left, so it appears coming from left to right
+                    return (
+                        -criticalLength // move to left until critical
+                        +1              // move to right a bit to avoid critical occured
+                    );
+                }
+                else { // target on the left
+                    // shift to right, so it appears coming from right to left
+                    return (
+                        +criticalLength // move to right until critical
+                        -1              // move to left a bit to avoid critical occured
+                    );
+                } // if
+            })()
+            ;
+        
+        
+        
+        // move to target:
+        itemsElm.scroll(criticalScrollPos, 0);
+    };
+
     return (
         <Element<TElement>
             // other props:
@@ -334,7 +389,30 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
             // classes:
             mainClass={props.mainClass ?? crslStyles.main}
         >
-            { children && <GenericElement tag={itemsTag2} mainClass='items' elmRef={listRef}>
+            { children && <GenericElement<TElement>
+                    // essentials:
+                    tag={itemsTag2}
+                    elmRef={(elm) => {
+                        // @ts-ignore
+                        listRef.current = elm;
+        
+        
+                        // forwards:
+                        if (elmRef) {
+                            if (typeof(elmRef) === 'function') {
+                                elmRef(elm);
+                            }
+                            else {
+                                // @ts-ignore
+                                elmRef.current = elm;
+                            } // if
+                        } // if
+                    }}
+
+
+                    // classes:
+                    mainClass='items'
+                >
                 {(Array.isArray(children) ? children : [children]).map((child, index) => (
                     (React.isValidElement(child) && (child.type === CarouselItem))
                     ?
@@ -390,18 +468,13 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
 
 
-                        const colGap      = Number.parseInt(itemsElm.style.columnGap || '0');
-                        const paddingLeft = Number.parseInt(itemsElm.style.paddingInlineStart || '0');
                         if (itemsElm.scrollLeft > 0) {
-                            const scrollMove = ((itemsElm.clientWidth + colGap) / 2) + 1;
-                            itemsElm.scrollBy(-scrollMove, 0); // move to left a half, the scrollSnap will help scrolling to the prev slide
+                            const colGap         = Number.parseInt(itemsElm.style.columnGap || '0');
+                            const criticalLength = (itemsElm.clientWidth + colGap) / 2;
+                            itemsElm.scrollBy(-criticalLength -1, 0); // move to left a half, the scrollSnap will help scrolling to the prev slide
                         }
                         else {
-                            const lastItem = itemsElm.lastElementChild as HTMLElement;
-                            if (lastItem) {
-                                const scrollPos = (lastItem.offsetLeft - paddingLeft) - ((lastItem.offsetWidth + colGap) / 2) + 1;
-                                itemsElm.scroll(scrollPos, 0); // move to a bit after the middle pos of the last slide, the scrollSnap will help scrolling to the last pos
-                            } // if
+                            scrollTo(-1); // scroll to last
                         } // if
                     }}
                 >
@@ -441,18 +514,13 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
 
 
-                        const colGap      = Number.parseInt(itemsElm.style.columnGap || '0');
-                        const paddingLeft = Number.parseInt(itemsElm.style.paddingInlineStart || '0');
                         if (itemsElm.scrollLeft < (itemsElm.scrollWidth - itemsElm.clientWidth)) {
-                            const scrollMove = ((itemsElm.clientWidth + colGap) / 2) + 1;
-                            itemsElm.scrollBy(scrollMove, 0); // move to right a half, the scrollSnap will help scrolling to the next slide
+                            const colGap         = Number.parseInt(itemsElm.style.columnGap || '0');
+                            const criticalLength = (itemsElm.clientWidth + colGap) / 2;
+                            itemsElm.scrollBy(+criticalLength +1, 0); // move to right a half, the scrollSnap will help scrolling to the next slide
                         }
                         else {
-                            const firstItem = itemsElm.firstElementChild as HTMLElement;
-                            if (firstItem) {
-                                const scrollPos = (firstItem.offsetLeft - paddingLeft) + ((firstItem.offsetWidth + colGap) / 2) - 1;
-                                itemsElm.scroll(scrollPos, 0); // move to a bit before the middle pos of the first slide, the scrollSnap will help scrolling to the zero pos
-                            } // if
+                            scrollTo(0); // scroll to first
                         } // if
                     }}
                 >
@@ -511,7 +579,15 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                     {children && (Array.isArray(children) ? children : [children]).map((child, index) => (
                         React.isValidElement(child)
                         ?
-                        ''
+                        <NavscrollItem
+                            // essentials:
+                            key={index}
+                            tag='button'
+
+
+                            // actions:
+                            onClick={() => scrollTo(index)}
+                        />
                         :
                         ''
                     ))}

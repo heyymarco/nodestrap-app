@@ -201,12 +201,12 @@ export default function Input(props: Props) {
             {...otherProps}
 
 
-            // classes:
-            mainClass={props.mainClass ?? inpStyles.main}
-
-
             // unchanged props:
             tabIndex={-1}
+
+
+            // classes:
+            mainClass={props.mainClass ?? inpStyles.main}
         >
             <input
                 // essentials:

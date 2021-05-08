@@ -53,6 +53,8 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
     // styles:
     protected listItemBasicStyle(): JssStyle { return {
         extend: [
+            stripOuts.control,  // clear browser's default styles
+            
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
 

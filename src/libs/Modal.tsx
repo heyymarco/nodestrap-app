@@ -526,6 +526,10 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
 
     const {
+        // essentials:
+        elmRef,
+
+
         // accessibility:
         active,
         tabIndex,
@@ -604,44 +608,41 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
                 if ((e.target === e.currentTarget) && (e.type === 'click')) props.onClose?.('overlay');
             }}
         >
-            {/* <div>
-            </div> */}
-                <Card<TElement>
-                    // other props:
-                    {...otherProps}
+            <Card<TElement>
+                // other props:
+                {...otherProps}
 
-                    
-                    // essentials:
-                    elmRef={(elm) => {
-                        // @ts-ignore
-                        cardRef.current = elm;
+                
+                // essentials:
+                elmRef={(elm) => {
+                    // @ts-ignore
+                    cardRef.current = elm;
 
 
-                        // forwards:
-                        const elmRef = props.elmRef;
-                        if (elmRef) {
-                            if (typeof(elmRef) === 'function') {
-                                elmRef(elm);
-                            }
-                            else {
-                                // @ts-ignore
-                                elmRef.current = elm;
-                            } // if
+                    // forwards:
+                    if (elmRef) {
+                        if (typeof(elmRef) === 'function') {
+                            elmRef(elm);
+                        }
+                        else {
+                            // @ts-ignore
+                            elmRef.current = elm;
                         } // if
-                    }}
+                    } // if
+                }}
 
 
-                    // Control props:
-                    {...{
-                        // accessibility:
-                        tabIndex : tabIndex ?? -1,
-                    }}
+                // Control props:
+                {...{
+                    // accessibility:
+                    tabIndex : tabIndex ?? -1,
+                }}
 
 
-                    // children:
-                    header={header2}
-                    footer={footer2}
-                />
+                // children:
+                header={header2}
+                footer={footer2}
+            />
         </Indicator>
     );
 }
