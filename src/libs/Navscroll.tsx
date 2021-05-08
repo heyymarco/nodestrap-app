@@ -11,6 +11,7 @@ import {
     ListGroupItem,
 }                           from './ListGroup'
 import type * as ListGroups from './ListGroup'
+import { createNonNullExpression } from 'typescript';
 
 
 
@@ -24,6 +25,7 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
 {
     // spy:
     targetRef?       : React.MutableRefObject<HTMLElement|null>
+    interpolation?   : boolean
 
 
     // accessibility:
@@ -42,75 +44,153 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
-            const firstVisibleChildIndex = ((): number => {
+            const visibleChildIndex = ((): number|null => {
+                type ElementArea = {
+                    readonly left   : number
+                    readonly top    : number
+                    readonly right  : number
+                    readonly bottom : number
+                };
+                const getElementArea = (element: HTMLElement): ElementArea => {
+                    const left   = element.offsetLeft;
+                    const top    = element.offsetTop;
+                    const right  = left + element.offsetWidth;
+                    const bottom = top  + element.offsetHeight;
+    
+                    return {
+                        left   : left,
+                        top    : top,
+                        right  : right,
+                        bottom : bottom,
+                    };
+                };
+
                 // viewport area:
-                const vLeft   = target2.scrollLeft;
-                const vTop    = target2.scrollTop;
-                const vRight  = vLeft + target2.clientWidth;
-                const vBottom = vTop  + target2.clientHeight;
+                const viewArea = {
+                    left   : target2.scrollLeft,
+                    top    : target2.scrollTop,
+                    right  : target2.scrollLeft + target2.clientWidth,
+                    bottom : target2.scrollTop  + target2.clientHeight,
+                };
+                const getCroppedElementArea = (elementArea: ElementArea) => ({
+                    left   : Math.max(elementArea.left,   viewArea.left),
+                    right  : Math.min(elementArea.right,  viewArea.right),
+                    top    : Math.max(elementArea.top,    viewArea.top),
+                    bottom : Math.min(elementArea.bottom, viewArea.bottom),
+                });
 
 
 
-                const isInsideViewport = (child: HTMLElement): boolean => {
+                const isPartiallyVisible = (child: HTMLElement): boolean => {
                     // child area:
-                    const cLeft   = child.offsetLeft;
-                    const cTop    = child.offsetTop;
-                    const cRight  = cLeft + child.offsetWidth;
-                    const cBottom = cTop  + child.offsetHeight;
-    
-    
+                    const childArea     = getElementArea(child);
     
                     // cropped child area:
-                    const rLeft   = Math.max(vLeft,   cLeft);
-                    const rRight  = Math.min(vRight,  cRight);
-                    const rTop    = Math.max(vTop,    cTop);
-                    const rBottom = Math.min(vBottom, cBottom);
-    
+                    const cropChildArea = getCroppedElementArea(childArea);
     
     
                     
-                    // zero pixel is considered as visible
                     return (
-                        ((rLeft < rRight) && (rTop < rBottom)) // cropped child is still considered visible if has positive width && positive height
+                        ((cropChildArea.left < cropChildArea.right) && (cropChildArea.top < cropChildArea.bottom)) // cropped child is still considered visible if has positive width && positive height
                         ||
                         (
                             // rare case:
                             // consider zero width/height as visible if inside the viewport area:
 
-                            ((cLeft >= vLeft) && (cRight  <= vRight ))
+                            ((childArea.left >= viewArea.left) && (childArea.right  <= viewArea.right ))
                             &&
-                            ((cTop  >= vTop ) && (cBottom <= vBottom))
+                            ((childArea.top  >= viewArea.top ) && (childArea.bottom <= viewArea.bottom))
                         )
                     );
+                };
+                const isFullyVisible = (child: HTMLElement): boolean => {
+                    // child area:
+                    const childArea     = getElementArea(child);
+    
+                    // cropped child area:
+                    const cropChildArea = getCroppedElementArea(childArea);
+
+
+
+                    return (
+                        (childArea.left   === cropChildArea.left)
+                        &&
+                        (childArea.right  === cropChildArea.right)
+                        &&
+                        (childArea.top    === cropChildArea.top)
+                        &&
+                        (childArea.bottom === cropChildArea.bottom)
+                    );
+                };
+                const findFirstIndex = <T,>(array: T[], predicate: (value: T) => boolean): number|null => {
+                    const result = array.findIndex(predicate);
+                    if (result >= 0) return result;
+
+                    return null; // not found
+                }; 
+                const findLastIndex = <T,>(array: T[], predicate: (value: T) => boolean): number|null => {
+                    let index = array.length;
+                    while ((index--) > 0) {
+                        if (predicate(array[index])) return index; // found
+                    } // while
+
+                    return null; // not found
                 };
                 
     
     
                 const children = Array.from(target2.children) as HTMLElement[];
-                const isLastScroll =
-                    (vLeft === (target2.scrollWidth  - target2.clientWidth ))
+                const isFirstScroll =
+                    (viewArea.left === 0)
                     &&
-                    (vTop  === (target2.scrollHeight - target2.clientHeight))
+                    (viewArea.top  === 0)
                     ;
-                return (
-                    isLastScroll
-                    ?
-                    ((): number => {
-                        let index = children.length;
-                        while ((index--) > 0) {
-                            if (isInsideViewport(children[index])) return index; // found
-                        } // while
+                const isLastScroll =
+                    (viewArea.left === (target2.scrollWidth  - target2.clientWidth ))
+                    &&
+                    (viewArea.top  === (target2.scrollHeight - target2.clientHeight))
+                    ;
+                
+                if (props.interpolation ?? false) {
+                    return (
+                        (isFirstScroll ? findFirstIndex(children, isPartiallyVisible) : null) // the first always win
+                        ??
+                        (isLastScroll  ? findLastIndex(children, isPartiallyVisible)  : null) // the last always win
 
-                        return -1; // not found
-                    })()
-                    :
-                    children.findIndex(isInsideViewport)
-                );
+                        ??
+
+                        findFirstIndex(children, isFullyVisible) // the (first) fully visible always win
+
+                        ??
+
+                        children
+                        .filter(isPartiallyVisible) // only visible children
+                        .map((child) => getCroppedElementArea(getElementArea(child))) // get the visible area
+                        .map((area) => (area.right - area.left) * (area.bottom - area.top)) // calculates the area
+                        .map((area, index) => ({ area: area, index: index})) // add index, so we can track the original index after being sorted
+                        .sort((a, b) => b.area - a.area) // sort from largest to narrowest
+                        [0]?.index // find the index of the largest one
+
+                        ??
+
+                        null // not found
+                    );
+                }
+                else {
+                    console.log(isLastScroll)
+                    return (
+                        !isLastScroll
+                        ?
+                        findFirstIndex(children, isPartiallyVisible) // for the first scroll and middle scroll
+                        :
+                        findLastIndex(children, isPartiallyVisible)  // for the last scroll
+                    );
+                } // if
             })();
 
 
 
-            setActiveIndex(firstVisibleChildIndex);
+            setActiveIndex(visibleChildIndex ?? -1);
         };
         target?.addEventListener('scroll', handleScroll);
         if (target) handleScroll(); // trigger for the first time
@@ -121,7 +201,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
         return () => {
             target?.removeEventListener('scroll', handleScroll);
         };
-    }, [props.targetRef]);
+    }, [props.targetRef,, props.interpolation]);
 
 
 
