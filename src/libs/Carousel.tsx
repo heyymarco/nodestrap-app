@@ -301,7 +301,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
 
 
-    // spy:
+    // scrolls:
     const listRef = useRef<HTMLElement>(null);
 
 
@@ -551,7 +551,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
                         // NavScroll props:
                         {...((nav.type === Navscroll) ? {
-                            // spy:
+                            // scrolls:
                             targetRef: listRef,
                         } : {})}
                     />
@@ -573,8 +573,9 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                     ]}
 
 
-                    // spy:
+                    // scrolls:
                     targetRef={listRef}
+                    interpolation={true}
                 >
                     {children && (Array.isArray(children) ? children : [children]).map((child, index) => (
                         React.isValidElement(child)

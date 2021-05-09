@@ -11,7 +11,6 @@ import {
     ListGroupItem,
 }                           from './ListGroup'
 import type * as ListGroups from './ListGroup'
-import { createNonNullExpression } from 'typescript';
 
 
 
@@ -23,7 +22,7 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
         ListGroups.Props<TElement>
 {
-    // spy:
+    // scrolls:
     targetRef?       : React.MutableRefObject<HTMLElement|null>
     interpolation?   : boolean
 
@@ -72,7 +71,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                     right  : target2.scrollLeft + target2.clientWidth,
                     bottom : target2.scrollTop  + target2.clientHeight,
                 };
-                const getCroppedElementArea = (elementArea: ElementArea) => ({
+                const getCroppedArea = (elementArea: ElementArea) => ({
                     left   : Math.max(elementArea.left,   viewArea.left),
                     right  : Math.min(elementArea.right,  viewArea.right),
                     top    : Math.max(elementArea.top,    viewArea.top),
@@ -86,7 +85,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                     const childArea     = getElementArea(child);
     
                     // cropped child area:
-                    const cropChildArea = getCroppedElementArea(childArea);
+                    const cropChildArea = getCroppedArea(childArea);
     
     
                     
@@ -108,10 +107,11 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                     const childArea     = getElementArea(child);
     
                     // cropped child area:
-                    const cropChildArea = getCroppedElementArea(childArea);
+                    const cropChildArea = getCroppedArea(childArea);
 
 
 
+                    // true if not cropped (the size is still the same as original)
                     return (
                         (childArea.left   === cropChildArea.left)
                         &&
@@ -151,7 +151,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                     (viewArea.top  === (target2.scrollHeight - target2.clientHeight))
                     ;
                 
-                if (props.interpolation ?? false) {
+                if (props.interpolation ?? true) {
                     return (
                         (isFirstScroll ? findFirstIndex(children, isPartiallyVisible) : null) // the first always win
                         ??
@@ -164,10 +164,16 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                         ??
 
                         children
-                        .filter(isPartiallyVisible) // only visible children
-                        .map((child) => getCroppedElementArea(getElementArea(child))) // get the visible area
-                        .map((area) => (area.right - area.left) * (area.bottom - area.top)) // calculates the area
-                        .map((area, index) => ({ area: area, index: index})) // add index, so we can track the original index after being sorted
+                        .map((child, index) => ({ index: index, child: child })) // add index, so we can track the original index after being mutated
+                        .filter((item) => isPartiallyVisible(item.child)) // only visible children
+                        .map((item) => {
+                            const area = getCroppedArea(getElementArea(item.child)); // get the visible area
+
+                            return {
+                                index : item.index,
+                                area  : (area.right - area.left) * (area.bottom - area.top), // calculates the area
+                            };
+                        })
                         .sort((a, b) => b.area - a.area) // sort from largest to narrowest
                         [0]?.index // find the index of the largest one
 
@@ -177,7 +183,6 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                     );
                 }
                 else {
-                    console.log(isLastScroll)
                     return (
                         !isLastScroll
                         ?
@@ -201,7 +206,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
         return () => {
             target?.removeEventListener('scroll', handleScroll);
         };
-    }, [props.targetRef,, props.interpolation]);
+    }, [props.targetRef, props.interpolation]);
 
 
 

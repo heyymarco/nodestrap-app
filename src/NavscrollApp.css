@@ -1,0 +1,9 @@
+article>section:nth-child(3n+1) {
+    background: pink
+}
+article>section:nth-child(3n+2) {
+    background: green
+}
+article>section:nth-child(3n+3) {
+    background: orange
+}

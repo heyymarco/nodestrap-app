@@ -8,6 +8,7 @@ import {
 }                          from 'react-jss'         // base technology of our nodestrap components
 import logo from './logo.svg';
 import './App.css';
+import './NavscrollApp.css'
 
 import Container from './libs/Container';
 import Element   from './libs/Element';
@@ -68,26 +69,50 @@ function App() {
     return (
         <div className="App">
             <Container>
-				<Navscroll
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+				<div style={{display: 'flex', flexDirection: 'row'}}>
+					<Navscroll style={{flex: '1 1'}}
+						theme={theme} size={size} enableGradient={enableGrad}
+						outlined={outlined}
 
-					enabled={enabled} active={active}
+						enabled={enabled} active={active}
 
-					targetRef={articleRef}
-				>
-					<NavscrollItem>Empty content</NavscrollItem>
-					<>First heading</>
-					<>Second heading</>
-					<NavscrollItem theme='success'>Thrid heading</NavscrollItem>
-					<NavscrollItem>Fourth heading</NavscrollItem>
-					<NavscrollItem>Empty content</NavscrollItem>
-                </Navscroll>
+						targetRef={articleRef}
+						interpolation={false}
+					>
+						<>First heading</>
+						<>Second heading</>
+						<NavscrollItem theme='success'>Thrid heading</NavscrollItem>
+						<NavscrollItem>Fourth heading</NavscrollItem>
+						<NavscrollItem>Fifth heading</NavscrollItem>
+						<NavscrollItem>Sixth heading</NavscrollItem>
+						<NavscrollItem>Seventh heading</NavscrollItem>
+						<NavscrollItem>Last heading</NavscrollItem>
+					</Navscroll>
+
+					<Navscroll style={{flex: '1 1'}}
+						theme={theme} size={size} enableGradient={enableGrad}
+						outlined={outlined}
+
+						enabled={enabled} active={active}
+
+						targetRef={articleRef}
+						interpolation={true}
+					>
+						<>First heading</>
+						<>Second heading</>
+						<NavscrollItem theme='success'>Thrid heading</NavscrollItem>
+						<NavscrollItem>Fourth heading</NavscrollItem>
+						<NavscrollItem>Fifth heading</NavscrollItem>
+						<NavscrollItem>Sixth heading</NavscrollItem>
+						<NavscrollItem>Seventh heading</NavscrollItem>
+						<NavscrollItem>Last heading</NavscrollItem>
+					</Navscroll>
+				</div>
 				<article
 					ref={articleRef}
 					
 					style={{
-						height: '160px',
+						height: '150px',
 						width: '400px',
 						border: 'solid 1px black',
 						overflowY: 'auto',
@@ -95,24 +120,31 @@ function App() {
 						position: 'relative',
 					}}
 				>
-					<section></section>
-					<section>
-						<h3>First heading</h3>
-						<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam odit ipsam veniam qui distinctio exercitationem, perspiciatis numquam necessitatibus commodi accusantium, suscipit tenetur eum hic cupiditate iste adipisci nemo expedita libero?</p>
+					{/* <section></section> */}
+					<section style={{ height: '50px' }}>
+						<h6>First heading</h6>
 					</section>
-					<section>
-						<h3>Second heading</h3>
-						<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam odit ipsam veniam qui </p>
+					<section style={{ height: '500px' }}>
+						<h6>Second heading</h6>
 					</section>
-					<section>
-						<h3>Thrid heading</h3>
-						<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam odit ipsam veniam qui distinctio exercitationem, perspiciatis numquam necessitatibus commodi accusantium, suscipit </p>
+					<section style={{ height: '40px' }}>
+						<h6>Thrid heading</h6>
 					</section>
-					<section>
-						<h3>Fourth heading</h3>
-						<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam odit ipsam veniam qui distinctio exercitationem, perspiciatis numquam necessitatibus commodi accusantium, suscipit tenetur eum hic cupiditate iste adipisci nemo expedita libero? perspiciatis numquam necessitatibus commodi accusantium, suscipit tenetur eum hic cupiditate iste adipisci nemo</p>
+					<section style={{ height: '300px' }}>
+						<h6>Fourth heading</h6>
 					</section>
-					<section></section>
+					<section style={{ height: '50px' }}>
+						<h6>Fifth heading</h6>
+					</section>
+					<section style={{ height: '40px' }}>
+						<h6>Sixth heading</h6>
+					</section>
+					<section style={{ height: '300px' }}>
+						<h6>Seventh heading</h6>
+					</section>
+					<section style={{ height: '50px' }}>
+						<h6>Last heading</h6>
+					</section>
 				</article>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
