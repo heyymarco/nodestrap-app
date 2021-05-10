@@ -282,15 +282,16 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder {
 
 
     // styles:
+    public indicationBasicStyle(): JssStyle { return {
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
     public basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
+
+            this.indicationBasicStyle(),
         ] as JssStyle,
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
 export const styles = new IndicatorStylesBuilder();

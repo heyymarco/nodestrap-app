@@ -242,17 +242,18 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
 
     // styles:
+    public controlBasicStyle(): JssStyle { return {
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
     public basicStyle(): JssStyle { return {
         extend: [
             stripOuts.control,  // clear browser's default styles
 
             super.basicStyle(), // copy basicStyle from base
+
+            this.controlBasicStyle(),
         ] as JssStyle,
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
 export const styles = new ControlStylesBuilder();

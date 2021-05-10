@@ -11,6 +11,8 @@ import './App.css';
 import Container from './libs/Container';
 import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
+import Control   from './libs/Control';
+import Button   from './libs/Button';
 import Content from './libs/Content';
 import ListGroup, {ListGroupItem} from './libs/ListGroup';
 import * as ListGroups from './libs/ListGroup';
@@ -92,7 +94,7 @@ function App() {
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
 				>
-                        test
+                        element
                 </Element>
                 <Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -100,7 +102,7 @@ function App() {
 
 					enabled={enabled} active={active}
 				>
-                        test
+                        indicator
                 </Indicator>
                 <Content
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -108,8 +110,24 @@ function App() {
 
 					enabled={enabled} active={active}
 				>
-                        test
+                        content
                 </Content>
+				<Control
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+				>
+                        control
+                </Control>
+				<Control
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+				>
+                        control
+                </Control>
 				<ListGroup
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
@@ -144,6 +162,13 @@ function App() {
 					<ListGroupItem enableGradient={true}>i'm 3d</ListGroupItem>
 					<ListGroupItem outlined={true}>i'm transparent</ListGroupItem>
 					<ListGroupItem actionCtrl={true}>i'm controllable</ListGroupItem>
+					<ListGroupItem actionCtrl={true} active={true}>i'm controllable</ListGroupItem>
+					<ListGroupItem>
+						<Button>button</Button>
+					</ListGroupItem>
+					<ListGroupItem active={true}>
+						<Button>button</Button>
+					</ListGroupItem>
                 </ListGroup>
                 <hr style={{flexBasis: '100%'}} />
 				<p>

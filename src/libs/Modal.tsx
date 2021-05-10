@@ -93,8 +93,8 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
     // states:
-    public indicationThemesIf(): JssStyle { return {}; }
-    public indicationStates(inherit = false): JssStyle { return {}; }
+    public /*override*/ indicationThemesIf(): JssStyle { return {}; }
+    public /*override*/ indicationStates(inherit = false): JssStyle { return {}; }
 
     public modalThemesIf(): JssStyle { return {}; }
     public modalStates(inherit = false): JssStyle { return {
@@ -153,7 +153,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
     // fn props:
-    public indicationFnProps(): JssStyle { return {}; }
+    public /*override*/ indicationFnProps(): JssStyle { return {}; }
     public modalFnProps(): JssStyle { return {
         // define an *animations* func for the modal's content:
         [this.decl(this._animFn)]: [
@@ -177,6 +177,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
     // styles:
+    public /*override*/ indicationBasicStyle(): JssStyle { return {}; }
     public basicStyle(): JssStyle { return {
         extend: [
             containerStyles.containerGridBasicStyle(), // apply responsive container functionality using css grid

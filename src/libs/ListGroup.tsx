@@ -33,7 +33,7 @@ import ListGroupItem        from './ListGroupItem'
 const wrapperElm  = '&>li, &>*';
 const listItemElm = '&>*';
 
-export class ListGroupStylesBuilder extends ContentStylesBuilder {
+class ListItemStylesBuilder extends ContentStylesBuilder {
     // themes:
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
@@ -48,13 +48,14 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
 
-    // states:
-    /* -- same as parent -- */
-
-
-
     // styles:
-    protected listItemBasicStyle(): JssStyle { return {
+    public basicStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(), // copy basicStyle from base
+        ] as JssStyle,
+
+
+        
         // layout:
         display      : 'block',
 
@@ -90,21 +91,93 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
-    protected listItemReadonlyBasicStyle(): JssStyle { return {
+}
+const listItemStyles = new ListItemStylesBuilder();
+
+class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder {
+    //#region mixins
+    protected actionCtrl() { return true; }
+    //#endregion mixins
+
+
+
+    // states:
+    public controlThemesIf(): JssStyle {
+        return controlStyles.controlThemesIf(); // copy themes from Control
+    }
+    public controlStates(inherit = false): JssStyle {
+        return controlStyles.controlStates(inherit); // copy states from Control
+    }
+    
+    protected themesIf(): JssStyle { return {
         extend: [
+            super.themesIf(), // copy themes from base
+
+            this.controlThemesIf(),
+        ] as JssStyle,
+    }}
+    protected states(inherit = false): JssStyle { return {
+        extend: [
+            super.states(inherit), // copy states from base
+            
+            this.controlStates(/*inherit =*/false), // parent element doesn't have [hover, leave, focus, blur]
+        ] as JssStyle,
+    }}
+
+
+
+    // fn props:
+    public controlFnProps(): JssStyle {
+        // @ts-ignore
+        return controlStyles.fnProps(); // copy functional props from Control
+    }
+    protected fnProps(): JssStyle { return {
+        extend: [
+            super.fnProps(), // copy functional props from base
+
+            this.controlFnProps(),
+        ] as JssStyle,
+    }}
+
+
+
+    // styles:
+    public controlBasicStyle(): JssStyle {
+        return controlStyles.controlBasicStyle(); // copy basicStyle from Control
+    }
+    public basicStyle(): JssStyle { return {
+        extend: [
+            stripOuts.control,  // clear browser's default styles
+
             super.basicStyle(), // copy basicStyle from base
 
-            this.listItemBasicStyle(), // copy basic ListItem style
+            this.controlBasicStyle(),
         ] as JssStyle,
     }}
-    protected listItemActionCtrlBasicStyle(): JssStyle { return {
-        extend: [
-            controlStyles.basicStyle(), // copy basicStyle from Control
-            this.contentBasicStyle(),   // copy basicStyle from Content
+}
+const listItemActionCtrlStyles = new ListItemActionCtrlStylesBuilder();
 
-            this.listItemBasicStyle(), // copy basic ListItem style
+export class ListGroupStylesBuilder extends ContentStylesBuilder {
+    // themes:
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+        extend: [
+            super.sizeOf(size, Size, sizeProp), // copy sizes from base
         ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
+
+
+
+    // states:
+    /* -- same as parent -- */
+
+
+
+    // styles:
     public basicStyle(): JssStyle { return {
         extend: [
             //#region clear browser's default styles
@@ -204,10 +277,19 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
     
             // children:
             [listItemElm]: {
-                '&:not(.actionCtrl)' : this.listItemReadonlyBasicStyle(),
-                '&.actionCtrl'       : this.listItemActionCtrlBasicStyle(),
+                '&:not(.actionCtrl)' : listItemStyles.basicStyle(),
+                '&.actionCtrl'       : listItemActionCtrlStyles.basicStyle(),
             },
         } as JssStyle, // wrapper of listItem
+        '&:not(.bullet)' : {
+            [wrapperElm] : {
+                [listItemElm]: {
+                    '&:not(.actionCtrl), &.actionCtrl': {
+                        boxShadow : [['none'], '!important'], // no focus animation
+                    },
+                },
+            },
+        },
         //#endregion children
 
 
@@ -285,25 +367,27 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
         [wrapperElm]: { // wrapper of listItem
             // children:
             [listItemElm]: {
-                // borders:
-                //#region bullet style border
-                //#region border-strokes
-                border       : ecssProps.border,         // moved in from children
-                borderColor  : this.ref(this._borderFn), // moved in from children
-                //#endregion border-strokes
-
-
-
-                //#region border radiuses
-                borderRadius : border.radiuses.pill, // big rounded corner
-                overflow     : 'hidden',             // clip the children at the rounded corners
-                //#endregion border radiuses
-                //#endregion bullet style border
-
-
-
-                // customize:
-                ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'bullet')), // apply *general* cssProps starting with bullet***
+                '&:not(.actionCtrl), &.actionCtrl': {
+                    // borders:
+                    //#region bullet style border
+                    //#region border-strokes
+                    border       : ecssProps.border,         // moved in from children
+                    borderColor  : this.ref(this._borderFn), // moved in from children
+                    //#endregion border-strokes
+    
+    
+    
+                    //#region border radiuses
+                    borderRadius : border.radiuses.pill, // big rounded corner
+                    overflow     : 'hidden',             // clip the children at the rounded corners
+                    //#endregion border radiuses
+                    //#endregion bullet style border
+    
+    
+    
+                    // customize:
+                    ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'bullet')), // apply *general* cssProps starting with bullet***
+                },
             } as JssStyle,
         } as JssStyle, // wrapper of listItem
         //#endregion children
@@ -323,13 +407,17 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
                      */
                     '&.outlined': {
                         [wrapperElm]: {
-                            [listItemElm]: this.outlined(),
+                            [listItemElm]: {
+                                '&:not(.actionCtrl), &.actionCtrl': this.outlined(),
+                            },
                         },
                     },
                     ...this.stateActive({
                         [wrapperElm]: {
                             [listItemElm]: {
-                                '&:not(._)': this.toggleOffOutlined(),
+                                '&:not(.actionCtrl), &.actionCtrl': {
+                                    '&:not(._)': this.toggleOffOutlined(),
+                                },
                             },
                         },
                     }),
@@ -343,35 +431,27 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
                             '&:not(.actionCtrl)': {
                                 extend: [
                                     // watch theme classes:
-                                    this.watchThemes(), // always inherit
+                                    listItemStyles.watchThemes(), // always inherit
             
                                     // watch state classes/pseudo-classes:
-                                    this.watchStates(/*inherit =*/true), // inherit from parent element: [enable, disable, active, passive]
+                                    listItemStyles.watchStates(/*inherit =*/true), // inherit from parent element: [enable, disable, active, passive]
             
                                     // after watching => use func props:
-                                    this.fnProps(),
+                                    // @ts-ignore
+                                    listItemStyles.fnProps(),
                                 ] as JssStyle,
                             },
                             '&.actionCtrl': {
                                 extend: [
                                     // watch theme classes:
-                                    controlStyles.watchThemes(), // always inherit
-                                    this.themes(),
-                                    this.sizes(),
+                                    listItemActionCtrlStyles.watchThemes(), // always inherit
             
                                     // watch state classes/pseudo-classes:
-                                    // controlStyles.themesIf(),
-                                    // controlStyles.controlThemesIf(),
-                                    // this.contentThemesIf(),
-                                    // @ts-ignore
-                                    controlStyles.states(/*inherit =*/true), // inherit from parent element: [enable, disable, active, passive]
-                                    controlStyles.controlStates(/*inherit =*/false), // parent element doesn't have [hover, leave, focus, blur]
-                                    this.contentStates(/*inherit =*/true), // inherit from parent element: [active, passive]
+                                    listItemActionCtrlStyles.watchStates(/*inherit =*/true),
             
                                     // after watching => use func props:
                                     // @ts-ignore
-                                    controlStyles.fnProps(),
-                                    this.contentFnProps(),
+                                    listItemActionCtrlStyles.fnProps(),
                                 ] as JssStyle,
                             },
                         },
