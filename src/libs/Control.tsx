@@ -116,13 +116,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
 
 
     // states:
-    protected themesIf(): JssStyle { return {
-        extend: [
-            super.themesIf(), // copy themes from base
-        ] as JssStyle,
-
-
-
+    public controlThemesIf(): JssStyle { return {
         // define a *default* color theme:
         [this.decl(this._foregIf)]             : colors.secondaryText,
         [this.decl(this._backgIf)]             : this.solidBackg(colors.secondary),
@@ -137,12 +131,8 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         [this.decl(this._boxShadowFocusIfAct)] : colors.primaryTransp,
         [this.decl(this._outlinedForegIfAct)]  : colors.primary,
     }}
-    protected states(inherit = false): JssStyle { return {
+    public controlStates(inherit = false): JssStyle { return {
         extend: [
-            super.states(inherit), // copy states from base
-    
-    
-    
             this.iif(!inherit, {
                 //#region all initial states are none
              // [this.decl(this._filterHoverLeave)]    : ecssProps.filterNone, // was supported from Indicator
@@ -199,16 +189,25 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
         ] as JssStyle,
     }}
 
+    protected themesIf(): JssStyle { return {
+        extend: [
+            super.themesIf(), // copy themes from base
+
+            this.controlThemesIf(),
+        ] as JssStyle,
+    }}
+    protected states(inherit = false): JssStyle { return {
+        extend: [
+            super.states(inherit), // copy states from base
+            
+            this.controlStates(inherit),
+        ] as JssStyle,
+    }}
+
 
 
     // fn props:
-    protected fnProps(): JssStyle { return {
-        extend: [
-            super.fnProps(), // copy functional props from base
-        ] as JssStyle,
-
-
-        
+    public controlFnProps(): JssStyle { return {
         //#region re-arrange the animFn at different states
         '&.active,&.actived': // if activated programmatically (not by user input)
             this.stateNotDisabled({ // if ctrl was not fully disabled
@@ -231,6 +230,13 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder {
             this.ref(this._animActivePassive), // 4th : ctrl got pressed (can interrupt focus/blur)
         ],
         //#endregion re-arrange the animFn at different states
+    }}
+    protected fnProps(): JssStyle { return {
+        extend: [
+            super.fnProps(), // copy functional props from base
+
+            this.controlFnProps(),
+        ] as JssStyle,
     }}
 
 
@@ -508,7 +514,7 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
 
     return (
         <Indicator<TElement>
-            // default props:
+            // behaviors:
             actionCtrl={true}
 
 

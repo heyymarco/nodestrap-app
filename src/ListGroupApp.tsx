@@ -143,6 +143,7 @@ function App() {
 					<ListGroupItem size='lg'>i'm big</ListGroupItem>
 					<ListGroupItem enableGradient={true}>i'm 3d</ListGroupItem>
 					<ListGroupItem outlined={true}>i'm transparent</ListGroupItem>
+					<ListGroupItem actionCtrl={true}>i'm controllable</ListGroupItem>
                 </ListGroup>
                 <hr style={{flexBasis: '100%'}} />
 				<p>

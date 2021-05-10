@@ -2,8 +2,10 @@
 import React                from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
-import Content              from './Content'
-import type * as Contents   from './Content'
+import Indicator            from './Indicator'
+import type * as Indicators from './Indicator'
+import Control              from './Control'
+import type * as Controls   from './Control'
 
 
 
@@ -11,12 +13,25 @@ import type * as Contents   from './Content'
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Contents.Props<TElement>
+        Controls.Props<TElement>
 {
+    // children:
+    children? : React.ReactNode
 }
 export default function ListGroupItem<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     return (
-        <Content<TElement>
+        props.actionCtrl
+        ?
+        <Control<TElement>
+            // other props:
+            {...props}
+
+
+            // classes:
+            mainClass={props.mainClass ?? 'actionCtrl'}
+        />
+        :
+        <Indicator<TElement>
             // other props:
             {...props}
 
