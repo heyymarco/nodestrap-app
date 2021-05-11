@@ -17,12 +17,16 @@ import {
     cssProps as ecssProps,
 }                           from './Element'
 import {
+    styles as indicatorStyles,
+}                           from './Indicator'
+import {
     default  as Content,
     ContentStylesBuilder,
+    styles as contentStyles,
 }                           from './Content'
 import type * as Contents   from './Content'
 import {
-    styles  as controlStyles,
+    styles as controlStyles,
 }                           from './Control'
 import type {
     IControlStylesBuilder,
@@ -47,11 +51,6 @@ class ListItemStylesBuilder extends ContentStylesBuilder {
 
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
-    }}
-
-
-
-    public contentStates(inherit = false): JssStyle { return {
     }}
 
 
@@ -110,6 +109,13 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
 
 
     // states:
+    public /*override*/ indicationStates(inherit = false): JssStyle {
+        return indicatorStyles.indicationStates(inherit); // non-action indicationStates
+    }
+    public /*override*/ contentStates(inherit = false): JssStyle {
+        return contentStyles.contentStates(inherit); // non-action contentStates
+    }
+    
     public controlThemesIf(): JssStyle {
         return controlStyles.controlThemesIf(); // copy themes from Control
     }
