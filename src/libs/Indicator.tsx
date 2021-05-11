@@ -27,7 +27,22 @@ import type * as Elements  from './Element'
 
 // styles:
 
-export class IndicatorStylesBuilder extends ElementStylesBuilder {
+export interface IIndicatorStylesBuilder {
+    // states:
+    indicationThemesIf(): JssStyle
+    indicationStates(inherit : boolean): JssStyle
+
+
+
+    // fn props:
+    indicationFnProps(): JssStyle
+
+
+
+    // styles:
+    indicationBasicStyle(): JssStyle
+}
+export class IndicatorStylesBuilder extends ElementStylesBuilder implements IIndicatorStylesBuilder {
     //#region scoped css props
     /**
      * active unthemed foreground color.

@@ -22,8 +22,14 @@ import type * as Elements  from './Element'
 import {
     styles as contentStyles,
 }                          from './Content'
+import type {
+    IContentStylesBuilder,
+}                          from './Content'
 import {
     useStateValidInvalid,
+}                          from './EditableControl'
+import type {
+    IValidationStylesBuilder,
 }                          from './EditableControl'
 import {
     styles as editableTextControlStyles,
@@ -34,7 +40,7 @@ import type * as Val       from './validations'
 
 // styles:
 
-export class FormStylesBuilder extends ElementStylesBuilder {
+export class FormStylesBuilder extends ElementStylesBuilder implements IContentStylesBuilder, IValidationStylesBuilder {
     // themes:
     public contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
         return editableTextControlStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from EditableTextControl

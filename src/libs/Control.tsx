@@ -29,7 +29,22 @@ import type * as Indicators from './Indicator'
 
 // styles:
 
-export class ControlStylesBuilder extends IndicatorStylesBuilder {
+export interface IControlStylesBuilder {
+    // states:
+    controlThemesIf(): JssStyle
+    controlStates(inherit : boolean): JssStyle
+
+
+
+    // fn props:
+    controlFnProps(): JssStyle
+
+
+
+    // styles:
+    controlBasicStyle(): JssStyle
+}
+export class ControlStylesBuilder extends IndicatorStylesBuilder implements IControlStylesBuilder {
     //#region scoped css props
     // anim props:
 

@@ -30,7 +30,28 @@ import type * as Indicators from './Indicator'
 
 // styles:
 
-export class ContentStylesBuilder extends IndicatorStylesBuilder {
+export interface IContentStylesBuilder {
+    // themes:
+    contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle
+    contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle
+
+
+
+    // states:
+    contentThemesIf(): JssStyle
+    contentStates(inherit : boolean): JssStyle
+
+
+
+    // fn props:
+    contentFnProps(): JssStyle
+
+
+
+    // styles:
+    contentBasicStyle(): JssStyle
+}
+export class ContentStylesBuilder extends IndicatorStylesBuilder implements IContentStylesBuilder {
     //#region scoped css props
     //#region passive - foreground
     /**

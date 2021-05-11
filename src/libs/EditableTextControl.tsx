@@ -20,6 +20,9 @@ import type * as EditableControls   from './EditableControl'
 import {
     styles as contentStyles,
 }                           from './Content'
+import type {
+    IContentStylesBuilder,
+}                           from './Content'
 import {
     styles as iconStyles,
 }                           from './Icon'
@@ -30,7 +33,7 @@ import {
 
 const iconElm = '&::after';
 
-export class EditableTextControlStylesBuilder extends EditableControlStylesBuilder {
+export class EditableTextControlStylesBuilder extends EditableControlStylesBuilder implements IContentStylesBuilder {
     //#region scoped css props
     /**
      * Icon for indicating valid/invalid state.

@@ -32,7 +32,17 @@ import type * as Val        from './validations'
 
 // styles:
 
-export class EditableControlStylesBuilder extends ControlStylesBuilder {
+export interface IValidationStylesBuilder {
+    // states:
+    validationThemesIf(): JssStyle
+    validationStates(inherit : boolean): JssStyle
+
+
+
+    // fn props:
+    validationFnProps(): JssStyle
+}
+export class EditableControlStylesBuilder extends ControlStylesBuilder implements IValidationStylesBuilder {
     //#region scoped css props
     /**
      * valid-state foreground color.

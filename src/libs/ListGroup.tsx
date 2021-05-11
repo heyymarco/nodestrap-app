@@ -24,6 +24,9 @@ import type * as Contents   from './Content'
 import {
     styles  as controlStyles,
 }                           from './Control'
+import type {
+    IControlStylesBuilder,
+}                           from './Control'
 import ListGroupItem        from './ListGroupItem'
 
 
@@ -44,6 +47,11 @@ class ListItemStylesBuilder extends ContentStylesBuilder {
 
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+    }}
+
+
+
+    public contentStates(inherit = false): JssStyle { return {
     }}
 
 
@@ -94,7 +102,7 @@ class ListItemStylesBuilder extends ContentStylesBuilder {
 }
 const listItemStyles = new ListItemStylesBuilder();
 
-class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder {
+class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements IControlStylesBuilder {
     //#region mixins
     protected actionCtrl() { return true; }
     //#endregion mixins
