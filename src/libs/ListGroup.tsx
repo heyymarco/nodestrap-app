@@ -101,12 +101,35 @@ const listItemStyles = new ListItemStylesBuilder();
 
 class NonActionControlStylesBuilder extends ControlStylesBuilder {
     //#region mixins
-    protected actionCtrl() { return true; }
+    protected actionCtrl() { return false; }
     //#endregion mixins
 }
 class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements IControlStylesBuilder {
     //#region mixins
+    protected stateActive(content: JssStyle): JssStyle { return {
+        '&.press,&.pressed,&:active:not(.disable):not(.disabled):not(:disabled)': content,
+    }}
+    protected stateNotActive(content: JssStyle): JssStyle { return {
+        '&:not(.press):not(.pressed):not(:active), &:not(.press):not(.pressed).disable, &:not(.press):not(.pressed).disabled, &:not(.press):not(.pressed):disabled': content,
+    }}
+    protected statePassivating(content: JssStyle): JssStyle { return {
+        '&.release': content,
+    }}
+    protected stateNotPassivating(content: JssStyle): JssStyle { return {
+        '&:not(.release)': content,
+    }}
+    protected stateActivePassivating(content: JssStyle): JssStyle { return {
+        '&.press,&.pressed,&:active:not(.disable):not(.disabled):not(:disabled),&.release': content,
+    }}
+    protected stateNotActivePassivating(content: JssStyle): JssStyle { return {
+        '&:not(.press):not(.pressed):not(:active):not(.release), &:not(.press):not(.pressed).disable:not(.release), &:not(.press):not(.pressed).disabled:not(.release), &:not(.press):not(.pressed):disabled:not(.release)': content,
+    }}
+
+
+
     protected actionCtrl() { return true; }
+
+
 
     protected applyStateNoAnimStartup(): JssStyle {
         // @ts-ignore
@@ -560,7 +583,7 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
 {
 }
 export default function ListGroup<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
-    const lgStyles = styles.useStyles();
+    const lgStyles        = styles.useStyles();
 
     // themes:
     const variOrientation = useVariantOrientation(props);

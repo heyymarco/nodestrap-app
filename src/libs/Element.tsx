@@ -800,6 +800,8 @@ export class ElementStylesBuilder extends StylesBuilder {
         animationDuration: [['0ms'], '!important'],
     }}
 
+
+    
     protected toggleOnGradient(): JssStyle { return {
         // *toggle on* the background gradient prop:
         [this.decl(this._backgGradTg)]     : cssProps.backgGrad,
@@ -808,6 +810,8 @@ export class ElementStylesBuilder extends StylesBuilder {
         // *toggle off* the background gradient prop:
         [this.decl(this._backgGradTg)]     : inherit ? 'unset' : 'initial',
     }}
+
+
 
     protected toggleOnOutlined(): JssStyle { return {
         // *toggle on* the outlined props:

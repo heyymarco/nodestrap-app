@@ -88,6 +88,8 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         '&:not(.check):not(.clear)': content,
     }}
 
+
+    
     protected applyStateNoAnimStartup(): JssStyle {
         return this.stateNotCheckingClearing(
             super.applyStateNoAnimStartup()

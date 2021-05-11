@@ -131,6 +131,8 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
         '&:not(.val):not(.unval)': content,
     }}
     
+
+
     protected stateInvalidating(content: JssStyle): JssStyle { return {
         '&.inv': content,
     }}
@@ -156,12 +158,16 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
         '&:not(.inv):not(.uninv)': content,
     }}
     
+
+
     protected stateValidationDisabled(content: JssStyle): JssStyle { return {
         '&.valdis'       : content,
     }}
     protected stateValidationEnabled(content: JssStyle): JssStyle { return {
         '&:not(.valdis)' : content,
     }}
+    
+
     
     protected applyStateValid(): JssStyle { return {
         // apply a *valid* color theme:

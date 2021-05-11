@@ -115,7 +115,8 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
         '&:not(.enable):not(.disable)': content,
     }}
     
-    // non-pseudo active only
+
+
     protected actionCtrl() { return false; }
     protected stateActivating(content: JssStyle): JssStyle { return {
         '&.active': content,
@@ -141,6 +142,8 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
     protected stateNotActivatingPassivating(content: JssStyle): JssStyle { return {
         '&:not(.active):not(.passive)': content,
     }}
+    
+
     
     protected applyStateNoAnimStartup(): JssStyle {
         return this.stateNotEnablingDisabling(
@@ -438,7 +441,7 @@ export function useStateEnableDisable<TElement extends HTMLElement = HTMLElement
     };
 }
 
-export function useStateActivePassive<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export function useStateActivePassive<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>, classes = { active: 'active', actived: 'actived', passive: 'passive' }) {
     const stateEnabled = (props.enabled!==false);
 
     const defaultActived = false; // if [active] was not specified => the default value is active=false (released)
@@ -500,7 +503,7 @@ export function useStateActivePassive<TElement extends HTMLElement = HTMLElement
          */
         passived: !actived && !passivating,
 
-        class: (!activating && !passivating) ? (actived ? 'actived' : null) : (activating? 'active' : (passivating ? 'passive': null)),
+        class: (!activating && !passivating) ? (actived ? classes.actived : null) : (activating? classes.active : (passivating ? classes.passive: null)),
         handleMouseDown    : handleIdle,        // for Control
         handleKeyDown      : handleIdle,        // for Control
         handleMouseUp      : handlePassivating, // for Control

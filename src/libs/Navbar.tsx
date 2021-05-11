@@ -65,6 +65,8 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
     //#region mixins
     protected actionCtrl() { return false; }
 
+
+    
     protected stateCompact(content: JssStyle): JssStyle { return {
         '&.compact': content,
     }}

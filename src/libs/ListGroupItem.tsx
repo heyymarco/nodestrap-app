@@ -2,8 +2,10 @@
 import React                from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
-import Indicator            from './Indicator'
-import type * as Indicators from './Indicator'
+import {
+    default as Indicator,
+    useStateActivePassive,
+}                           from './Indicator'
 import Control              from './Control'
 import type * as Controls   from './Control'
 
@@ -19,6 +21,15 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     children? : React.ReactNode
 }
 export default function ListGroupItem<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // states:
+    const stateActPass = useStateActivePassive({}, {
+        active  : 'press',
+        actived : 'pressed',
+        passive : 'release',
+    });
+
+
+
     const {
         // behaviors:
         actionCtrl,
@@ -38,6 +49,25 @@ export default function ListGroupItem<TElement extends HTMLElement = HTMLElement
 
             // classes:
             mainClass={props.mainClass ?? 'actionCtrl'}
+            stateClasses={[...(props.stateClasses ?? []),
+                // states:
+                stateActPass.class,
+            ]}
+        
+
+            // events:
+            onMouseDown={(e) => { stateActPass.handleMouseDown(); props.onMouseDown?.(e); }}
+            onKeyDown=  {(e) => { stateActPass.handleKeyDown();   props.onKeyDown?.(e);   }}
+            onMouseUp=  {(e) => { stateActPass.handleMouseUp();   props.onMouseUp?.(e);   }}
+            onKeyUp=    {(e) => { stateActPass.handleKeyUp();     props.onKeyUp?.(e);     }}
+            onAnimationEnd={(e) => {
+                // states:
+                stateActPass.handleAnimationEnd(e);
+
+
+                // forwards:
+                props.onAnimationEnd?.(e);
+            }}
         />
         :
         <Indicator<TElement>

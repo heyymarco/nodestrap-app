@@ -83,6 +83,8 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
         '&:not(:hover):not(.focus):not(:focus):not(.leave):not(.blur)': content,
     }}
     
+
+
     protected stateFocus(content: JssStyle): JssStyle { return {
         '&.focus,&:focus': content,
     }}
@@ -102,9 +104,12 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
         '&:not(.focus):not(:focus):not(.blur)': content,
     }}
     
+
+
     protected actionCtrl() { return true; }
     
-    // override base: pseudo + non-pseudo active
+
+    
     protected applyStateNoAnimStartup(): JssStyle {
         return this.stateNotHoverLeaving(
             this.stateNotFocusBlurring(
