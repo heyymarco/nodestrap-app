@@ -19,12 +19,21 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     children? : React.ReactNode
 }
 export default function ListGroupItem<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    const {
+        // behaviors:
+        actionCtrl,
+        ...otherProps } = props;
+
     return (
-        props.actionCtrl
+        actionCtrl
         ?
         <Control<TElement>
+            // behaviors:
+            actionCtrl={false}
+
+
             // other props:
-            {...props}
+            {...otherProps}
 
 
             // classes:
@@ -33,7 +42,7 @@ export default function ListGroupItem<TElement extends HTMLElement = HTMLElement
         :
         <Indicator<TElement>
             // other props:
-            {...props}
+            {...otherProps}
 
 
             // classes:

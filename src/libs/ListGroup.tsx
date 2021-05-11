@@ -17,15 +17,13 @@ import {
     cssProps as ecssProps,
 }                           from './Element'
 import {
-    styles as indicatorStyles,
-}                           from './Indicator'
-import {
     default  as Content,
     ContentStylesBuilder,
     styles as contentStyles,
 }                           from './Content'
 import type * as Contents   from './Content'
 import {
+    ControlStylesBuilder,
     styles as controlStyles,
 }                           from './Control'
 import type {
@@ -101,21 +99,35 @@ class ListItemStylesBuilder extends ContentStylesBuilder {
 }
 const listItemStyles = new ListItemStylesBuilder();
 
+class NonActionControlStylesBuilder extends ControlStylesBuilder {
+    //#region mixins
+    protected actionCtrl() { return true; }
+    //#endregion mixins
+}
 class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements IControlStylesBuilder {
     //#region mixins
     protected actionCtrl() { return true; }
+
+    protected applyStateNoAnimStartup(): JssStyle {
+        // @ts-ignore
+        return controlStyles.applyStateNoAnimStartup();
+    }
     //#endregion mixins
 
 
 
     // states:
     public /*override*/ indicationStates(inherit = false): JssStyle {
-        return indicatorStyles.indicationStates(inherit); // non-action indicationStates
+        // doesn't support smooth hover/leave/focus/blur:
+        // return indicatorStyles.indicationStates(inherit); // non-action indicationStates
+
+        // supports smooth hover/leave/focus/blur:
+        return (new NonActionControlStylesBuilder()).indicationStates(inherit); // non-action indicationStates
     }
     public /*override*/ contentStates(inherit = false): JssStyle {
         return contentStyles.contentStates(inherit); // non-action contentStates
     }
-    
+
     public controlThemesIf(): JssStyle {
         return controlStyles.controlThemesIf(); // copy themes from Control
     }

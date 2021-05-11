@@ -337,7 +337,7 @@ const cssConfig = new CssConfig(() => {
 
         // anim props:
 
-        filterHover        : [['brightness(85%)']],
+        filterHover        : [['brightness(85%)', 'drop-shadow(0 0 0.01px rgba(0,0,0,0.4))']],
 
         '@keyframes hover' : keyframesHover,
         '@keyframes leave' : keyframesLeave,
