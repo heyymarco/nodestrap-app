@@ -212,7 +212,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
 
-    // fn props:
+    // functions:
     protected checkFnProps(): JssStyle { return {
         // define an *animations* func for the icon:
         [this.decl(this._iconAnimFn)]: [
@@ -220,7 +220,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         ],
     }}
     protected labelFnProps(): JssStyle { return {}; }
-    protected fnProps(): JssStyle { return {
+    public /*override*/ fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
 

@@ -121,7 +121,7 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
 
 
 
-    // fn props:
+    // functions:
     protected togglerFnProps(): JssStyle { return {
         // define an *animations* func for the toggler top:
         [this.decl(this._togglerTopAnimFn)]: [
@@ -136,7 +136,7 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
             this.ref(this._togglerBtmAnimOnOff),
         ],
     }}
-    protected fnProps(): JssStyle { return {
+    public /*override*/ fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
 
@@ -214,53 +214,53 @@ const cssConfig = new CssConfig(() => {
     // transform hamburger menu to cross menu
     const keyframesTogglerTopOn  : PropEx.Keyframes = {
         from: {
-            transformOrigin: '50% 50%',
+            transformOrigin : '50% 50%',
 
-            transform: [['rotate(0deg)',   'scaleX(1)',    'translate(0, 0)',    ]],
+            transform       : [['rotate(0deg)',   'scaleX(1)',    'translate(0, 0)',     ]],
         },
         '43%': {
-            transform: [['rotate(-45deg)', 'scaleX(1.35)', 'translate(0, 37.5%)',]],
+            transform       : [['rotate(-45deg)', 'scaleX(1.35)', 'translate(0, 37.5%)', ]],
         },
         '71%': {
-            transform: [['rotate(-75deg)', 'scaleX(1.35)', 'translate(0, 37.5%)',]],
+            transform       : [['rotate(-75deg)', 'scaleX(1.35)', 'translate(0, 37.5%)', ]],
         },
         to: {
-            transformOrigin: '50% 50%',
+            transformOrigin : '50% 50%',
 
-            transform: [['rotate(-45deg)', 'scaleX(1.35)', 'translate(0, 37.5%)',]],
+            transform       : [['rotate(-45deg)', 'scaleX(1.35)', 'translate(0, 37.5%)', ]],
         },
     };
     const keyframesTogglerMidOn  : PropEx.Keyframes = {
         from: {
-            transformOrigin: '50% 50%',
+            transformOrigin : '50% 50%',
 
-            transform: [['scaleX(1)',   ]],
+            transform       : [['scaleX(1)',   ]],
         },
         '19%': {
-            transform: [['scaleX(1.35)',]],
+            transform       : [['scaleX(1.35)',]],
         },
         to: {
-            transformOrigin: '50% 50%',
+            transformOrigin : '50% 50%',
 
-            transform: [['scaleX(0)',   ]],
+            transform       : [['scaleX(0)',   ]],
         },
     };
     const keyframesTogglerBtmOn  : PropEx.Keyframes = {
         from: {
-            transformOrigin: '50% 50%',
+            transformOrigin : '50% 50%',
 
-            transform: [['rotate(0deg)',   'scaleX(1)',    'translate(0, 0)',    ]],
+            transform       : [['rotate(0deg)',   'scaleX(1)',    'translate(0, 0)',     ]],
         },
         '43%': {
-            transform: [['rotate(45deg)',  'scaleX(1.35)', 'translate(0, -37.5%)',]],
+            transform       : [['rotate(45deg)',  'scaleX(1.35)', 'translate(0, -37.5%)',]],
         },
         '71%': {
-            transform: [['rotate(75deg)',  'scaleX(1.35)', 'translate(0, -37.5%)',]],
+            transform       : [['rotate(75deg)',  'scaleX(1.35)', 'translate(0, -37.5%)',]],
         },
         to: {
-            transformOrigin: '50% 50%',
+            transformOrigin : '50% 50%',
 
-            transform: [['rotate(45deg)',  'scaleX(1.35)', 'translate(0, -37.5%)',]],
+            transform       : [['rotate(45deg)',  'scaleX(1.35)', 'translate(0, -37.5%)',]],
         },
     };
 
@@ -268,8 +268,8 @@ const cssConfig = new CssConfig(() => {
         from : keyframesTogglerTopOn.to,
         '43%': keyframesTogglerTopOn.from,
         '71%': {
-            transformOrigin: '91.7% 12.5%',
-            transform: [['rotate(30deg)',  'scaleX(1)',    'translate(0, 0)',    ]],
+            transformOrigin : '91.7% 12.5%',
+            transform       : [['rotate(30deg)',  'scaleX(1)',    'translate(0, 0)',    ]],
         },
         to   : keyframesTogglerTopOn.from,
     };
@@ -282,8 +282,8 @@ const cssConfig = new CssConfig(() => {
         from : keyframesTogglerBtmOn.to,
         '43%': keyframesTogglerBtmOn.from,
         '71%': {
-            transformOrigin: '91.7% 87.5%',
-            transform: [['rotate(-30deg)', 'scaleX(1)',    'translate(0, 0)',     ]],
+            transformOrigin : '91.7% 87.5%',
+            transform       : [['rotate(-30deg)', 'scaleX(1)',    'translate(0, 0)',     ]],
         },
         to   : keyframesTogglerBtmOn.from,
     };

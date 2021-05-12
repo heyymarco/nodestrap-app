@@ -11,6 +11,7 @@ import type {
 }                          from 'jss'          // ts defs support for jss
 import {
     PropEx,
+    Cust,
 }                          from './Css'        // ts defs support for jss
 import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
@@ -34,7 +35,7 @@ export interface IIndicatorStylesBuilder {
 
 
 
-    // fn props:
+    // functions:
     indicationFnProps(): JssStyle
 
 
@@ -268,7 +269,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
 
 
 
-    // fn props:
+    // functions:
     public indicationFnProps(): JssStyle { return {
         //#region re-arrange the animFn at different states
         '&.active,&.actived': // if activated programmatically (not by user input)
@@ -289,13 +290,22 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
         ],
         //#endregion re-arrange the animFn at different states
     }}
-    protected fnProps(): JssStyle { return {
+    public /*override*/ fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
 
             this.indicationFnProps(),
         ] as JssStyle,
     }}
+    public /*override*/ fnFilters(): Cust.Ref[] { return [
+        ...super.fnFilters(),
+
+
+
+        this.ref(this._filterEnableDisable),
+        this.ref(this._filterActivePassive),
+        this.ref(this._filterHoverLeave), // will be used in Control
+    ]}
 
 
 
@@ -330,19 +340,17 @@ const cssConfig = new CssConfig(() => {
 
     const keyframesDisable   : PropEx.Keyframes = {
         from: {
-            filter: [[
-                ecssProps.filter,
-                styles.ref(styles._filterActivePassive),
-                styles.ref(styles._filterHoverLeave),    // first priority, but now become the second priority
-             // styles.ref(styles._filterEnableDisable), // last priority, but now become the first priority
+            filter: [[ // double array => makes the JSS treat as space separated values
+                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterEnableDisable)),
+
+             // styles.ref(styles._filterEnableDisable), // missing the last => let's the browser interpolated it
             ]],
         },
         to: {
-            filter: [[
-                ecssProps.filter,
-                styles.ref(styles._filterActivePassive),
-                styles.ref(styles._filterHoverLeave),    // first priority, but now become the second priority
-                styles.ref(styles._filterEnableDisable), // last priority, but now become the first priority
+            filter: [[ // double array => makes the JSS treat as space separated values
+                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterEnableDisable)),
+
+                styles.ref(styles._filterEnableDisable), // existing the last => let's the browser interpolated it
             ]],
         },
     };
@@ -353,19 +361,17 @@ const cssConfig = new CssConfig(() => {
 
     const keyframesActive    : PropEx.Keyframes = {
         from: {
-            filter: [[
-                ecssProps.filter,
-                styles.ref(styles._filterEnableDisable), // last priority, rarely happened
-             // styles.ref(styles._filterActivePassive),
-                styles.ref(styles._filterHoverLeave),    // first priority, serving smooth responsiveness
+            filter: [[ // double array => makes the JSS treat as space separated values
+                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterActivePassive)),
+
+             // styles.ref(styles._filterActivePassive), // missing the last => let's the browser interpolated it
             ]],
         },
         to: {
-            filter: [[
-                ecssProps.filter,
-                styles.ref(styles._filterEnableDisable), // last priority, rarely happened
-                styles.ref(styles._filterActivePassive),
-                styles.ref(styles._filterHoverLeave),    // first priority, serving smooth responsiveness
+            filter: [[ // double array => makes the JSS treat as space separated values
+                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterActivePassive)),
+
+                styles.ref(styles._filterActivePassive), // existing the last => let's the browser interpolated it
             ]],
         },
     };

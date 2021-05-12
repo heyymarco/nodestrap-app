@@ -152,7 +152,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
 
-    // fn props:
+    // functions:
     public /*override*/ indicationFnProps(): JssStyle { return {}; }
     public modalFnProps(): JssStyle { return {
         // define an *animations* func for the modal's content:
@@ -166,7 +166,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             this.ref(this._overlayAnimActivePassive),
         ],
     }}
-    protected fnProps(): JssStyle { return {
+    public /*override*/ fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
 
@@ -406,11 +406,11 @@ const cssConfig = new CssConfig(() => {
 
     const keyframesOverlayActive  : PropEx.Keyframes = {
         from: {
-            opacity: 0,
+            opacity    : 0,
         },
         to: {
-            opacity: 1,
-            background: 'rgba(0,0,0, 0.5)',
+            opacity    : 1,
+            background : 'rgba(0,0,0, 0.5)',
         },
     };
     const keyframesOverlayPassive : PropEx.Keyframes = {

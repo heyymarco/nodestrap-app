@@ -36,7 +36,7 @@ export interface IControlStylesBuilder {
 
 
 
-    // fn props:
+    // functions:
     controlFnProps(): JssStyle
 
 
@@ -226,7 +226,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
 
-    // fn props:
+    // functions:
     public controlFnProps(): JssStyle { return {
         //#region re-arrange the animFn at different states
         '&.active,&.actived': // if activated programmatically (not by user input)
@@ -251,7 +251,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
         ],
         //#endregion re-arrange the animFn at different states
     }}
-    protected fnProps(): JssStyle { return {
+    public /*override*/ fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
 
@@ -294,19 +294,17 @@ const cssConfig = new CssConfig(() => {
 
     const keyframesHover   : PropEx.Keyframes = {
         from: {
-            filter: [[
-                ecssProps.filter,
-                styles.ref(styles._filterEnableDisable), // last priority, rarely happened
-                styles.ref(styles._filterActivePassive),
-             // styles.ref(styles._filterHoverLeave),    // first priority, serving smooth responsiveness
+            filter: [[ // double array => makes the JSS treat as space separated values
+                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterHoverLeave)),
+
+             // styles.ref(styles._filterHoverLeave), // missing the last => let's the browser interpolated it
             ]],
         },
         to: {
-            filter: [[
-                ecssProps.filter,
-                styles.ref(styles._filterEnableDisable), // last priority, rarely happened
-                styles.ref(styles._filterActivePassive),
-                styles.ref(styles._filterHoverLeave),    // first priority, serving smooth responsiveness
+            filter: [[ // double array => makes the JSS treat as space separated values
+                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterHoverLeave)),
+
+                styles.ref(styles._filterHoverLeave), // existing the last => let's the browser interpolated it
             ]],
         },
     };
@@ -317,15 +315,17 @@ const cssConfig = new CssConfig(() => {
 
     const keyframesFocus   : PropEx.Keyframes = {
         from: {
-            boxShadow: [[[
-                ecssProps.boxShadow,
-             // styles.ref(styles._boxShadowFocusBlur),
+            boxShadow: [[[ // triple array => makes the JSS treat as comma separated values
+                ...styles.fnBoxShadows().filter((b) => b !== styles.ref(styles._boxShadowFocusBlur)),
+
+             // styles.ref(styles._boxShadowFocusBlur), // missing the last => let's the browser interpolated it
             ]]],
         } as JssStyle,
         to: {
-            boxShadow: [[[
-                ecssProps.boxShadow,
-                styles.ref(styles._boxShadowFocusBlur),
+            boxShadow: [[[ // triple array => makes the JSS treat as comma separated values
+                ...styles.fnBoxShadows().filter((b) => b !== styles.ref(styles._boxShadowFocusBlur)),
+
+                styles.ref(styles._boxShadowFocusBlur), // existing the last => let's the browser interpolated it
             ]]],
         } as JssStyle,
     };

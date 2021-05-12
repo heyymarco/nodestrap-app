@@ -39,7 +39,7 @@ export interface IValidationStylesBuilder {
 
 
 
-    // fn props:
+    // functions:
     validationFnProps(): JssStyle
 }
 export class EditableControlStylesBuilder extends ControlStylesBuilder implements IValidationStylesBuilder {
@@ -271,7 +271,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
 
 
 
-    // fn props:
+    // functions:
     public validationFnProps(): JssStyle { return {
         //#region re-arrange the animFn at different states
         ...this.stateValid({
@@ -291,7 +291,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
         ],
         //#endregion re-arrange the animFn at different states
     }}
-    protected fnProps(): JssStyle { return {
+    public /*override*/ fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
         ] as JssStyle,
@@ -399,7 +399,7 @@ const cssConfig = new CssConfig(() => {
         },
         to: {
             backg: styles.ref(styles._backgFn),
-        }
+        },
     };
     const keyframesUninvalid : PropEx.Keyframes = {
         from : keyframesInvalid.to,

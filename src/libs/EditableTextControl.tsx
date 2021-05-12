@@ -164,11 +164,11 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
 
-    // fn props:
+    // functions:
     public contentFnProps(): JssStyle {
         return contentStyles.contentFnProps(); // copy functional props from Content
     }
-    protected fnProps(): JssStyle { return {
+    public /*override*/ fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
 

@@ -43,7 +43,7 @@ export interface IContentStylesBuilder {
 
 
 
-    // fn props:
+    // functions:
     contentFnProps(): JssStyle
 
 
@@ -155,7 +155,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
 
-    // fn props:
+    // functions:
     public contentFnProps(): JssStyle { return {
         // define a passive *foreground* color func:
         [this.decl(this._passiveForegFn)] : this.ref(
@@ -191,7 +191,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
             this._passiveBackgLy,
         ),
     }}
-    protected fnProps(): JssStyle { return {
+    public /*override*/ fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
 
@@ -239,11 +239,10 @@ const cssConfig = new CssConfig(() => {
     const keyframesActive    : PropEx.Keyframes = {
         from: {
             //#region copy from Indicator
-            filter: [[
-                ecssProps.filter,
-                styles.ref(styles._filterEnableDisable), // last priority, rarely happened
-             // styles.ref(styles._filterActivePassive),
-                styles.ref(styles._filterHoverLeave),    // first priority, serving smooth responsiveness
+            filter: [[ // double array => makes the JSS treat as space separated values
+                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterActivePassive)),
+
+             // styles.ref(styles._filterActivePassive), // missing the last => let's the browser interpolated it
             ]],
             //#endregion copy from Indicator
 
@@ -252,11 +251,10 @@ const cssConfig = new CssConfig(() => {
         },
         to: {
             //#region copy from Indicator
-            filter: [[
-                ecssProps.filter,
-                styles.ref(styles._filterEnableDisable), // last priority, rarely happened
-                styles.ref(styles._filterActivePassive),
-                styles.ref(styles._filterHoverLeave),    // first priority, serving smooth responsiveness
+            filter: [[ // double array => makes the JSS treat as space separated values
+                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterActivePassive)),
+
+                styles.ref(styles._filterActivePassive), // existing the last => let's the browser interpolated it
             ]],
             //#endregion copy from Indicator
 

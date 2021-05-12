@@ -175,12 +175,14 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
 
 
 
-            this.iif(!inherit, {
+            // this.iif(!inherit, { // do not inherit: parent element doesn't have [press, release]
+            {
                 //#region all initial states are none
                 [this.decl(this._filterPressRelease)] : ecssProps.filterNone,
                 [this.decl(this._animPressRelease)]   : ecssProps.animNone,
                 //#endregion all initial states are none
-            }),
+            },
+            // }),
 
 
 
@@ -226,16 +228,15 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
         extend: [
             super.states(inherit), // copy states from base
             
-            this.controlStates(/*inherit =*/false), // parent element doesn't have [hover, leave, focus, blur]
+            this.controlStates(/*inherit =*/false), // do not inherit: parent element doesn't have [hover, leave, focus, blur]
         ] as JssStyle,
     }}
 
 
 
-    // fn props:
+    // functions:
     public /*implement*/ controlFnProps(): JssStyle { return {
-        // // @ts-ignore
-        // controlStyles.fnProps(), // copy functional props from Control
+        // controlStyles.controlFnProps(), // copy functional props from Control
 
 
 
@@ -264,7 +265,7 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
         ],
         //#endregion re-arrange the animFn at different states
     }}
-    protected fnProps(): JssStyle { return {
+    public /*override*/ fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
 
@@ -570,7 +571,6 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
                                     listItemStyles.watchStates(/*inherit =*/true), // inherit from parent element: [enable, disable, active, passive]
             
                                     // after watching => use func props:
-                                    // @ts-ignore
                                     listItemStyles.fnProps(),
                                 ] as JssStyle,
                             },
@@ -583,7 +583,6 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
                                     listItemActionCtrlStyles.watchStates(/*inherit =*/true),
             
                                     // after watching => use func props:
-                                    // @ts-ignore
                                     listItemActionCtrlStyles.fnProps(),
                                 ] as JssStyle,
                             },

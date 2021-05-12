@@ -281,14 +281,14 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
 
-    // fn props:
+    // functions:
     protected navbarFnProps(): JssStyle { return {
         // define an *animations* func for the navbar's menus:
         [this.decl(this._menusAnimFn)]: [
             this.ref(this._menusAnimActivePassive),
         ],
     }}
-    protected fnProps(): JssStyle { return {
+    public /*override*/ fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
 

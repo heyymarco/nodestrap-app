@@ -15,7 +15,7 @@ import NavscrollApp from './NavscrollApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ListGroupApp />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

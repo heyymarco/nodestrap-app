@@ -105,7 +105,7 @@ export class FormStylesBuilder extends ElementStylesBuilder implements IContentS
 
 
 
-    // fn props:
+    // functions:
     public validationFnProps(): JssStyle {
         return editableTextControlStyles.validationFnProps(); // copy functional props from EditableTextControl
     }
@@ -114,7 +114,7 @@ export class FormStylesBuilder extends ElementStylesBuilder implements IContentS
         return editableTextControlStyles.contentFnProps(); // copy functional props from EditableTextControl
     }
 
-    protected fnProps(): JssStyle { return {
+    public /*override*/ fnProps(): JssStyle { return {
         extend: [
             super.fnProps(), // copy functional props from base
 

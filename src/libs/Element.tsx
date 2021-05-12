@@ -102,7 +102,7 @@ const cssConfig = new CssConfig(() => {
 
         boxShadowNone     : [[0, 0, 'transparent']],
         boxShadow         : [[0, 0, 'transparent']],
-        boxShadowFocus    : [[0, 0, 0, '0.25rem' ]],
+        boxShadowFocus    : [[0, 0, 0, '0.25rem' ]], // supports for Control children's theming
         
         filterNone        : 'brightness(100%)',
         filter            : 'brightness(100%)',
@@ -519,12 +519,12 @@ export class StylesBuilder {
 
 
 
-    // fn props:
+    // functions:
     /**
-     * Creates functional prop definitions in which the values *depends on* themes and/or states using *fallback* strategy.
+     * Creates a functional prop definitions in which the values *depends on* the themes and/or the states using *fallback* strategy.
      * @returns A `JssStyle` represents the functional prop definitions.
      */
-    protected fnProps(): JssStyle  { return {}; }
+    public /*virtual*/ fnProps(): JssStyle  { return {}; }
 
 
 
@@ -881,8 +881,8 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
 
-    // fn props:
-    protected fnProps(): JssStyle { return {
+    // functions:
+    public /*override*/ fnProps(): JssStyle { return {
         // define a *none* background:
         [this.decl(this._backgNone)] : this.solidBackg('transparent'),
 
@@ -965,6 +965,22 @@ export class ElementStylesBuilder extends StylesBuilder {
             cssProps.anim,
         ],
     }}
+
+    /**
+     * Creates a composite filter definition in which the filters *depends on* the themes and/or the states.
+     * @returns A `Cust.Ref[]` represents the composite filter definition.
+     */
+    public /*virtual*/ fnFilters(): Cust.Ref[] { return [
+        cssProps.filter,
+    ]}
+
+    /**
+     * Creates a composite boxShadow definition in which the boxShadows *depends on* the themes and/or the states.
+     * @returns A `Cust.Ref[]` represents the composite boxShadow definition.
+     */
+    public /*virtual*/ fnBoxShadows(): Cust.Ref[] { return [
+        cssProps.boxShadow,
+    ]}
 
 
 
