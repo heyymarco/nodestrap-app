@@ -235,13 +235,12 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
 
 
     // functions:
-    public /*implement*/ controlFnProps(): JssStyle { return {
-        // controlStyles.controlFnProps(), // copy functional props from Control
-
-
-
+    public /*implement*/ controlPropsFn(): JssStyle {
+        return controlStyles.controlPropsFn(); // copy functional props from Control
+    }
+    public /*implement*/ controlAnimFn(): JssStyle { return {
         //#region re-arrange the animFn at different states
-        '&.active,&.actived': // if activated programmatically (not by user input)
+        '&.press,&.pressed': // if activated programmatically (not by user input)
             this.stateNotDisabled({ // if ctrl was not fully disabled
                 // define an *animations* func:
                 [this.decl(this._animFn)]: [
@@ -265,13 +264,17 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
         ],
         //#endregion re-arrange the animFn at different states
     }}
-    public /*override*/ fnProps(): JssStyle { return {
-        extend: [
-            super.fnProps(), // copy functional props from base
 
-            this.controlFnProps(),
+    public /*override*/ propsFn(): JssStyle { return {
+        extend: [
+            super.propsFn(), // copy functional props from base
+
+            this.controlPropsFn(),
         ] as JssStyle,
     }}
+    public /*override*/ animFn(): JssStyle {
+        return this.controlAnimFn();
+    }
 
 
 
@@ -535,8 +538,8 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
                     //#region forwards outlined to list items
                     /**
                      * -- fix imperfection by design --
-                     * because outlined() depended on toggleOnOutlined() depended on fnProps()
-                     * and we re-define fnProps() on [wrapperElm]>[listItemElm]
+                     * because outlined() depended on toggleOnOutlined() depended on propsFn()
+                     * and we re-define propsFn() on [wrapperElm]>[listItemElm]
                      * so we need to re-define outlined() on [wrapperElm]>[listItemElm]
                      */
                     '&.outlined': {
@@ -571,7 +574,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
                                     listItemStyles.watchStates(/*inherit =*/true), // inherit from parent element: [enable, disable, active, passive]
             
                                     // after watching => use func props:
-                                    listItemStyles.fnProps(),
+                                    listItemStyles.propsFn(),
                                 ] as JssStyle,
                             },
                             '&.actionCtrl': {
@@ -583,7 +586,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
                                     listItemActionCtrlStyles.watchStates(/*inherit =*/true),
             
                                     // after watching => use func props:
-                                    listItemActionCtrlStyles.fnProps(),
+                                    listItemActionCtrlStyles.propsFn(),
                                 ] as JssStyle,
                             },
                         },

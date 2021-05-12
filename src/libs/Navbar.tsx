@@ -282,17 +282,17 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
     // functions:
-    protected navbarFnProps(): JssStyle { return {
+    protected navbarPropsFn(): JssStyle { return {
         // define an *animations* func for the navbar's menus:
         [this.decl(this._menusAnimFn)]: [
             this.ref(this._menusAnimActivePassive),
         ],
     }}
-    public /*override*/ fnProps(): JssStyle { return {
+    public /*override*/ propsFn(): JssStyle { return {
         extend: [
-            super.fnProps(), // copy functional props from base
+            super.propsFn(), // copy functional props from base
 
-            this.navbarFnProps(),
+            this.navbarPropsFn(),
         ] as JssStyle,
     }}
 
@@ -481,8 +481,8 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                         
                         /**
                          * -- fix imperfection by design --
-                         * because outlined() depended on toggleOnOutlined() depended on fnProps()
-                         * and we re-define fnProps() on [menusElm|menuElm]
+                         * because outlined() depended on toggleOnOutlined() depended on propsFn()
+                         * and we re-define propsFn() on [menusElm|menuElm]
                          * so we need to re-define outlined() on [menusElm|menuElm]
                          */
                         '&.outlined': {
@@ -519,14 +519,14 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     this.navbarWatchStates(),
 
                     // after watching => use func props:
-                    this.fnProps(),           // for themes
-                    this.indicationFnProps(), // overwrite animFn only for indication
+                    this.propsFn(),           // for themes
+                    this.indicationPropsFn(), // overwrite animFn only for indication
                 ] as JssStyle,
 
 
 
                 // children:
-                [menusElm] : this.fnProps(), // use func props so we can disable the gradient
+                [menusElm] : this.propsFn(), // use func props so we can disable the gradient
                 [menuElm]  : {
                     extend: [
                         // watch theme classes:
@@ -542,7 +542,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                         },
 
                         // after watching => use func props:
-                        this.fnProps(),
+                        this.propsFn(),
                     ] as JssStyle,
                 } as JssStyle,
             },

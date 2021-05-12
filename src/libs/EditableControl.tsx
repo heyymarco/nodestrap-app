@@ -40,7 +40,8 @@ export interface IValidationStylesBuilder {
 
 
     // functions:
-    validationFnProps(): JssStyle
+    validationPropsFn(): JssStyle
+    validationAnimFn(): JssStyle
 }
 export class EditableControlStylesBuilder extends ControlStylesBuilder implements IValidationStylesBuilder {
     //#region scoped css props
@@ -272,32 +273,35 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
 
 
     // functions:
-    public validationFnProps(): JssStyle { return {
+    public validationPropsFn(): JssStyle { return {} }
+    public validationAnimFn(): JssStyle { return {
         //#region re-arrange the animFn at different states
         ...this.stateValid({
             // define an *animations* func:
             [this.decl(this._animFn)]: [
                 ecssProps.anim,
-                this.ref(this._animInvUninv), // 2nd : ctrl already validated, move to the least priority
-                this.ref(this._animValUnval), // 1st : rarely triggered => low probability
+                this.ref(this._animValUnval), // 2nd : ctrl already validated, move to the least priority
+                this.ref(this._animInvUninv), // 1st : rarely triggered => low probability
             ],
         }),
 
         // define an *animations* func:
         [this.decl(this._animFn)]: [
             ecssProps.anim,
-            this.ref(this._animValUnval),
             this.ref(this._animInvUninv),
+            this.ref(this._animValUnval),
         ],
         //#endregion re-arrange the animFn at different states
     }}
-    public /*override*/ fnProps(): JssStyle { return {
+
+    public /*override*/ propsFn(): JssStyle { return {
         extend: [
-            super.fnProps(), // copy functional props from base
+            super.propsFn(), // copy functional props from base
+
+            this.validationPropsFn(),
         ] as JssStyle,
-
-
-
+    }}
+    public /*override*/ animFn(): JssStyle { return {
         //#region re-arrange the animFn at different states
         '&.active,&.actived': // if activated programmatically (not by user input)
             this.stateNotDisabled({ // if ctrl was not fully disabled
@@ -317,8 +321,8 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
                 [this.decl(this._animFn)]: [
                     ecssProps.anim,
                     this.ref(this._animActivePassive), // 6th : ctrl already pressed, move to the least priority
-                    this.ref(this._animValUnval),      // 5th : rarely triggered => low probability
-                    this.ref(this._animInvUninv),      // 4th : rarely triggered => low probability
+                    this.ref(this._animInvUninv),      // 5th : rarely triggered => low probability
+                    this.ref(this._animValUnval),      // 4th : rarely triggered => low probability
                     this.ref(this._animHoverLeave),    // 3rd : cursor leaved   => low probability because holding press
                     this.ref(this._animFocusBlur),     // 2nd : ctrl lost focus => low probability because holding press
                     this.ref(this._animEnableDisable), // 1st : ctrl enable/disable => rarely used => low probability
@@ -340,8 +344,8 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
         // define an *animations* func:
         [this.decl(this._animFn)]: [
             ecssProps.anim,
-            this.ref(this._animValUnval),      // 6th : rarely triggered => low probability
-            this.ref(this._animInvUninv),      // 5th : rarely triggered => low probability
+            this.ref(this._animInvUninv),      // 6th : rarely triggered => low probability
+            this.ref(this._animValUnval),      // 5th : rarely triggered => low probability
             this.ref(this._animEnableDisable), // 4th : ctrl must be enabled
             this.ref(this._animHoverLeave),    // 3rd : cursor hovered over ctrl
             this.ref(this._animFocusBlur),     // 2nd : ctrl got focused (can interrupt hover/leave)
@@ -388,10 +392,7 @@ const cssConfig = new CssConfig(() => {
             backg: styles.ref(styles._backgFn),
         },
     };
-    const keyframesUnvalid   : PropEx.Keyframes = {
-        from : keyframesValid.to,
-        to   : keyframesValid.from,
-    };
+    const keyframesUnvalid   : PropEx.Keyframes = {};
 
     const keyframesInvalid   : PropEx.Keyframes = {
         from: {
@@ -401,10 +402,7 @@ const cssConfig = new CssConfig(() => {
             backg: styles.ref(styles._backgFn),
         },
     };
-    const keyframesUninvalid : PropEx.Keyframes = {
-        from : keyframesInvalid.to,
-        to   : keyframesInvalid.from,
-    };
+    const keyframesUninvalid : PropEx.Keyframes = {};
 
 
     return {

@@ -69,7 +69,7 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
 
 
     // states:
-    protected togglerThemesIf(): JssStyle { return {}; }
+    protected togglerThemesIf(): JssStyle { return {} }
     protected togglerStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit, {
@@ -122,7 +122,7 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
 
 
     // functions:
-    protected togglerFnProps(): JssStyle { return {
+    protected togglerPropsFn(): JssStyle { return {
         // define an *animations* func for the toggler top:
         [this.decl(this._togglerTopAnimFn)]: [
             this.ref(this._togglerTopAnimOnOff),
@@ -136,11 +136,11 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
             this.ref(this._togglerBtmAnimOnOff),
         ],
     }}
-    public /*override*/ fnProps(): JssStyle { return {
+    public /*override*/ propsFn(): JssStyle { return {
         extend: [
-            super.fnProps(), // copy functional props from base
+            super.propsFn(), // copy functional props from base
 
-            this.togglerFnProps(),
+            this.togglerPropsFn(),
         ] as JssStyle,
     }}
 

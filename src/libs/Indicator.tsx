@@ -36,7 +36,8 @@ export interface IIndicatorStylesBuilder {
 
 
     // functions:
-    indicationFnProps(): JssStyle
+    indicationPropsFn(): JssStyle
+    indicationAnimFn(): JssStyle
 
 
 
@@ -270,7 +271,8 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
 
 
     // functions:
-    public indicationFnProps(): JssStyle { return {
+    public indicationPropsFn(): JssStyle { return {} }
+    public indicationAnimFn(): JssStyle { return {
         //#region re-arrange the animFn at different states
         '&.active,&.actived': // if activated programmatically (not by user input)
             this.stateNotDisabled({ // if ctrl was not fully disabled
@@ -290,15 +292,19 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
         ],
         //#endregion re-arrange the animFn at different states
     }}
-    public /*override*/ fnProps(): JssStyle { return {
-        extend: [
-            super.fnProps(), // copy functional props from base
 
-            this.indicationFnProps(),
+    public /*override*/ propsFn(): JssStyle { return {
+        extend: [
+            super.propsFn(), // copy functional props from base
+
+            this.indicationPropsFn(),
         ] as JssStyle,
     }}
-    public /*override*/ fnFilters(): Cust.Ref[] { return [
-        ...super.fnFilters(),
+    public /*override*/ animFn(): JssStyle {
+        return this.indicationAnimFn();
+    }
+    public /*override*/ filterFn(): Cust.Ref[] { return [
+        ...super.filterFn(),
 
 
 
@@ -341,14 +347,14 @@ const cssConfig = new CssConfig(() => {
     const keyframesDisable   : PropEx.Keyframes = {
         from: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterEnableDisable)),
+                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterEnableDisable)),
 
              // styles.ref(styles._filterEnableDisable), // missing the last => let's the browser interpolated it
             ]],
         },
         to: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterEnableDisable)),
+                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterEnableDisable)),
 
                 styles.ref(styles._filterEnableDisable), // existing the last => let's the browser interpolated it
             ]],
@@ -362,14 +368,14 @@ const cssConfig = new CssConfig(() => {
     const keyframesActive    : PropEx.Keyframes = {
         from: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterActivePassive)),
+                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterActivePassive)),
 
              // styles.ref(styles._filterActivePassive), // missing the last => let's the browser interpolated it
             ]],
         },
         to: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterActivePassive)),
+                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterActivePassive)),
 
                 styles.ref(styles._filterActivePassive), // existing the last => let's the browser interpolated it
             ]],

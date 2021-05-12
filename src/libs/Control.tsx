@@ -21,6 +21,7 @@ import {
 }                           from './Element'
 import {
     default  as Indicator,
+    IIndicatorStylesBuilder,
     IndicatorStylesBuilder,
 }                           from './Indicator'
 import type * as Indicators from './Indicator'
@@ -29,7 +30,7 @@ import type * as Indicators from './Indicator'
 
 // styles:
 
-export interface IControlStylesBuilder {
+export interface IControlStylesBuilder extends IIndicatorStylesBuilder {
     // states:
     controlThemesIf(): JssStyle
     controlStates(inherit : boolean): JssStyle
@@ -37,7 +38,8 @@ export interface IControlStylesBuilder {
 
 
     // functions:
-    controlFnProps(): JssStyle
+    controlPropsFn(): JssStyle
+    controlAnimFn(): JssStyle
 
 
 
@@ -227,7 +229,8 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // functions:
-    public controlFnProps(): JssStyle { return {
+    public controlPropsFn(): JssStyle { return {} }
+    public controlAnimFn(): JssStyle { return {
         //#region re-arrange the animFn at different states
         '&.active,&.actived': // if activated programmatically (not by user input)
             this.stateNotDisabled({ // if ctrl was not fully disabled
@@ -251,13 +254,17 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
         ],
         //#endregion re-arrange the animFn at different states
     }}
-    public /*override*/ fnProps(): JssStyle { return {
-        extend: [
-            super.fnProps(), // copy functional props from base
 
-            this.controlFnProps(),
+    public /*override*/ propsFn(): JssStyle { return {
+        extend: [
+            super.propsFn(), // copy functional props from base
+
+            this.controlPropsFn(),
         ] as JssStyle,
     }}
+    public /*override*/ animFn(): JssStyle {
+        return this.controlAnimFn();
+    }
 
 
 
@@ -295,14 +302,14 @@ const cssConfig = new CssConfig(() => {
     const keyframesHover   : PropEx.Keyframes = {
         from: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterHoverLeave)),
+                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterHoverLeave)),
 
              // styles.ref(styles._filterHoverLeave), // missing the last => let's the browser interpolated it
             ]],
         },
         to: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterHoverLeave)),
+                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterHoverLeave)),
 
                 styles.ref(styles._filterHoverLeave), // existing the last => let's the browser interpolated it
             ]],
@@ -316,14 +323,14 @@ const cssConfig = new CssConfig(() => {
     const keyframesFocus   : PropEx.Keyframes = {
         from: {
             boxShadow: [[[ // triple array => makes the JSS treat as comma separated values
-                ...styles.fnBoxShadows().filter((b) => b !== styles.ref(styles._boxShadowFocusBlur)),
+                ...styles.boxShadowFn().filter((b) => b !== styles.ref(styles._boxShadowFocusBlur)),
 
              // styles.ref(styles._boxShadowFocusBlur), // missing the last => let's the browser interpolated it
             ]]],
         } as JssStyle,
         to: {
             boxShadow: [[[ // triple array => makes the JSS treat as comma separated values
-                ...styles.fnBoxShadows().filter((b) => b !== styles.ref(styles._boxShadowFocusBlur)),
+                ...styles.boxShadowFn().filter((b) => b !== styles.ref(styles._boxShadowFocusBlur)),
 
                 styles.ref(styles._boxShadowFocusBlur), // existing the last => let's the browser interpolated it
             ]]],

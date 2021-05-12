@@ -120,7 +120,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
     // states:
-    protected checkThemesIf(): JssStyle { return {}; }
+    protected checkThemesIf(): JssStyle { return {} }
     protected checkStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit, {
@@ -155,7 +155,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         ] as JssStyle,
     }}
 
-    protected labelThemesIf(): JssStyle { return {}; }
+    protected labelThemesIf(): JssStyle { return {} }
     protected labelStates(inherit = false): JssStyle { return {
         extend: [
             //#region specific states
@@ -213,19 +213,19 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
     // functions:
-    protected checkFnProps(): JssStyle { return {
+    protected checkPropsFn(): JssStyle { return {
         // define an *animations* func for the icon:
         [this.decl(this._iconAnimFn)]: [
             this.ref(this._animCheckClear),
         ],
     }}
-    protected labelFnProps(): JssStyle { return {}; }
-    public /*override*/ fnProps(): JssStyle { return {
+    protected labelPropsFn(): JssStyle { return {} }
+    public /*override*/ propsFn(): JssStyle { return {
         extend: [
-            super.fnProps(), // copy functional props from base
+            super.propsFn(), // copy functional props from base
 
-            this.checkFnProps(),
-            this.labelFnProps(),
+            this.checkPropsFn(),
+            this.labelPropsFn(),
         ] as JssStyle,
     }}
 

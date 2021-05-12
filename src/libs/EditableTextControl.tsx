@@ -50,10 +50,10 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
     // themes:
-    public contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
+    public /*implement*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
         return contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from Content
     }
-    public contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle {
+    public /*implement*/ contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle {
         const contentSize = contentStyles.contentSizeOf(size, Size, sizeProp); // copy sizes from Content
         delete contentSize.paddingInline;
         delete contentSize.paddingBlock;
@@ -126,7 +126,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         ] as JssStyle,
     }}
 
-    public contentThemesIf(): JssStyle { return {
+    public /*implement*/ contentThemesIf(): JssStyle { return {
         extend: [
             contentStyles.contentThemesIf(), // copy themes from Content
         ] as JssStyle,
@@ -143,7 +143,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         [this.decl(this._backgIfAct)] : this.solidBackg(colors.primaryThin),
         //#endregion overwrite base's themes with *softer* colors
     }}
-    public contentStates(inherit = false): JssStyle {
+    public /*implement*/ contentStates(inherit = false): JssStyle {
         return contentStyles.contentStates(inherit); // copy states from Content
     }
 
@@ -165,21 +165,21 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
     // functions:
-    public contentFnProps(): JssStyle {
-        return contentStyles.contentFnProps(); // copy functional props from Content
+    public /*implement*/ contentPropsFn(): JssStyle {
+        return contentStyles.contentPropsFn(); // copy functional props from Content
     }
-    public /*override*/ fnProps(): JssStyle { return {
+    public /*override*/ propsFn(): JssStyle { return {
         extend: [
-            super.fnProps(), // copy functional props from base
+            super.propsFn(), // copy functional props from base
 
-            this.contentFnProps(),
+            this.contentPropsFn(),
         ] as JssStyle,
     }}
 
 
 
     // styles:
-    public contentBasicStyle(): JssStyle {
+    public /*implement*/ contentBasicStyle(): JssStyle {
         const contentBasicStyle = contentStyles.contentBasicStyle(); // copy basicStyle from Content
         delete contentBasicStyle.paddingInline;
         delete contentBasicStyle.paddingBlock;

@@ -44,7 +44,7 @@ export interface IContentStylesBuilder {
 
 
     // functions:
-    contentFnProps(): JssStyle
+    contentPropsFn(): JssStyle
 
 
 
@@ -119,13 +119,13 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // states:
-    public contentThemesIf(): JssStyle { return {}; }
+    public contentThemesIf(): JssStyle { return {} }
     public contentStates(inherit = false): JssStyle { return {
         extend: [
             //#region specific states
             //#region active, passive
             this.stateActivePassivating({ // [activating, actived, passivating]
-                [this.decl(this._filterActivePassive)] : cssProps.filterActive, // override Indicator's filter active
+                [this.decl(this._filterActivePassive)] : undefined as unknown as null, // delete from Indicator
             }),
             this.stateActive({ // [activating, actived]
                 [this.decl(this._animActivePassive)]   : cssProps.animActive,   // override Indicator's anim active
@@ -156,7 +156,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // functions:
-    public contentFnProps(): JssStyle { return {
+    public contentPropsFn(): JssStyle { return {
         // define a passive *foreground* color func:
         [this.decl(this._passiveForegFn)] : this.ref(
             this._outlinedForegTg, // toggle outlined
@@ -191,11 +191,11 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
             this._passiveBackgLy,
         ),
     }}
-    public /*override*/ fnProps(): JssStyle { return {
+    public /*override*/ propsFn(): JssStyle { return {
         extend: [
-            super.fnProps(), // copy functional props from base
+            super.propsFn(), // copy functional props from base
 
-            this.contentFnProps(),
+            this.contentPropsFn(),
         ] as JssStyle,
     }}
 
@@ -238,26 +238,10 @@ const cssConfig = new CssConfig(() => {
 
     const keyframesActive    : PropEx.Keyframes = {
         from: {
-            //#region copy from Indicator
-            filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterActivePassive)),
-
-             // styles.ref(styles._filterActivePassive), // missing the last => let's the browser interpolated it
-            ]],
-            //#endregion copy from Indicator
-
             foreg: styles.ref(styles._passiveForegFn),
             backg: styles.ref(styles._passiveBackgFn),
         },
         to: {
-            //#region copy from Indicator
-            filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.fnFilters().filter((f) => f !== styles.ref(styles._filterActivePassive)),
-
-                styles.ref(styles._filterActivePassive), // existing the last => let's the browser interpolated it
-            ]],
-            //#endregion copy from Indicator
-
             foreg: styles.ref(styles._foregFn),
             backg: styles.ref(styles._backgFn),
         },
@@ -277,8 +261,6 @@ const cssConfig = new CssConfig(() => {
 
 
         // anim props:
-
-        filterActive         : ecssProps.filterNone, // override to Indicator
 
         '@keyframes active'  : keyframesActive,      // override to Indicator
         '@keyframes passive' : keyframesPassive,     // override to Indicator

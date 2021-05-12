@@ -409,7 +409,7 @@ export class StylesBuilder {
      * @param themeColor The backg color of the current `theme`.
      * @returns A `JssStyle` represents the color definition for the current `theme`.
      */
-    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {}; }
+    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {} }
 
     /**
      * Gets the all available size options.
@@ -460,19 +460,19 @@ export class StylesBuilder {
      * @param sizeProp The prop name of the current `size`.
      * @returns A `JssStyle` represents the sizing definition for the current `size`.
      */
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {}; }
+    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {} }
 
     /**
      * Creates a gradient definition for if the gradient feature is enabled.
      * @returns A `JssStyle` represents the gradient definition.
      */
-    public gradient(): JssStyle { return {}; }
+    public gradient(): JssStyle { return {} }
 
     /**
      * Creates an outlined definition for if the outlined feature is enabled.
      * @returns A `JssStyle` represents the outlined definition.
      */
-    public outlined(): JssStyle  { return {}; }
+    public outlined(): JssStyle  { return {} }
 
     /**
      * Watches & applies any theme related classes.
@@ -494,14 +494,14 @@ export class StylesBuilder {
      * Creates conditional color definitions for every *specific* condition (state).
      * @returns A `JssStyle` represents the conditional color definitions for every *specific* condition (state).
      */
-    protected themesIf(): JssStyle { return {}; }
+    protected themesIf(): JssStyle { return {} }
 
     /**
      * Creates css rule definitions for every *specific* state by overriding some *scoped css props* and applied some `themesIf`.
      * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
      * @returns A `JssStyle` represents the css rule definitions for every *specific* state.
      */
-    protected states(inherit = false): JssStyle   { return {}; }
+    protected states(inherit = false): JssStyle   { return {} }
 
     /**
      * Watches & applies any state related classes.
@@ -524,7 +524,7 @@ export class StylesBuilder {
      * Creates a functional prop definitions in which the values *depends on* the themes and/or the states using *fallback* strategy.
      * @returns A `JssStyle` represents the functional prop definitions.
      */
-    public /*virtual*/ fnProps(): JssStyle  { return {}; }
+    public /*virtual*/ propsFn(): JssStyle  { return {} }
 
 
 
@@ -533,7 +533,7 @@ export class StylesBuilder {
      * Creates a basic style of a component *without* any themes nor states applied.
      * @returns A `JssStyle` represents a basic style definition.
      */
-    public basicStyle(): JssStyle { return {}; }
+    public basicStyle(): JssStyle { return {} }
 
     /**
      * Creates one/more composite styles, with the themes & states applied.
@@ -552,7 +552,7 @@ export class StylesBuilder {
                     this.watchStates(),
 
                     // after watching => use func props:
-                    this.fnProps(),
+                    this.propsFn(),
                 ] as JssStyle,
             },
         };
@@ -882,7 +882,7 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
     // functions:
-    public /*override*/ fnProps(): JssStyle { return {
+    public /*override*/ propsFn(): JssStyle { return {
         // define a *none* background:
         [this.decl(this._backgNone)] : this.solidBackg('transparent'),
 
@@ -960,17 +960,25 @@ export class ElementStylesBuilder extends StylesBuilder {
     
     
     
+        extend: [
+            this.animFn(),
+        ] as JssStyle,
+    }}
+
+    /**
+     * Creates a composite animation definition in which the animations *depends on* the themes and/or the states.
+     * @returns A `JssStyle` represents the composite animation definition.
+     */
+    public /*virtual*/ animFn(): JssStyle { return {
         // define an *animations* func:
-        [this.decl(this._animFn)] : [
-            cssProps.anim,
-        ],
+        [this.decl(this._animFn)] : cssProps.anim,
     }}
 
     /**
      * Creates a composite filter definition in which the filters *depends on* the themes and/or the states.
      * @returns A `Cust.Ref[]` represents the composite filter definition.
      */
-    public /*virtual*/ fnFilters(): Cust.Ref[] { return [
+    public /*virtual*/ filterFn(): Cust.Ref[] { return [
         cssProps.filter,
     ]}
 
@@ -978,7 +986,7 @@ export class ElementStylesBuilder extends StylesBuilder {
      * Creates a composite boxShadow definition in which the boxShadows *depends on* the themes and/or the states.
      * @returns A `Cust.Ref[]` represents the composite boxShadow definition.
      */
-    public /*virtual*/ fnBoxShadows(): Cust.Ref[] { return [
+    public /*virtual*/ boxShadowFn(): Cust.Ref[] { return [
         cssProps.boxShadow,
     ]}
 

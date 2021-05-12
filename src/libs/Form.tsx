@@ -42,10 +42,10 @@ import type * as Val       from './validations'
 
 export class FormStylesBuilder extends ElementStylesBuilder implements IContentStylesBuilder, IValidationStylesBuilder {
     // themes:
-    public contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
+    public /*implement*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
         return editableTextControlStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from EditableTextControl
     }
-    public contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle {
+    public /*implement*/ contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle {
         return contentStyles.contentSizeOf(size, Size, sizeProp); // copy sizes from Content
     }
 
@@ -72,17 +72,17 @@ export class FormStylesBuilder extends ElementStylesBuilder implements IContentS
 
 
     // states:
-    public validationThemesIf(): JssStyle {
+    public /*implement*/ validationThemesIf(): JssStyle {
         return editableTextControlStyles.validationThemesIf(); // copy themes from EditableTextControl
     }
-    public validationStates(inherit = false): JssStyle {
+    public /*implement*/ validationStates(inherit = false): JssStyle {
         return editableTextControlStyles.validationStates(inherit); // copy states from EditableTextControl
     }
 
-    public contentThemesIf(): JssStyle {
+    public /*implement*/ contentThemesIf(): JssStyle {
         return editableTextControlStyles.contentThemesIf(); // copy themes from EditableTextControl
     }
-    public contentStates(inherit = false): JssStyle {
+    public /*implement*/ contentStates(inherit = false): JssStyle {
         return editableTextControlStyles.contentStates(inherit); // copy states from EditableTextControl
     }
 
@@ -106,27 +106,33 @@ export class FormStylesBuilder extends ElementStylesBuilder implements IContentS
 
 
     // functions:
-    public validationFnProps(): JssStyle {
-        return editableTextControlStyles.validationFnProps(); // copy functional props from EditableTextControl
+    public /*implement*/ validationPropsFn(): JssStyle {
+        return editableTextControlStyles.validationPropsFn(); // copy functional props from EditableTextControl
+    }
+    public /*implement*/ validationAnimFn(): JssStyle {
+        return editableTextControlStyles.validationAnimFn(); // copy functional anim from EditableTextControl
     }
 
-    public contentFnProps(): JssStyle {
-        return editableTextControlStyles.contentFnProps(); // copy functional props from EditableTextControl
+    public /*implement*/ contentPropsFn(): JssStyle {
+        return editableTextControlStyles.contentPropsFn(); // copy functional props from EditableTextControl
     }
 
-    public /*override*/ fnProps(): JssStyle { return {
+    public /*override*/ propsFn(): JssStyle { return {
         extend: [
-            super.fnProps(), // copy functional props from base
+            super.propsFn(), // copy functional props from base
 
-            this.validationFnProps(),
-            this.contentFnProps(),
+            this.validationPropsFn(),
+            this.contentPropsFn(),
         ] as JssStyle,
     }}
+    public /*override*/ animFn(): JssStyle {
+        return this.validationAnimFn();
+    }
 
 
 
     // styles:
-    public contentBasicStyle(): JssStyle {
+    public /*implement*/ contentBasicStyle(): JssStyle {
         return contentStyles.contentBasicStyle(); // copy basicStyle from Content
     }
 

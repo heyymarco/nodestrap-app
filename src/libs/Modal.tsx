@@ -69,14 +69,14 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
     //#region mixins
-    protected applyStateActive(): JssStyle { return {}; }
+    protected applyStateActive(): JssStyle { return {} }
     //#endregion mixins
 
 
 
     // themes:
     // disable themes:
-    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {}; }
+    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {} }
     public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // extend: [
         //     super.sizeOf(size, Size, sizeProp), // copy sizes from base
@@ -87,16 +87,16 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
-    public gradient(): JssStyle { return {}; }
-    public outlined(): JssStyle { return {}; }
+    public gradient(): JssStyle { return {} }
+    public outlined(): JssStyle { return {} }
 
 
 
     // states:
-    public /*override*/ indicationThemesIf(): JssStyle { return {}; }
-    public /*override*/ indicationStates(inherit = false): JssStyle { return {}; }
+    public /*override*/ indicationThemesIf(): JssStyle { return {} }
+    public /*override*/ indicationStates(inherit = false): JssStyle { return {} }
 
-    public modalThemesIf(): JssStyle { return {}; }
+    public modalThemesIf(): JssStyle { return {} }
     public modalStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit, {
@@ -153,8 +153,10 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
     // functions:
-    public /*override*/ indicationFnProps(): JssStyle { return {}; }
-    public modalFnProps(): JssStyle { return {
+    public /*override*/ indicationPropsFn(): JssStyle { return {} }
+    public /*override*/ indicationAnimFn(): JssStyle { return {} }
+
+    public modalPropsFn(): JssStyle { return {
         // define an *animations* func for the modal's content:
         [this.decl(this._animFn)]: [
             ecssProps.anim,
@@ -166,18 +168,18 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             this.ref(this._overlayAnimActivePassive),
         ],
     }}
-    public /*override*/ fnProps(): JssStyle { return {
+    public /*override*/ propsFn(): JssStyle { return {
         extend: [
-            super.fnProps(), // copy functional props from base
+            super.propsFn(), // copy functional props from base
 
-            this.modalFnProps(),
+            this.modalPropsFn(),
         ] as JssStyle,
     }}
 
 
 
     // styles:
-    public /*override*/ indicationBasicStyle(): JssStyle { return {}; }
+    public /*override*/ indicationBasicStyle(): JssStyle { return {} }
     public basicStyle(): JssStyle { return {
         extend: [
             containerStyles.containerGridBasicStyle(), // apply responsive container functionality using css grid

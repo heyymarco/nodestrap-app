@@ -55,7 +55,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
-    public outlined(): JssStyle  { return {}; } // remove outlined style
+    public outlined(): JssStyle  { return {} } // remove outlined style
 
 
 
@@ -68,9 +68,9 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
 
     // functions:
-    public /*override*/ fnProps(): JssStyle { return {
+    public /*override*/ propsFn(): JssStyle { return {
         extend: [
-            super.fnProps(), // copy functional props from base
+            super.propsFn(), // copy functional props from base
         ] as JssStyle,
 
 
