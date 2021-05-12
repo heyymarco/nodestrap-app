@@ -109,7 +109,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
     protected actionCtrl() { return true; }
     
 
-    
+
     protected applyStateNoAnimStartup(): JssStyle {
         return this.stateNotHoverLeaving(
             this.stateNotFocusBlurring(
@@ -234,20 +234,20 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
                 // define an *animations* func:
                 [this.decl(this._animFn)]: [
                     ecssProps.anim,
-                    this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
-                    this.ref(this._animHoverLeave),    // 2nd : cursor leaved
-                    this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
-                    this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
+                    this.ref(this._animActivePassive), // 4th : ctrl already pressed, move to the least priority
+                    this.ref(this._animHoverLeave),    // 3rd : cursor leaved   => low probability because holding press
+                    this.ref(this._animFocusBlur),     // 2nd : ctrl lost focus => low probability because holding press
+                    this.ref(this._animEnableDisable), // 1st : ctrl enable/disable => rarely used => low probability
                 ],
             }),
 
         // define an *animations* func:
         [this.decl(this._animFn)]: [
             ecssProps.anim,
-            this.ref(this._animEnableDisable), // 1st : ctrl must be enable
-            this.ref(this._animHoverLeave),    // 2nd : cursor hovered over ctrl
-            this.ref(this._animFocusBlur),     // 3rd : ctrl got focused (can interrupt hover/leave)
-            this.ref(this._animActivePassive), // 4th : ctrl got pressed (can interrupt focus/blur)
+            this.ref(this._animEnableDisable), // 4th : ctrl must be enabled
+            this.ref(this._animHoverLeave),    // 3rd : cursor hovered over ctrl
+            this.ref(this._animFocusBlur),     // 2nd : ctrl got focused (can interrupt hover/leave)
+            this.ref(this._animActivePassive), // 1st : ctrl got pressed (can interrupt focus/blur)
         ],
         //#endregion re-arrange the animFn at different states
     }}

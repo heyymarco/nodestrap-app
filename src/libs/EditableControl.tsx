@@ -168,7 +168,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
     }}
     
 
-    
+
     protected applyStateValid(): JssStyle { return {
         // apply a *valid* color theme:
         [this.decl(this._foregIfIf)]          : this.ref(this._foregIfVal),
@@ -278,8 +278,8 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
             // define an *animations* func:
             [this.decl(this._animFn)]: [
                 ecssProps.anim,
-                this.ref(this._animInvUninv),
-                this.ref(this._animValUnval),
+                this.ref(this._animInvUninv), // 2nd : ctrl already validated, move to the least priority
+                this.ref(this._animValUnval), // 1st : rarely triggered => low probability
             ],
         }),
 
@@ -305,23 +305,23 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
                     // define an *animations* func:
                     [this.decl(this._animFn)]: [
                         ecssProps.anim,
-                        this.ref(this._animInvUninv),
-                        this.ref(this._animValUnval),
-                        this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
-                        this.ref(this._animHoverLeave),    // 2nd : cursor leaved
-                        this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
-                        this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
+                        this.ref(this._animActivePassive), // 6th : ctrl already pressed, move to the least priority
+                        this.ref(this._animValUnval),      // 5th : ctrl already validated, move to the least priority
+                        this.ref(this._animInvUninv),      // 4th : rarely triggered => low probability
+                        this.ref(this._animHoverLeave),    // 3rd : cursor leaved   => low probability because holding press
+                        this.ref(this._animFocusBlur),     // 2nd : ctrl lost focus => low probability because holding press
+                        this.ref(this._animEnableDisable), // 1st : ctrl enable/disable => rarely used => low probability
                     ],
                 }),
                 // define an *animations* func:
                 [this.decl(this._animFn)]: [
                     ecssProps.anim,
-                    this.ref(this._animValUnval),
-                    this.ref(this._animInvUninv),
-                    this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
-                    this.ref(this._animHoverLeave),    // 2nd : cursor leaved
-                    this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus (can interrupt hover/leave)
-                    this.ref(this._animEnableDisable), // 4th : ctrl enable/disable (can interrupt focus/blur)
+                    this.ref(this._animActivePassive), // 6th : ctrl already pressed, move to the least priority
+                    this.ref(this._animValUnval),      // 5th : rarely triggered => low probability
+                    this.ref(this._animInvUninv),      // 4th : rarely triggered => low probability
+                    this.ref(this._animHoverLeave),    // 3rd : cursor leaved   => low probability because holding press
+                    this.ref(this._animFocusBlur),     // 2nd : ctrl lost focus => low probability because holding press
+                    this.ref(this._animEnableDisable), // 1st : ctrl enable/disable => rarely used => low probability
                 ],
             }),
 
@@ -329,23 +329,23 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
             // define an *animations* func:
             [this.decl(this._animFn)]: [
                 ecssProps.anim,
-                this.ref(this._animInvUninv),
-                this.ref(this._animValUnval),
-                this.ref(this._animEnableDisable), // 1st : ctrl must be enable
-                this.ref(this._animHoverLeave),    // 2nd : cursor hovered over ctrl
-                this.ref(this._animFocusBlur),     // 3rd : ctrl got focused (can interrupt hover/leave)
-                this.ref(this._animActivePassive), // 4th : ctrl got pressed (can interrupt focus/blur)
+                this.ref(this._animValUnval),      // 6th : ctrl already validated, move to the least priority
+                this.ref(this._animInvUninv),      // 5th : rarely triggered => low probability
+                this.ref(this._animEnableDisable), // 4th : ctrl must be enabled
+                this.ref(this._animHoverLeave),    // 3rd : cursor hovered over ctrl
+                this.ref(this._animFocusBlur),     // 2nd : ctrl got focused (can interrupt hover/leave)
+                this.ref(this._animActivePassive), // 1st : ctrl got pressed (can interrupt focus/blur)
             ],
         }),
         // define an *animations* func:
         [this.decl(this._animFn)]: [
             ecssProps.anim,
-            this.ref(this._animValUnval),
-            this.ref(this._animInvUninv),
-            this.ref(this._animEnableDisable), // 1st : ctrl must be enable
-            this.ref(this._animHoverLeave),    // 2nd : cursor hovered over ctrl
-            this.ref(this._animFocusBlur),     // 3rd : ctrl got focused (can interrupt hover/leave)
-            this.ref(this._animActivePassive), // 4th : ctrl got pressed (can interrupt focus/blur)
+            this.ref(this._animValUnval),      // 6th : rarely triggered => low probability
+            this.ref(this._animInvUninv),      // 5th : rarely triggered => low probability
+            this.ref(this._animEnableDisable), // 4th : ctrl must be enabled
+            this.ref(this._animHoverLeave),    // 3rd : cursor hovered over ctrl
+            this.ref(this._animFocusBlur),     // 2nd : ctrl got focused (can interrupt hover/leave)
+            this.ref(this._animActivePassive), // 1st : ctrl got pressed (can interrupt focus/blur)
         ],
         //#endregion re-arrange the animFn at different states
     }}

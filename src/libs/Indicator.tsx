@@ -118,8 +118,8 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
 
 
     protected actionCtrl() { return false; }
-    protected stateActivating(content: JssStyle): JssStyle { return {
-        '&.active': content,
+    protected stateActivating(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
+        [actionCtrl ? '&.active,&:active:not(.disable):not(.disabled):not(:disabled)' : '&.active']: content,
     }}
     protected stateActive(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
         [actionCtrl ? '&.active,&.actived,&:active:not(.disable):not(.disabled):not(:disabled)' : '&.active,&.actived']: content,
@@ -139,12 +139,12 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
     protected stateNotActivePassivating(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
         [actionCtrl ? '&:not(.active):not(.actived):not(:active):not(.passive), &:not(.active):not(.actived).disable:not(.passive), &:not(.active):not(.actived).disabled:not(.passive), &:not(.active):not(.actived):disabled:not(.passive)' : '&:not(.active):not(.actived):not(.passive)']: content,
     }}
-    protected stateNotActivatingPassivating(content: JssStyle): JssStyle { return {
-        '&:not(.active):not(.passive)': content,
+    protected stateNotActivatingPassivating(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
+        [actionCtrl ? '&:not(.active):not(:active):not(.passive), &:not(.active).disable:not(.passive), &:not(.active).disabled:not(.passive), &:not(.active):disabled:not(.passive)' : '&:not(.active):not(.passive)']: content,
     }}
     
 
-    
+
     protected applyStateNoAnimStartup(): JssStyle {
         return this.stateNotEnablingDisabling(
             this.stateNotActivatingPassivating(
@@ -276,16 +276,16 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
                 // define an *animations* func:
                 [this.decl(this._animFn)]: [
                     ecssProps.anim,
-                    this.ref(this._animActivePassive), // 1st : ctrl already pressed, move to the least priority
-                    this.ref(this._animEnableDisable), // 4th : ctrl enable/disable
+                    this.ref(this._animActivePassive), // 2nd : ctrl already pressed, move to the least priority
+                    this.ref(this._animEnableDisable), // 1st : ctrl enable/disable => rarely used => low probability
                 ],
             }),
 
         // define an *animations* func:
         [this.decl(this._animFn)]: [
             ecssProps.anim,
-            this.ref(this._animEnableDisable), // 1st : ctrl must be enable
-            this.ref(this._animActivePassive), // 4th : ctrl got pressed
+            this.ref(this._animEnableDisable), // 2nd : ctrl must be enabled
+            this.ref(this._animActivePassive), // 1st : ctrl got pressed
         ],
         //#endregion re-arrange the animFn at different states
     }}
