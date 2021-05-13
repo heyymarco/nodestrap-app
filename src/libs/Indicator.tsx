@@ -147,7 +147,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
     
 
 
-    protected applyStateNoAnimStartup(): JssStyle {
+    protected /*override*/ applyStateNoAnimStartup(): JssStyle {
         return this.stateNotEnablingDisabling(
             this.stateNotActivatingPassivating(
                 super.applyStateNoAnimStartup()
@@ -172,7 +172,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
 
 
     // themes:
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
         ] as JssStyle,

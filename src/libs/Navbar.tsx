@@ -81,7 +81,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
     // themes:
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
         ] as JssStyle,
@@ -466,7 +466,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected styles(): Styles<'main'> {
+    protected /*override*/ styles(): Styles<'main'> {
         return {
             main: {
                 extend: [

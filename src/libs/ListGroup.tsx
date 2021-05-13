@@ -43,7 +43,7 @@ const listItemElm = '&>*';
 
 class ListItemStylesBuilder extends ContentStylesBuilder {
     // themes:
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
         ] as JssStyle,
@@ -154,7 +154,7 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
 
 
 
-    protected applyStateNoAnimStartup(): JssStyle {
+    protected /*override*/ applyStateNoAnimStartup(): JssStyle {
         return this.stateNotPressingReleasing(
             // @ts-ignore
             controlStyles.applyStateNoAnimStartup(),
@@ -296,7 +296,7 @@ const listItemActionCtrlStyles = new ListItemActionCtrlStylesBuilder();
 
 export class ListGroupStylesBuilder extends ContentStylesBuilder {
     // themes:
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
         ] as JssStyle,
@@ -529,7 +529,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
         } as JssStyle, // wrapper of listItem
         //#endregion children
     }}
-    protected styles(): Styles<'main'> {
+    protected /*override*/ styles(): Styles<'main'> {
         const styles = super.styles();
         styles.main = {
             extend: [

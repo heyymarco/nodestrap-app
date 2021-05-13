@@ -38,14 +38,14 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
 
     // themes:
-    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         [this.decl(this._foregTh)] : themeColor,
     }}
 
-    protected sizeOptions(): string[] {
+    public /*override*/ sizeOptions(): string[] {
         return ['sm', 'nm', 'md', 'lg', '1em'];
     }
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // extend: [
         //     super.sizeOf(size, Size, sizeProp), // copy sizes from base
         // ] as JssStyle,
@@ -55,7 +55,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
-    public outlined(): JssStyle  { return {} } // remove outlined style
+    public /*override*/ outlined(): JssStyle  { return {} } // remove outlined style
 
 
 
@@ -246,7 +246,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         [this.decl(this._foregFn)] : (foreg && (foreg !== this.decl(this._foregFn))) ? foreg : null,
     }}
 
-    protected styles(): Styles<'main'> {
+    protected /*override*/ styles(): Styles<'main'> {
         const styles = super.styles();
         styles.main = {
             extend: [

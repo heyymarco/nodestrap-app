@@ -191,7 +191,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
 
 
     // themes:
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
         ] as JssStyle,

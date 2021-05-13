@@ -76,8 +76,8 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
     // themes:
     // disable themes:
-    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {} }
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {} }
+    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // extend: [
         //     super.sizeOf(size, Size, sizeProp), // copy sizes from base
         // ] as JssStyle,
@@ -87,8 +87,8 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
-    public gradient(): JssStyle { return {} }
-    public outlined(): JssStyle { return {} }
+    public /*override*/ gradient(): JssStyle { return {} }
+    public /*override*/ outlined(): JssStyle { return {} }
 
 
 
@@ -347,7 +347,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             marginInlineStart: 'auto',
         },
     }}
-    protected styles(): Styles<'main'|'body'|'actionBar'> {
+    protected /*override*/ styles(): Styles<'main'|'body'|'actionBar'> {
         const styles = super.styles();
         styles.main = {
             extend: [
@@ -367,7 +367,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             actionBar : this.actionBarStyle(),
         };
     }
-    public useStyles(): Classes<'main'|'body'|'actionBar'> {
+    public /*override*/ useStyles(): Classes<'main'|'body'|'actionBar'> {
         return super.useStyles() as Classes<'main'|'body'|'actionBar'>;
     }
 }

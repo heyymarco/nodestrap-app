@@ -362,7 +362,7 @@ export class StylesBuilder {
      * Gets the all available theme options.
      * @returns A `[string, Cust.Ref][]` represents the all available theme options.
      */
-    protected themeOptions(): [string, Cust.Ref][] {
+    public /*virtual*/ themeOptions(): [string, Cust.Ref][] {
         return Object.entries(color.themes);
     }
     /**
@@ -371,7 +371,7 @@ export class StylesBuilder {
      * @param options The list of the theme options.
      * @returns A `JssStyle` represents the color definitions *for each* theme `options`.
      */
-    protected themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle {
+    public /*virtual*/ themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle {
         for (const [theme, themeColor] of options) {
             const Theme     = pascalCase(theme);
             const themeProp = `&.th${Theme}`;
@@ -409,13 +409,13 @@ export class StylesBuilder {
      * @param themeColor The backg color of the current `theme`.
      * @returns A `JssStyle` represents the color definition for the current `theme`.
      */
-    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {} }
+    public /*virtual*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {} }
 
     /**
      * Gets the all available size options.
      * @returns A `string[]` represents the all available size options.
      */
-    protected sizeOptions(): string[] {
+    public /*virtual*/ sizeOptions(): string[] {
         return ['sm', 'lg'];
     }
     /**
@@ -424,7 +424,7 @@ export class StylesBuilder {
      * @param options The list of the size options.
      * @returns A `JssStyle` represents the sizing definitions *for each* size `options`.
      */
-    protected sizes(sizes: Dictionary<JssStyle> = {}, options = this.sizeOptions()): JssStyle {
+    public /*virtual*/ sizes(sizes: Dictionary<JssStyle> = {}, options = this.sizeOptions()): JssStyle {
         for (const size of options) {
             const Size     = pascalCase(size);
             const sizeProp = `&.sz${Size}`;
@@ -460,19 +460,19 @@ export class StylesBuilder {
      * @param sizeProp The prop name of the current `size`.
      * @returns A `JssStyle` represents the sizing definition for the current `size`.
      */
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {} }
+    public /*virtual*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {} }
 
     /**
      * Creates a gradient definition for if the gradient feature is enabled.
      * @returns A `JssStyle` represents the gradient definition.
      */
-    public gradient(): JssStyle { return {} }
+    public /*virtual*/ gradient(): JssStyle { return {} }
 
     /**
      * Creates an outlined definition for if the outlined feature is enabled.
      * @returns A `JssStyle` represents the outlined definition.
      */
-    public outlined(): JssStyle  { return {} }
+    public /*virtual*/ outlined(): JssStyle  { return {} }
 
     /**
      * Watches & applies any theme related classes.
@@ -539,7 +539,7 @@ export class StylesBuilder {
      * Creates one/more composite styles, with the themes & states applied.
      * @returns A `Styles` represents the composite style definitions.
      */
-    protected styles(): Styles<'main'> {
+    protected /*virtual*/ styles(): Styles<'main'> {
         return {
             main: {
                 extend: [
@@ -564,7 +564,7 @@ export class StylesBuilder {
      * Returns a jss stylesheet for styling dom.
      * @returns A jss stylesheet instance.
      */
-    public useStyles(): Classes<'main'> {
+    public /*virtual*/ useStyles(): Classes<'main'> {
         // hack: wrap with function twice and then unwrap twice:
         // so we can use *react hook* here:
         return (() => // wrap-1
@@ -796,29 +796,29 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
     //#region mixins
-    protected applyStateNoAnimStartup(): JssStyle { return {
+    protected /*virtual*/ applyStateNoAnimStartup(): JssStyle { return {
         animationDuration: [['0ms'], '!important'],
     }}
 
 
     
-    protected toggleOnGradient(): JssStyle { return {
+    protected /*virtual*/ toggleOnGradient(): JssStyle { return {
         // *toggle on* the background gradient prop:
         [this.decl(this._backgGradTg)]     : cssProps.backgGrad,
     }}
-    protected toggleOffGradient(inherit = false): JssStyle { return {
+    protected /*virtual*/ toggleOffGradient(inherit = false): JssStyle { return {
         // *toggle off* the background gradient prop:
         [this.decl(this._backgGradTg)]     : inherit ? 'unset' : 'initial',
     }}
 
 
 
-    protected toggleOnOutlined(): JssStyle { return {
+    protected /*virtual*/ toggleOnOutlined(): JssStyle { return {
         // *toggle on* the outlined props:
         [this.decl(this._outlinedForegTg)] : this.ref(this._outlinedForegFn),
         [this.decl(this._outlinedBackgTg)] : this.ref(this._outlinedBackgFn),
     }}
-    protected toggleOffOutlined(inherit = false): JssStyle { return {
+    protected /*virtual*/ toggleOffOutlined(inherit = false): JssStyle { return {
         // *toggle off* the outlined props:
         [this.decl(this._outlinedForegTg)] : inherit ? 'unset' : 'initial',
         [this.decl(this._outlinedBackgTg)] : inherit ? 'unset' : 'initial',
@@ -828,7 +828,7 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
     // themes:
-    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props:
     
         [this.decl(this._foregTh)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
@@ -837,15 +837,15 @@ export class ElementStylesBuilder extends StylesBuilder {
         [this.decl(this._boxShadowFocusTh)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
         [this.decl(this._outlinedForegTh)]  : themeColor,
     }}
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
-    public gradient(): JssStyle {
+    public /*override*/ gradient(): JssStyle {
         // *toggle on* the background gradient prop:
         return this.toggleOnGradient();
     }
-    public outlined(): JssStyle {
+    public /*override*/ outlined(): JssStyle {
         // *toggle on* the outlined props:
         return this.toggleOnOutlined();
     }

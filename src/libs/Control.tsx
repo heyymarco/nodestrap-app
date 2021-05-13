@@ -113,7 +113,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
     
 
 
-    protected applyStateNoAnimStartup(): JssStyle {
+    protected /*override*/ applyStateNoAnimStartup(): JssStyle {
         return this.stateNotHoverLeaving(
             this.stateNotFocusBlurring(
                 super.applyStateNoAnimStartup()
@@ -125,7 +125,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // themes:
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
         ] as JssStyle,

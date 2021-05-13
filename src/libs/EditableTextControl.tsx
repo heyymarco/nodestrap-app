@@ -61,14 +61,14 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         return contentSize;
     }
 
-    public themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
             super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
             
             this.contentThemeOf(theme, Theme, themeProp, themeColor),
         ] as JssStyle,
     }}
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
 

@@ -24,7 +24,7 @@ import type * as Controls   from './Control'
 
 export class ButtonStylesBuilder extends ControlStylesBuilder {
     // themes:
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
         ] as JssStyle,
@@ -210,7 +210,7 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'ghost')), // apply *general* cssProps starting with ghost***
     }}
-    protected styles(): Styles<'main'> {
+    protected /*override*/ styles(): Styles<'main'> {
         const styles = super.styles();
         styles.main = {
             extend: [

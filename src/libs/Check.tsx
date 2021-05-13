@@ -90,7 +90,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
     
-    protected applyStateNoAnimStartup(): JssStyle {
+    protected /*override*/ applyStateNoAnimStartup(): JssStyle {
         return this.stateNotCheckingClearing(
             super.applyStateNoAnimStartup()
         );
@@ -106,7 +106,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
     // themes:
-    public sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
         ] as JssStyle,
@@ -478,7 +478,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'switch')), // apply *general* cssProps starting with switch***
         },
     }}
-    protected styles(): Styles<'main'> {
+    protected /*override*/ styles(): Styles<'main'> {
         const styles = super.styles();
         styles.main = {
             extend: [
