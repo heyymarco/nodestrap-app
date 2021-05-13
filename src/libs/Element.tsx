@@ -478,7 +478,7 @@ export class StylesBuilder {
      * Watches & applies any theme related classes.
      * @returns A `JssStyle` represents the implementation of the themes.
      */
-    public watchThemes(): JssStyle { return {
+    public /*virtual*/ watchThemes(): JssStyle { return {
         extend: [
             this.themes(),                      // variant themes
             this.sizes(),                       // variant sizes
@@ -494,21 +494,21 @@ export class StylesBuilder {
      * Creates conditional color definitions for every *specific* condition (state).
      * @returns A `JssStyle` represents the conditional color definitions for every *specific* condition (state).
      */
-    protected themesIf(): JssStyle { return {} }
+    public /*virtual*/ themesIf(): JssStyle { return {} }
 
     /**
      * Creates css rule definitions for every *specific* state by overriding some *scoped css props* and applied some `themesIf`.
      * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
      * @returns A `JssStyle` represents the css rule definitions for every *specific* state.
      */
-    protected states(inherit = false): JssStyle   { return {} }
+    public /*virtual*/ states(inherit = false): JssStyle   { return {} }
 
     /**
      * Watches & applies any state related classes.
      * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
      * @returns A `JssStyle` represents the implementation of the states.
      */
-    public watchStates(inherit = false): JssStyle { return {
+    public /*virtual*/ watchStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit,
                 this.themesIf()   // conditional themes
@@ -533,7 +533,7 @@ export class StylesBuilder {
      * Creates a basic style of a component *without* any themes nor states applied.
      * @returns A `JssStyle` represents a basic style definition.
      */
-    public basicStyle(): JssStyle { return {} }
+    public /*virtual*/ basicStyle(): JssStyle { return {} }
 
     /**
      * Creates one/more composite styles, with the themes & states applied.
@@ -853,7 +853,7 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
     // states:
-    protected themesIf(): JssStyle { return {
+    public /*override*/ themesIf(): JssStyle { return {
         // define a *default* color theme:
         [this.decl(this._foregIf)]          : cssProps.foreg,
         [this.decl(this._backgIf)]          : this.ref(this._backgNone),
@@ -861,7 +861,7 @@ export class ElementStylesBuilder extends StylesBuilder {
         [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
         [this.decl(this._outlinedForegIf)]  : cssProps.foreg,
     }}
-    protected states(inherit = false): JssStyle { return {
+    public /*override*/ states(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit, {
                 //#region all initial states are none
@@ -993,7 +993,7 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
     // styles:
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     

@@ -135,14 +135,14 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         ] as JssStyle,
     }}
 
-    protected themesIf(): JssStyle { return {
+    public /*override*/ themesIf(): JssStyle { return {
         extend: [
             super.themesIf(), // copy themes from base
 
             this.modalThemesIf(),
         ] as JssStyle,
     }}
-    protected states(inherit = false): JssStyle { return {
+    public /*override*/ states(inherit = false): JssStyle { return {
         extend: [
             super.states(inherit), // copy states from base
     
@@ -180,7 +180,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
     // styles:
     public /*override*/ indicationBasicStyle(): JssStyle { return {} }
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             containerStyles.containerGridBasicStyle(), // apply responsive container functionality using css grid
         ] as JssStyle,

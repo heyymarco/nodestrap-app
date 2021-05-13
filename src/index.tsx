@@ -15,7 +15,7 @@ import NavscrollApp from './NavscrollApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <FormApp />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

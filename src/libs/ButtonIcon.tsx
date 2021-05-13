@@ -37,7 +37,7 @@ export class ButtonIconStylesBuilder extends ButtonStylesBuilder {
 
 
     // styles:
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,

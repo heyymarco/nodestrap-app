@@ -253,14 +253,14 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
         ] as JssStyle,
     }}
 
-    protected themesIf(): JssStyle { return {
+    public /*override*/ themesIf(): JssStyle { return {
         extend: [
             super.themesIf(), // copy themes from base
 
             this.indicationThemesIf(),
         ] as JssStyle,
     }}
-    protected states(inherit = false): JssStyle { return {
+    public /*override*/ states(inherit = false): JssStyle { return {
         extend: [
             super.states(inherit), // copy states from base
     
@@ -320,7 +320,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
 

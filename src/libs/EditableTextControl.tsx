@@ -147,14 +147,14 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         return contentStyles.contentStates(inherit); // copy states from Content
     }
 
-    protected themesIf(): JssStyle { return {
+    public /*override*/ themesIf(): JssStyle { return {
         extend: [
             super.themesIf(), // copy themes from base
 
             this.contentThemesIf(),
         ] as JssStyle,
     }}
-    protected states(inherit = false): JssStyle { return {
+    public /*override*/ states(inherit = false): JssStyle { return {
         extend: [
             super.states(inherit), // copy states from base
 
@@ -186,7 +186,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
         return contentBasicStyle;
     }
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
 

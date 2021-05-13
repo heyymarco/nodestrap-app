@@ -138,14 +138,14 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
         ] as JssStyle,
     }}
 
-    protected themesIf(): JssStyle { return {
+    public /*override*/ themesIf(): JssStyle { return {
         extend: [
             super.themesIf(), // copy themes from base
 
             this.contentThemesIf(),
         ] as JssStyle,
     }}
-    protected states(inherit = false): JssStyle { return {
+    public /*override*/ states(inherit = false): JssStyle { return {
         extend: [
             super.states(inherit), // copy states from base
 
@@ -212,7 +212,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
 

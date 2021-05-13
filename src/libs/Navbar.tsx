@@ -97,13 +97,11 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
     // states:
     protected navbarThemesIf(): JssStyle { return {
         extend: [
-            // @ts-ignore
             indicatorStyles.themesIf(),
         ] as JssStyle,
     }}
     protected navbarStates(inherit = false): JssStyle { return {
         extend: [
-            // @ts-ignore
             indicatorStyles.states(inherit),
 
 
@@ -253,7 +251,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         ] as JssStyle,
     }}
 
-    protected themesIf(): JssStyle { return {
+    public /*override*/ themesIf(): JssStyle { return {
         extend: [
             // super.themesIf(),        // skip using Control's theming => uses Control's base's theming
             
@@ -261,7 +259,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             indicatorStyles.themesIf(), // copy themes from Indicator (Control's base)
         ] as JssStyle,
     }}
-    protected states(inherit = false): JssStyle { return {
+    public /*override*/ states(inherit = false): JssStyle { return {
         extend: [
             super.states(inherit), // copy states from base
     
@@ -391,7 +389,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menu')), // apply *general* cssProps starting with menu***
     }}
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,

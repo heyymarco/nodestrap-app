@@ -251,7 +251,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
         ] as JssStyle,
     }}
 
-    protected themesIf(): JssStyle { return {
+    public /*override*/ themesIf(): JssStyle { return {
         extend: [
             super.themesIf(),          // copy themes from base
 
@@ -260,7 +260,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
             this.validationThemesIf(), // copy themes from validation
         ] as JssStyle,
     }}
-    protected states(inherit = false): JssStyle { return {
+    public /*override*/ states(inherit = false): JssStyle { return {
         extend: [
             super.states(inherit),          // copy states from base
 
@@ -357,7 +357,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
 
 
     // styles:
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,

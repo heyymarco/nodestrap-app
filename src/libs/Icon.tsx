@@ -60,7 +60,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
 
     // states:
-    protected themesIf(): JssStyle { return {
+    public /*override*/ themesIf(): JssStyle { return {
         // define a *default* color theme:
         [this.decl(this._foregIf)] : cssProps.foreg,
     }}
@@ -86,7 +86,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
 
     // styles:
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         // layout:
         display       : 'inline-flex',
         alignItems    : 'center', // center items vertically

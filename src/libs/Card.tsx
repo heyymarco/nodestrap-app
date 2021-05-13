@@ -243,7 +243,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'body')), // apply *general* cssProps starting with body***
     }}
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         // layout:
         display        : 'flex',    // use flexbox as the layout
         flexDirection  : 'column',  // child items stacked vertically

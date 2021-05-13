@@ -193,7 +193,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         ] as JssStyle,
     }}
 
-    protected themesIf(): JssStyle { return {
+    public /*override*/ themesIf(): JssStyle { return {
         extend: [
             super.themesIf(), // copy themes from base
 
@@ -201,7 +201,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             this.labelThemesIf(),
         ] as JssStyle,
     }}
-    protected states(inherit = false): JssStyle { return {
+    public /*override*/ states(inherit = false): JssStyle { return {
         extend: [
             super.states(inherit), // copy states from base
 
@@ -339,7 +339,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'label')), // apply *general* cssProps starting with label***
     }}
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         // layout:
         display        : 'inline-flex', // use flexbox as the layout
         flexDirection  : 'row',         // child items stacked horizontally

@@ -159,7 +159,7 @@ export class ContainerStylesBuilder extends ElementStylesBuilder {
         paddingInline : null,
         paddingBlock  : null,
     }}
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(),         // copy basicStyle from base
 

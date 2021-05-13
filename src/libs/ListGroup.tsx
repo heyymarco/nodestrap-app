@@ -57,7 +57,7 @@ class ListItemStylesBuilder extends ContentStylesBuilder {
 
 
     // styles:
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
@@ -217,14 +217,14 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
         return controlStyles.controlStates(inherit); // copy states from Control
     }
     
-    protected themesIf(): JssStyle { return {
+    public /*override*/ themesIf(): JssStyle { return {
         extend: [
             super.themesIf(), // copy themes from base
 
             this.controlThemesIf(),
         ] as JssStyle,
     }}
-    protected states(inherit = false): JssStyle { return {
+    public /*override*/ states(inherit = false): JssStyle { return {
         extend: [
             super.states(inherit), // copy states from base
             
@@ -282,7 +282,7 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
     public /*implement*/ controlBasicStyle(): JssStyle {
         return controlStyles.controlBasicStyle(); // copy basicStyle from Control
     }
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             stripOuts.control,  // clear browser's default styles
 
@@ -315,7 +315,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
     // styles:
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             //#region clear browser's default styles
             (() => {

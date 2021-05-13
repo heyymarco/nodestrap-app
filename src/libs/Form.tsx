@@ -86,7 +86,7 @@ export class FormStylesBuilder extends ElementStylesBuilder implements IContentS
         return editableTextControlStyles.contentStates(inherit); // copy states from EditableTextControl
     }
 
-    protected themesIf(): JssStyle { return {
+    public /*override*/ themesIf(): JssStyle { return {
         extend: [
             super.themesIf(), // copy themes from base
 
@@ -94,7 +94,7 @@ export class FormStylesBuilder extends ElementStylesBuilder implements IContentS
             this.contentThemesIf(),
         ] as JssStyle,
     }}
-    protected states(inherit = false): JssStyle { return {
+    public /*override*/ states(inherit = false): JssStyle { return {
         extend: [
             super.states(inherit), // copy states from base
 
@@ -136,7 +136,7 @@ export class FormStylesBuilder extends ElementStylesBuilder implements IContentS
         return contentStyles.contentBasicStyle(); // copy basicStyle from Content
     }
 
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
 

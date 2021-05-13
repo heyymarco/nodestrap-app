@@ -10,6 +10,7 @@ import type {
 }                           from 'jss'          // ts defs support for jss
 import {
     PropEx,
+    Cust,
 }                           from './Css'        // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
@@ -211,14 +212,14 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
         ] as JssStyle,
     }}
 
-    protected themesIf(): JssStyle { return {
+    public /*override*/ themesIf(): JssStyle { return {
         extend: [
             super.themesIf(), // copy themes from base
 
             this.controlThemesIf(),
         ] as JssStyle,
     }}
-    protected states(inherit = false): JssStyle { return {
+    public /*override*/ states(inherit = false): JssStyle { return {
         extend: [
             super.states(inherit), // copy states from base
             
@@ -265,6 +266,13 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
     public /*override*/ animFn(): JssStyle {
         return this.controlAnimFn();
     }
+    public /*override*/ boxShadowFn(): Cust.Ref[] { return [
+        ...super.boxShadowFn(),
+
+
+
+        this.ref(this._boxShadowFocusBlur),
+    ]}
 
 
 
@@ -273,7 +281,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    public basicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             stripOuts.control,  // clear browser's default styles
 
