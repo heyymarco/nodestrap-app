@@ -770,7 +770,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
     if ((defaultActive !== undefined) && (active !== undefined)) {
         console.warn('defaultActive & active are both set.');
     } // if
-    const [dynActive, setDynActive] = useState<boolean>(active ?? defaultActive ?? false);
+    const [dynActive, setDynActive] = useState<boolean>(active ?? defaultActive ?? false); // uncontrollable (dynamic) state
     const fnActive = active ?? dynActive;
 
     const handleActiveChange = (newActive: boolean) => {

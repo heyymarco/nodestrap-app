@@ -307,7 +307,7 @@ export class StylesBuilder {
     public  set prefix(newValue: string) {
         if (this._prefix === newValue) return; // already the same => no change required
         this._prefix        = newValue; // update the new prefix
-        this._useStyleCache = null;     // clear the cache
+        this._useStylesCache = null;    // clear the cache
     }
 
     /**
@@ -558,7 +558,7 @@ export class StylesBuilder {
         };
     }
 
-    protected _useStyleCache : ((() => Classes<'main'>)|null) = null;
+    protected _useStylesCache : ((() => Classes<'main'>)|null) = null;
 
     /**
      * Returns a jss stylesheet for styling dom.
@@ -571,7 +571,7 @@ export class StylesBuilder {
             () => { // wrap-2
                 const jssContext = useContext(JssContext);
 
-                if (!this._useStyleCache) {
+                if (!this._useStylesCache) {
                     // console.log('creating style...');
 
                     const jss = jssContext.jss ?? jssDefault;
@@ -579,12 +579,12 @@ export class StylesBuilder {
                         jssPluginNormalizeShorthands()
                     );
 
-                    this._useStyleCache = createUseStyles(this.styles());
+                    this._useStylesCache = createUseStyles(this.styles());
                 }
                 // else {
                 //     console.log('use cached style');
                 // }
-                return this._useStyleCache();
+                return this._useStylesCache();
             }
         )()(); // unwrap-1 & unwrap-2
     }

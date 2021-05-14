@@ -119,7 +119,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
     
 
 
-    protected actionCtrl() { return false; }
+    protected /*virtual*/ actionCtrl() { return false; }
     protected stateActivating(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
         [actionCtrl ? '&.active,&:active:not(.disable):not(.disabled):not(:disabled)' : '&.active']: content,
     }}
@@ -128,6 +128,10 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
     }}
     protected stateNotActive(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
         [actionCtrl ? '&:not(.active):not(.actived):not(:active), &:not(.active):not(.actived).disable, &:not(.active):not(.actived).disabled, &:not(.active):not(.actived):disabled' : '&:not(.active):not(.actived)']: content,
+    }}
+    protected stateNotActived(content: JssStyle): JssStyle { return {
+        // not fully actived
+        '&:not(.actived)': content,
     }}
     protected statePassivating(content: JssStyle): JssStyle { return {
         '&.passive': content,
@@ -154,7 +158,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
             )
         );
     }
-    protected applyStateActive(): JssStyle { return {
+    protected /*virtual*/ applyStateActive(): JssStyle { return {
         // apply an *active* color theme:
         [this.decl(this._foregIf)]          : this.ref(this._foregIfAct),
         [this.decl(this._backgIf)]          : this.ref(this._backgIfAct),
@@ -186,7 +190,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
 
 
     // states:
-    public indicationThemesIf(): JssStyle { return {
+    public /*virtual*/ indicationThemesIf(): JssStyle { return {
         // define an *active* color theme:
         [this.decl(this._foregIfAct)]          : colors.secondaryText,
         [this.decl(this._backgIfAct)]          : this.solidBackg(colors.secondary),
@@ -194,7 +198,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
         [this.decl(this._boxShadowFocusIfAct)] : colors.secondaryTransp,
         [this.decl(this._outlinedForegIfAct)]  : colors.secondary,
     }}
-    public indicationStates(inherit = false): JssStyle { return {
+    public /*virtual*/ indicationStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit, {
                 //#region all initial states are none
@@ -271,8 +275,8 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
 
 
     // functions:
-    public indicationPropsFn(): JssStyle { return {} }
-    public indicationAnimFn(): JssStyle { return {
+    public /*virtual*/ indicationPropsFn(): JssStyle { return {} }
+    public /*virtual*/ indicationAnimFn(): JssStyle { return {
         //#region re-arrange the animFn at different states
         '&.active,&.actived': // if activated programmatically (not by user input)
             this.stateNotDisabled({ // if ctrl was not fully disabled
@@ -316,7 +320,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
 
 
     // styles:
-    public indicationBasicStyle(): JssStyle { return {
+    public /*virtual*/ indicationBasicStyle(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
@@ -454,72 +458,95 @@ export function useStateEnableDisable<TElement extends HTMLElement = HTMLElement
 }
 
 export function useStateActivePassive<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>, classes = { active: 'active', actived: 'actived', passive: 'passive' }) {
-    const stateEnabled = (props.enabled!==false);
+    const propClickable: boolean =  // control is clickable if [is actionCtrl] and [is enabled]
+        (props.actionCtrl ?? false) // if [actionCtrl] was not specified => the default value is [actionCtrl=false] (readonly)
+        &&
+        (props.enabled    ?? true)  // if [enabled]    was not specified => the default value is [enabled=true]    (enabled)
+        ;
+    const propActive: boolean = (props.active ?? false); // if [active] was not specified => the default value is [active=false] (released)
 
-    const defaultActived = false; // if [active] was not specified => the default value is active=false (released)
-    const [actived,     setActived    ] = useState(props.active ?? defaultActived);
-    const [activating,  setActivating ] = useState(false);
-    const [passivating, setPassivating] = useState(false);
+
+
+    const [actived,   setActived  ] = useState<boolean>(propActive); // true => active, false => passive
+    const [animating, setAnimating] = useState<boolean|null>(null);  // null => no-animation, true => press-animation, false => release-animation
+
+    const [dynActive, setDynActive] = useState<boolean>(false);      // uncontrollable (dynamic) state: true => user press, false => user release
 
     
-    if (props.active !== undefined) { // controllable prop => watch the changes
-        const newActive = props.active ?? defaultActived;
 
-        if (actived !== newActive) { // changes detected => apply the changes & start animating
-            setActived(newActive);
-    
-            if (newActive) {
-                setPassivating(false);
-                setActivating(true);
-            }
-            else {
-                setActivating(false);
-                setPassivating(true);
-            }
+    // state is active if [controllable active] || [uncontrollable active]:
+    const newActive: boolean = propActive || (propClickable && dynActive);
+
+    if (actived !== newActive) { // change detected => apply the change & start animating
+        setActived(newActive);   // remember the last change
+        setAnimating(newActive); // start press-animation/release-animation
+    }
+
+
+
+    useEffect(() => {
+        if (!propClickable) return; // control is not clickable => no response required
+        if (propActive)     return; // controllable [active] is set => no uncontrollable required
+
+
+
+        const handlePassivating = () => {
+            setDynActive(false);
         }
-    } // if
+        window.addEventListener('mouseup', handlePassivating);
+        window.addEventListener('keyup',   handlePassivating);
+        return () => {
+            window.removeEventListener('mouseup', handlePassivating);
+            window.removeEventListener('keyup',   handlePassivating);
+        }
+    }, [propClickable, propActive]);
 
     
-    const handlePassivating = () => {
-        if (!stateEnabled) return; // control disabled => no response
-        if (actived) return; // already beed actived programatically => cannot be released by mouse/keyboard
-        if (passivating) return; // already being deactivating => action is not required
 
-        if (activating)  setActivating(false);
-        setPassivating(true);
+    const handleActivating = () => {
+        if (!propClickable) return; // control is not clickable => no response required
+        if (propActive)     return; // controllable [active] is set => no uncontrollable required
+
+
+
+        setDynActive(true);
     }
     const handleIdle = () => {
-        // clean up expired animations
+        // clean up expired animation
 
-        if (activating)  setActivating(false);
-        if (passivating) setPassivating(false);
+        setAnimating(null); // stop press-animation/release-animation
     }
     return {
         /**
          * partially/fully active
         */
-        active  : actived,
+        active   : actived,
 
         /**
          * partially/fully passive
          */
-        passive : !actived,
+        passive  : !actived,
 
         /**
          * fully active
         */
-        actived : actived && !activating,
+        actived  : actived  && (animating === true),
 
         /**
          * fully passive
          */
-        passived: !actived && !passivating,
+        passived : !actived && (animating === false),
 
-        class: (!activating && !passivating) ? (actived ? classes.actived : null) : (activating? classes.active : (passivating ? classes.passive: null)),
-        handleMouseDown    : handleIdle,        // for Control
-        handleKeyDown      : handleIdle,        // for Control
-        handleMouseUp      : handlePassivating, // for Control
-        handleKeyUp        : handlePassivating, // for Control
+        class    : ((): string|null => {
+            if (animating === true)  return (propActive ? classes.active : null); // activation by prop => use .active, otherwise use pseudo :active
+            if (animating === false) return classes.passive;
+
+            if (actived) return classes.actived;
+
+            return null;
+        })(),
+        handleMouseDown    : handleActivating, // for Control
+        handleKeyDown      : handleActivating, // for Control
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
             if (/((?<![a-z])(active|passive)|(?<=[a-z])(Active|Passive))(?![a-z])/.test(e.animationName)) {
@@ -606,8 +633,6 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
             // events:
             onMouseDown={(e) => { if (isActionCtrl) stateActPass.handleMouseDown(); props.onMouseDown?.(e); }}
             onKeyDown=  {(e) => { if (isActionCtrl) stateActPass.handleKeyDown();   props.onKeyDown?.(e);   }}
-            onMouseUp=  {(e) => { if (isActionCtrl) stateActPass.handleMouseUp();   props.onMouseUp?.(e);   }}
-            onKeyUp=    {(e) => { if (isActionCtrl) stateActPass.handleKeyUp();     props.onKeyUp?.(e);     }}
             onAnimationEnd={(e) => {
                 // states:
                 stateEnbDis.handleAnimationEnd(e);

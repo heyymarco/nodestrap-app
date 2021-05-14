@@ -274,7 +274,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
      * If `target` is an absolute url, the `base` discarded.  
      * Otherwise, the combination of `base` url followed by `target` url.
      */
-    concatUrl(target: string, base: string) {
+    public concatUrl(target: string, base: string) {
         const dummyUrl  = new URL('http://dummy')
         const baseUrl   = new URL(base, dummyUrl);
         const targetUrl = new URL(target, baseUrl);
@@ -292,7 +292,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
      * -or-  
      * `null` if the format file is unknown.
      */
-    formatOf(fileName: string) {
+    public formatOf(fileName: string) {
         if (!fileName) return null;
     
         const match = fileName.match(/(?<=[.])\w+$/)?.[0];

@@ -69,7 +69,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
     //#region mixins
-    protected applyStateActive(): JssStyle { return {} }
+    protected /*override*/ applyStateActive(): JssStyle { return {} }
     //#endregion mixins
 
 

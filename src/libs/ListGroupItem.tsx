@@ -58,8 +58,6 @@ export default function ListGroupItem<TElement extends HTMLElement = HTMLElement
             // events:
             onMouseDown={(e) => { stateActPass.handleMouseDown(); props.onMouseDown?.(e); }}
             onKeyDown=  {(e) => { stateActPass.handleKeyDown();   props.onKeyDown?.(e);   }}
-            onMouseUp=  {(e) => { stateActPass.handleMouseUp();   props.onMouseUp?.(e);   }}
-            onKeyUp=    {(e) => { stateActPass.handleKeyUp();     props.onKeyUp?.(e);     }}
             onAnimationEnd={(e) => {
                 // states:
                 stateActPass.handleAnimationEnd(e);
