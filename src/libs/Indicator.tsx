@@ -414,40 +414,42 @@ export const cssDecls = cssConfig.decls;
 // hooks:
 
 export function useStateEnableDisable<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
-    const defaultEnabled = true; // if [enabled] was not specified => the default value is enabled=true
-    const [enabled,   setEnabled  ] = useState(props.enabled ?? defaultEnabled);
-    const [enabling,  setEnabling ] = useState(false);
-    const [disabling, setDisabling] = useState(false);
+    // props:
+    const propEnabled: boolean = (props.enabled ?? true); // if [enabled] was not specified => the default value is [enabled=true] (enabled)
+
+
+
+    // states:
+    const [enabled,   setEnabled  ] = useState<boolean>(propEnabled); // true => enabled, false => disabled
+    const [animating, setAnimating] = useState<boolean|null>(null);   // null => no-animation, true => enabling-animation, false => disabling-animation
 
     
-    if (props.enabled !== undefined) { // controllable prop => watch the changes
-        const newEnable = props.enabled;
-
-        if (enabled !== newEnable) { // changes detected => apply the changes & start animating
-            setEnabled(newEnable);
     
-            if (newEnable) {
-                setDisabling(false);
-                setEnabling(true);
-            }
-            else {
-                setEnabling(false);
-                setDisabling(true);
-            }
-        }
-    } // if
+    const newEnabled: boolean = propEnabled;
 
+    if (enabled !== newEnabled) { // change detected => apply the change & start animating
+        setEnabled(newEnabled);   // remember the last change
+        setAnimating(newEnabled); // start enabling-animation/disabling-animation
+    }
+
+    
     
     const handleIdle = () => {
-        // clean up expired animations
+        // clean up finished animation
 
-        if (enabling)  setEnabling(false);
-        if (disabling) setDisabling(false);
+        setAnimating(null); // stop enabling-animation/disabling-animation
     }
     return {
-        enabled : enabled,
-        disabled: !enabled,
-        class: (enabling? 'enable' : (disabling ? 'disable': null)),
+        enabled  : enabled,
+        disabled : !enabled,
+        class    : ((): string|null => {
+            if (animating === true)  return 'enable';
+            if (animating === false) return 'disable';
+
+         // if (!enabled) return 'disabled'; // use pseudo [:disabled]
+
+            return null;
+        })(),
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
             if (/((?<![a-z])(enable|disable)|(?<=[a-z])(Enable|Disable))(?![a-z])/.test(e.animationName)) {
@@ -458,6 +460,7 @@ export function useStateEnableDisable<TElement extends HTMLElement = HTMLElement
 }
 
 export function useStateActivePassive<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>, classes = { active: 'active', actived: 'actived', passive: 'passive' }) {
+    // props:
     const propClickable: boolean =  // control is clickable if [is actionCtrl] and [is enabled]
         (props.actionCtrl ?? false) // if [actionCtrl] was not specified => the default value is [actionCtrl=false] (readonly)
         &&
@@ -467,6 +470,7 @@ export function useStateActivePassive<TElement extends HTMLElement = HTMLElement
 
 
 
+    // states:
     const [actived,   setActived  ] = useState<boolean>(propActive); // true => active, false => passive
     const [animating, setAnimating] = useState<boolean|null>(null);  // null => no-animation, true => press-animation, false => release-animation
 
@@ -512,7 +516,7 @@ export function useStateActivePassive<TElement extends HTMLElement = HTMLElement
         setDynActive(true);
     }
     const handleIdle = () => {
-        // clean up expired animation
+        // clean up finished animation
 
         setAnimating(null); // stop press-animation/release-animation
     }
