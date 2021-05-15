@@ -425,6 +425,9 @@ export function useStateEnableDisable<TElement extends HTMLElement = HTMLElement
 
     
     
+    /*
+     * state is enabled if [controllable enabled]
+     */
     const enabledFn: boolean = propEnabled;
 
     if (enabled !== enabledFn) { // change detected => apply the change & start animating
@@ -478,7 +481,10 @@ export function useStateActivePassive<TElement extends HTMLElement = HTMLElement
 
     
 
-    // state is active if [controllable active] || [uncontrollable active]:
+    /*
+     * state is active if [controllable active]
+     * state is active if [clickable] && [uncontrollable active]
+     */
     const activeFn: boolean = propActive || (propClickable && activeDn);
 
     if (actived !== activeFn) { // change detected => apply the change & start animating
