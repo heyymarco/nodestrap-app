@@ -104,7 +104,7 @@ const listItemStyles = new ListItemStylesBuilder();
 
 class NonActionControlStylesBuilder extends ControlStylesBuilder {
     //#region mixins
-    protected actionCtrl() { return false; }
+    protected /*override*/ actionCtrl() { return false; }
     //#endregion mixins
 }
 class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements IControlStylesBuilder {
@@ -132,6 +132,10 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
     protected stateNotPress(content: JssStyle): JssStyle { return {
         '&:not(.press):not(.pressed):not(:active), &:not(.press):not(.pressed).disable, &:not(.press):not(.pressed).disabled, &:not(.press):not(.pressed):disabled': content,
     }}
+    protected stateNotPressed(content: JssStyle): JssStyle { return {
+        // not fully pressed
+        '&:not(.pressed)': content,
+    }}
     protected stateReleasing(content: JssStyle): JssStyle { return {
         '&.release': content,
     }}
@@ -150,7 +154,7 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
 
 
 
-    protected actionCtrl() { return true; }
+    protected /*override*/ actionCtrl() { return true; }
 
 
 
@@ -434,7 +438,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    public inlineStyle(): JssStyle { return {
+    public /*virtual*/ inlineStyle(): JssStyle { return {
         // layout:
         display        : 'inline-flex', // use flexbox as the layout
         flexDirection  : 'row',         // child items stacked horizontally
@@ -473,7 +477,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
         } as JssStyle, // wrapper of listItem
         //#endregion children
     }}
-    public bulletStyle(): JssStyle { return {
+    public /*virtual*/ bulletStyle(): JssStyle { return {
         // layout:
         alignItems   : 'center', // child items are centered horizontally
 

@@ -88,7 +88,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // themes:
-    public contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public /*virtual*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props:
     
         //#region overwrite base's themes with *softer* colors
@@ -96,7 +96,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
         [this.decl(this._passiveBackgTh)]  : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]), // thin opacity with slightly color from background
         //#endregion overwrite base's themes with *softer* colors
     }}
-    public contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*virtual*/ contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
@@ -119,8 +119,8 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // states:
-    public contentThemesIf(): JssStyle { return {} }
-    public contentStates(inherit = false): JssStyle { return {
+    public /*virtual*/ contentThemesIf(): JssStyle { return {} }
+    public /*virtual*/ contentStates(inherit = false): JssStyle { return {
         extend: [
             //#region specific states
             //#region active, passive
@@ -156,7 +156,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // functions:
-    public contentPropsFn(): JssStyle { return {
+    public /*virtual*/ contentPropsFn(): JssStyle { return {
         // define a passive *foreground* color func:
         [this.decl(this._passiveForegFn)] : this.ref(
             this._outlinedForegTg, // toggle outlined
@@ -202,7 +202,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // styles:
-    public contentBasicStyle(): JssStyle { return {
+    public /*virtual*/ contentBasicStyle(): JssStyle { return {
         // apply fn props:
         foreg : this.ref(this._passiveForegFn),
         backg : this.ref(this._passiveBackgFn),

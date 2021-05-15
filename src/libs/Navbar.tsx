@@ -649,8 +649,13 @@ export interface Compactable {
     compact? : boolean
 }
 export function useCompactable<TElement extends HTMLElement = HTMLElement>(props: Compactable, navbarRef: React.MutableRefObject<TElement|null>) {
-    const [dynCompact, setDynCompact] = useState<boolean>(props.compact ?? false);
-    const fnCompact = props.compact ?? dynCompact;
+    // states:
+    const [compactDn, setCompactDn] = useState<boolean>(false); // uncontrollable (dynamic) state: true => compactness is required, false => compactness is not required
+
+
+
+    // state is compact/full based on [controllable compact] (if set) and fallback to [uncontrollable compact]:
+    const compactFn: boolean = props.compact ?? compactDn;
 
 
 
@@ -685,10 +690,10 @@ export function useCompactable<TElement extends HTMLElement = HTMLElement>(props
 
             // decides the dynamic compact mode based on measured dom props:
             if ((scrollWidth > clientWidth) || (scrollHeight > clientHeight)) {
-                setDynCompact(true);
+                setCompactDn(true);
             }
             else {
-                setDynCompact(false);
+                setCompactDn(false);
             } // if
         };
         const handleWindowResize = () => {
@@ -718,7 +723,7 @@ export function useCompactable<TElement extends HTMLElement = HTMLElement>(props
 
 
     return {
-        class: fnCompact ? 'compact' : null,
+        class: compactFn ? 'compact' : null,
     };
 }
 
@@ -766,18 +771,29 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
         toggler,
         ...otherProps } = props;
 
+    
+    
     // states:
     if ((defaultActive !== undefined) && (active !== undefined)) {
         console.warn('defaultActive & active are both set.');
     } // if
-    const [dynActive, setDynActive] = useState<boolean>(active ?? defaultActive ?? false); // uncontrollable (dynamic) state
-    const fnActive = active ?? dynActive;
+    const [activeDn, setActiveDn] = useState<boolean>(defaultActive ?? false); // uncontrollable (dynamic) state: true => user activate, false => user deactivate
+
+
+
+    // state is active/passive based on [controllable active] (if set) and fallback to [uncontrollable active]:
+    const activeFn: boolean = active ?? activeDn;
+
+
 
     const handleActiveChange = (newActive: boolean) => {
-        onActiveChange?.(newActive);
+        // if controllable [active] is not set => set uncontrollable (dynamic) active
+        if (active === undefined) setActiveDn(newActive);
 
-        // if uncontrollable prop => set new active state:
-        if (active === undefined) setDynActive(newActive);
+
+        
+        // forwards:
+        onActiveChange?.(newActive);
     };
 
     return (
@@ -787,7 +803,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
 
             // accessibility:
-            active={fnActive}
+            active={activeFn}
 
 
             // other props:
@@ -825,7 +841,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
             // events:
             // watch [escape key] on the whole navbar, including menus & toggler:
             onKeyDown={(e) => {
-                if (fnActive && ((e.code === 'Escape') || (e.key === 'Escape'))) handleActiveChange(false);
+                if (activeFn && ((e.code === 'Escape') || (e.key === 'Escape'))) handleActiveChange(false);
 
 
                 // forwards:
@@ -835,7 +851,8 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
             { logo && <div className='logo'>{ logo }</div> }
             <div className='toggler'>{ toggler ?? (
                 <TogglerMenuButton
-                    checked={fnActive}
+                    // values:
+                    checked={activeFn}
                     onChange={(e) => {
                         handleActiveChange(e.target.checked);
                     }}

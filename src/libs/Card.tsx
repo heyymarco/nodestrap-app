@@ -46,7 +46,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
 
 
     // styles:
-    protected imageBasicStyle(): JssStyle { return {
+    protected /*virtual*/ imageBasicStyle(): JssStyle { return {
         extend: [
             stripOuts.image, // removes browser's default styling on image
         ] as JssStyle,
@@ -103,7 +103,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         },
         //#endregion border-strokes as a separator
     }}
-    protected cardItemBasicStyle(): JssStyle { return {
+    protected /*virtual*/ cardItemBasicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
@@ -214,7 +214,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
-    protected cardCaptionBasicStyle(): JssStyle { return {
+    protected /*virtual*/ cardCaptionBasicStyle(): JssStyle { return {
         // sizes:
         // default card items' height are unresizeable (excepts for card's body):
         flex: [[0, 0]], // not growing, not shrinking
@@ -224,15 +224,15 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'caption')), // apply *general* cssProps starting with caption***
     }}
-    protected cardHeaderBasicStyle(): JssStyle { return {
+    protected /*virtual*/ cardHeaderBasicStyle(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'header')), // apply *general* cssProps starting with header***
     }}
-    protected cardFooterBasicStyle(): JssStyle { return {
+    protected /*virtual*/ cardFooterBasicStyle(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'footer')), // apply *general* cssProps starting with footer***
     }}
-    protected cardBodyBasicStyle(): JssStyle { return {
+    protected /*virtual*/ cardBodyBasicStyle(): JssStyle { return {
         // sizes:
         // Enable `flex-grow: 1` for decks and groups so that card blocks take up
         // as much space as possible, ensuring footers are aligned to the bottom.

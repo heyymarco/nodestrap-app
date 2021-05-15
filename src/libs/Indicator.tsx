@@ -425,11 +425,11 @@ export function useStateEnableDisable<TElement extends HTMLElement = HTMLElement
 
     
     
-    const newEnabled: boolean = propEnabled;
+    const enabledFn: boolean = propEnabled;
 
-    if (enabled !== newEnabled) { // change detected => apply the change & start animating
-        setEnabled(newEnabled);   // remember the last change
-        setAnimating(newEnabled); // start enabling-animation/disabling-animation
+    if (enabled !== enabledFn) { // change detected => apply the change & start animating
+        setEnabled(enabledFn);   // remember the last change
+        setAnimating(enabledFn); // start enabling-animation/disabling-animation
     }
 
     
@@ -446,7 +446,7 @@ export function useStateEnableDisable<TElement extends HTMLElement = HTMLElement
             if (animating === true)  return 'enable';
             if (animating === false) return 'disable';
 
-         // if (!enabled) return 'disabled'; // use pseudo [:disabled]
+         // if (!enabled) return 'disabled'; // use pseudo :disabled
 
             return null;
         })(),
@@ -472,18 +472,18 @@ export function useStateActivePassive<TElement extends HTMLElement = HTMLElement
 
     // states:
     const [actived,   setActived  ] = useState<boolean>(propActive); // true => active, false => passive
-    const [animating, setAnimating] = useState<boolean|null>(null);  // null => no-animation, true => press-animation, false => release-animation
+    const [animating, setAnimating] = useState<boolean|null>(null);  // null => no-animation, true => pressing-animation, false => releasing-animation
 
-    const [dynActive, setDynActive] = useState<boolean>(false);      // uncontrollable (dynamic) state: true => user press, false => user release
+    const [activeDn,  setActiveDn ] = useState<boolean>(false);      // uncontrollable (dynamic) state: true => user press, false => user release
 
     
 
     // state is active if [controllable active] || [uncontrollable active]:
-    const newActive: boolean = propActive || (propClickable && dynActive);
+    const activeFn: boolean = propActive || (propClickable && activeDn);
 
-    if (actived !== newActive) { // change detected => apply the change & start animating
-        setActived(newActive);   // remember the last change
-        setAnimating(newActive); // start press-animation/release-animation
+    if (actived !== activeFn) { // change detected => apply the change & start animating
+        setActived(activeFn);   // remember the last change
+        setAnimating(activeFn); // start pressing-animation/releasing-animation
     }
 
 
@@ -495,7 +495,7 @@ export function useStateActivePassive<TElement extends HTMLElement = HTMLElement
 
 
         const handlePassivating = () => {
-            setDynActive(false);
+            setActiveDn(false);
         }
         window.addEventListener('mouseup', handlePassivating);
         window.addEventListener('keyup',   handlePassivating);
@@ -513,12 +513,12 @@ export function useStateActivePassive<TElement extends HTMLElement = HTMLElement
 
 
 
-        setDynActive(true);
+        setActiveDn(true);
     }
     const handleIdle = () => {
         // clean up finished animation
 
-        setAnimating(null); // stop press-animation/release-animation
+        setAnimating(null); // stop pressing-animation/releasing-animation
     }
     return {
         /**
@@ -542,7 +542,7 @@ export function useStateActivePassive<TElement extends HTMLElement = HTMLElement
         passived : !actived && (animating === false),
 
         class    : ((): string|null => {
-            if (animating === true)  return (propActive ? classes.active : null); // activation by prop => use .active, otherwise use pseudo :active
+            if (animating === true)  return (propActive ? classes.active : null); // activating by prop => use .active, otherwise use pseudo :active
             if (animating === false) return classes.passive;
 
             if (actived) return classes.actived;

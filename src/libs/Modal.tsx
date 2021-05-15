@@ -96,8 +96,8 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     public /*override*/ indicationThemesIf(): JssStyle { return {} }
     public /*override*/ indicationStates(inherit = false): JssStyle { return {} }
 
-    public modalThemesIf(): JssStyle { return {} }
-    public modalStates(inherit = false): JssStyle { return {
+    public /*virtual*/ modalThemesIf(): JssStyle { return {} }
+    public /*virtual*/ modalStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit, {
                 //#region all initial states are none
@@ -156,7 +156,8 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     public /*override*/ indicationPropsFn(): JssStyle { return {} }
     public /*override*/ indicationAnimFn(): JssStyle { return {} }
 
-    public modalPropsFn(): JssStyle { return {
+    public /*virtual*/ modalPropsFn(): JssStyle { return {} }
+    public /*virtual*/ modalAnimFn(): JssStyle { return {
         // define an *animations* func for the modal's content:
         [this.decl(this._animFn)]: [
             ecssProps.anim,
@@ -168,6 +169,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             this.ref(this._overlayAnimActivePassive),
         ],
     }}
+
     public /*override*/ propsFn(): JssStyle { return {
         extend: [
             super.propsFn(), // copy functional props from base
@@ -175,12 +177,19 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             this.modalPropsFn(),
         ] as JssStyle,
     }}
+    public /*override*/ animFn(): JssStyle { return {
+        extend: [
+            super.animFn(), // copy functional props from base
+
+            this.modalAnimFn(),
+        ] as JssStyle,
+    }}
 
 
 
     // styles:
     public /*override*/ indicationBasicStyle(): JssStyle { return {} }
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*virtual*/ modalBasicStyle(): JssStyle { return {
         extend: [
             containerStyles.containerGridBasicStyle(), // apply responsive container functionality using css grid
         ] as JssStyle,
@@ -315,7 +324,15 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'overlay')), // apply *general* cssProps starting with overlay***
     }}
-    public scrollableStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
+        extend: [
+            // super.basicStyle(), // just a ghost wrapper, no basicStyle imported from base
+
+            this.indicationBasicStyle(),
+            this.modalBasicStyle(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ scrollableStyle(): JssStyle { return {
         [cardElm]: { // card layer
             '&:not(._)': { // force overwrite
                 // sizes:
@@ -330,11 +347,11 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             },
         },
     }}
-    public bodyStyle(): JssStyle { return {
+    public /*virtual*/ bodyStyle(): JssStyle { return {
         // kill the scroll on the body:
         overflow: 'hidden',
     }}
-    public actionBarStyle(): JssStyle { return {
+    public /*virtual*/ actionBarStyle(): JssStyle { return {
         // layout:
         display        : 'flex',
         justifyContent : 'space-between', // separates items horizontally

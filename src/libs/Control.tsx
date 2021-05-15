@@ -377,78 +377,67 @@ export const cssDecls = cssConfig.decls;
 // hooks:
 
 export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
-    const stateEnabled = (props.enabled!==false);
-
-    const defaultFocused = false; // if [focus] was not specified => the default value is focus=false
-    const [focused,  setFocused ] = useState((props.focus ?? defaultFocused) && stateEnabled);
-    const [blurring, setBlurring] = useState(false);
+    // props:
+    const propEnabled: boolean = (props.enabled ?? true);  // if [enabled] was not specified => the default value is [enabled=true] (enabled)
+    const propFocus:   boolean = (props.focus   ?? false); // if [focus]   was not specified => the default value is [focus=false]  (blurred)
 
 
-    const handleChangeInternal = (newFocus: boolean) => {
-        if (focused !== newFocus) { // changes detected => apply the changes & start animating
-            setFocused(newFocus);
+
+    // states:
+    const [focused,   setFocused  ] = useState<boolean>(propFocus); // true => focus, false => blur
+    const [animating, setAnimating] = useState<boolean|null>(null); // null => no-animation, true => focusing-animation, false => blurring-animation
+
+    const [focusDn,   setFocusDn  ] = useState<boolean>(false);     // uncontrollable (dynamic) state: true => user focus, false => user blur
+
+
     
-            if (newFocus) {
-                setBlurring(false); // stop  blurring anim
-            }
-            else {
-                setBlurring(true);  // start blurring anim
-            } // if
-        }
+    // state is focus if [controllable focus] || [uncontrollable focus]:
+    const focusFn: boolean = propEnabled && (propFocus || focusDn);
+
+    if (focused !== focusFn) { // change detected => apply the change & start animating
+        setFocused(focusFn);   // remember the last change
+        setAnimating(focusFn); // start focusing-animation/blurring-animation
     }
 
 
-    if (stateEnabled) {
-        if (props.focus !== undefined) { // controllable prop => watch the changes
-            handleChangeInternal(/*newFocus =*/props.focus);
-        }
-    }
-    else {
-        // loosing focus because of the control has been disabled
-        handleChangeInternal(/*newFocus =*/false);
-    } // if
-
-
+    
     const handleFocus = () => {
-        if (props.focus !== undefined) return; // controllable prop => let the prop determines the state
+        if (!propEnabled) return; // control is disabled => no response required
+        if (propFocus)    return; // controllable [focus] is set => no uncontrollable required
 
-        // control disabled => no response
-        // onFocus can be triggered by custom control, because it doesn't have "native :disabled" state
-        if (!stateEnabled) return;
-        
-        handleChangeInternal(/*newFocus =*/true);
+
+
+        setFocusDn(true);
     }
     const handleBlurring = () => {
-        if (props.focus !== undefined) return; // controllable prop => let the prop determines the state
+        if (!propEnabled) return; // control is disabled => no response required
+        if (propFocus)    return; // controllable [focus] is set => no uncontrollable required
 
-        // control disabled => no response
-        // onBlur can be triggered by custom control, because it doesn't have "native :disabled" state
-        if (!stateEnabled) return;
-        
-        handleChangeInternal(/*newFocus =*/false);
+
+
+        setFocusDn(false);
     }
     const handleIdle = () => {
-        // clean up expired animations
+        // clean up finished animation
 
-        if (blurring) setBlurring(false);
+        setAnimating(null); // stop focusing-animation/blurring-animation
     }
     return {
-        /**
-         * partially/fully focus
-        */
         focus    : focused,
+        blurring : (animating === false),
+        class    : ((): string|null => {
+            if (animating === true)  return (propFocus ? 'focus' : null); // focusing by prop => use .focus, otherwise use pseudo :focus
+            if (animating === false) return 'blur';
 
-        /**
-         * blurring
-         */
-        blurring : blurring,
+            if (focused) return 'focused';
 
-        class: blurring ? 'blur' : (focused ? ((props.focus !== undefined) ? 'focus' : null) : null),
+            return null;
+        })(),
         handleFocus        : handleFocus,
         handleBlur         : handleBlurring,
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
-            if (/((?<![a-z])(blur)|(?<=[a-z])(Blur))(?![a-z])/.test(e.animationName)) {
+            if (/((?<![a-z])(focus|blur)|(?<=[a-z])(Focus|Blur))(?![a-z])/.test(e.animationName)) {
                 handleIdle();
             }
         },

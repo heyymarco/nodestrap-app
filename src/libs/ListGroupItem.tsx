@@ -40,7 +40,7 @@ export default function ListGroupItem<TElement extends HTMLElement = HTMLElement
         ?
         <Control<TElement>
             // behaviors:
-            actionCtrl={false}
+            actionCtrl={false} // turn off default actionCtrl behavior, use our actionCtrl implementation
 
 
             // other props:
