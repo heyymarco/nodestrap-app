@@ -82,7 +82,7 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected staticOutlinedStyle(): JssStyle { return {
+    protected /*virtual*/ staticOutlinedStyle(): JssStyle { return {
         '&:not(.outlined)' : {
             extend: [
                 //#region disable dynamic outlined
@@ -104,7 +104,7 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
             ] as JssStyle,
         },
     }}
-    public linkStyle(): JssStyle { return {
+    public /*virtual*/ linkStyle(): JssStyle { return {
         extend: [
             this.outlined(), // copy outlined style from base
         ] as JssStyle,
@@ -161,7 +161,7 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'link')), // apply *general* cssProps starting with link***
     }}
-    public ghostStyle(): JssStyle { return {
+    public /*virtual*/ ghostStyle(): JssStyle { return {
         extend: [
             this.outlined(), // copy outlined style from base
 

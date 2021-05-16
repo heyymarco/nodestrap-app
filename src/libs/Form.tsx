@@ -193,6 +193,7 @@ export function useFormValidator(customValidator?: CustomValidatorHandler) {
             if ((validPrev !== undefined) && (validPrev !== validNow)) return; // has been modified during waiting => abort further validating
             
 
+            
             isValid = (customValidator ? customValidator(validNow) : validNow);
             setIsValid(isValid);
         };

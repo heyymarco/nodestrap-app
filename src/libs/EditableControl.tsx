@@ -170,7 +170,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
     
 
 
-    protected applyStateValid(): JssStyle { return {
+    protected /*virtual*/ applyStateValid(): JssStyle { return {
         // apply a *valid* color theme:
         [this.decl(this._foregIfIf)]          : this.ref(this._foregIfVal),
         [this.decl(this._backgIfIf)]          : this.ref(this._backgIfVal),
@@ -178,7 +178,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
         [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfVal),
         [this.decl(this._outlinedForegIfIf)]  : this.ref(this._outlinedForegIfVal),
     }}
-    protected applyStateInvalid(): JssStyle { return {
+    protected /*virtual*/ applyStateInvalid(): JssStyle { return {
         // apply an *invalid* color theme:
         [this.decl(this._foregIfIf)]          : this.ref(this._foregIfInv),
         [this.decl(this._backgIfIf)]          : this.ref(this._backgIfInv),
@@ -205,7 +205,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
 
 
     // states:
-    public validationThemesIf(): JssStyle { return {
+    public /*virtual*/ validationThemesIf(): JssStyle { return {
         // define a *valid* color theme:
         [this.decl(this._foregIfVal)]           : colors.successText,
         [this.decl(this._backgIfVal)]           : this.solidBackg(colors.success),
@@ -220,7 +220,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
         [this.decl(this._outlinedForegIfInv)]   : colors.danger,
         [this.decl(this._boxShadowFocusIfInv)]  : colors.dangerTransp,
     }}
-    public validationStates(inherit = false): JssStyle { return {
+    public /*virtual*/ validationStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit, {
                 //#region all initial states are none
@@ -273,8 +273,8 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
 
 
     // functions:
-    public validationPropsFn(): JssStyle { return {} }
-    public validationAnimFn(): JssStyle { return {
+    public /*virtual*/ validationPropsFn(): JssStyle { return {} }
+    public /*virtual*/ validationAnimFn(): JssStyle { return {
         //#region re-arrange the animFn at different states
         ...this.stateValid({
             // define an *animations* func:
@@ -440,6 +440,7 @@ export function useInputValidator(customValidator?: CustomValidatorHandler) {
             if ((valuePrev !== undefined) && (valuePrev !== valueNow)) return; // has been modified during waiting => abort further validating
             
 
+            
             isValid = (customValidator ? customValidator(validity, valueNow) : validity.valid);
             setIsValid(isValid);
         };

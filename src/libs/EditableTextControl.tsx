@@ -44,7 +44,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
     //#region mixins
-    protected actionCtrl() { return false; }
+    protected /*override*/ actionCtrl() { return false; }
     //#endregion mixins
 
 

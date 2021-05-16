@@ -618,48 +618,60 @@ export const cssDecls = cssConfig.decls;
 // hooks:
 
 export function useStateCheckClear(props: Props) {
-    const defaultChecked = false; // if [checked] and/or [defaultChecked] was not specified => the default value is checked=false
-    const [checked,  setChecked ] = useState(props.checked ?? props.defaultChecked ?? defaultChecked);
-    const [checking, setChecking] = useState(false);
-    const [clearing, setClearing] = useState(false);
+    // defaults:
+    const defaultChecked: boolean = false; // true => checked, false => cleared
 
-
-    const handleChangeInternal = (newCheck: boolean) => {
-        if (checked !== newCheck) { // changes detected => apply the changes & start animating
-            setChecked(newCheck);
-            
-            if (newCheck) {
-                setClearing(false);
-                setChecking(true);
-            }
-            else {
-                setChecking(false);
-                setClearing(true);
-            }
-        }
-    }
-
-
-    if (props.checked !== undefined) { // controllable prop => watch the changes
-        handleChangeInternal(/*newCheck =*/props.checked);
-    } // if
 
     
-    const handleChange = ({target}: React.ChangeEvent<HTMLInputElement>) => {
-        if (props.checked !== undefined) return; // controllable prop => let the prop determines the state
+    // states:
+    const [checked,   setChecked  ] = useState<boolean>(props.checked        ?? defaultChecked); // true => checked, false => cleared
+    const [animating, setAnimating] = useState<boolean|null>(null);                              // null => no-animation, true => checking-animation, false => clearing-animation
 
-        handleChangeInternal(/*newCheck =*/target.checked);
+    const [checkedDn, setCheckedDn] = useState<boolean>(props.defaultChecked ?? defaultChecked); // uncontrollable (dynamic) state: true => user press, false => user release
+
+
+
+    // state is checked/cleared based on [controllable checked] (if set) and fallback to [uncontrollable checked]:
+    const checkedFn: boolean = props.checked ?? checkedDn;
+
+    if (checked !== checkedFn) { // change detected => apply the change & start animating
+        setChecked(checkedFn);   // remember the last change
+        setAnimating(checkedFn); // start checking-animation/clearing-animation
+    }
+
+    
+    
+    const handleChange = ({target}: React.ChangeEvent<HTMLInputElement>) => {
+        if (props.checked !== undefined) return; // controllable [checked] is set => no uncontrollable required
+
+        
+        
+        setCheckedDn(target.checked);
     }
     const handleIdle = () => {
-        // clean up expired animations
+        // clean up finished animation
 
-        if (checking) setChecking(false);
-        if (clearing) setClearing(false);
+        setAnimating(null); // stop checking-animation/clearing-animation
     }
     return {
+        /**
+         * partially/fully checked
+        */
         checked :  checked,
+
+        /**
+         * partially/fully cleared
+         */
         cleared : !checked,
-        class: (checking? 'check' : (clearing ? 'clear': null)),
+
+        class   : ((): string|null => {
+            if (animating === true)  return 'check';
+            if (animating === false) return 'clear';
+
+         // if (checked) return 'checked'; // use pseudo :checked
+
+            return null;
+        })(),
         handleChange: handleChange,
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
