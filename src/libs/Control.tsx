@@ -61,6 +61,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     //#region mixins
+    // stateHovering => not exist, because .hovered doesn't exist
     protected stateHover(content: JssStyle): JssStyle { return {
         // hover: hover by mouse || hover by keyboard (focus)
         '&:hover,&.focus,&:focus': content,
@@ -68,6 +69,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
     protected stateNotHover(content: JssStyle): JssStyle { return {
         '&:not(:hover):not(.focus):not(:focus)': content,
     }}
+    // stateNotHovered => not exist, because .hovered doesn't exist
     protected stateLeaving(content: JssStyle): JssStyle {
         // leave: leave by mouse && leave by keyboard (blur)
         // mouse-leave but still keybd-focus => not leave
@@ -77,6 +79,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
         });
     }
     protected stateNotLeaving(content: JssStyle): JssStyle { return {
+        // not-leave: not leave by mouse && not leave by keyboard (blur)
         '&:not(.leave):not(.blur)': content,
     }}
     protected stateHoverLeaving(content: JssStyle): JssStyle { return {
@@ -85,14 +88,22 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
     protected stateNotHoverLeaving(content: JssStyle): JssStyle { return {
         '&:not(:hover):not(.focus):not(:focus):not(.leave):not(.blur)': content,
     }}
+    // stateNotHoveringLeaving => not exist, because .hovered doesn't exist
     
 
 
-    protected stateFocus(content: JssStyle): JssStyle { return {
+    protected stateFocusing(content: JssStyle): JssStyle { return {
         '&.focus,&:focus': content,
     }}
+    protected stateFocus(content: JssStyle): JssStyle { return {
+        '&.focus,&.focused,&:focus': content,
+    }}
     protected stateNotFocus(content: JssStyle): JssStyle { return {
-        '&:not(.focus):not(:focus)': content,
+        '&:not(.focus):not(.focused):not(:focus)': content,
+    }}
+    protected stateNotFocused(content: JssStyle): JssStyle { return {
+        // not fully focused
+        '&:not(.focused)': content,
     }}
     protected stateBlurring(content: JssStyle): JssStyle { return {
         '&.blur': content,
@@ -101,21 +112,24 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
         '&:not(.blur)': content,
     }}
     protected stateFocusBlurring(content: JssStyle): JssStyle { return {
-        '&.focus,&:focus,&.blur': content,
+        '&.focus,&.focused,&:focus,&.blur': content,
     }}
     protected stateNotFocusBlurring(content: JssStyle): JssStyle { return {
+        '&:not(.focus):not(.focused):not(:focus):not(.blur)': content,
+    }}
+    protected stateNotFocusingBlurring(content: JssStyle): JssStyle { return {
         '&:not(.focus):not(:focus):not(.blur)': content,
     }}
     
 
 
-    protected actionCtrl() { return true; }
+    protected /*override*/ actionCtrl() { return true; }
     
 
 
     protected /*override*/ applyStateNoAnimStartup(): JssStyle {
         return this.stateNotHoverLeaving(
-            this.stateNotFocusBlurring(
+            this.stateNotFocusingBlurring(
                 super.applyStateNoAnimStartup()
             )
         );
@@ -139,7 +153,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // states:
-    public controlThemesIf(): JssStyle { return {
+    public /*virtual*/ controlThemesIf(): JssStyle { return {
         // define a *default* color theme:
         [this.decl(this._foregIf)]             : colors.secondaryText,
         [this.decl(this._backgIf)]             : this.solidBackg(colors.secondary),
@@ -154,7 +168,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
         [this.decl(this._boxShadowFocusIfAct)] : colors.primaryTransp,
         [this.decl(this._outlinedForegIfAct)]  : colors.primary,
     }}
-    public controlStates(inherit = false): JssStyle { return {
+    public /*virtual*/ controlStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit, {
                 //#region all initial states are none
@@ -230,8 +244,8 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // functions:
-    public controlPropsFn(): JssStyle { return {} }
-    public controlAnimFn(): JssStyle { return {
+    public /*virtual*/ controlPropsFn(): JssStyle { return {} }
+    public /*virtual*/ controlAnimFn(): JssStyle { return {
         //#region re-arrange the animFn at different states
         '&.active,&.actived': // if activated programmatically (not by user input)
             this.stateNotDisabled({ // if ctrl was not fully disabled
@@ -277,7 +291,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // styles:
-    public controlBasicStyle(): JssStyle { return {
+    public /*virtual*/ controlBasicStyle(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}

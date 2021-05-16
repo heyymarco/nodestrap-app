@@ -178,9 +178,11 @@ export const cssDecls = cssConfig.decls;
 export type ValidatorHandler = () => Val.Result;
 export type CustomValidatorHandler = (isValid: Val.Result) => Val.Result;
 export function useFormValidator(customValidator?: CustomValidatorHandler) {
+    // states:
     let [isValid, setIsValid] = useState<Val.Result>(null);
 
 
+    
     const handleVals = (target: HTMLFormElement, immediately = false) => {
         const getIsValid = (): Val.Result => target.matches(':valid') ? true : (target.matches(':invalid') ? false : null);
 

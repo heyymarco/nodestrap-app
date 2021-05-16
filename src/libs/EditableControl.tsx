@@ -429,9 +429,11 @@ type EditableControlElement        = HTMLInputElement|HTMLSelectElement|HTMLText
 export type ValidatorHandler       = () => Val.Result
 export type CustomValidatorHandler = (state: ValidityState, value: string) => Val.Result
 export function useInputValidator(customValidator?: CustomValidatorHandler) {
+    // states:
     let [isValid, setIsValid] = useState<Val.Result>(null);
 
 
+    
     const handleVals = (target: EditableControlElement, immediately = false) => {
         const update = (validity: ValidityState, valuePrev?: string) => {
             const valueNow = target.value;
@@ -480,112 +482,118 @@ export function useInputValidator(customValidator?: CustomValidatorHandler) {
     };
 }
 export function useStateValidInvalid(props: Val.Validation, validator?: ValidatorHandler) {
+    // contexts:
     const valContext = useContext(validations.Context);
 
-    const defaultValided: Val.Result      = null; // if [isValid] nor validator was not specified => the default value is isValid=null (neither error nor success)
-    const [valided,      setValided     ] = useState((): (Val.Result|undefined) => {
+
+    
+    // props:
+    const defaultValided: Val.Result        = null; // if [isValid] was not specified => the default value is [isValid=null] (neither error nor success)
+    const [valided,       setValided      ] = useState<Val.Result|undefined>((): (Val.Result|undefined) => {
         // use context as the primary validator:
         if (valContext.enableValidation === false) return null;               // disabled => uncheck
         if (valContext.isValid !== undefined)      return valContext.isValid; // force state to uncheck/valid/invalid
 
+        
+        
         // use own controllable validator as secondary:
         if (props.enableValidation === false)      return null;          // disabled => uncheck
         if (props.isValid !== undefined)           return props.isValid; // force state to uncheck/valid/invalid
 
+        
+        
         // use input validator as tertiary:
         if (validator)                             return undefined; // undefined means => evaluate the validator *at startup*
 
+        
+        
         // use default value as fallback:
         return defaultValided;
     });
-    const [succeeding,   setSucceeding  ] = useState(false);
-    const [unsucceeding, setUnsucceeding] = useState(false);
-    const [erroring,     setErroring    ] = useState(false);
-    const [unerroring,   setUnerroring  ] = useState(false);
 
-
-    const handleChangeInternal = (newValid: Val.Result) => {
-        if (valided !== newValid) {
-            setValided(newValid);
-
-            if (newValid === null) { // neither success nor error
-                if (valided === true) { // if was success
-                    // fade out success mark:
-                    setSucceeding(false);
-                    setUnsucceeding(true);
-                } // if
-
-                if (valided === false) { // if was error
-                    // fade out error mark:
-                    setErroring(false);
-                    setUnerroring(true);
-                } // if
-            }
-            else if (newValid) { // success
-                if (valided === false) { // if was error
-                    // fade out error mark:
-                    setErroring(false);
-                    setUnerroring(true);
-                } // if
-
-                // fade in success mark:
-                setUnsucceeding(false);
-                setSucceeding(true);
-            }
-            else { // error
-                if (valided === true) { // if was success
-                    // fade out success mark:
-                    setSucceeding(false);
-                    setUnsucceeding(true);
-                } // if
-
-                // fade in error mark:
-                setUnerroring(false);
-                setErroring(true);
-            } // if
-        }
-    }
-
-
-    // watch the changes:
-    const newValid = ((): (Val.Result|undefined) => {
+    const [succAnimating, setSuccAnimating] = useState<boolean|null>(null); // null => no-succ-animation, true => succ-animation, false => unsucc-animation
+    const [errAnimating,  setErrAnimating ] = useState<boolean|null>(null); // null => no-err-animation,  true => err-animation,  false => unerr-animation
+    
+    
+    
+    /*
+     * state is set as context      if [context's      validation is enabled] && [     context.isValid is set]
+     * state is set as controllable if [controllable's validation is enabled] && [controllable.isValid is set]
+     * state is set as validator    if [validator's    validation is enabled] && [   validator.isValid is set]
+     * otherwise return undefined (represents: no change needed)
+     */
+    const validFn = ((): (Val.Result|undefined) => {
         // use context as the primary validator:
         if (valContext.enableValidation === false) return null;               // disabled => uncheck
         if (valContext.isValid !== undefined)      return valContext.isValid; // force state to uncheck/valid/invalid
 
+        
+        
         // use own controllable validator as secondary:
         if (props.enableValidation === false)      return null;          // disabled => uncheck
         if (props.isValid !== undefined)           return props.isValid; // force state to uncheck/valid/invalid
 
+        
+        
         // use input validator as tertiary:
         if ((valided !== undefined) && validator)  return validator(); // now validator has been loaded => evaluate the validator *now*
 
+        
+        
         // no change needed:
         return undefined;
     })();
-    if (newValid !== undefined) handleChangeInternal(/*newValid =*/newValid);
 
+    if ((validFn !== undefined) && (valided !== validFn)) { // change detected => apply the change & start animating
+        setValided(validFn);   // remember the last change
+
+        switch (validFn) {
+            case true: // success
+                // if was error => un-error:
+                if (valided === false) setErrAnimating(false);  // start unerr-animation
+
+                setSuccAnimating(true); // start succ-animation
+                break;
+
+            case false: // error
+                // if was success => un-success:
+                if (valided === true)  setSuccAnimating(false); // start unsucc-animation
+
+                setErrAnimating(true);  // start err-animation
+                break;
+                
+            case null: // uncheck
+                // if was success => un-success:
+                if (valided === true)  setSuccAnimating(false); // start unsucc-animation
+
+                // if was error => un-error:
+                if (valided === false) setErrAnimating(false);  // start unerr-animation
+                break;
+        } // switch
+    }
+
+    
     
     // watch the changes once (only at startup):
     useEffect(() => {
         if (valided === undefined) {
             // now validator has been loaded => re-*set the initial* state of `valided` with any values other than `undefined`
+            // once set, this effect will never be executed again
             setValided(validator ? validator() : defaultValided);
         }
     }, [valided, validator]);
 
     
+    
     const handleIdleSucc = () => {
-        // clean up expired animations
+        // clean up finished animation
 
-        if (succeeding)   setSucceeding(false);
-        if (unsucceeding) setUnsucceeding(false);
+        setSuccAnimating(null); // stop succ-animation/unsucc-animation
     }
     const handleIdleErr = () => {
-        // clean up expired animations
+        // clean up finished animation
 
-        if (erroring)     setErroring(false);
-        if (unerroring)   setUnerroring(false);
+        setErrAnimating(null);  // stop err-animation/unerr-animation
     }
     const valDisabled = // causing the validator() not evaluated (disabled):
         (valContext.enableValidation === false) ||
@@ -595,15 +603,37 @@ export function useStateValidInvalid(props: Val.Validation, validator?: Validato
         (!validator);
     return {
         /**
-         * being/was valid or being/was invalid
+         * `true`  : validating/valid
+         * `false` : invalidating/invalid
+         * `null`  : uncheck/unvalidating/uninvalidating
         */
         valid: (valided ?? null) as Val.Result,
         valDisabled: valDisabled,
         class: [
-            (succeeding ? 'val' : (unsucceeding ? 'unval' : ((valided === true)  ? 'vald'                          : null))),
-            (erroring   ? 'inv' : (unerroring   ? 'uninv' : ((valided === false) ? 'invd'                          : null))),
-                                                            ((valided === null)  ? (valDisabled ? 'valdis' : null) : null),
-        ].join(' '),
+            ((): string|null => {
+                if (succAnimating === true)  return   'val';
+                if (succAnimating === false) return 'unval';
+    
+                if (valided === true)        return   'vald';
+    
+                return null;
+            })(),
+
+            ((): string|null => {
+                if (errAnimating === true)   return   'inv';
+                if (errAnimating === false)  return 'uninv';
+    
+                if (valided === false)       return   'invd';
+    
+                return null;
+            })(),
+
+            ((): string|null => {
+                if ((valided === null) && valDisabled) return 'valdis';
+    
+                return null;
+            })(),
+        ].filter((c) => !!c).join(' ') || undefined,
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
 

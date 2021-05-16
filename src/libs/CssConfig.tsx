@@ -369,7 +369,7 @@ export default class CssConfig<TProps, TProp extends ValueOf<TProps>> {
 
 
         // data sources:
-        this._props    = ((typeof(props)==='function') ? (props as (() => TProps))() : props) as unknown as Dictionary<TProp>;
+        this._props    = ((typeof(props) === 'function') ? (props as (() => TProps))() : props) as unknown as Dictionary<TProp>;
 
 
 

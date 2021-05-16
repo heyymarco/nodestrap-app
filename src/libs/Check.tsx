@@ -182,7 +182,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             {
                 // [cleared] => label [actived]
                 '&.checked,&:checked:not(.check)': { // if ctrl was fully checked, disable the animation
-                    /* IF */[chkElm]: this.stateNotFocusBlurring({ // but still transfering the focus state to the "sibling" element(s):
+                    /* IF */[chkElm]: this.stateNotFocusingBlurring({ // but still transfering the focus state to the "sibling" element(s):
                         /* THEN [labelElm] */'&~*':
                             super.applyStateNoAnimStartup(),
                     }),
