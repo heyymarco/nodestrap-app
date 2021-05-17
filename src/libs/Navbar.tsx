@@ -63,17 +63,17 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
     //#region mixins
-    protected actionCtrl() { return false; }
+    protected /*override*/ actionCtrl() { return false; }
 
 
     
-    protected stateCompact(content: JssStyle): JssStyle { return {
+    protected /*virtual*/ stateCompact(content: JssStyle): JssStyle { return {
         '&.compact': content,
     }}
-    protected stateNotCompact(content: JssStyle): JssStyle { return {
+    protected /*virtual*/ stateNotCompact(content: JssStyle): JssStyle { return {
         '&:not(.compact)': content,
     }}
-    protected stateFull(content: JssStyle): JssStyle {
+    protected /*virtual*/ stateFull(content: JssStyle): JssStyle {
         return this.stateNotCompact(content);
     }
     //#endregion mixins
@@ -95,12 +95,12 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
     // states:
-    protected navbarThemesIf(): JssStyle { return {
+    protected /*virtual*/ navbarThemesIf(): JssStyle { return {
         extend: [
             indicatorStyles.themesIf(),
         ] as JssStyle,
     }}
-    protected navbarStates(inherit = false): JssStyle { return {
+    protected /*virtual*/ navbarStates(inherit = false): JssStyle { return {
         extend: [
             indicatorStyles.states(inherit),
 
@@ -242,7 +242,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             //#endregion specific states
         ] as JssStyle,
     }}
-    protected navbarWatchStates(inherit = false): JssStyle { return {
+    protected /*virtual*/ navbarWatchStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit,
                 this.navbarThemesIf()   // conditional themes
@@ -280,12 +280,16 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
     // functions:
-    protected navbarPropsFn(): JssStyle { return {
+    protected /*virtual*/ navbarPropsFn(): JssStyle { return {
+        ...this.navbarAnimFn(),
+    }}
+    protected /*virtual*/ navbarAnimFn(): JssStyle { return {
         // define an *animations* func for the navbar's menus:
         [this.decl(this._menusAnimFn)]: [
             this.ref(this._menusAnimActivePassive),
         ],
     }}
+
     public /*override*/ propsFn(): JssStyle { return {
         extend: [
             super.propsFn(), // copy functional props from base
@@ -297,7 +301,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
     // styles:
-    protected wrapperBasicStyle(): JssStyle { return {
+    protected /*virtual*/ wrapperBasicStyle(): JssStyle { return {
         // layout:
         display        : 'flex',
         flexDirection  : 'row',    // the flex direction to horz, so we can adjust the content's vertical position
@@ -310,14 +314,14 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         paddingInline  : ecssProps.paddingInline,
         paddingBlock   : ecssProps.paddingBlock,
     }}
-    protected navbarSecondaryItemsBasicStyle(): JssStyle { return {
+    protected /*virtual*/ navbarSecondaryItemBasicStyle(): JssStyle { return {
         paddingInline : 0,
     }}
-    protected navbarItemBasicStyle(): JssStyle { return {
+    protected /*virtual*/ navbarItemBasicStyle(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
-    protected navbarLogoBasicStyle(): JssStyle { return {
+    protected /*virtual*/ navbarLogoBasicStyle(): JssStyle { return {
         // layout:
         gridArea : '1 / -3', // place the same row as menus / place at the 3rd column from the right (negative columns are placed after all positive ones are placed)
 
@@ -326,7 +330,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'logo')), // apply *general* cssProps starting with logo***
     }}
-    protected navbarTogglerBasicStyle(): JssStyle { return {
+    protected /*virtual*/ navbarTogglerBasicStyle(): JssStyle { return {
         // layout:
         gridArea : '1 / 2', // place the same row as menus / place at the 2nd column from the left
 
@@ -335,7 +339,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'toggler')), // apply *general* cssProps starting with toggler***
     }}
-    protected navbarMenusBasicStyle(): JssStyle { return {
+    protected /*virtual*/ navbarMenusBasicStyle(): JssStyle { return {
         // layout:
         gridArea       : 'menus',
         display        : 'flex',    // use flexbox to place the menus sequentially
@@ -362,7 +366,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menus')), // apply *general* cssProps starting with menus***
     }}
-    protected navbarMenuBasicStyle(): JssStyle { return {
+    protected /*virtual*/ navbarMenuBasicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
             //#region overrides some base's basicStyle
@@ -443,7 +447,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             // secondary sections:
             logoElm,
             togglerElm,
-        ].join(',')] : this.navbarSecondaryItemsBasicStyle(),
+        ].join(',')] : this.navbarSecondaryItemBasicStyle(),
 
         [[
             // all sections:
@@ -650,7 +654,7 @@ export interface Compactable {
 }
 export function useCompactable<TElement extends HTMLElement = HTMLElement>(props: Compactable, navbarRef: React.MutableRefObject<TElement|null>) {
     // states:
-    const [compactDn, setCompactDn] = useState<boolean>(false); // uncontrollable (dynamic) state: true => compactness is required, false => compactness is not required
+    const [compactDn, setCompactDn] = useState<boolean>(false); // uncontrollable (dynamic) state: true => compact mode is needed, false => compact mode is not needed
 
 
 
@@ -660,7 +664,7 @@ export function useCompactable<TElement extends HTMLElement = HTMLElement>(props
 
 
     useEffect(() => {
-        const calculateDynCompact = () => {
+        const calculateCompactDn = () => {
             if (!navbarRef.current) return;
 
 
@@ -688,7 +692,7 @@ export function useCompactable<TElement extends HTMLElement = HTMLElement>(props
 
 
 
-            // decides the dynamic compact mode based on measured dom props:
+            // decides the dynamic compact mode based on the measured dom props:
             if ((scrollWidth > clientWidth) || (scrollHeight > clientHeight)) {
                 setCompactDn(true);
             }
@@ -697,17 +701,22 @@ export function useCompactable<TElement extends HTMLElement = HTMLElement>(props
             } // if
         };
         const handleWindowResize = () => {
-            calculateDynCompact();
+            calculateCompactDn();
         };
 
 
 
-        if (navbarRef.current && (props.compact === undefined)) {
-            // calculates dync compact at the first load & every props.compact changed
-            calculateDynCompact();
+        if (navbarRef.current) {
+            if (props.compact !== undefined) return; // controllable [compact] is set => no uncontrollable required
+
+
+
+            // calculates compactDn at the first load:
+            calculateCompactDn();
 
 
             
+            //#region calculates compactDn every window's size changed
             // setup window resize watchdog:
             window.addEventListener('resize', handleWindowResize);
 
@@ -717,6 +726,7 @@ export function useCompactable<TElement extends HTMLElement = HTMLElement>(props
             return () => {
                 window.removeEventListener('resize', handleWindowResize);
             };
+            //#endregion calculates compactDn every window's size changed
         } // if
     }, [props.compact, navbarRef]);
 

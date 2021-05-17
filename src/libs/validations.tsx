@@ -6,6 +6,8 @@ import
 
 
 
+// validation results:
+
 /**
  * Validation was skipped because its not required. Neither success nor error shown.
  */
@@ -21,6 +23,8 @@ export type Success = true
 export type Result  = Nocheck|Error|Success;
 
 
+
+// contexts:
 
 /**
  * Contains validation props.
@@ -52,6 +56,8 @@ export const Context = createContext<Validation>(/*defaultValue =*/{
 Context.displayName  = 'Validation';
 
 
+
+// react components:
 
 export interface Props
     extends

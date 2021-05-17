@@ -52,7 +52,7 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
 
 
     // styles:
-    protected carouselItemsBasicStyle(): JssStyle { return {
+    protected /*virtual*/ carouselItemsBasicStyle(): JssStyle { return {
         extend: [
             //#region clear browser's default styles
             (() => {
@@ -106,7 +106,7 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'items')), // apply *general* cssProps starting with items***
     }}
-    protected carouselItemBasicStyle(): JssStyle { return {
+    protected /*virtual*/ carouselItemBasicStyle(): JssStyle { return {
         // layout:
         display         : 'flex',
         flexDirection   : 'row',    // the flex direction to horz, so we can adjust the content's vertical position
@@ -157,11 +157,11 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
-    protected navBtnBasicStyle(): JssStyle { return {
+    protected /*virtual*/ navBtnBasicStyle(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'navBtn')), // apply *general* cssProps starting with navBtn***
     }}
-    protected prevBtnBasicStyle(): JssStyle { return {
+    protected /*virtual*/ prevBtnBasicStyle(): JssStyle { return {
         // layout:
         gridArea : 'prevBtn',
 
@@ -170,7 +170,7 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'prevBtn')), // apply *general* cssProps starting with prevBtn***
     }}
-    protected nextBtnBasicStyle(): JssStyle { return {
+    protected /*virtual*/ nextBtnBasicStyle(): JssStyle { return {
         // layout:
         gridArea : 'nextBtn',
 
@@ -179,7 +179,7 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'nextBtn')), // apply *general* cssProps starting with nextBtn***
     }}
-    protected navBasicStyle(): JssStyle { return {
+    protected /*virtual*/ navBasicStyle(): JssStyle { return {
         // layout:
         gridArea : 'nav',
 

@@ -78,6 +78,10 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     protected stateNotClearing(content: JssStyle): JssStyle { return {
         '&:not(.clear)': content,
     }}
+    protected stateNotChecked(content: JssStyle): JssStyle { return {
+        // not fully checked
+        '&:not(.checked):not(:checked),&:not(.checked):checked.check': content,
+    }}
     protected stateCheckClearing(content: JssStyle): JssStyle { return {
         '&.check,&.checked,&:checked,&.clear': content,
     }}
@@ -95,7 +99,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             super.applyStateNoAnimStartup()
         );
     }
-    protected applyStateCheck(): JssStyle { return {
+    protected /*virtual*/ applyStateCheck(): JssStyle { return {
         extend: [
             // *toggle off* the outlined props:
             this.toggleOffOutlined(),
@@ -120,8 +124,8 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
     // states:
-    protected checkThemesIf(): JssStyle { return {} }
-    protected checkStates(inherit = false): JssStyle { return {
+    protected /*virtual*/ checkThemesIf(): JssStyle { return {} }
+    protected /*virtual*/ checkStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit, {
                 //#region all initial states are none
@@ -155,8 +159,8 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         ] as JssStyle,
     }}
 
-    protected labelThemesIf(): JssStyle { return {} }
-    protected labelStates(inherit = false): JssStyle { return {
+    protected /*virtual*/ labelThemesIf(): JssStyle { return {} }
+    protected /*virtual*/ labelStates(inherit = false): JssStyle { return {
         extend: [
             //#region specific states
             //#region check, clear => label active, passive
@@ -213,13 +217,18 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
     // functions:
-    protected checkPropsFn(): JssStyle { return {
+    protected /*virtual*/ checkPropsFn(): JssStyle { return {
+        ...this.checkAnimFn(),
+    }}
+    protected /*virtual*/ checkAnimFn(): JssStyle { return {
         // define an *animations* func for the icon:
         [this.decl(this._iconAnimFn)]: [
             this.ref(this._animCheckClear),
         ],
     }}
-    protected labelPropsFn(): JssStyle { return {} }
+
+    protected /*virtual*/ labelPropsFn(): JssStyle { return {} }
+
     public /*override*/ propsFn(): JssStyle { return {
         extend: [
             super.propsFn(), // copy functional props from base
@@ -232,7 +241,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
     // styles:
-    protected checkBasicStyle(): JssStyle { return {
+    protected /*virtual*/ checkBasicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
@@ -302,7 +311,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected labelBasicStyle(): JssStyle { return {
+    protected /*virtual*/ labelBasicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
@@ -386,7 +395,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             },
         },
     }}
-    public buttonStyle(): JssStyle { return {
+    public /*virtual*/ buttonStyle(): JssStyle { return {
         // children:
 
         [chkElm]   : {
@@ -432,7 +441,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'btn')), // apply *general* cssProps starting with btn***
         },
     }}
-    public switchStyle(): JssStyle { return {
+    public /*virtual*/ switchStyle(): JssStyle { return {
         //#region specific states
         extend: [
             //#region check, clear

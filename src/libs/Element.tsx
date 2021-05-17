@@ -960,9 +960,7 @@ export class ElementStylesBuilder extends StylesBuilder {
     
     
     
-        extend: [
-            this.animFn(),
-        ] as JssStyle,
+        ...this.animFn(),
     }}
 
     /**

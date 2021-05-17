@@ -156,7 +156,9 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     public /*override*/ indicationPropsFn(): JssStyle { return {} }
     public /*override*/ indicationAnimFn(): JssStyle { return {} }
 
-    public /*virtual*/ modalPropsFn(): JssStyle { return {} }
+    public /*virtual*/ modalPropsFn(): JssStyle { return {
+        ...this.modalAnimFn(),
+    }}
     public /*virtual*/ modalAnimFn(): JssStyle { return {
         // define an *animations* func for the modal's content:
         [this.decl(this._animFn)]: [
@@ -175,13 +177,6 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             super.propsFn(), // copy functional props from base
 
             this.modalPropsFn(),
-        ] as JssStyle,
-    }}
-    public /*override*/ animFn(): JssStyle { return {
-        extend: [
-            super.animFn(), // copy functional props from base
-
-            this.modalAnimFn(),
         ] as JssStyle,
     }}
 

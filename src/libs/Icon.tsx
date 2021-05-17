@@ -124,7 +124,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
         foreg         : null, // delete from cssProps; in img-icon: foreg => backgColor ; in font-icon: foreg => foreg => color (font-color)
     }}
-    public fontBasicStyle(): JssStyle { return {
+    public /*virtual*/ fontBasicStyle(): JssStyle { return {
         '&::after': {
             // layout:
             content    : this.ref(this._img),
@@ -183,7 +183,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
             //#endregion fonts
         },
     }}
-    public imgBasicStyle(): JssStyle { return {
+    public /*virtual*/ imgBasicStyle(): JssStyle { return {
         // colors:
         backg         : this.ref(this._foregFn), // setup icon's color
         
@@ -231,7 +231,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         //#endregion image masking
     }}
 
-    public imgStyle(img: Cust.Ref, foreg?: Cust.Ref): JssStyle { return {
+    public /*virtual*/ imgStyle(img: Cust.Ref, foreg?: Cust.Ref): JssStyle { return {
         extend: [
             this.basicStyle(),
             this.imgBasicStyle(),
@@ -265,7 +265,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
 
 
-    //#region utils
+    // utilities:
     /**
      * Merges two specified url to final url.
      * @param target The relative or absolute target url.
@@ -303,7 +303,6 @@ export class IconStylesBuilder extends ElementStylesBuilder {
     
         return null;
     }
-    //#endregion utils
 }
 export const styles = new IconStylesBuilder();
 

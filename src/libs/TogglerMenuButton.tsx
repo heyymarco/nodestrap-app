@@ -69,8 +69,8 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
 
 
     // states:
-    protected togglerThemesIf(): JssStyle { return {} }
-    protected togglerStates(inherit = false): JssStyle { return {
+    protected /*virtual*/ togglerThemesIf(): JssStyle { return {} }
+    protected /*virtual*/ togglerStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit, {
                 //#region all initial states are none
@@ -122,7 +122,10 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
 
 
     // functions:
-    protected togglerPropsFn(): JssStyle { return {
+    protected /*virtual*/ togglerPropsFn(): JssStyle { return {
+        ...this.togglerAnimFn(),
+    }}
+    protected /*virtual*/ togglerAnimFn(): JssStyle { return {
         // define an *animations* func for the toggler top:
         [this.decl(this._togglerTopAnimFn)]: [
             this.ref(this._togglerTopAnimOnOff),
@@ -136,6 +139,7 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
             this.ref(this._togglerBtmAnimOnOff),
         ],
     }}
+
     public /*override*/ propsFn(): JssStyle { return {
         extend: [
             super.propsFn(), // copy functional props from base
@@ -147,7 +151,7 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
 
 
     // styles:
-    protected togglerBasicStyle(): JssStyle { return {
+    protected /*virtual*/ togglerBasicStyle(): JssStyle { return {
         '&>svg': {
             // sizes:
             // fill the entire parent text's height:
