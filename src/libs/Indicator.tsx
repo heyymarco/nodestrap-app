@@ -426,7 +426,7 @@ export function useStateEnableDisable<TElement extends HTMLElement = HTMLElement
     
     
     /*
-     * state is enabled if [controllable enabled]
+     * state is enabled/disabled based on [fully controllable enabled]
      */
     const enabledFn: boolean = propEnabled;
 
@@ -482,7 +482,7 @@ export function useStateActivePassive<TElement extends HTMLElement = HTMLElement
     
 
     /*
-     * state is active if [controllable active]
+     * state is active if [partially controllable active]
      * state is active if [clickable] && [uncontrollable active]
      */
     const activeFn: boolean = propActive || (propClickable && activeDn);

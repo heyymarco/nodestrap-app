@@ -658,7 +658,9 @@ export function useCompactable<TElement extends HTMLElement = HTMLElement>(props
 
 
 
-    // state is compact/full based on [controllable compact] (if set) and fallback to [uncontrollable compact]:
+    /*
+     * state is compact/full based on [fully controllable compact] (if set) and fallback to [uncontrollable compact]
+     */
     const compactFn: boolean = props.compact ?? compactDn;
 
 
@@ -791,7 +793,9 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
 
 
-    // state is active/passive based on [controllable active] (if set) and fallback to [uncontrollable active]:
+    /*
+     * state is active/passive based on [fully controllable active] (if set) and fallback to [uncontrollable active]
+     */
     const activeFn: boolean = active ?? activeDn;
 
 

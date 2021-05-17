@@ -640,7 +640,9 @@ export function useStateCheckClear(props: Props) {
 
 
 
-    // state is checked/cleared based on [controllable checked] (if set) and fallback to [uncontrollable checked]:
+    /*
+     * state is checked/cleared based on [fully controllable checked] (if set) and fallback to [uncontrollable checked]
+     */
     const checkedFn: boolean = props.checked ?? checkedDn;
 
     if (checked !== checkedFn) { // change detected => apply the change & start animating

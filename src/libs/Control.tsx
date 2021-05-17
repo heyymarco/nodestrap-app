@@ -407,7 +407,7 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
     
     /*
      * state is always blur if disabled
-     * state is focus if [controllable focus] || [uncontrollable focus]
+     * state is focus if [partially controllable focus] || [uncontrollable focus]
      */
     const focusFn: boolean = propEnabled && (propFocus || focusDn);
 
@@ -477,7 +477,7 @@ export function useStateHoverLeave<TElement extends HTMLElement = HTMLElement>(p
 
     /*
      * state is always leave if disabled
-     * state is hover if [uncontrollable hover]
+     * state is hover/leave based on [uncontrollable hover]
      * [controllable hover] is not supported
      */
     const hoverFn: boolean = propEnabled && hoverDn;
