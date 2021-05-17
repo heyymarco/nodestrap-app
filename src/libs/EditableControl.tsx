@@ -487,9 +487,13 @@ export function useStateValidInvalid(props: Val.Validation, validator?: Validato
     const valContext = useContext(validations.Context);
 
 
-    
-    // props:
+
+    // defaults:
     const defaultValided: Val.Result        = null; // if [isValid] was not specified => the default value is [isValid=null] (neither error nor success)
+
+
+    
+    // states:
     const [valided,       setValided      ] = useState<Val.Result|undefined>((): (Val.Result|undefined) => {
         // use context as the primary validator:
         if (valContext.enableValidation === false) return null;               // disabled => uncheck
