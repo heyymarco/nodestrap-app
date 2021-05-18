@@ -2,12 +2,9 @@
 import React                from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
-import {
-    default as Indicator,
-    useStateActivePassive,
-}                           from './Indicator'
-import Control              from './Control'
-import type * as Controls   from './Control'
+import Indicator            from './Indicator'
+import ActionControl        from './ActionControl'
+import type * as ActCtrls   from './ActionControl'
 
 
 
@@ -15,62 +12,27 @@ import type * as Controls   from './Control'
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Controls.Props<TElement>
+        ActCtrls.Props<TElement>
 {
     // children:
     children? : React.ReactNode
 }
 export default function ListGroupItem<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
-    // states:
-    const stateActPass = useStateActivePassive({}, {
-        active  : 'press',
-        actived : 'pressed',
-        passive : 'release',
-    });
-
-
-
-    const {
-        // behaviors:
-        actionCtrl,
-        ...otherProps } = props;
-
     return (
-        actionCtrl
+        props.actionCtrl
         ?
-        <Control<TElement>
-            // behaviors:
-            actionCtrl={false} // turn off default actionCtrl behavior, use our actionCtrl implementation
-
-
+        <ActionControl<TElement>
             // other props:
-            {...otherProps}
+            {...props}
 
 
             // classes:
             mainClass={props.mainClass ?? 'actionCtrl'}
-            stateClasses={[...(props.stateClasses ?? []),
-                // states:
-                stateActPass.class,
-            ]}
-        
-
-            // events:
-            onMouseDown={(e) => { stateActPass.handleMouseDown(); props.onMouseDown?.(e); }}
-            onKeyDown=  {(e) => { stateActPass.handleKeyDown();   props.onKeyDown?.(e);   }}
-            onAnimationEnd={(e) => {
-                // states:
-                stateActPass.handleAnimationEnd(e);
-
-
-                // forwards:
-                props.onAnimationEnd?.(e);
-            }}
         />
         :
         <Indicator<TElement>
             // other props:
-            {...otherProps}
+            {...props}
 
 
             // classes:

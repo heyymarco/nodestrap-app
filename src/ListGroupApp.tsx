@@ -12,6 +12,7 @@ import Container from './libs/Container';
 import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
 import Control   from './libs/Control';
+import ActionControl   from './libs/ActionControl';
 import Button   from './libs/Button';
 import Content from './libs/Content';
 import ListGroup, {ListGroupItem} from './libs/ListGroup';
@@ -94,7 +95,7 @@ function App() {
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
 				>
-                        element
+                    element
                 </Element>
                 <Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -102,7 +103,7 @@ function App() {
 
 					enabled={enabled} active={active}
 				>
-                        indicator
+                    indicator
                 </Indicator>
                 <Content
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -110,7 +111,7 @@ function App() {
 
 					enabled={enabled} active={active}
 				>
-                        content
+                    content
                 </Content>
 				<Control
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -118,16 +119,16 @@ function App() {
 
 					enabled={enabled} active={active}
 				>
-                        control
+                    control
                 </Control>
-				<Control
+				<ActionControl
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
 				>
-                        control
-                </Control>
+                    action control
+                </ActionControl>
 				<ListGroup
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}

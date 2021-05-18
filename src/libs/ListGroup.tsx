@@ -17,21 +17,16 @@ import {
     cssProps as ecssProps,
 }                           from './Element'
 import {
-    cssProps as icssProps,
-}                           from './Indicator'
-import {
     default  as Content,
     ContentStylesBuilder,
-    styles as contentStyles,
 }                           from './Content'
 import type * as Contents   from './Content'
-import {
-    ControlStylesBuilder,
-    styles as controlStyles,
-}                           from './Control'
 import type {
     IControlStylesBuilder,
 }                           from './Control'
+import {
+    styles as actionControlStyles,
+}                           from './ActionControl'
 import ListGroupItem        from './ListGroupItem'
 
 
@@ -102,123 +97,13 @@ class ListItemStylesBuilder extends ContentStylesBuilder {
 }
 const listItemStyles = new ListItemStylesBuilder();
 
-class NonActionControlStylesBuilder extends ControlStylesBuilder {
-    //#region mixins
-    protected /*override*/ actionCtrl() { return false; }
-    //#endregion mixins
-}
 class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements IControlStylesBuilder {
-    //#region scoped css props
-    // @ts-ignore
-    protected readonly _animHoverLeave     = controlStyles._animHoverLeave
-    // @ts-ignore
-    protected readonly _animFocusBlur      = controlStyles._animFocusBlur
-
-
-
-    public    readonly _filterPressRelease = 'filterPressRelease'
-    protected readonly _animPressRelease   = 'animPressRelease'
-    //#endregion scoped css props
-
-
-
-    //#region mixins
-    protected statePressing(content: JssStyle): JssStyle { return {
-        '&.press,&:active:not(.disable):not(.disabled):not(:disabled)': content,
-    }}
-    protected statePress(content: JssStyle): JssStyle { return {
-        '&.press,&.pressed,&:active:not(.disable):not(.disabled):not(:disabled)': content,
-    }}
-    protected stateNotPress(content: JssStyle): JssStyle { return {
-        '&:not(.press):not(.pressed):not(:active), &:not(.press):not(.pressed).disable, &:not(.press):not(.pressed).disabled, &:not(.press):not(.pressed):disabled': content,
-    }}
-    protected stateNotPressed(content: JssStyle): JssStyle { return {
-        // not fully pressed
-        '&:not(.pressed)': content,
-    }}
-    protected stateReleasing(content: JssStyle): JssStyle { return {
-        '&.release': content,
-    }}
-    protected stateNotReleasing(content: JssStyle): JssStyle { return {
-        '&:not(.release)': content,
-    }}
-    protected statePressReleasing(content: JssStyle): JssStyle { return {
-        '&.press,&.pressed,&:active:not(.disable):not(.disabled):not(:disabled),&.release': content,
-    }}
-    protected stateNotPressReleasing(content: JssStyle): JssStyle { return {
-        '&:not(.press):not(.pressed):not(:active):not(.release), &:not(.press):not(.pressed).disable:not(.release), &:not(.press):not(.pressed).disabled:not(.release), &:not(.press):not(.pressed):disabled:not(.release)': content,
-    }}
-    protected stateNotPressingReleasing(content: JssStyle): JssStyle { return {
-        '&:not(.press):not(:active):not(.release), &:not(.press).disable:not(.release), &:not(.press).disabled:not(.release), &:not(.press):disabled:not(.release)': content,
-    }}
-
-
-
-    protected /*override*/ actionCtrl() { return true; }
-
-
-
-    protected /*override*/ applyStateNoAnimStartup(): JssStyle {
-        return this.stateNotPressingReleasing(
-            // @ts-ignore
-            controlStyles.applyStateNoAnimStartup(),
-        );
-    }
-    //#endregion mixins
-
-
-
     // states:
-    public /*override*/ indicationStates(inherit = false): JssStyle { return {
-        extend: [
-            // doesn't support smooth hover/leave/focus/blur:
-            // return indicatorStyles.indicationStates(inherit); // non-action indicationStates
-    
-            // supports smooth hover/leave/focus/blur:
-            (new NonActionControlStylesBuilder()).indicationStates(inherit), // non-action indicationStates
-
-
-
-            // this.iif(!inherit, { // do not inherit: parent element doesn't have [press, release]
-            {
-                //#region all initial states are none
-                [this.decl(this._filterPressRelease)] : ecssProps.filterNone,
-                [this.decl(this._animPressRelease)]   : ecssProps.animNone,
-                //#endregion all initial states are none
-            },
-            // }),
-
-
-
-            //#region specific states
-            //#region active, passive
-            this.statePressReleasing({ // [pressing, pressed, releasing]
-                [this.decl(this._filterPressRelease)] : icssProps.filterActive,
-            }),
-            this.statePress({ // [pressing, pressed]
-                [this.decl(this._animPressRelease)]   : icssProps.animActive,
-            }),
-            this.stateReleasing({ // [releasing]
-                [this.decl(this._animPressRelease)]   : icssProps.animPassive,
-            }),
-            {
-                // [pressed]
-                '&.pressed': // if activated programmatically (not by user input), disable the animation
-                    this.applyStateNoAnimStartup(),
-            },
-            //#endregion active, passive
-            //#endregion specific states
-        ] as JssStyle,
-    }}
-    public /*override*/ contentStates(inherit = false): JssStyle {
-        return contentStyles.contentStates(inherit); // non-action contentStates
-    }
-
     public /*implement*/ controlThemesIf(): JssStyle {
-        return controlStyles.controlThemesIf(); // copy themes from Control
+        return actionControlStyles.controlThemesIf(); // copy themes from ActionControl
     }
     public /*implement*/ controlStates(inherit = false): JssStyle {
-        return controlStyles.controlStates(inherit); // copy states from Control
+        return actionControlStyles.controlStates(inherit); // copy states from ActionControl
     }
     
     public /*override*/ themesIf(): JssStyle { return {
@@ -240,34 +125,11 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
 
     // functions:
     public /*implement*/ controlPropsFn(): JssStyle {
-        return controlStyles.controlPropsFn(); // copy functional props from Control
+        return actionControlStyles.controlPropsFn(); // copy functional props from ActionControl
     }
-    public /*implement*/ controlAnimFn(): JssStyle { return {
-        //#region re-arrange the animFn at different states
-        '&.press,&.pressed': // if activated programmatically (not by user input)
-            this.stateNotDisabled({ // if ctrl was not fully disabled
-                // define an *animations* func:
-                [this.decl(this._animFn)]: [
-                    ecssProps.anim,
-                    this.ref(this._animPressRelease),  // 5th : ctrl already pressed, move to the least priority
-                    this.ref(this._animHoverLeave),    // 4th : cursor leaved   => low probability because holding press
-                    this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus => low probability because holding press
-                    this.ref(this._animEnableDisable), // 2nd : ctrl enable/disable => rarely used => low probability
-                    this.ref(this._animActivePassive), // 1st : ctrl got activated  => the most likely happened
-                ],
-            }),
-
-        // define an *animations* func:
-        [this.decl(this._animFn)]: [
-            ecssProps.anim,
-            this.ref(this._animEnableDisable), // 5th : ctrl must be enabled
-            this.ref(this._animActivePassive), // 4th : rarely happened => low probability
-            this.ref(this._animHoverLeave),    // 3rd : cursor hovered over ctrl
-            this.ref(this._animFocusBlur),     // 2nd : ctrl got focused (can interrupt hover/leave)
-            this.ref(this._animPressRelease),  // 1st : ctrl got pressed (can interrupt focus/blur)
-        ],
-        //#endregion re-arrange the animFn at different states
-    }}
+    public /*implement*/ controlAnimFn(): JssStyle {
+        return actionControlStyles.controlAnimFn(); // copy functional anim from ActionControl
+    }
 
     public /*override*/ propsFn(): JssStyle { return {
         extend: [
@@ -284,7 +146,7 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
 
     // styles:
     public /*implement*/ controlBasicStyle(): JssStyle {
-        return controlStyles.controlBasicStyle(); // copy basicStyle from Control
+        return actionControlStyles.controlBasicStyle(); // copy basicStyle from ActionControl
     }
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [

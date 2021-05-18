@@ -13,6 +13,7 @@ import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
 import Content from './libs/Content';
 import Control from './libs/Control';
+import ActionControl from './libs/ActionControl';
 import EditableControl from './libs/EditableControl';
 import EditableTextControl from './libs/EditableTextControl';
 
@@ -103,7 +104,7 @@ function App() {
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
 				>
-                        element
+                    element
                 </Element>
                 <Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -111,7 +112,7 @@ function App() {
 
 					enabled={enabled} active={active}
 				>
-                        indicator
+                    indicator
                 </Indicator>
                 <Content
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -119,7 +120,7 @@ function App() {
 
 					enabled={enabled} active={active}
 				>
-                        content
+                    content
                 </Content>
                 <Control
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -129,8 +130,18 @@ function App() {
 
 					focus={focus}
 				>
-                        control
+                    control
                 </Control>
+                <ActionControl
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+
+					focus={focus}
+				>
+                    action control
+                </ActionControl>
                 <Button
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}

@@ -413,7 +413,7 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export function useStateEnableDisable<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export function useStateEnableDisable(props: IndicationProps) {
     // props:
     const propEnabled: boolean = (props.enabled ?? true); // if [enabled] was not specified => the default value is [enabled=true] (enabled)
 
@@ -462,7 +462,7 @@ export function useStateEnableDisable<TElement extends HTMLElement = HTMLElement
     };
 }
 
-export function useStateActivePassive<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>, classes = { active: 'active', actived: 'actived', passive: 'passive' }) {
+export function useStateActivePassive(props: IndicationProps, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }) {
     // props:
     const propClickable: boolean =  // control is clickable if [is actionCtrl] and [is enabled]
         (props.actionCtrl ?? false) // if [actionCtrl] was not specified => the default value is [actionCtrl=false] (readonly)
@@ -572,9 +572,13 @@ export function useStateActivePassive<TElement extends HTMLElement = HTMLElement
 
 export interface IndicationProps
 {
+    // behaviors:
+    actionCtrl? : boolean
+
+
     // accessibility:
-    enabled? : boolean
-    active?  : boolean
+    enabled?    : boolean
+    active?     : boolean
 }
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
@@ -582,10 +586,6 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
         Elements.Props<TElement>,
         IndicationProps
 {
-    // behaviors:
-    actionCtrl?: boolean
-
-
     // states:
     stateActive?: [boolean, (newValue: boolean) => void]
 }
