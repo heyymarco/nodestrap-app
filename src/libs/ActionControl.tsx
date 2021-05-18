@@ -27,7 +27,6 @@ import type * as Controls   from './Control'
 
 export class ActionControlStylesBuilder extends ControlStylesBuilder {
     //#region scoped css props
-    public    readonly _filterPressRelease = 'filterPressRelease'
     protected readonly _animPressRelease   = 'animPressRelease'
     //#endregion scoped css props
 
@@ -88,8 +87,7 @@ export class ActionControlStylesBuilder extends ControlStylesBuilder {
 
             this.iif(!inherit, {
                 //#region all initial states are none
-                [this.decl(this._filterPressRelease)] : ecssProps.filterNone,
-                [this.decl(this._animPressRelease)]   : ecssProps.animNone,
+                [this.decl(this._animPressRelease)]    : ecssProps.animNone,
                 //#endregion all initial states are none
             }),
 
@@ -98,13 +96,13 @@ export class ActionControlStylesBuilder extends ControlStylesBuilder {
             //#region specific states
             //#region press, release
             this.statePressReleasing({ // [pressing, pressed, releasing]
-                [this.decl(this._filterPressRelease)] : icssProps.filterActive,
+                [this.decl(this._filterActivePassive)] : icssProps.filterActive,
             }),
             this.statePress({ // [pressing, pressed]
-                [this.decl(this._animPressRelease)]   : icssProps.animActive,
+                [this.decl(this._animPressRelease)]    : icssProps.animActive,
             }),
             this.stateReleasing({ // [releasing]
-                [this.decl(this._animPressRelease)]   : icssProps.animPassive,
+                [this.decl(this._animPressRelease)]    : icssProps.animPassive,
             }),
             {
                 // [pressed]
@@ -160,6 +158,10 @@ export function useStatePressRelease(props: IndicationProps, classes = { active:
         
         // other props:
         ...props,
+
+
+        // accessibility:
+        active : undefined, // no [controllable active]
     }, classes);
 }
 

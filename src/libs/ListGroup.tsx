@@ -98,6 +98,15 @@ class ListItemStylesBuilder extends ContentStylesBuilder {
 const listItemStyles = new ListItemStylesBuilder();
 
 class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements IControlStylesBuilder {
+    //#region mixins
+    protected /*override*/ applyStateNoAnimStartup(): JssStyle {
+        // @ts-ignore
+        return actionControlStyles.applyStateNoAnimStartup(); // copy no-anim-startup from ActionControl
+    }
+    //#endregion mixins
+
+
+
     // states:
     public /*implement*/ controlThemesIf(): JssStyle {
         return actionControlStyles.controlThemesIf(); // copy themes from ActionControl
