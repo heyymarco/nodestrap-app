@@ -210,6 +210,12 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
+    const itemHandleClick: React.MouseEventHandler<HTMLElement> = (e) => {
+        console.log('test');
+    }
+
+
+
     const {
         // accessibility:
         readOnly,
@@ -225,7 +231,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
             {...otherProps}
         >
             {children && (Array.isArray(children) ? children : [children]).map((child, index) => (
-                (React.isValidElement(child) && (child.type === ListGroupItem))
+                (React.isValidElement<ListGroups.Items.Props>(child) && (child.type === ListGroupItem))
                 ?
                 <ListGroupItem
                     // essentials:
@@ -236,6 +242,10 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                     active={index === activeIndex}
 
 
+                    // events:
+                    onClick={(child.props.actionCtrl ?? false) ? itemHandleClick : undefined}
+
+
                     // other props:
                     {...child.props}
                 />
@@ -244,9 +254,17 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                     // essentials:
                     key={index}
 
+
+                    // behaviors:
+                    actionCtrl={true}
+
                     
                     // accessibility:
                     active={index === activeIndex}
+
+
+                    // events:
+                    onClick={itemHandleClick}
                 >
                     { child }
                 </ListGroupItem>

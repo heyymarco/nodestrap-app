@@ -28,6 +28,7 @@ import {
     styles as actionControlStyles,
 }                           from './ActionControl'
 import ListGroupItem        from './ListGroupItem'
+import type * as ListGroupItems from './ListGroupItem'
 
 
 
@@ -623,3 +624,4 @@ export default function ListGroup<TElement extends HTMLElement = HTMLElement>(pr
 }
 
 export { ListGroupItem, ListGroupItem as Item }
+export type { ListGroupItems, ListGroupItems as Items }

@@ -1,3 +1,7 @@
+.nav {
+    margin: 10px !important;
+}
+
 article>section:nth-child(3n+1) {
     background: pink
 }
@@ -6,4 +10,18 @@ article>section:nth-child(3n+2) {
 }
 article>section:nth-child(3n+3) {
     background: orange
+}
+
+
+article>section>section {
+    margin: 10px;
+}
+article>section>section:nth-child(3n+1) {
+    background: greenyellow
+}
+article>section>section:nth-child(3n+2) {
+    background: mediumpurple
+}
+article>section>section:nth-child(3n+3) {
+    background: sandybrown
 }

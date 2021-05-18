@@ -70,7 +70,7 @@ function App() {
         <div className="App">
             <Container>
 				<div style={{display: 'flex', flexDirection: 'row'}}>
-					<Navscroll style={{flex: '1 1'}}
+					<Navscroll classes={['nav']} style={{flex: '1 1'}}
 						theme={theme} size={size} enableGradient={enableGrad}
 						outlined={outlined}
 
@@ -80,16 +80,29 @@ function App() {
 						interpolation={false}
 					>
 						<>First heading</>
-						<>Second heading</>
+						<NavscrollItem>
+							Second heading
+							<Navscroll
+								theme={theme} size='sm' enableGradient={enableGrad}
+								outlined={outlined}
+
+								enabled={enabled} active={active}
+							>
+								<>Sub 2-1</>
+								<>Sub 2-2</>
+								<>Sub 2-3</>
+								<>Sub 2-4</>
+							</Navscroll>
+						</NavscrollItem>
 						<NavscrollItem theme='success'>Thrid heading</NavscrollItem>
 						<NavscrollItem>Fourth heading</NavscrollItem>
 						<NavscrollItem>Fifth heading</NavscrollItem>
 						<NavscrollItem>Sixth heading</NavscrollItem>
-						<NavscrollItem>Seventh heading</NavscrollItem>
+						<NavscrollItem actionCtrl={true}>Seventh heading</NavscrollItem>
 						<NavscrollItem>Last heading</NavscrollItem>
 					</Navscroll>
 
-					<Navscroll style={{flex: '1 1'}}
+					<Navscroll classes={['nav']} style={{flex: '1 1'}}
 						theme={theme} size={size} enableGradient={enableGrad}
 						outlined={outlined}
 
@@ -99,12 +112,25 @@ function App() {
 						interpolation={true}
 					>
 						<>First heading</>
-						<>Second heading</>
+						<NavscrollItem>
+							Second heading
+							<Navscroll
+								theme={theme} size='sm' enableGradient={enableGrad}
+								outlined={outlined}
+
+								enabled={enabled} active={active}
+							>
+								<>Sub 2-1</>
+								<>Sub 2-2</>
+								<>Sub 2-3</>
+								<>Sub 2-4</>
+							</Navscroll>
+						</NavscrollItem>
 						<NavscrollItem theme='success'>Thrid heading</NavscrollItem>
 						<NavscrollItem>Fourth heading</NavscrollItem>
 						<NavscrollItem>Fifth heading</NavscrollItem>
 						<NavscrollItem>Sixth heading</NavscrollItem>
-						<NavscrollItem>Seventh heading</NavscrollItem>
+						<NavscrollItem actionCtrl={true}>Seventh heading</NavscrollItem>
 						<NavscrollItem>Last heading</NavscrollItem>
 					</Navscroll>
 				</div>
@@ -124,8 +150,20 @@ function App() {
 					<section style={{ height: '50px' }}>
 						<h6>First heading</h6>
 					</section>
-					<section style={{ height: '500px' }}>
+					<section style={{ height: 'auto' }}>
 						<h6>Second heading</h6>
+						<section style={{ height: '200px' }}>
+							Second sub heading 1
+						</section>
+						<section style={{ height: '100px' }}>
+							Second sub heading 2
+						</section>
+						<section style={{ height: '160px' }}>
+							Second sub heading 3
+						</section>
+						<section style={{ height: '50px' }}>
+							Second sub heading 4
+						</section>
 					</section>
 					<section style={{ height: '40px' }}>
 						<h6>Thrid heading</h6>
