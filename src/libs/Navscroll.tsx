@@ -32,29 +32,42 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
 }
 export default function Navscroll<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const [activeIndex, setActiveIndex] = useState(-1);
+    const [activeIndices, setActiveIndices] = useState<number[]>([]);
 
 
 
     useEffect(() => {
         const target = props.targetRef?.current;
         const handleScroll = () => {
-            const target2 = target;
-            if (!target2) return;
+            const parent = target;
+            if (!parent) return;
+
+
+
+            const [parentOffsetLeft, parentOffsetTop] = (() => {
+                const parentStyle = getComputedStyle(parent);
+                if (['relative', 'absolute'].includes(parentStyle.position)) return [0, 0];
+
+                return [
+                    parent.offsetLeft + Number.parseInt(parentStyle.borderInlineStartWidth),
+                    parent.offsetTop  + Number.parseInt(parentStyle.borderBlockStartWidth),
+                ];
+            })();
 
 
 
             const visibleChildIndex = ((): number|null => {
-                type ElementArea = {
+                type ElementRect = {
                     readonly left   : number
                     readonly top    : number
                     readonly right  : number
                     readonly bottom : number
                 };
-                const getElementArea = (element: HTMLElement): ElementArea => {
-                    const left   = element.offsetLeft;
-                    const top    = element.offsetTop;
-                    const right  = left + element.offsetWidth;
-                    const bottom = top  + element.offsetHeight;
+                const getChildRect = (child: HTMLElement): ElementRect => {
+                    const left   = child.offsetLeft - parentOffsetLeft; // the distance between parent's inner border & child's outher border at [scrollLeft=0]
+                    const top    = child.offsetTop - parentOffsetTop;   // the distance between parent's inner border & child's outher border at [scrollTop=0]
+                    const right  = left + child.offsetWidth;
+                    const bottom = top  + child.offsetHeight;
     
                     return {
                         left   : left,
@@ -64,62 +77,62 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                     };
                 };
 
-                // viewport area:
-                const viewArea = {
-                    left   : target2.scrollLeft,
-                    top    : target2.scrollTop,
-                    right  : target2.scrollLeft + target2.clientWidth,
-                    bottom : target2.scrollTop  + target2.clientHeight,
+                // viewport rect:
+                const viewportRect = {
+                    left   : parent.scrollLeft,
+                    top    : parent.scrollTop,
+                    right  : parent.scrollLeft + parent.clientWidth,  // the inner width,  includes [paddings], excludes [margins, borders, scrollbars]
+                    bottom : parent.scrollTop  + parent.clientHeight, // the inner height, includes [paddings], excludes [margins, borders, scrollbars]
                 };
-                const getCroppedArea = (elementArea: ElementArea) => ({
-                    left   : Math.max(elementArea.left,   viewArea.left),
-                    right  : Math.min(elementArea.right,  viewArea.right),
-                    top    : Math.max(elementArea.top,    viewArea.top),
-                    bottom : Math.min(elementArea.bottom, viewArea.bottom),
+                const getVisibleChildRect = (childRect: ElementRect) => ({
+                    left   : Math.max(childRect.left,   viewportRect.left),
+                    right  : Math.min(childRect.right,  viewportRect.right),
+                    top    : Math.max(childRect.top,    viewportRect.top),
+                    bottom : Math.min(childRect.bottom, viewportRect.bottom),
                 });
 
 
 
                 const isPartiallyVisible = (child: HTMLElement): boolean => {
-                    // child area:
-                    const childArea     = getElementArea(child);
+                    // child rect:
+                    const childRect        = getChildRect(child);
     
-                    // cropped child area:
-                    const cropChildArea = getCroppedArea(childArea);
+                    // visible child rect within the viewport:
+                    const visibleChildRect = getVisibleChildRect(childRect);
     
     
                     
                     return (
-                        ((cropChildArea.left < cropChildArea.right) && (cropChildArea.top < cropChildArea.bottom)) // cropped child is still considered visible if has positive width && positive height
+                        ((visibleChildRect.left < visibleChildRect.right) && (visibleChildRect.top < visibleChildRect.bottom)) // cropped child is still considered visible if has positive width && positive height
                         ||
                         (
                             // rare case:
-                            // consider zero width/height as visible if inside the viewport area:
+                            // consider zero width/height as visible if within the viewport:
 
-                            ((childArea.left >= viewArea.left) && (childArea.right  <= viewArea.right ))
+                            ((childRect.left >= viewportRect.left) && (childRect.right  <= viewportRect.right ))
                             &&
-                            ((childArea.top  >= viewArea.top ) && (childArea.bottom <= viewArea.bottom))
+                            ((childRect.top  >= viewportRect.top ) && (childRect.bottom <= viewportRect.bottom))
                         )
                     );
                 };
                 const isFullyVisible = (child: HTMLElement): boolean => {
-                    // child area:
-                    const childArea     = getElementArea(child);
+                    // child rect:
+                    const childRect        = getChildRect(child);
     
-                    // cropped child area:
-                    const cropChildArea = getCroppedArea(childArea);
+                    // visible child rect within the viewport:
+                    const visibleChildRect = getVisibleChildRect(childRect);
 
 
 
                     // true if not cropped (the size is still the same as original)
                     return (
-                        (childArea.left   === cropChildArea.left)
+                        (childRect.left   === visibleChildRect.left)
                         &&
-                        (childArea.right  === cropChildArea.right)
+                        (childRect.right  === visibleChildRect.right)
                         &&
-                        (childArea.top    === cropChildArea.top)
+                        (childRect.top    === visibleChildRect.top)
                         &&
-                        (childArea.bottom === cropChildArea.bottom)
+                        (childRect.bottom === visibleChildRect.bottom)
                     );
                 };
                 const findFirstIndex = <T,>(array: T[], predicate: (value: T) => boolean): number|null => {
@@ -139,17 +152,17 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                 
     
     
-                const children = Array.from(target2.children) as HTMLElement[];
                 const isFirstScroll =
-                    (viewArea.left === 0)
+                    (viewportRect.left === 0)
                     &&
-                    (viewArea.top  === 0)
+                    (viewportRect.top  === 0)
                     ;
                 const isLastScroll =
-                    (viewArea.left === (target2.scrollWidth  - target2.clientWidth ))
+                    (((parent.scrollWidth  - parent.clientWidth ) - viewportRect.left) <= 0.5)
                     &&
-                    (viewArea.top  === (target2.scrollHeight - target2.clientHeight))
+                    (((parent.scrollHeight - parent.clientHeight) - viewportRect.top) <= 0.5)
                     ;
+                const children = Array.from(parent.children) as HTMLElement[];
                 
                 if (props.interpolation ?? true) {
                     return (
@@ -167,14 +180,15 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                         .map((child, index) => ({ index: index, child: child })) // add index, so we can track the original index after being mutated
                         .filter((item) => isPartiallyVisible(item.child)) // only visible children
                         .map((item) => {
-                            const area = getCroppedArea(getElementArea(item.child)); // get the visible area
+                            // visible child rect within the viewport:
+                            const visibleChildRect = getVisibleChildRect(getChildRect(item.child));
 
                             return {
-                                index : item.index,
-                                area  : (area.right - area.left) * (area.bottom - area.top), // calculates the area
+                                index       : item.index,
+                                visibleArea : (visibleChildRect.right - visibleChildRect.left) * (visibleChildRect.bottom - visibleChildRect.top), // calculates the visible area
                             };
                         })
-                        .sort((a, b) => b.area - a.area) // sort from largest to narrowest
+                        .sort((a, b) => b.visibleArea - a.visibleArea) // sort from largest to narrowest
                         [0]?.index // find the index of the largest one
 
                         ??

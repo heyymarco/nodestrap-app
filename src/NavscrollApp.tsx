@@ -150,7 +150,7 @@ function App() {
 					<section style={{ height: '50px' }}>
 						<h6>First heading</h6>
 					</section>
-					<section style={{ height: 'auto' }}>
+					<section style={{ height: 'auto', position: 'relative', }}>
 						<h6>Second heading</h6>
 						<section style={{ height: '200px' }}>
 							Second sub heading 1
