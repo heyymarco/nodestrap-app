@@ -1,7 +1,6 @@
 // react (builds html using javascript):
 import
     React, {
-    useState,
     useEffect,
     useReducer,
 }                           from 'react'        // base technology of our nodestrap components
@@ -35,7 +34,6 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     readOnly?        : boolean
 }
 export default function Navscroll<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
-    const [activeIndex, setActiveIndex]     = useState(-1);
     const [activeIndices, setActiveIndices] = useReducer((indices: number[], newIndices: number[]): number[] => {
         if (deepEqual(newIndices, indices)) return indices; // already the same, use the old as by-reference
         return newIndices; // update with the new one
@@ -240,7 +238,6 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
             setActiveIndices(visibleChildIndices);
-            setActiveIndex(visibleChildIndices[0] ?? -1);
         };
         target?.addEventListener('scroll', handleScroll);
         if (target) handleScroll(); // trigger for the first time
@@ -262,24 +259,23 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
-    const {
-        // accessibility:
-        readOnly,
-
-
-        // children:
-        children,
-        ...otherProps } = props;
-    
     console.log(activeIndices);
-    function mutateListGroupItem(props: ListGroups.Items.Props, index: number) { return (
+    function mutateNestedNavscroll(props: Props, index: number, deepLevel: number) { return (
+        <ListGroup
+            // other props:
+            {...props}
+        >
+            { mutateListGroupItems(props.children, deepLevel) }
+        </ListGroup>
+    )}
+    function mutateListGroupItem(props: ListGroups.Items.Props, index: number, deepLevel: number) { return (
         <ListGroupItem
             // essentials:
             key={index}
 
 
             // accessibility:
-            active={index === activeIndex}
+            active={index === activeIndices[deepLevel]}
 
 
             // events:
@@ -289,39 +285,48 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
             // other props:
             {...props}
         >
-            { props.children }
+            {props.children && (Array.isArray(props.children) ? props.children : [props.children]).map((child, index) => (
+                (React.isValidElement<Props>(child) && (child.type === Navscroll) && (child.props.targetRef === undefined))
+                ?
+                mutateNestedNavscroll(child.props, index, deepLevel + 1)
+                :
+                child
+            ))}
         </ListGroupItem>
+    )}
+    function mutateListGroupItems(children: React.ReactNode, deepLevel: number) { return (
+        children && (Array.isArray(children) ? children : [children]).map((child, index) => (
+            (React.isValidElement<ListGroups.Items.Props>(child) && (child.type === ListGroupItem))
+            ?
+            mutateListGroupItem(child.props, index, deepLevel)
+            :
+            <ListGroupItem
+                // essentials:
+                key={index}
+
+
+                // behaviors:
+                actionCtrl={true}
+
+                
+                // accessibility:
+                active={index === activeIndices[deepLevel]}
+
+
+                // events:
+                onClick={itemHandleClick}
+            >
+                { child }
+            </ListGroupItem>
+        ))
     )}
 
     return (
         <ListGroup
             // other props:
-            {...otherProps}
+            {...props}
         >
-            {children && (Array.isArray(children) ? children : [children]).map((child, index) => (
-                (React.isValidElement<ListGroups.Items.Props>(child) && (child.type === ListGroupItem))
-                ?
-                mutateListGroupItem(child.props, index)
-                :
-                <ListGroupItem
-                    // essentials:
-                    key={index}
-
-
-                    // behaviors:
-                    actionCtrl={true}
-
-                    
-                    // accessibility:
-                    active={index === activeIndex}
-
-
-                    // events:
-                    onClick={itemHandleClick}
-                >
-                    { child }
-                </ListGroupItem>
-            ))}
+            { mutateListGroupItems(props.children, /*deepLevel: */0) }
         </ListGroup>
     );
 }

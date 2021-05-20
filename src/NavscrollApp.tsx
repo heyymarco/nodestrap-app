@@ -83,7 +83,7 @@ function App() {
 						<NavscrollItem>
 							Second heading
 							<Navscroll
-								theme={theme} size='sm' enableGradient={enableGrad}
+								theme='success' size='sm' enableGradient={enableGrad}
 								outlined={outlined}
 
 								enabled={enabled} active={active}
@@ -115,7 +115,7 @@ function App() {
 						<NavscrollItem>
 							Second heading
 							<Navscroll
-								theme={theme} size='sm' enableGradient={enableGrad}
+								theme='success' size='sm' enableGradient={enableGrad}
 								outlined={outlined}
 
 								enabled={enabled} active={active}
