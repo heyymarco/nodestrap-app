@@ -102,7 +102,7 @@ function App() {
 						<NavscrollItem>Last heading</NavscrollItem>
 					</Navscroll>
 
-					<Navscroll classes={['nav']} style={{flex: '1 1'}}
+					{/* <Navscroll classes={['nav']} style={{flex: '1 1'}}
 						theme={theme} size={size} enableGradient={enableGrad}
 						outlined={outlined}
 
@@ -132,7 +132,7 @@ function App() {
 						<NavscrollItem>Sixth heading</NavscrollItem>
 						<NavscrollItem actionCtrl={true}>Seventh heading</NavscrollItem>
 						<NavscrollItem>Last heading</NavscrollItem>
-					</Navscroll>
+					</Navscroll> */}
 				</div>
 				<article
 					ref={articleRef}
