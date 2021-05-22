@@ -77,6 +77,7 @@ function App() {
 						enabled={enabled} active={active}
 
 						targetRef={articleRef}
+						targetFilter={(e) => e.tagName.toLowerCase() === 'section'}
 						interpolation={false}
 					>
 						<>First heading</>
@@ -250,6 +251,38 @@ function App() {
 						/>
 						active
 					</label>
+				</p>
+				<p>
+					Lorem<br/>
+					ipsum<br/>
+					dolor<br/>
+					sit,<br/>
+					amet<br/>
+					consectetur<br/>
+					adipisicing<br/>
+					elit.<br/>
+					Obcaecati,<br/>
+					fugiat<br/>
+					quam<br/>
+					corrupti<br/>
+					doloremque<br/>
+					mollitia<br/>
+					fuga<br/>
+					tempora<br/>
+					sequi<br/>
+					repellat?<br/>
+					Sint<br/>
+					quia<br/>
+					doloremque,<br/>
+					accusantium<br/>
+					perferendis<br/>
+					autem<br/>
+					cupiditate!<br/>
+					Sapiente<br/>
+					odio<br/>
+					sit<br/>
+					voluptatem<br/>
+					accusamus.
 				</p>
             </Container>
         </div>
