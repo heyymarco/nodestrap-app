@@ -58,21 +58,12 @@ class Viewport {
         this.viewBottom  = viewBottom;
     }
     public static create(accumViewport: Viewport|null, element: HTMLElement): Viewport {
-        const [parentOffsetLeft, parentOffsetTop] = (() => { // compensation for non positioned parent element
-            const parent = element.parentElement;
-            if (!parent || ['relative', 'absolute'].includes(getComputedStyle(parent).position)) return [0, 0];
-
-            return [
-                parent.offsetLeft + parent.clientLeft,
-                parent.offsetTop  + parent.clientTop,
-            ];
-        })();
-        const offsetLeft = (accumViewport? (accumViewport.offsetLeft + (element.offsetLeft - parentOffsetLeft) + element.clientLeft) : 0);
-        const offsetTop  = (accumViewport? (accumViewport.offsetTop  + (element.offsetTop  - parentOffsetTop ) + element.clientTop ) : 0);
-        const viewLeft   =                                                                          offsetLeft + element.scrollLeft;
-        const viewTop    =                                                                          offsetTop  + element.scrollTop;
-        const viewRight  =                                                                          viewLeft   + element.clientWidth;
-        const viewBottom =                                                                          viewTop    + element.clientHeight;
+        const offsetLeft = accumViewport?.offsetLeft ?? 0;
+        const offsetTop  = accumViewport?.offsetTop  ?? 0;
+        const viewLeft   = offsetLeft + element.scrollLeft;
+        const viewTop    = offsetTop  + element.scrollTop;
+        const viewRight  = viewLeft   + element.clientWidth;
+        const viewBottom = viewTop    + element.clientHeight;
         
         
         
@@ -137,7 +128,7 @@ class Dimension {
         this.offsetRight   = offsetRight;
         this.offsetBottom  = offsetBottom;
     }
-    public static create(parent: Viewport, element: HTMLElement): Dimension {
+    public static create(accumViewport: Viewport, element: HTMLElement): Dimension {
         const [parentOffsetLeft, parentOffsetTop] = (() => { // compensation for non positioned parent element
             const parent = element.parentElement;
             if (!parent || ['relative', 'absolute'].includes(getComputedStyle(parent).position)) return [0, 0];
@@ -147,10 +138,10 @@ class Dimension {
                 parent.offsetTop  + parent.clientTop,
             ];
         })();
-        const offsetLeft   = parent.offsetLeft + (element.offsetLeft - parentOffsetLeft);
-        const offsetTop    = parent.offsetTop  + (element.offsetTop  - parentOffsetTop );
-        const offsetRight  =                                                  offsetLeft + element.offsetWidth;
-        const offsetBottom =                                                  offsetTop  + element.offsetHeight;
+        const offsetLeft   = accumViewport.offsetLeft + (element.offsetLeft - parentOffsetLeft);
+        const offsetTop    = accumViewport.offsetTop  + (element.offsetTop  - parentOffsetTop );
+        const offsetRight  = offsetLeft + element.offsetWidth;
+        const offsetBottom = offsetTop  + element.offsetHeight;
 
 
         
@@ -237,15 +228,44 @@ class Dimension {
     }
 
     public toViewport(accumViewport: Viewport|null): Viewport {
-        return Viewport.create(accumViewport, this.element).intersect(
-            new Viewport(
-                0,
-                0,
+        const element = this.element;
+        const [parentOffsetLeft, parentOffsetTop] = (() => { // compensation for non positioned parent element
+            const parent = element.parentElement;
+            if (!parent || ['relative', 'absolute'].includes(getComputedStyle(parent).position)) return [0, 0];
 
-                this.offsetLeft,
-                this.offsetTop,
-                this.offsetRight,
-                this.offsetBottom,
+            return [
+                parent.offsetLeft + parent.clientLeft,
+                parent.offsetTop  + parent.clientTop,
+            ];
+        })();
+        const offsetLeft = (accumViewport?.offsetLeft ?? 0) + (element.offsetLeft - parentOffsetLeft) + element.clientLeft;
+        const offsetTop  = (accumViewport?.offsetTop  ?? 0) + (element.offsetTop  - parentOffsetTop ) + element.clientTop;
+        const viewLeft   = offsetLeft + element.scrollLeft;
+        const viewTop    = offsetTop  + element.scrollTop;
+        const viewRight  = viewLeft   + element.clientWidth;
+        const viewBottom = viewTop    + element.clientHeight;
+        
+        
+        
+        return (
+            new Viewport(
+                offsetLeft,
+                offsetTop,
+                viewLeft,
+                viewTop,
+                viewRight,
+                viewBottom,
+            )
+            .intersect(
+                new Viewport(
+                    0,
+                    0,
+    
+                    this.offsetLeft,
+                    this.offsetTop,
+                    this.offsetRight,
+                    this.offsetBottom,
+                )
             )
         );
     }
@@ -304,7 +324,10 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
             const getVisibleChildIndices = (parent: HTMLElement, accumViewport: Viewport|null = null, accumResults: number[] = []): number[] => {
+                console.log(accumViewport ?? 'no accumViewport');
+                console.log(parent);
                 const viewport = Viewport.create(accumViewport, parent);
+                console.log(viewport);
             
             
             
@@ -367,6 +390,9 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                         );
                     } // if
                 })();
+                console.log(visibleChild?.[1]);
+                console.log(visibleChild?.[1].toViewport(viewport));
+                console.log('----------');
 
 
 
