@@ -52,6 +52,7 @@ class Viewport {
     public constructor(offsetLeft: number, offsetTop: number, viewLeft: number, viewTop: number, viewRight: number, viewBottom: number) {
         this.offsetLeft  = offsetLeft;
         this.offsetTop   = offsetTop;
+
         this.viewLeft    = viewLeft;
         this.viewTop     = viewTop;
         this.viewRight   = viewRight;
@@ -60,16 +61,18 @@ class Viewport {
     public static create(accumViewport: Viewport|null, element: HTMLElement): Viewport {
         const offsetLeft = accumViewport?.offsetLeft ?? 0;
         const offsetTop  = accumViewport?.offsetTop  ?? 0;
+
         const viewLeft   = offsetLeft; // the viewLeft is initially the same as offsetLeft, and might shrinking over time every intersect
         const viewTop    = offsetTop;  // the viewTop  is initially the same as offsetTop,  and might shrinking over time every intersect
-        const viewRight  = viewLeft   + element.clientWidth;
-        const viewBottom = viewTop    + element.clientHeight;
+        const viewRight  = viewLeft + element.clientWidth;
+        const viewBottom = viewTop  + element.clientHeight;
         
         
         
         const viewport = new Viewport(
             offsetLeft,
             offsetTop,
+
             viewLeft,
             viewTop,
             viewRight,
@@ -81,11 +84,12 @@ class Viewport {
 
 
 
-    // utils:
+    // dimensions:
     public intersect(viewport: Viewport): Viewport {
         return new Viewport(
             this.offsetLeft,
             this.offsetTop,
+
             Math.max(this.viewLeft,   viewport.viewLeft),
             Math.max(this.viewTop,    viewport.viewTop),
             Math.min(this.viewRight,  viewport.viewRight),
@@ -96,7 +100,7 @@ class Viewport {
 
 class Dimension {
     /**
-     * Reference of the element.
+     * Reference of the related element.
      */
     public readonly element      : HTMLElement
 
@@ -157,7 +161,7 @@ class Dimension {
 
 
 
-    // utils:
+    // dimensions:
     public intersect(viewport: Viewport): Dimension {
         return new Dimension(
             this.element,
@@ -171,7 +175,6 @@ class Dimension {
 
 
 
-    // dimensions:
     public get offsetWidth() {
         return this.offsetRight - this.offsetLeft;
     }
@@ -198,14 +201,9 @@ class Dimension {
                 (intersected.offsetHeight > 0) // height
             )
             ||
-            (
-                // rare case:
-                // consider zero width/height as visible if within the viewport:
-
-                ((this.offsetLeft >= viewport.viewLeft) && (this.offsetRight  <= viewport.viewRight ))
-                &&
-                ((this.offsetTop  >= viewport.viewTop ) && (this.offsetBottom <= viewport.viewBottom))
-            )
+            // rare case:
+            // consider zero width/height as visible if within the viewport:
+            this.within(viewport)
         ) return intersected;
 
         return null;
@@ -240,23 +238,25 @@ class Dimension {
         })();
         const offsetLeft = (accumViewport?.offsetLeft ?? 0) + (element.offsetLeft - parentOffsetLeft) + element.clientLeft - (element.parentElement?.scrollLeft ?? 0);
         const offsetTop  = (accumViewport?.offsetTop  ?? 0) + (element.offsetTop  - parentOffsetTop ) + element.clientTop  - (element.parentElement?.scrollTop  ?? 0);
+
         const viewLeft   = offsetLeft; // the viewLeft is initially the same as offsetLeft, and might shrinking over time every intersect
         const viewTop    = offsetTop;  // the viewTop  is initially the same as offsetTop,  and might shrinking over time every intersect
-        const viewRight  = viewLeft   + element.clientWidth;
-        const viewBottom = viewTop    + element.clientHeight;
+        const viewRight  = viewLeft + element.clientWidth;
+        const viewBottom = viewTop  + element.clientHeight;
         
         
         
         return (
-            new Viewport(
+            new Viewport( // maximum of borderless full view
                 offsetLeft,
                 offsetTop,
+
                 viewLeft,
                 viewTop,
                 viewRight,
                 viewBottom,
             )
-            .intersect(
+            .intersect( // intersect with shrinking current view
                 new Viewport(
                     0,
                     0,
@@ -271,18 +271,18 @@ class Dimension {
     }
 }
 
-const findFirst = <T,R>(array: T[], predicate: (value: T) => R|null): [number, R]|null => {
+const findFirst = <T,R>(array: T[], predicate: (value: T) => R|null): [R, number]|null => {
     for (let index = 0; index < array.length; index++) {
         const result = predicate(array[index]);
-        if (result) return [index, result]; // found
+        if (result) return [result, index]; // found
     } // for
 
     return null; // not found
 }; 
-const findLast = <T,R>(array: T[], predicate: (value: T) => R|null): [number, R]|null => {
+const findLast  = <T,R>(array: T[], predicate: (value: T) => R|null): [R, number]|null => {
     for (let index = array.length - 1; index >= 0; index--) {
         const result = predicate(array[index]);
-        if (result) return [index, result]; // found
+        if (result) return [result, index]; // found
     } // for
 
     return null; // not found
@@ -334,7 +334,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                     (parent.scrollTop  <= 0.5)
                     ;
                 const isLastScroll =
-                    !isFirstScroll
+                    !isFirstScroll // if scrollPos satisfied the first & the last => the first win
                     &&
                     (((parent.scrollWidth  - parent.clientWidth ) - parent.scrollLeft) <= 0.5)
                     &&
@@ -346,14 +346,14 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                         if (props.targetFilter) return children.filter(props.targetFilter);
                         return children;
                     })()
-                    .map((child) => Dimension.create(/*parent: */viewport, /*element: */child))
+                    .map((child) => Dimension.create(/*accumViewport: */viewport, /*element: */child))
                     ;
-                const visibleChild = ((): [number, Dimension]|null => {
+                const visibleChild = ((): [Dimension, number]|null => {
                     if (props.interpolation ?? true) {
                         return (
                             (isFirstScroll ? findFirst(children, (child) => child.isPartiallyVisible(viewport)) : null) // the first always win
                             ??
-                            (isLastScroll  ? findLast(children, (child) => child.isPartiallyVisible(viewport))  : null) // the last always win
+                            (isLastScroll  ? findLast( children, (child) => child.isPartiallyVisible(viewport)) : null) // the last always win
     
                             ??
     
@@ -368,10 +368,10 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                             }))
                             .filter((item) => item.child.isPartiallyVisible(viewport)) // only visible children
                             .map((item) => ({...item,
-                                area  : item.child.offsetWidth & item.child.offsetHeight, // calculates the visible area,
+                                area  : item.child.offsetWidth * item.child.offsetHeight, // calculates the visible area,
                             }))
                             .sort((a, b) => b.area - a.area) // sort from largest to narrowest
-                            .map((item): [number, Dimension] => [item.index, item.child])
+                            .map((item): [Dimension, number] => [item.child, item.index])
                             [0] // find the largest one
     
                             ??
@@ -385,14 +385,14 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                             ?
                             findFirst(children, (child) => child.isPartiallyVisible(viewport)) // for the first scroll and middle scroll
                             :
-                            findLast(children,  (child) => child.isPartiallyVisible(viewport)) // for the last scroll
+                            findLast( children, (child) => child.isPartiallyVisible(viewport)) // for the last scroll only
                         );
                     } // if
                 })();
 
 
 
-                return visibleChild ? getVisibleChildIndices(visibleChild[1].element, visibleChild[1].toViewport(viewport), [...accumResults, visibleChild[0]]) : accumResults;
+                return visibleChild ? getVisibleChildIndices(visibleChild[0].element, visibleChild[0].toViewport(viewport), [...accumResults, visibleChild[1]]) : accumResults;
             }
             const visibleChildIndices = getVisibleChildIndices(parent);
 
