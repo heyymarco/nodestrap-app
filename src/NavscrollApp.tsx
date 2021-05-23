@@ -145,13 +145,23 @@ function App() {
 						overflowY: 'auto',
 						marginBlockStart: '20px',
 						position: 'relative',
+						padding: '8px',
+						display: 'grid',
+						gridAutoFlow: 'row',
+						gap: '3px',
 					}}
 				>
 					{/* <section></section> */}
 					<section style={{ height: '50px' }}>
 						<h6>First heading</h6>
 					</section>
-					<section style={{ height: 'auto', position: 'relative', }}>
+					<section style={{
+							// height: 'auto',
+							position: 'relative',
+
+							height: '240px',
+    						overflow: 'auto',
+						}}>
 						<h6>Second heading</h6>
 						<section style={{ height: '200px' }}>
 							Second sub heading 1

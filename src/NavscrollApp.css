@@ -6,7 +6,8 @@ article>section:nth-child(3n+1) {
     background: pink
 }
 article>section:nth-child(3n+2) {
-    background: green
+    background: green;
+    border: solid 4px darkgreen;
 }
 article>section:nth-child(3n+3) {
     background: orange
@@ -20,7 +21,8 @@ article>section>section:nth-child(3n+1) {
     background: greenyellow
 }
 article>section>section:nth-child(3n+2) {
-    background: mediumpurple
+    background: mediumpurple;
+    border: solid 7px darkblue;
 }
 article>section>section:nth-child(3n+3) {
     background: sandybrown

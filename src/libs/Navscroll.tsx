@@ -332,14 +332,16 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
             
             
                 const isFirstScroll =
-                    (viewport.viewLeft === 0)
+                    (parent.scrollLeft <= 0.5)
                     &&
-                    (viewport.viewTop  === 0)
+                    (parent.scrollTop  <= 0.5)
                     ;
                 const isLastScroll =
-                    (((parent.scrollWidth  - parent.clientWidth ) - viewport.viewLeft) <= 0.5)
+                    !isFirstScroll
                     &&
-                    (((parent.scrollHeight - parent.clientHeight) - viewport.viewTop) <= 0.5)
+                    (((parent.scrollWidth  - parent.clientWidth ) - parent.scrollLeft) <= 0.5)
+                    &&
+                    (((parent.scrollHeight - parent.clientHeight) - parent.scrollTop ) <= 0.5)
                     ;
                 const children =
                     (() => {
