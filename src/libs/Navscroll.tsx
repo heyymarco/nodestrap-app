@@ -430,11 +430,10 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
             reAttachDescendants();
             const observer = new MutationObserver(reAttachDescendants);
             observer.observe(target, {
-                childList       : true,
-                subtree         : true,
+                childList  : true,
+                subtree    : true,
 
-                attributes      : true,
-                attributeFilter : ['style', 'class'],
+                attributes : true,
             });
             
             
