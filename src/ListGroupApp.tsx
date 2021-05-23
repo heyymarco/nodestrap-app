@@ -15,8 +15,8 @@ import Control   from './libs/Control';
 import ActionControl   from './libs/ActionControl';
 import Button   from './libs/Button';
 import Content from './libs/Content';
-import ListGroup, {ListGroupItem} from './libs/ListGroup';
-import * as ListGroups from './libs/ListGroup';
+import Listgroup, {ListgroupItem} from './libs/Listgroup';
+import type * as Listgroups from './libs/Listgroup';
 
 
 
@@ -68,10 +68,10 @@ function App() {
 	const [childActive,      setChildActive   ] = useState(true);
 
 	const orientations = [undefined, 'block', 'inline'];
-	const [orientation,    setOrientation     ] = useState<ListGroups.OrientationStyle|undefined>(undefined);
+	const [orientation,    setOrientation     ] = useState<Listgroups.OrientationStyle|undefined>(undefined);
 
 	const listStyles = [undefined, 'bullet'];
-	const [listStyle,    setListStyle     ] = useState<ListGroups.ListStyle|undefined>(undefined);
+	const [listStyle,    setListStyle     ] = useState<Listgroups.ListStyle|undefined>(undefined);
 
 	
 
@@ -129,7 +129,7 @@ function App() {
 				>
                     action control
                 </ActionControl>
-				<ListGroup
+				<Listgroup
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
 
@@ -140,37 +140,37 @@ function App() {
 					<>hello</>
 					<></>
 					<>hey</>
-					<ListGroupItem enabled={childEnabled}>
+					<ListgroupItem enabled={childEnabled}>
 						i'm {childEnabled ? 'enabled' : 'disabled'}
 						<input type='checkbox'
 							checked={childEnabled}
 							onChange={(e) => setChildEnabled(e.target.checked)}
 						/>
-					</ListGroupItem>
+					</ListgroupItem>
 					'hoho'
-					<ListGroupItem active={childActive}>
+					<ListgroupItem active={childActive}>
 						i'm {childActive ? 'active' : 'passive'}
 						<input type='checkbox'
 							checked={childActive}
 							onChange={(e) => setChildActive(e.target.checked)}
 						/>
-					</ListGroupItem>
+					</ListgroupItem>
 					<>hehe</>
-					<ListGroupItem theme='danger'>i'm angry</ListGroupItem>
-					<ListGroupItem theme='success'>i'm fine</ListGroupItem>
-					<ListGroupItem size='sm'>i'm small</ListGroupItem>
-					<ListGroupItem size='lg'>i'm big</ListGroupItem>
-					<ListGroupItem enableGradient={true}>i'm 3d</ListGroupItem>
-					<ListGroupItem outlined={true}>i'm transparent</ListGroupItem>
-					<ListGroupItem actionCtrl={true}>i'm controllable</ListGroupItem>
-					<ListGroupItem actionCtrl={true} active={true}>i'm controllable</ListGroupItem>
-					<ListGroupItem>
+					<ListgroupItem theme='danger'>i'm angry</ListgroupItem>
+					<ListgroupItem theme='success'>i'm fine</ListgroupItem>
+					<ListgroupItem size='sm'>i'm small</ListgroupItem>
+					<ListgroupItem size='lg'>i'm big</ListgroupItem>
+					<ListgroupItem enableGradient={true}>i'm 3d</ListgroupItem>
+					<ListgroupItem outlined={true}>i'm transparent</ListgroupItem>
+					<ListgroupItem actionCtrl={true}>i'm controllable</ListgroupItem>
+					<ListgroupItem actionCtrl={true} active={true}>i'm controllable</ListgroupItem>
+					<ListgroupItem>
 						<Button>button</Button>
-					</ListGroupItem>
-					<ListGroupItem active={true}>
+					</ListgroupItem>
+					<ListgroupItem active={true}>
 						<Button>button</Button>
-					</ListGroupItem>
-                </ListGroup>
+					</ListgroupItem>
+                </Listgroup>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:
@@ -246,7 +246,7 @@ function App() {
 								<input type='radio'
 									value={ori}
 									checked={orientation===ori}
-									onChange={(e) => setOrientation((e.target.value || undefined) as (ListGroups.OrientationStyle|undefined))}
+									onChange={(e) => setOrientation((e.target.value || undefined) as (Listgroups.OrientationStyle|undefined))}
 								/>
 								{`${ori}`}
 							</label>
@@ -261,7 +261,7 @@ function App() {
 								<input type='radio'
 									value={st}
 									checked={listStyle===st}
-									onChange={(e) => setListStyle((e.target.value || undefined) as (ListGroups.ListStyle|undefined))}
+									onChange={(e) => setListStyle((e.target.value || undefined) as (Listgroups.ListStyle|undefined))}
 								/>
 								{`${st}`}
 							</label>

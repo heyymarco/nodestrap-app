@@ -17,7 +17,7 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     // children:
     children? : React.ReactNode
 }
-export default function ListGroupItem<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function ListgroupItem<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     return (
         props.actionCtrl
         ?

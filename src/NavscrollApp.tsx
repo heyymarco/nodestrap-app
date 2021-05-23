@@ -15,6 +15,7 @@ import Element   from './libs/Element';
 import Indicator from './libs/Indicator';
 import Content from './libs/Content';
 import Navscroll, {NavscrollItem} from './libs/Navscroll';
+import type * as Navscrolls from './libs/Navscroll';
 
 
 
@@ -62,6 +63,12 @@ function App() {
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
 
+	const orientations = [undefined, 'block', 'inline'];
+	const [orientation,    setOrientation     ] = useState<Navscrolls.OrientationStyle|undefined>(undefined);
+
+	const listStyles = [undefined, 'bullet'];
+	const [listStyle,    setListStyle     ] = useState<Navscrolls.ListStyle|undefined>(undefined);
+
 
 	const articleRef = useRef<HTMLElement>(null);
 	
@@ -75,6 +82,8 @@ function App() {
 						outlined={outlined}
 
 						enabled={enabled} active={active}
+						orientation={orientation}
+						listStyle={listStyle}
 
 						targetRef={articleRef}
 						targetFilter={(e) => e.tagName.toLowerCase() === 'section'}
@@ -263,36 +272,34 @@ function App() {
 					</label>
 				</p>
 				<p>
-					Lorem<br/>
-					ipsum<br/>
-					dolor<br/>
-					sit,<br/>
-					amet<br/>
-					consectetur<br/>
-					adipisicing<br/>
-					elit.<br/>
-					Obcaecati,<br/>
-					fugiat<br/>
-					quam<br/>
-					corrupti<br/>
-					doloremque<br/>
-					mollitia<br/>
-					fuga<br/>
-					tempora<br/>
-					sequi<br/>
-					repellat?<br/>
-					Sint<br/>
-					quia<br/>
-					doloremque,<br/>
-					accusantium<br/>
-					perferendis<br/>
-					autem<br/>
-					cupiditate!<br/>
-					Sapiente<br/>
-					odio<br/>
-					sit<br/>
-					voluptatem<br/>
-					accusamus.
+					OrientationStyle:
+					{
+						orientations.map(ori =>
+							<label key={ori ?? ''}>
+								<input type='radio'
+									value={ori}
+									checked={orientation===ori}
+									onChange={(e) => setOrientation((e.target.value || undefined) as (Navscrolls.OrientationStyle|undefined))}
+								/>
+								{`${ori}`}
+							</label>
+						)
+					}
+				</p>
+				<p>
+					ListStyle:
+					{
+						listStyles.map(st =>
+							<label key={st ?? ''}>
+								<input type='radio'
+									value={st}
+									checked={listStyle===st}
+									onChange={(e) => setListStyle((e.target.value || undefined) as (Navscrolls.ListStyle|undefined))}
+								/>
+								{`${st}`}
+							</label>
+						)
+					}
 				</p>
             </Container>
         </div>

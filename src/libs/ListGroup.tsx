@@ -27,8 +27,8 @@ import type {
 import {
     styles as actionControlStyles,
 }                           from './ActionControl'
-import ListGroupItem        from './ListGroupItem'
-import type * as ListGroupItems from './ListGroupItem'
+import ListgroupItem        from './ListgroupItem'
+import type * as ListgroupItems from './ListgroupItem'
 
 
 
@@ -170,7 +170,7 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
 }
 const listItemActionCtrlStyles = new ListItemActionCtrlStylesBuilder();
 
-export class ListGroupStylesBuilder extends ContentStylesBuilder {
+export class ListgroupStylesBuilder extends ContentStylesBuilder {
     // themes:
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
@@ -274,12 +274,12 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
             borderInlineWidth         : 0,  // remove  (left|right)-border for all-wrapper
 
-            // remove top-border at the first-child, so that it wouldn't collide with the listGroup's top-border
+            // remove top-border at the first-child, so that it wouldn't collide with the Listgroup's top-border
             // and
             // remove double border by removing top-border starting from the second-child to the last-child
             borderBlockStartWidth     : 0,
 
-            // remove bottom-border at the last-child, so that it wouldn't collide with the listGroup's bottom-border
+            // remove bottom-border at the last-child, so that it wouldn't collide with the Listgroup's bottom-border
             '&:last-child': {
                 borderBlockEndWidth   : 0,
             },
@@ -335,12 +335,12 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
             borderBlockWidth          : 0,  // remove  (top|bottom)-border for all-wrapper
 
-            // remove left-border at the first-child, so that it wouldn't collide with the listGroup's left-border
+            // remove left-border at the first-child, so that it wouldn't collide with the Listgroup's left-border
             // and
             // remove double border by removing left-border starting from the second-child to the last-child
             borderInlineStartWidth    : 0,
 
-            // remove right-border at the last-child, so that it wouldn't collide with the listGroup's right-border
+            // remove right-border at the last-child, so that it wouldn't collide with the Listgroup's right-border
             '&:last-child': {
                 borderInlineEndWidth  : 0,
             },
@@ -356,7 +356,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
 
 
         // borders:
-        // kill borders surrounding ListGroup:
+        // kill borders surrounding Listgroup:
         borderWidth  : 0,
         borderRadius : 0,
         overflow     : 'unset',
@@ -480,7 +480,7 @@ export class ListGroupStylesBuilder extends ContentStylesBuilder {
         return styles;
     }
 }
-export const styles = new ListGroupStylesBuilder();
+export const styles = new ListgroupStylesBuilder();
 
 
 
@@ -544,7 +544,7 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
         VariantList
 {
 }
-export default function ListGroup<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function Listgroup<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     const lgStyles        = styles.useStyles();
 
     // themes:
@@ -589,16 +589,16 @@ export default function ListGroup<TElement extends HTMLElement = HTMLElement>(pr
                     tag={wrapTag}
                 >
                     {
-                        (React.isValidElement(child) && (child.type === ListGroupItem))
+                        (React.isValidElement(child) && (child.type === ListgroupItem))
                         ?
-                        <ListGroupItem
+                        <ListgroupItem
                             // other props:
                             {...child.props}
 
                             
                             // events:
                             onAnimationEnd={(e) => {
-                                // triggers ListGroup's onAnimationEnd event
+                                // triggers Listgroup's onAnimationEnd event
                                 e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
 
 
@@ -607,15 +607,15 @@ export default function ListGroup<TElement extends HTMLElement = HTMLElement>(pr
                             }}
                         />
                         :
-                        <ListGroupItem
+                        <ListgroupItem
                             // events:
                             onAnimationEnd={(e) =>
-                                // triggers ListGroup's onAnimationEnd event
+                                // triggers Listgroup's onAnimationEnd event
                                 e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }))
                             }
                         >
                             { child }
-                        </ListGroupItem>
+                        </ListgroupItem>
                     }
                 </GenericElement>
             ))}
@@ -623,5 +623,5 @@ export default function ListGroup<TElement extends HTMLElement = HTMLElement>(pr
     );
 }
 
-export { ListGroupItem, ListGroupItem as Item }
-export type { ListGroupItems, ListGroupItems as Items }
+export { ListgroupItem, ListgroupItem as Item }
+export type { ListgroupItems, ListgroupItems as Items }

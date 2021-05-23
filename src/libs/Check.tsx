@@ -829,7 +829,7 @@ export default function Check(props: Props) {
                     stateChkClr.handleAnimationEnd(e);
 
 
-                    // triggers ListGroup's onAnimationEnd event
+                    // triggers Listgroup's onAnimationEnd event
                     e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
                 }}
             />

@@ -7,10 +7,10 @@ import
 
 // nodestrap (modular web components):
 import {
-    default  as ListGroup,
-    ListGroupItem,
-}                           from './ListGroup'
-import type * as ListGroups from './ListGroup'
+    default  as Listgroup,
+    ListgroupItem,
+}                           from './Listgroup'
+import type * as Listgroups from './Listgroup'
 
 // other supports:
 import deepEqual            from 'deep-equal'
@@ -292,11 +292,11 @@ const findLast  = <T,R>(array: T[], predicate: (value: T) => R|null): [R, number
 
 // react components:
 
-// Navscroll is just a ListGroup with dynamic :active on its children
+// Navscroll is just a Listgroup with dynamic :active on its children
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        ListGroups.Props<TElement>
+        Listgroups.Props<TElement>
 {
     // scrolls:
     targetRef?       : React.MutableRefObject<HTMLElement|null>
@@ -460,20 +460,24 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
-    function mutateNestedNavscroll(props: Props, index: number, deepLevel: number) { return (
-        <ListGroup
+    function mutateNestedNavscroll(nestNavProps: Props, index: number, deepLevel: number) { return (
+        <Listgroup
             // essentials:
             key={index}
 
 
-            // other props:
+            // inherits:
             {...props}
+
+
+            // other props:
+            {...nestNavProps}
         >
-            { mutateListGroupItems(props.children, deepLevel) }
-        </ListGroup>
+            { mutateListgroupItems(nestNavProps.children, deepLevel) }
+        </Listgroup>
     )}
-    function mutateListGroupItem(props: ListGroups.Items.Props, index: number, deepLevel: number) { return (
-        <ListGroupItem
+    function mutateListgroupItem(lgItemProps: Listgroups.Items.Props, index: number, deepLevel: number) { return (
+        <ListgroupItem
             // essentials:
             key={index}
 
@@ -483,28 +487,28 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
             // events:
-            onClick={(props.actionCtrl ?? false) ? itemHandleClick : undefined}
+            onClick={(lgItemProps.actionCtrl ?? false) ? itemHandleClick : undefined}
 
 
             // other props:
-            {...props}
+            {...lgItemProps}
         >
-            {props.children && (Array.isArray(props.children) ? props.children : [props.children]).map((child, index) => (
+            {lgItemProps.children && (Array.isArray(lgItemProps.children) ? lgItemProps.children : [lgItemProps.children]).map((child, index) => (
                 (React.isValidElement<Props>(child) && (child.type === Navscroll) && (child.props.targetRef === undefined))
                 ?
                 mutateNestedNavscroll(child.props, index, deepLevel + 1)
                 :
                 child
             ))}
-        </ListGroupItem>
+        </ListgroupItem>
     )}
-    function mutateListGroupItems(children: React.ReactNode, deepLevel: number) { return (
+    function mutateListgroupItems(children: React.ReactNode, deepLevel: number) { return (
         children && (Array.isArray(children) ? children : [children]).map((child, index) => (
-            (React.isValidElement<ListGroups.Items.Props>(child) && (child.type === ListGroupItem))
+            (React.isValidElement<Listgroups.Items.Props>(child) && (child.type === ListgroupItem))
             ?
-            mutateListGroupItem(child.props, index, deepLevel)
+            mutateListgroupItem(child.props, index, deepLevel)
             :
-            <ListGroupItem
+            <ListgroupItem
                 // essentials:
                 key={index}
 
@@ -521,18 +525,22 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                 onClick={itemHandleClick}
             >
                 { child }
-            </ListGroupItem>
+            </ListgroupItem>
         ))
     )}
 
     return (
-        <ListGroup
+        <Listgroup
             // other props:
             {...props}
         >
-            { mutateListGroupItems(props.children, /*deepLevel: */0) }
-        </ListGroup>
+            { mutateListgroupItems(props.children, /*deepLevel: */0) }
+        </Listgroup>
     );
 }
 
-export { ListGroupItem as NavscrollItem, ListGroupItem as Item }
+export { ListgroupItem as NavscrollItem, ListgroupItem as Item }
+
+type OrientationStyle = Listgroups.OrientationStyle
+type ListStyle        = Listgroups.ListStyle
+export type { OrientationStyle, ListStyle }
