@@ -60,8 +60,8 @@ class Viewport {
     public static create(accumViewport: Viewport|null, element: HTMLElement): Viewport {
         const offsetLeft = accumViewport?.offsetLeft ?? 0;
         const offsetTop  = accumViewport?.offsetTop  ?? 0;
-        const viewLeft   = offsetLeft + element.scrollLeft;
-        const viewTop    = offsetTop  + element.scrollTop;
+        const viewLeft   = offsetLeft; // the viewLeft is initially the same as offsetLeft, and might shrinking over time every intersect
+        const viewTop    = offsetTop;  // the viewTop  is initially the same as offsetTop,  and might shrinking over time every intersect
         const viewRight  = viewLeft   + element.clientWidth;
         const viewBottom = viewTop    + element.clientHeight;
         
@@ -138,8 +138,8 @@ class Dimension {
                 parent.offsetTop  + parent.clientTop,
             ];
         })();
-        const offsetLeft   = accumViewport.offsetLeft + (element.offsetLeft - parentOffsetLeft);
-        const offsetTop    = accumViewport.offsetTop  + (element.offsetTop  - parentOffsetTop );
+        const offsetLeft   = accumViewport.offsetLeft + (element.offsetLeft - parentOffsetLeft) - (element.parentElement?.scrollLeft ?? 0);
+        const offsetTop    = accumViewport.offsetTop  + (element.offsetTop  - parentOffsetTop ) - (element.parentElement?.scrollTop  ?? 0);
         const offsetRight  = offsetLeft + element.offsetWidth;
         const offsetBottom = offsetTop  + element.offsetHeight;
 
@@ -238,10 +238,10 @@ class Dimension {
                 parent.offsetTop  + parent.clientTop,
             ];
         })();
-        const offsetLeft = (accumViewport?.offsetLeft ?? 0) + (element.offsetLeft - parentOffsetLeft) + element.clientLeft;
-        const offsetTop  = (accumViewport?.offsetTop  ?? 0) + (element.offsetTop  - parentOffsetTop ) + element.clientTop;
-        const viewLeft   = offsetLeft + element.scrollLeft;
-        const viewTop    = offsetTop  + element.scrollTop;
+        const offsetLeft = (accumViewport?.offsetLeft ?? 0) + (element.offsetLeft - parentOffsetLeft) + element.clientLeft - (element.parentElement?.scrollLeft ?? 0);
+        const offsetTop  = (accumViewport?.offsetTop  ?? 0) + (element.offsetTop  - parentOffsetTop ) + element.clientTop  - (element.parentElement?.scrollTop  ?? 0);
+        const viewLeft   = offsetLeft; // the viewLeft is initially the same as offsetLeft, and might shrinking over time every intersect
+        const viewTop    = offsetTop;  // the viewTop  is initially the same as offsetTop,  and might shrinking over time every intersect
         const viewRight  = viewLeft   + element.clientWidth;
         const viewBottom = viewTop    + element.clientHeight;
         
@@ -324,10 +324,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
             const getVisibleChildIndices = (parent: HTMLElement, accumViewport: Viewport|null = null, accumResults: number[] = []): number[] => {
-                console.log(accumViewport ?? 'no accumViewport');
-                console.log(parent);
                 const viewport = Viewport.create(accumViewport, parent);
-                console.log(viewport);
             
             
             
@@ -392,9 +389,6 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                         );
                     } // if
                 })();
-                console.log(visibleChild?.[1]);
-                console.log(visibleChild?.[1].toViewport(viewport));
-                console.log('----------');
 
 
 
@@ -406,15 +400,56 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
             setActiveIndices(visibleChildIndices);
         };
-        target?.addEventListener('scroll', handleScroll);
-        if (target) handleScroll(); // trigger for the first time
+        if (target) {
+            handleScroll(); // trigger for the first time
+            target.addEventListener('scroll', handleScroll);
+            window.addEventListener('resize', handleScroll);
+
+            
+            
+            const attachDescendants = (): (() => void) => {
+                const descendants = ((): HTMLElement[] => {
+                    const descendants = Array.from(target.querySelectorAll('*')) as HTMLElement[];
+                    if (props.targetFilter) return descendants.filter(props.targetFilter);
+                    return descendants;
+                })();
+                descendants.forEach((d) => d.addEventListener('scroll', handleScroll));
 
 
-        
-        // cleanups:
-        return () => {
-            target?.removeEventListener('scroll', handleScroll);
-        };
+
+                // cleanups:
+                return () => {
+                    descendants.forEach((d) => d.removeEventListener('scroll', handleScroll));
+                }
+            }
+            let detachDescendants: (() => void)|null = null;
+            const reAttachDescendants = (): void => {
+                detachDescendants?.(); // detach
+                detachDescendants = attachDescendants(); // (re)attach
+            }
+            reAttachDescendants();
+            const observer = new MutationObserver(reAttachDescendants);
+            observer.observe(target, {
+                childList       : true,
+                subtree         : true,
+
+                attributes      : true,
+                attributeFilter : ['style', 'class'],
+            });
+            
+            
+                    
+            // cleanups:
+            return () => {
+                target.removeEventListener('scroll', handleScroll);
+                window.removeEventListener('resize', handleScroll);
+
+                
+                
+                observer.disconnect();
+                detachDescendants?.(); // detach
+            };
+        } // if
     }, [props.targetRef, props.targetFilter, props.interpolation]);
 
 
