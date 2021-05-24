@@ -351,16 +351,17 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                 const visibleChild = ((): [Dimension, number]|null => {
                     if (props.interpolation ?? true) {
                         return (
-                            (isFirstScroll ? findFirst(children, (child) => child.isPartiallyVisible(viewport)) : null) // the first always win
-                            ??
-                            (isLastScroll  ? findLast( children, (child) => child.isPartiallyVisible(viewport)) : null) // the last always win
+                            // at the end of scroll, the last section always win:
+                            (isLastScroll ? findLast( children, (child) => child.isPartiallyVisible(viewport)) : null)
     
                             ??
     
-                            findFirst(children, (child) => child.isFullyVisible(viewport)) // the (first) fully visible always win
+                            // the first uncropped section always win:
+                            findFirst(children, (child) => child.isFullyVisible(viewport))
     
                             ??
     
+                            // the biggest cropped section always win:
                             children
                             .map((child, index) => ({
                                 child : child,
@@ -370,22 +371,25 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                             .map((item) => ({...item,
                                 area  : item.child.offsetWidth * item.child.offsetHeight, // calculates the visible area,
                             }))
-                            .sort((a, b) => b.area - a.area) // sort from largest to narrowest
+                            .sort((a, b) => b.area - a.area) // sort from biggest to smallest
                             .map((item): [Dimension, number] => [item.child, item.index])
-                            [0] // find the largest one
+                            [0] // find the biggest one
     
                             ??
     
-                            null // not found
+                            // no winner:
+                            null
                         );
                     }
                     else {
                         return (
-                            !isLastScroll
-                            ?
-                            findFirst(children, (child) => child.isPartiallyVisible(viewport)) // for the first scroll and middle scroll
-                            :
-                            findLast( children, (child) => child.isPartiallyVisible(viewport)) // for the last scroll only
+                            // at the end of scroll, the last section always win:
+                            (isLastScroll ? findLast( children, (child) => child.isPartiallyVisible(viewport)) : null)
+
+                            ??
+
+                            // the first visible (cropped/uncropped) section always win:
+                            findFirst(children, (child) => child.isPartiallyVisible(viewport))
                         );
                     } // if
                 })();

@@ -586,6 +586,10 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                             tag='button'
 
 
+                            // behaviors:
+                            actionCtrl={true}
+
+
                             // actions:
                             onClick={() => scrollTo(index)}
                         />
