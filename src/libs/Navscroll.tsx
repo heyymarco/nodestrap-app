@@ -21,6 +21,11 @@ import deepEqual            from 'deep-equal'
 
 class Viewport {
     /**
+     * Reference of the related element.
+     */
+    public readonly element    : HTMLElement
+
+    /**
      * Left-position relative to the Navscroll's client rect.
      */
     public readonly offsetLeft : number
@@ -49,7 +54,9 @@ class Viewport {
 
 
     // constructors:
-    public constructor(offsetLeft: number, offsetTop: number, viewLeft: number, viewTop: number, viewRight: number, viewBottom: number) {
+    public constructor(element: HTMLElement, offsetLeft: number, offsetTop: number, viewLeft: number, viewTop: number, viewRight: number, viewBottom: number) {
+        this.element     = element;
+
         this.offsetLeft  = offsetLeft;
         this.offsetTop   = offsetTop;
 
@@ -58,7 +65,7 @@ class Viewport {
         this.viewRight   = viewRight;
         this.viewBottom  = viewBottom;
     }
-    public static create(accumViewport: Viewport|null, element: HTMLElement): Viewport {
+    public static from(element: HTMLElement, accumViewport: Viewport|null = null): Viewport {
         const offsetLeft = accumViewport?.offsetLeft ?? 0;
         const offsetTop  = accumViewport?.offsetTop  ?? 0;
 
@@ -70,6 +77,8 @@ class Viewport {
         
         
         const viewport = new Viewport(
+            element,
+
             offsetLeft,
             offsetTop,
 
@@ -87,13 +96,53 @@ class Viewport {
     // dimensions:
     public intersect(viewport: Viewport): Viewport {
         return new Viewport(
-            this.offsetLeft,
-            this.offsetTop,
+                     this.element,
+
+                     this.offsetLeft,
+                     this.offsetTop,
 
             Math.max(this.viewLeft,   viewport.viewLeft),
             Math.max(this.viewTop,    viewport.viewTop),
             Math.min(this.viewRight,  viewport.viewRight),
             Math.min(this.viewBottom, viewport.viewBottom),
+        );
+    }
+
+
+
+    // scrolls:
+    public get isFirstScroll(): boolean {
+        const element = this.element;
+
+        return (
+            (element.scrollLeft <= 0.5)
+                &&
+            (element.scrollTop  <= 0.5)
+        );
+    }
+    public get isLastScroll(): boolean {
+        const element = this.element;
+
+        return (
+            !this.isFirstScroll // if scrollPos satisfied the first & the last => the first win
+            &&
+            (((element.scrollWidth  - element.clientWidth ) - element.scrollLeft) <= 0.5)
+            &&
+            (((element.scrollHeight - element.clientHeight) - element.scrollTop ) <= 0.5)
+        );
+    }
+
+
+
+    // children:
+    public children(targetFilter?: (e: HTMLElement) => boolean): Dimension[] {
+        return (
+            (() => {
+                const children = Array.from(this.element.children) as HTMLElement[];
+                if (targetFilter) return children.filter(targetFilter);
+                return children;
+            })()
+            .map((child) => Dimension.from(/*element: */child, /*accumViewport: */this))
         );
     }
 }
@@ -132,7 +181,7 @@ class Dimension {
         this.offsetRight   = offsetRight;
         this.offsetBottom  = offsetBottom;
     }
-    public static create(accumViewport: Viewport, element: HTMLElement): Dimension {
+    public static from(element: HTMLElement, accumViewport: Viewport): Dimension {
         const [parentOffsetLeft, parentOffsetTop] = (() => { // compensation for non positioned parent element
             const parent = element.parentElement;
             if (!parent || ['relative', 'absolute'].includes(getComputedStyle(parent).position)) return [0, 0];
@@ -164,7 +213,7 @@ class Dimension {
     // dimensions:
     public intersect(viewport: Viewport): Dimension {
         return new Dimension(
-            this.element,
+                     this.element,
 
             Math.max(this.offsetLeft,   viewport.viewLeft),
             Math.max(this.offsetTop,    viewport.viewTop),
@@ -227,6 +276,7 @@ class Dimension {
 
     public toViewport(accumViewport: Viewport|null): Viewport {
         const element = this.element;
+
         const [parentOffsetLeft, parentOffsetTop] = (() => { // compensation for non positioned parent element
             const parent = element.parentElement;
             if (!parent || ['relative', 'absolute'].includes(getComputedStyle(parent).position)) return [0, 0];
@@ -248,6 +298,8 @@ class Dimension {
         
         return (
             new Viewport( // maximum of borderless full view
+                element,
+
                 offsetLeft,
                 offsetTop,
 
@@ -256,8 +308,10 @@ class Dimension {
                 viewRight,
                 viewBottom,
             )
-            .intersect( // intersect with shrinking current view
+            .intersect( // intersect with (remaining) shrinking current view
                 new Viewport(
+                    element,
+
                     0,
                     0,
     
@@ -323,36 +377,13 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
-            const getVisibleChildIndices = (parent: HTMLElement, accumViewport: Viewport|null = null, accumResults: number[] = []): number[] => {
-                const viewport = Viewport.create(accumViewport, parent);
-            
-            
-            
-                const isFirstScroll =
-                    (parent.scrollLeft <= 0.5)
-                    &&
-                    (parent.scrollTop  <= 0.5)
-                    ;
-                const isLastScroll =
-                    !isFirstScroll // if scrollPos satisfied the first & the last => the first win
-                    &&
-                    (((parent.scrollWidth  - parent.clientWidth ) - parent.scrollLeft) <= 0.5)
-                    &&
-                    (((parent.scrollHeight - parent.clientHeight) - parent.scrollTop ) <= 0.5)
-                    ;
-                const children =
-                    (() => {
-                        const children = Array.from(parent.children) as HTMLElement[];
-                        if (props.targetFilter) return children.filter(props.targetFilter);
-                        return children;
-                    })()
-                    .map((child) => Dimension.create(/*accumViewport: */viewport, /*element: */child))
-                    ;
+            const getVisibleChildIndices = (viewport: Viewport, accumResults: number[] = []): number[] => {
+                const children = viewport.children(props.targetFilter);
                 const visibleChild = ((): [Dimension, number]|null => {
                     if (props.interpolation ?? true) {
                         return (
                             // at the end of scroll, the last section always win:
-                            (isLastScroll ? findLast( children, (child) => child.isPartiallyVisible(viewport)) : null)
+                            (viewport.isLastScroll ? findLast( children, (child) => child.isPartiallyVisible(viewport)) : null)
     
                             ??
     
@@ -384,7 +415,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                     else {
                         return (
                             // at the end of scroll, the last section always win:
-                            (isLastScroll ? findLast( children, (child) => child.isPartiallyVisible(viewport)) : null)
+                            (viewport.isLastScroll ? findLast( children, (child) => child.isPartiallyVisible(viewport)) : null)
 
                             ??
 
@@ -395,10 +426,9 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                 })();
 
 
-
-                return visibleChild ? getVisibleChildIndices(visibleChild[0].element, visibleChild[0].toViewport(viewport), [...accumResults, visibleChild[1]]) : accumResults;
+                return visibleChild ? getVisibleChildIndices(visibleChild[0].toViewport(viewport), [...accumResults, visibleChild[1]]) : accumResults;
             }
-            const visibleChildIndices = getVisibleChildIndices(parent);
+            const visibleChildIndices = getVisibleChildIndices(Viewport.from(/*element: */parent));
 
 
 
