@@ -274,7 +274,7 @@ class Dimension {
         return null;
     }
 
-    public toViewport(accumViewport: Viewport|null): Viewport {
+    public toViewport(accumViewport: Viewport): Viewport {
         const element = this.element;
 
         const [parentOffsetLeft, parentOffsetTop] = (() => { // compensation for non positioned parent element
@@ -286,8 +286,8 @@ class Dimension {
                 parent.offsetTop  + parent.clientTop,
             ];
         })();
-        const offsetLeft = (accumViewport?.offsetLeft ?? 0) + (element.offsetLeft - parentOffsetLeft) + element.clientLeft - (element.parentElement?.scrollLeft ?? 0);
-        const offsetTop  = (accumViewport?.offsetTop  ?? 0) + (element.offsetTop  - parentOffsetTop ) + element.clientTop  - (element.parentElement?.scrollTop  ?? 0);
+        const offsetLeft = accumViewport?.offsetLeft + (element.offsetLeft - parentOffsetLeft) + element.clientLeft - (element.parentElement?.scrollLeft ?? 0);
+        const offsetTop  = accumViewport?.offsetTop  + (element.offsetTop  - parentOffsetTop ) + element.clientTop  - (element.parentElement?.scrollTop  ?? 0);
 
         const viewLeft   = offsetLeft; // the viewLeft is initially the same as offsetLeft, and might shrinking over time every intersect
         const viewTop    = offsetTop;  // the viewTop  is initially the same as offsetTop,  and might shrinking over time every intersect
@@ -489,7 +489,44 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
     const itemHandleClick = (e: React.MouseEvent<HTMLElement, MouseEvent>, deepLevelsCurrent: number[]) => {
         e.preventDefault();
-        console.log(deepLevelsCurrent);
+
+
+
+        const target = props.targetRef?.current;
+        if (!target) return;
+        let viewport = Viewport.from(target);
+        const max = deepLevelsCurrent.length - 1;
+        for (let i = 0; i <= max; i++) {
+            const desiredIndex = deepLevelsCurrent[i];
+
+            const children     = viewport.children(props.targetFilter);
+            const desiredChild = children[desiredIndex] as (Dimension|undefined);
+            if (!desiredChild) break;
+
+            if (i < max) {
+                let viewportNew    = desiredChild.toViewport(viewport);
+
+                const parent       = viewportNew.element.parentElement!;
+                parent.scrollLeft += viewportNew.offsetLeft;
+                parent.scrollTop  += viewportNew.offsetTop;
+
+                viewportNew        = desiredChild.toViewport(viewport);
+
+                viewport = viewportNew;
+
+                continue;
+            }
+            else {
+                const parent       = desiredChild.element.parentElement!;
+                const __prevScroll = parent.scrollTop;
+                parent.scrollLeft += desiredChild.offsetLeft;
+                parent.scrollTop  += desiredChild.offsetTop;
+                const __currScroll = parent.scrollTop;
+                console.log(`scrolled: ${__currScroll - __prevScroll}, unscrolled: ${desiredChild.offsetTop - (__currScroll - __prevScroll)}`);
+
+                break;
+            } // if
+        } // for
     }
 
 
