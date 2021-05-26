@@ -64,6 +64,9 @@ function App() {
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
 
+	const actionCtrls = [false, undefined, true];
+	const [actionCtrl,      setActionCtrl   ] = useState<boolean|undefined>(undefined);
+
 	const [childEnabled,    setChildEnabled   ] = useState(false);
 	const [childActive,      setChildActive   ] = useState(true);
 
@@ -133,7 +136,7 @@ function App() {
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
 
-					enabled={enabled} active={active}
+					enabled={enabled} active={active} actionCtrl={actionCtrl}
 					orientation={orientation}
 					listStyle={listStyle}
 				>
@@ -237,6 +240,29 @@ function App() {
 						/>
 						active
 					</label>
+				</p>
+				<p>
+					actionCtrl:
+					{
+						actionCtrls.map(ac =>
+							<label key={`${ac}`}>
+								<input type='radio'
+									value={`${ac}`}
+									checked={actionCtrl===ac}
+									onChange={(e) => setActionCtrl((() => {
+										const value = e.target.value;
+										if (!value) return undefined;
+										switch (value) {
+											case 'true' : return true;
+											case 'false': return false;
+											default     : return undefined;
+										} // switch
+									})())}
+								/>
+								{`${ac ?? 'unset'}`}
+							</label>
+						)
+					}
 				</p>
 				<p>
 					OrientationStyle:

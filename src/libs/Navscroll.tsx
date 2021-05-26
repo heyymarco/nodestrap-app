@@ -496,6 +496,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
     const itemHandleClick = (e: React.MouseEvent<HTMLElement, MouseEvent>, deepLevelsCurrent: number[]) => {
         e.preventDefault();
+        if (e.currentTarget !== e.target) return;
 
 
 
@@ -512,7 +513,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
             let viewport = Viewport.from(target);
             for (const targetChildIndex of deepLevelsCurrent) {
                 // inspects:
-                const children     = viewport.children(props.targetFilter);
+                const children    = viewport.children(props.targetFilter);
                 const targetChild = children[targetChildIndex] as (Dimension|undefined);
                 if (!targetChild) break;
 
@@ -617,7 +618,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
                     // events:
-                    onClick={(child.props.actionCtrl ?? false) ? (child.props.onClick ?? ((e) => {
+                    onClick={(child.props.actionCtrl ?? props.actionCtrl ?? false) ? (child.props.onClick ?? ((e) => {
                         itemHandleClick(e, deepLevelsCurrent);
                     })) : undefined}
 
@@ -638,19 +639,15 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                     // essentials:
                     key={index}
 
-
-                    // behaviors:
-                    actionCtrl={true}
-
                     
                     // accessibility:
                     active={index === activeIndices[deepLevelsCurrent.length - 1]}
 
 
                     // events:
-                    onClick={(e) => {
+                    onClick={(props.actionCtrl ?? false) ? ((e) => {
                         itemHandleClick(e, deepLevelsCurrent);
-                    }}
+                    }) : undefined}
                 >
                     { child }
                 </ListgroupItem>
