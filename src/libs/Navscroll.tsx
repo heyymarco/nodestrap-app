@@ -510,13 +510,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
             
             
             let viewport = Viewport.from(target);
-            const max = deepLevelsCurrent.length - 1;
-            for (let i = 0; i <= max; i++) {
-                // walks:
-                const targetChildIndex = deepLevelsCurrent[i];
-    
-                
-                
+            for (const targetChildIndex of deepLevelsCurrent) {
                 // inspects:
                 const children     = viewport.children(props.targetFilter);
                 const targetChild = children[targetChildIndex] as (Dimension|undefined);
@@ -536,9 +530,6 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
         .reverse()
         ;
         if (targetChildrenReverse.length === 0) return;
-        // @ts-ignore
-        window.chl = targetChildrenReverse;
-        console.log(targetChildrenReverse);
 
 
 
@@ -582,8 +573,10 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                 left     : deltaScrollLeft,
                 top      : deltaScrollTop,
                 behavior : 'smooth',
-            })
+            });
 
+            
+            
             remainingScrollLeft         -= deltaScrollLeft;
             remainingScrollTop          -= deltaScrollTop;
         } // for
