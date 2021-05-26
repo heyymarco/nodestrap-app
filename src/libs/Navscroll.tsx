@@ -151,7 +151,7 @@ class Dimension {
     /**
      * Reference of the related `Viewport`.
      */
-    protected readonly viewport  : Viewport|null
+    public readonly viewport     : Viewport|null
     /**
      * Reference of the related `HTMLElement`.
      */
@@ -502,8 +502,10 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
         const target = props.targetRef?.current;
         if (!target) return;
         
-        const childrenReverse = (() => {
-            const desiredChildren: Dimension[] = [];
+        
+        
+        const targetChildrenReverse = (() => {
+            const targetChildren: Dimension[] = [];
 
             
             
@@ -511,71 +513,79 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
             const max = deepLevelsCurrent.length - 1;
             for (let i = 0; i <= max; i++) {
                 // walks:
-                const desiredIndex = deepLevelsCurrent[i];
+                const targetChildIndex = deepLevelsCurrent[i];
     
                 
                 
                 // inspects:
                 const children     = viewport.children(props.targetFilter);
-                const desiredChild = children[desiredIndex] as (Dimension|undefined);
-                if (!desiredChild) break;
+                const targetChild = children[targetChildIndex] as (Dimension|undefined);
+                if (!targetChild) break;
 
                 
                 
                 // updates:
-                desiredChildren.push(desiredChild);
-                viewport = desiredChild.toViewport();
+                targetChildren.push(targetChild);
+                viewport = targetChild.toViewport();
             } // for
 
             
             
-            return desiredChildren;
+            return targetChildren;
         })()
         .reverse()
         ;
+        if (targetChildrenReverse.length === 0) return;
         // @ts-ignore
-        window.chl = childrenReverse;
-        console.log(childrenReverse);
-    }
-    const itemHandleClickBak = (e: React.MouseEvent<HTMLElement, MouseEvent>, deepLevelsCurrent: number[]) => {
-        e.preventDefault();
+        window.chl = targetChildrenReverse;
+        console.log(targetChildrenReverse);
 
 
 
-        const target = props.targetRef?.current;
-        if (!target) return;
-        let viewport = Viewport.from(target);
-        const max = deepLevelsCurrent.length - 1;
-        for (let i = 0; i <= max; i++) {
-            const desiredIndex = deepLevelsCurrent[i];
+        let [remainingScrollLeft, remainingScrollTop] = [
+            targetChildrenReverse[0].offsetLeft,
+            targetChildrenReverse[0].offsetTop
+        ];
 
-            const children     = viewport.children(props.targetFilter);
-            const desiredChild = children[desiredIndex] as (Dimension|undefined);
-            if (!desiredChild) break;
 
-            if (i < max) {
-                let viewportNew    = desiredChild.toViewport();
 
-                const parent       = viewportNew.element.parentElement!;
-                parent.scrollLeft += viewportNew.offsetLeft;
-                parent.scrollTop  += viewportNew.offsetTop;
+        for (const targetChild of targetChildrenReverse) {
+            if (!remainingScrollLeft && !remainingScrollTop) break;
 
-                viewportNew        = desiredChild.toViewport();
+            
+            
+            const viewport = targetChild.viewport;
+            if (!viewport) break;
 
-                viewport = viewportNew;
+            
+            
+            const [maxDeltaScrollLeft, maxDeltaScrollTop] = (() => {
+                const parent = viewport.element;
+                if (!parent) return [0, 0];
 
-                continue;
-            }
-            else {
-                const parent       = desiredChild.element.parentElement!;
-                const __prevScroll = parent.scrollTop;
-                parent.scrollLeft += desiredChild.offsetLeft;
-                parent.scrollTop  += desiredChild.offsetTop;
-                const __currScroll = parent.scrollTop;
-                console.log(`scrolled: ${__currScroll - __prevScroll}, unscrolled: ${desiredChild.offsetTop - (__currScroll - __prevScroll)}`);
+                return [
+                    (parent.scrollWidth  - parent.clientWidth ) - parent.scrollLeft,
+                    (parent.scrollHeight - parent.clientHeight) - parent.scrollTop,
+                ];
+            })();
 
-                break;
-            } // if
+            const [deltaScrollLeft, deltaScrollTop] = [
+                Math.min(remainingScrollLeft - (viewport.offsetLeft ?? 0), maxDeltaScrollLeft),
+                Math.min(remainingScrollTop  - (viewport.offsetTop  ?? 0), maxDeltaScrollTop ),
+            ];
+
+            
+            
+            // viewport.element.scrollLeft += deltaScrollLeft;
+            // viewport.element.scrollTop  += deltaScrollTop;
+            viewport.element.scrollBy({
+                left     : deltaScrollLeft,
+                top      : deltaScrollTop,
+                behavior : 'smooth',
+            })
+
+            remainingScrollLeft         -= deltaScrollLeft;
+            remainingScrollTop          -= deltaScrollTop;
         } // for
     }
 

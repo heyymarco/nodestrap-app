@@ -3,7 +3,8 @@
 }
 
 article>section:nth-child(3n+1) {
-    background: pink
+    background: pink;
+    border: dashed 5px red;
 }
 article>section:nth-child(3n+2) {
     background: green;
@@ -25,5 +26,6 @@ article>section>section:nth-child(3n+2) {
     border: solid 7px darkblue;
 }
 article>section>section:nth-child(3n+3) {
-    background: sandybrown
+    background: sandybrown;
+    border: solid 9px red;
 }
