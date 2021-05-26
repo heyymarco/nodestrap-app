@@ -21,7 +21,7 @@ import deepEqual            from 'deep-equal'
 
 class Viewport {
     /**
-     * Reference of the related element.
+     * Reference of the related `HTMLElement`.
      */
     public readonly element    : HTMLElement
 
@@ -65,9 +65,9 @@ class Viewport {
         this.viewRight   = viewRight;
         this.viewBottom  = viewBottom;
     }
-    public static from(element: HTMLElement, accumViewport: Viewport|null = null): Viewport {
-        const offsetLeft = accumViewport?.offsetLeft ?? 0;
-        const offsetTop  = accumViewport?.offsetTop  ?? 0;
+    public static from(element: HTMLElement, viewport: Viewport|null = null): Viewport {
+        const offsetLeft = (viewport?.offsetLeft ?? 0);
+        const offsetTop  = (viewport?.offsetTop  ?? 0);
 
         const viewLeft   = offsetLeft; // the viewLeft is initially the same as offsetLeft, and might shrinking over time every intersect
         const viewTop    = offsetTop;  // the viewTop  is initially the same as offsetTop,  and might shrinking over time every intersect
@@ -76,7 +76,7 @@ class Viewport {
         
         
         
-        const viewport = new Viewport(
+        const viewport2 = new Viewport(
             element,
 
             offsetLeft,
@@ -87,8 +87,8 @@ class Viewport {
             viewRight,
             viewBottom,
         );
-        if (accumViewport) return viewport.intersect(accumViewport);
-        return viewport;
+        if (viewport) return viewport2.intersect(viewport);
+        return viewport2;
     }
 
 
@@ -142,14 +142,18 @@ class Viewport {
                 if (targetFilter) return children.filter(targetFilter);
                 return children;
             })()
-            .map((child) => Dimension.from(/*element: */child, /*accumViewport: */this))
+            .map((child) => Dimension.from(/*element: */child, /*viewport: */this))
         );
     }
 }
 
 class Dimension {
     /**
-     * Reference of the related element.
+     * Reference of the related `Viewport`.
+     */
+    protected readonly viewport  : Viewport|null
+    /**
+     * Reference of the related `HTMLElement`.
      */
     public readonly element      : HTMLElement
 
@@ -173,15 +177,16 @@ class Dimension {
 
 
     // constructors:
-    protected constructor(element: HTMLElement, offsetLeft: number, offsetTop: number, offsetRight: number, offsetBottom: number) {
-        this.element       = element;
+    protected constructor(viewport: Viewport|null, element: HTMLElement, offsetLeft: number, offsetTop: number, offsetRight: number, offsetBottom: number) {
+        this.viewport     = viewport;
+        this.element      = element;
 
-        this.offsetLeft    = offsetLeft;
-        this.offsetTop     = offsetTop;
-        this.offsetRight   = offsetRight;
-        this.offsetBottom  = offsetBottom;
+        this.offsetLeft   = offsetLeft;
+        this.offsetTop    = offsetTop;
+        this.offsetRight  = offsetRight;
+        this.offsetBottom = offsetBottom;
     }
-    public static from(element: HTMLElement, accumViewport: Viewport): Dimension {
+    public static from(element: HTMLElement, viewport: Viewport|null = null): Dimension {
         const [parentOffsetLeft, parentOffsetTop] = (() => { // compensation for non positioned parent element
             const parent = element.parentElement;
             if (!parent || ['relative', 'absolute'].includes(getComputedStyle(parent).position)) return [0, 0];
@@ -191,14 +196,15 @@ class Dimension {
                 parent.offsetTop  + parent.clientTop,
             ];
         })();
-        const offsetLeft   = accumViewport.offsetLeft + (element.offsetLeft - parentOffsetLeft) - (element.parentElement?.scrollLeft ?? 0);
-        const offsetTop    = accumViewport.offsetTop  + (element.offsetTop  - parentOffsetTop ) - (element.parentElement?.scrollTop  ?? 0);
+        const offsetLeft   = (viewport?.offsetLeft ?? 0) + (element.offsetLeft - parentOffsetLeft) - (element.parentElement?.scrollLeft ?? 0);
+        const offsetTop    = (viewport?.offsetTop  ?? 0) + (element.offsetTop  - parentOffsetTop ) - (element.parentElement?.scrollTop  ?? 0);
         const offsetRight  = offsetLeft + element.offsetWidth;
         const offsetBottom = offsetTop  + element.offsetHeight;
 
 
         
         return new Dimension(
+            viewport,
             element,
 
             offsetLeft,
@@ -213,6 +219,7 @@ class Dimension {
     // dimensions:
     public intersect(viewport: Viewport): Dimension {
         return new Dimension(
+                     this.viewport,
                      this.element,
 
             Math.max(this.offsetLeft,   viewport.viewLeft),
@@ -274,8 +281,8 @@ class Dimension {
         return null;
     }
 
-    public toViewport(accumViewport: Viewport): Viewport {
-        const element = this.element;
+    public toViewport(): Viewport {
+        const element    = this.element;
 
         const [parentOffsetLeft, parentOffsetTop] = (() => { // compensation for non positioned parent element
             const parent = element.parentElement;
@@ -286,8 +293,8 @@ class Dimension {
                 parent.offsetTop  + parent.clientTop,
             ];
         })();
-        const offsetLeft = accumViewport?.offsetLeft + (element.offsetLeft - parentOffsetLeft) + element.clientLeft - (element.parentElement?.scrollLeft ?? 0);
-        const offsetTop  = accumViewport?.offsetTop  + (element.offsetTop  - parentOffsetTop ) + element.clientTop  - (element.parentElement?.scrollTop  ?? 0);
+        const offsetLeft = (this.viewport?.offsetLeft ?? 0) + (element.offsetLeft - parentOffsetLeft) - (element.parentElement?.scrollLeft ?? 0) + element.clientLeft;
+        const offsetTop  = (this.viewport?.offsetTop  ?? 0) + (element.offsetTop  - parentOffsetTop ) - (element.parentElement?.scrollTop  ?? 0) + element.clientTop;
 
         const viewLeft   = offsetLeft; // the viewLeft is initially the same as offsetLeft, and might shrinking over time every intersect
         const viewTop    = offsetTop;  // the viewTop  is initially the same as offsetTop,  and might shrinking over time every intersect
@@ -426,7 +433,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                 })();
 
 
-                return visibleChild ? getVisibleChildIndices(visibleChild[0].toViewport(viewport), [...accumResults, visibleChild[1]]) : accumResults;
+                return visibleChild ? getVisibleChildIndices(visibleChild[0].toViewport(), [...accumResults, visibleChild[1]]) : accumResults;
             }
             const visibleChildIndices = getVisibleChildIndices(Viewport.from(/*element: */parent));
 
@@ -494,6 +501,49 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
         const target = props.targetRef?.current;
         if (!target) return;
+        
+        const childrenReverse = (() => {
+            const desiredChildren: Dimension[] = [];
+
+            
+            
+            let viewport = Viewport.from(target);
+            const max = deepLevelsCurrent.length - 1;
+            for (let i = 0; i <= max; i++) {
+                // walks:
+                const desiredIndex = deepLevelsCurrent[i];
+    
+                
+                
+                // inspects:
+                const children     = viewport.children(props.targetFilter);
+                const desiredChild = children[desiredIndex] as (Dimension|undefined);
+                if (!desiredChild) break;
+
+                
+                
+                // updates:
+                desiredChildren.push(desiredChild);
+                viewport = desiredChild.toViewport();
+            } // for
+
+            
+            
+            return desiredChildren;
+        })()
+        .reverse()
+        ;
+        // @ts-ignore
+        window.chl = childrenReverse;
+        console.log(childrenReverse);
+    }
+    const itemHandleClickBak = (e: React.MouseEvent<HTMLElement, MouseEvent>, deepLevelsCurrent: number[]) => {
+        e.preventDefault();
+
+
+
+        const target = props.targetRef?.current;
+        if (!target) return;
         let viewport = Viewport.from(target);
         const max = deepLevelsCurrent.length - 1;
         for (let i = 0; i <= max; i++) {
@@ -504,13 +554,13 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
             if (!desiredChild) break;
 
             if (i < max) {
-                let viewportNew    = desiredChild.toViewport(viewport);
+                let viewportNew    = desiredChild.toViewport();
 
                 const parent       = viewportNew.element.parentElement!;
                 parent.scrollLeft += viewportNew.offsetLeft;
                 parent.scrollTop  += viewportNew.offsetTop;
 
-                viewportNew        = desiredChild.toViewport(viewport);
+                viewportNew        = desiredChild.toViewport();
 
                 viewport = viewportNew;
 
