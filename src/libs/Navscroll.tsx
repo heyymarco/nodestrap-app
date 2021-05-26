@@ -19,7 +19,7 @@ import deepEqual            from 'deep-equal'
 
 // element utils:
 
-class Viewport {
+export class Viewport {
     /**
      * Reference of the related `HTMLElement`.
      */
@@ -147,7 +147,7 @@ class Viewport {
     }
 }
 
-class Dimension {
+export class Dimension {
     /**
      * Reference of the related `Viewport`.
      */

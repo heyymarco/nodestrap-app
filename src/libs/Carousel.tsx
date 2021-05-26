@@ -24,6 +24,7 @@ import type * as Buttons   from './ButtonIcon'
 import {
     default as Navscroll,
     NavscrollItem,
+    Dimension,
 }                          from './Navscroll'
 
 
@@ -124,7 +125,7 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
 
         // scrolls:
         scrollSnapAlign : 'center', // put a magnet at the center
-        scrollSnapStop  : 'always', // scrolls one by one
+        scrollSnapStop  : 'normal', // scrolls one by one or multiple at once
 
 
 
@@ -322,62 +323,56 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
     const itemsTag2 = itemsTag ?? 'ul';
     const itemTag2  = itemTag  ?? ['ul', 'ol'].includes(itemsTag2) ? 'li' : 'div';
 
-    const scrollTo = (index: number) => {
-        const itemsElm = listRef.current;
-        if (!itemsElm) return;
+    const scrollBy = (itemsElm: HTMLElement, nextSlide: boolean) => {
+        const parent = itemsElm;
 
 
 
-        // get target slide:
-        const targetElm = ((): HTMLElement | null => {
-            const children = Array.from(itemsElm.children) as HTMLElement[];
-            if (index < 0) return children[children.length + index] ?? null;
-            return children[index] ?? null;
+        const [limDeltaScrollLeft, limDeltaScrollTop] = [
+            nextSlide ? ((parent.scrollWidth  - parent.clientWidth ) - parent.scrollLeft) : -parent.scrollLeft,
+            nextSlide ? ((parent.scrollHeight - parent.clientHeight) - parent.scrollTop)  : -parent.scrollTop,
+        ];
+
+        const [deltaScrollLeft, deltaScrollTop] = [
+            nextSlide ? Math.min(parent.clientWidth,  limDeltaScrollLeft) : Math.max(-parent.clientWidth,  limDeltaScrollLeft),
+            nextSlide ? Math.min(parent.clientHeight, limDeltaScrollTop ) : Math.max(-parent.clientHeight, limDeltaScrollTop),
+        ];
+
+
+
+        parent.scrollBy({
+            left     : deltaScrollLeft,
+            top      : deltaScrollTop,
+            behavior : 'smooth',
+        });
+    }
+    const scrollTo = (targetSlide: HTMLElement|null) => {
+        if (!targetSlide) return;
+        const parent = targetSlide.parentElement! as HTMLElement;
+
+
+
+        const [maxDeltaScrollLeft, maxDeltaScrollTop] = [
+            (parent.scrollWidth  - parent.clientWidth ) - parent.scrollLeft,
+            (parent.scrollHeight - parent.clientHeight) - parent.scrollTop,
+        ];
+
+        const [deltaScrollLeft, deltaScrollTop] = (() => {
+            const dimension = Dimension.from(targetSlide);
+
+            return [
+                Math.min(dimension.offsetLeft, maxDeltaScrollLeft),
+                Math.min(dimension.offsetTop,  maxDeltaScrollTop ),
+            ];
         })();
-        if (!targetElm) return;
 
 
 
-        // get list states:
-        const colGap       = Number.parseInt(itemsElm.style.columnGap || '0');
-        const paddingLeft  = Number.parseInt(itemsElm.style.paddingInlineStart || '0');
-        const oldScrollPos = itemsElm.scrollLeft;
-
-
-
-        // get target's scroll pos:
-        const targetScrollPos = targetElm.offsetLeft - paddingLeft;
-
-        // critical scroll pos: a scrolling pos boundary between target's scroll pos and prev's/next's scroll pos
-        const criticalScrollPos =
-            targetScrollPos
-            +
-            ((): number => {
-                const criticalLength = (targetElm.offsetWidth + colGap) / 2;
-
-
-
-                if (targetScrollPos > oldScrollPos) { // target on the right
-                    // shift to left, so it appears coming from left to right
-                    return (
-                        -criticalLength // move to left until critical
-                        +1              // move to right a bit to avoid critical occured
-                    );
-                }
-                else { // target on the left
-                    // shift to right, so it appears coming from right to left
-                    return (
-                        +criticalLength // move to right until critical
-                        -1              // move to left a bit to avoid critical occured
-                    );
-                } // if
-            })()
-            ;
-        
-        
-        
-        // move to target:
-        itemsElm.scroll(criticalScrollPos, 0);
+        parent.scrollBy({
+            left     : deltaScrollLeft,
+            top      : deltaScrollTop,
+            behavior : 'smooth',
+        });
     };
 
     return (
@@ -463,18 +458,22 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
                     // events:
                     onClick={(e) => {
-                        const itemsElm = e.currentTarget.parentElement?.querySelector('.items') as HTMLElement;
+                        const itemsElm = listRef.current;
                         if (!itemsElm) return;
 
 
 
-                        if (itemsElm.scrollLeft > 0) {
-                            const colGap         = Number.parseInt(itemsElm.style.columnGap || '0');
-                            const criticalLength = (itemsElm.clientWidth + colGap) / 2;
-                            itemsElm.scrollBy(-criticalLength -1, 0); // move to left a half, the scrollSnap will help scrolling to the prev slide
+                        if (
+                            (itemsElm.scrollLeft <= 0.5)
+                            &&
+                            (itemsElm.scrollTop  <= 0.5)
+                        ) {
+                            // scroll to last
+                            scrollTo(itemsElm.lastElementChild as (HTMLElement|null));
                         }
                         else {
-                            scrollTo(-1); // scroll to last
+                            // scroll to previous:
+                            scrollBy(itemsElm, false);
                         } // if
                     }}
                 >
@@ -509,18 +508,22 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
                     // events:
                     onClick={(e) => {
-                        const itemsElm = e.currentTarget.parentElement?.querySelector('.items') as HTMLElement;
+                        const itemsElm = listRef.current;
                         if (!itemsElm) return;
 
 
 
-                        if (itemsElm.scrollLeft < (itemsElm.scrollWidth - itemsElm.clientWidth)) {
-                            const colGap         = Number.parseInt(itemsElm.style.columnGap || '0');
-                            const criticalLength = (itemsElm.clientWidth + colGap) / 2;
-                            itemsElm.scrollBy(+criticalLength +1, 0); // move to right a half, the scrollSnap will help scrolling to the next slide
+                        if (
+                            (((itemsElm.scrollWidth  - itemsElm.clientWidth ) - itemsElm.scrollLeft) <= 0.5)
+                            &&
+                            (((itemsElm.scrollHeight - itemsElm.clientHeight) - itemsElm.scrollTop ) <= 0.5)
+                        ) {
+                            // scroll to first
+                            scrollTo(itemsElm.firstElementChild as (HTMLElement|null));
                         }
                         else {
-                            scrollTo(0); // scroll to first
+                            // scroll to next:
+                            scrollBy(itemsElm, true);
                         } // if
                     }}
                 >
@@ -573,28 +576,26 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                     ]}
 
 
+                    // behaviors:
+                    actionCtrl={true}
+
+
                     // scrolls:
                     targetRef={listRef}
                     interpolation={true}
                 >
                     {children && (Array.isArray(children) ? children : [children]).map((child, index) => (
-                        React.isValidElement(child)
-                        ?
                         <NavscrollItem
                             // essentials:
                             key={index}
                             tag='button'
 
 
-                            // behaviors:
-                            actionCtrl={true}
-
-
-                            // actions:
-                            onClick={() => scrollTo(index)}
+                            // labels:
+                            {...(React.isValidElement<React.HTMLAttributes<HTMLElement>>(child) ? {
+                                title : child.props.title,
+                            } : {})}
                         />
-                        :
-                        ''
                     ))}
                 </Navscroll>
             }
