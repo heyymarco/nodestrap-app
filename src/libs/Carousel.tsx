@@ -8,6 +8,9 @@ import
 import type {
     JssStyle,
 }                          from 'jss'          // ts defs support for jss
+import {
+    Cust,
+}                          from './Css'        // ts defs support for jss
 import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
@@ -18,6 +21,12 @@ import {
     ElementStylesBuilder,
 }                          from './Element'
 import type * as Elements  from './Element'
+import {
+    styles as contentStyles,
+}                          from './Content'
+import type {
+    IContentStylesBuilder,
+}                          from './Content'
 import CarouselItem        from './CarouselItem'
 import Button              from './ButtonIcon'
 import type * as Buttons   from './ButtonIcon'
@@ -37,11 +46,27 @@ const navElm     = '&>.nav';
 const prevBtnElm = '&>.prevBtn';
 const nextBtnElm = '&>.nextBtn';
 
-export class CarouselStylesBuilder extends ElementStylesBuilder {
+export class CarouselStylesBuilder extends ElementStylesBuilder implements IContentStylesBuilder {
     // themes:
+    public /*implement*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
+        return contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from Content
+    }
+    public /*implement*/ contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle {
+        return contentStyles.contentSizeOf(size, Size, sizeProp); // copy sizes from Content
+    }
+
+    public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+        extend: [
+            super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
+            
+            this.contentThemeOf(theme, Theme, themeProp, themeColor),
+        ] as JssStyle,
+    }}
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
+
+            this.contentSizeOf(size, Size, sizeProp),
         ] as JssStyle,
 
 
@@ -52,7 +77,50 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
 
 
 
+    // states:
+    public /*implement*/ contentThemesIf(): JssStyle {
+        return contentStyles.contentThemesIf(); // copy themes from Content
+    }
+    public /*implement*/ contentStates(inherit = false): JssStyle {
+        return contentStyles.contentStates(inherit); // copy states from Content
+    }
+
+    public /*override*/ themesIf(): JssStyle { return {
+        extend: [
+            super.themesIf(), // copy themes from base
+
+            this.contentThemesIf(),
+        ] as JssStyle,
+    }}
+    public /*override*/ states(inherit = false): JssStyle { return {
+        extend: [
+            super.states(inherit), // copy states from base
+
+            this.contentStates(inherit),
+        ] as JssStyle,
+    }}
+
+
+
+    // functions:
+    public /*implement*/ contentPropsFn(): JssStyle {
+        return contentStyles.contentPropsFn(); // copy functional props from Content
+    }
+    public /*override*/ propsFn(): JssStyle { return {
+        extend: [
+            super.propsFn(), // copy functional props from base
+
+            this.contentPropsFn(),
+        ] as JssStyle,
+    }}
+
+
+
     // styles:
+    public /*implement*/ contentBasicStyle(): JssStyle {
+        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
+    }
+
     protected /*virtual*/ carouselItemsBasicStyle(): JssStyle { return {
         extend: [
             //#region clear browser's default styles
@@ -158,6 +226,7 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
+
     protected /*virtual*/ navBtnBasicStyle(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'navBtn')), // apply *general* cssProps starting with navBtn***
@@ -180,6 +249,7 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'nextBtn')), // apply *general* cssProps starting with nextBtn***
     }}
+
     protected /*virtual*/ navBasicStyle(): JssStyle { return {
         // layout:
         gridArea : 'nav',
@@ -189,9 +259,12 @@ export class CarouselStylesBuilder extends ElementStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'nav')), // apply *general* cssProps starting with nav***
     }}
+
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
+
+            this.contentBasicStyle(),
         ] as JssStyle,
 
 
