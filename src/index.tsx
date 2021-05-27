@@ -12,10 +12,11 @@ import FormApp from './FormApp';
 import NavbarApp from './NavbarApp';
 import CarouselApp from './CarouselApp';
 import NavscrollApp from './NavscrollApp';
+import MasonryApp from './MasonryApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <CarouselApp />
+    <MasonryApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -337,15 +337,11 @@ const cssConfig = new CssConfig(() => {
 
 
 
-        navBtnBorderRadius : 0
+        navBtnBorderRadius : 0,
     };
 }, /*prefix: */'crsl');
 export const cssProps = cssConfig.refs;
 export const cssDecls = cssConfig.decls;
-
-
-
-// hooks:
 
 
 
