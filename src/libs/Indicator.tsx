@@ -462,7 +462,7 @@ export function useStateEnableDisable(props: IndicationProps) {
     };
 }
 
-export function useStateActivePassive(props: IndicationProps, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }) {
+export function useStateActivePassive(props: IndicationProps, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }, mouses: string[]|null = ['click'], keys: string[]|null = ['space']) {
     // props:
     const propClickable: boolean =  // control is clickable if [is actionCtrl] and [is enabled]
         (props.actionCtrl ?? false) // if [actionCtrl] was not specified => the default value is [actionCtrl=false] (readonly)
@@ -555,8 +555,12 @@ export function useStateActivePassive(props: IndicationProps, classes = { active
 
             return null;
         })(),
-        handleMouseDown    : handleActivating, // for Control
-        handleKeyDown      : handleActivating, // for Control
+        handleMouseDown    : ((e) => { // for Control
+            if (!mouses || mouses.includes(e.type.toLowerCase())) handleActivating();
+        }) as React.MouseEventHandler<HTMLElement>,
+        handleKeyDown      : ((e) => { // for Control
+            if (!keys || keys.includes(e.code.toLowerCase()) || keys.includes(e.key.toLowerCase())) handleActivating();
+        }) as React.KeyboardEventHandler<HTMLElement>,
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
             if (/((?<![a-z])(active|passive)|(?<=[a-z])(Active|Passive))(?![a-z])/.test(e.animationName)) {
@@ -641,8 +645,8 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
         
 
             // events:
-            onMouseDown={(e) => { if (isActionCtrl) stateActPass.handleMouseDown(); props.onMouseDown?.(e); }}
-            onKeyDown=  {(e) => { if (isActionCtrl) stateActPass.handleKeyDown();   props.onKeyDown?.(e);   }}
+            onMouseDown={(e) => { if (isActionCtrl) stateActPass.handleMouseDown(e); props.onMouseDown?.(e); }}
+            onKeyDown=  {(e) => { if (isActionCtrl) stateActPass.handleKeyDown(e);   props.onKeyDown?.(e);   }}
             onAnimationEnd={(e) => {
                 // states:
                 stateEnbDis.handleAnimationEnd(e);

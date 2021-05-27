@@ -201,8 +201,8 @@ export default function ActionControl<TElement extends HTMLElement = HTMLElement
         
 
             // events:
-            onMouseDown={(e) => { statePrssRls.handleMouseDown(); props.onMouseDown?.(e); }}
-            onKeyDown=  {(e) => { statePrssRls.handleKeyDown();   props.onKeyDown?.(e);   }}
+            onMouseDown={(e) => { statePrssRls.handleMouseDown(e); props.onMouseDown?.(e); }}
+            onKeyDown=  {(e) => { statePrssRls.handleKeyDown(e);   props.onKeyDown?.(e);   }}
             onAnimationEnd={(e) => {
                 // states:
                 statePrssRls.handleAnimationEnd(e);
