@@ -125,7 +125,8 @@ export class MasonryStylesBuilder extends ElementStylesBuilder implements IConte
         gridAutoFlow        : 'row', // masonry's direction is to row
         gridAutoRows        : cssProps.itemsRaiseSize,
         gridTemplateColumns : `repeat(auto-fill, minmax(${cssProps.itemsMinColumnSize}, 1fr))`,
-        alignItems          : 'stretch', // distorting the item's height a bit for consistent multiplies of `itemsRaiseSize`
+        // alignItems          : 'stretch', // distorting the item's height a bit for consistent multiplies of `itemsRaiseSize`
+        alignItems          : 'start', // let's the item to resize so we can reconstruct the masonry's layout
 
 
 
@@ -157,7 +158,8 @@ export class MasonryStylesBuilder extends ElementStylesBuilder implements IConte
         gridAutoFlow        : 'column', // masonry's direction is to column
         gridAutoColumns     : cssProps.itemsRaiseSize,
         gridTemplateRows    : `repeat(auto-fill, minmax(${cssProps.itemsMinColumnSize}, 1fr))`,
-        justifyItems        : 'stretch', // distorting the item's width a bit for consistent multiplies of `itemsRaiseSize`
+        // justifyItems        : 'stretch', // distorting the item's width a bit for consistent multiplies of `itemsRaiseSize`
+        justifyItems        : 'start', // let's the item to resize so we can reconstruct the masonry's layout
 
 
 
@@ -224,9 +226,9 @@ const cssConfig = new CssConfig(() => {
         rowGapSm             : spacers.xs,
         rowGapLg             : spacers.md,
 
-        itemsRaiseSize       : '0.5em',
-        itemsRaiseSizeSm     : '0.3em',
-        itemsRaiseSizeLg     : '0.8em',
+        itemsRaiseSize       : '3px',
+        itemsRaiseSizeSm     : '2px',
+        itemsRaiseSizeLg     : '4px',
 
         itemsMinColumnSize   : '200px', // 5 * 40
         itemsMinColumnSizeSm : '120px', // 3 * 40
@@ -265,13 +267,56 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
 
 
-        const blockStyle = props.orientation !== 'inline';
+        const blockStyle     = props.orientation !== 'inline';
+        const itemsRaiseSize = Math.max(1, // limits precision to 1px
+            (
+                blockStyle
+                ?
+                Number.parseInt(getComputedStyle(masonry).gridAutoRows)
+                :
+                Number.parseInt(getComputedStyle(masonry).gridAutoColumns)
+            )
+            ||
+            1 // if parsing error => default is 1px
+        );
 
         
         
-        const delay = async (interval: number) => new Promise<void>((resolve) => setTimeout(() => resolve(), interval));
-        const refreshItemSize = async (item: HTMLElement, itemsRaiseSize: number) => {
-            await delay(1); // low priority task => limits dominating cpu usage
+        const delay = async (interval: number = 40) => new Promise<void>((resolve) => setTimeout(() => resolve(), interval));
+        
+        type UpdateItemTask = { item: HTMLElement, abort: boolean };
+        const updateItemSizeTasks: UpdateItemTask[] = [];
+        const updateItemSize = (item: HTMLElement) => {
+            updateItemSizeTasks.forEach((task) => {
+                if (task.item === item) {
+                    task.abort = true;
+                } // if
+            });
+            
+            
+            
+            const newTask: UpdateItemTask = { item: item, abort: false };
+            updateItemSizeTasks.push(newTask);
+
+            
+            
+            updateItemSizeTask(newTask); // fire & forget the Promise
+        };
+        const updateItemSizeTask = async (task: UpdateItemTask) => {
+            await delay(); // low priority task => limits dominating cpu usage
+
+
+
+            if (task.abort) { // newer call updateItemSizeTask() with the same task was performed => abort current execution
+                // mark current task as done => remove it from updateItemSizeTasks:
+                const index = updateItemSizeTasks.indexOf(task);
+                if (index >= 0) updateItemSizeTasks.splice(index, 1);
+
+                
+                
+                return;
+            }
+            const item = task.item;
 
             
             
@@ -317,43 +362,162 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
             }
             item.style.alignSelf   = ''; // switch back to grid's default alignItems   -or- clear from residual effect from blockStyle (if was)
             item.style.justifySelf = ''; // switch back to grid's default justifyItems -or- clear from residual effect from inlineStyle (if was)
+
+
+
+            // mark current task as done => remove it from updateItemSizeTasks:
+            const index = updateItemSizeTasks.indexOf(task);
+            if (index >= 0) updateItemSizeTasks.splice(index, 1);
         };
         
-        const refreshItemsSize = async () => {
-            await delay(1); // low priority task => limits dominating cpu usage
+        let updateItemSizesVersion = 0;
+        const updateItemsSize = () => {
+            updateItemSizesVersion++;
+            updateItemsSizeTask(updateItemSizesVersion); // fire & forget the Promise
+        };
+        const updateItemsSizeTask = async (oldVersion: number) => {
+            await delay(); // low priority task => limits dominating cpu usage
+
+
+
+            if (oldVersion < updateItemSizesVersion) {
+                return; // newer call updateItemsSizeAsync() was performed => abort current execution
+            }
+
+
+
+            // abort all updateItemSizeTasks
+            // because we'll update all items
+            updateItemSizeTasks.forEach((task) => {
+                task.abort = true;
+            });
 
 
             
-            const itemsRaiseSize = Math.max(1, // limits precision to 1px
-                (
-                    blockStyle
-                    ?
-                    Number.parseInt(getComputedStyle(masonry).gridAutoRows)
-                    :
-                    Number.parseInt(getComputedStyle(masonry).gridAutoColumns)
-                )
-                ||
-                1 // if parsing error => default is 1px
-            );
-
-
-            
-            for (const item of await (Array.from(masonry.children) as HTMLElement[])) {
-                await refreshItemSize(item, itemsRaiseSize);
+            for (const item of (Array.from(masonry.children) as HTMLElement[])) {
+                updateItemSize(item);
             } // for
         }
 
 
 
         // update now:
-        refreshItemsSize();
+        updateItemsSize();
 
-        // update at the future:
-        window.addEventListener('resize', refreshItemsSize);
+
+
+        //#region update at the future
+        //#region when masonry's children resized
+        const childrenResizeObserver = ResizeObserver ? new ResizeObserver(async (entries) => {
+            for (const entry of entries) {
+                const item = entry.target as HTMLElement;
+
+                if (
+                    (item.parentElement !== masonry) // item removed from masonry
+                    ||
+                    (masonry.parentElement === null) // masonry removed from document
+                ) {
+                    childrenResizeObserver?.unobserve(item);
+                }
+                else {
+                    updateItemSize(item);
+                } // if
+            } // for
+        }) : null;
+        if (childrenResizeObserver) {
+            for (const item of (Array.from(masonry.children) as HTMLElement[])) {
+                childrenResizeObserver.observe(item);
+            } // for
+        } // if
+        //#endregion when masonry's children resized
+
+        
+        
+        // *** if masonry resized => implicitly the masonry's items are resized too ***
+        // *** so watching for masonry's resizing is not required ***
+        // //#region when masonry resized
+        // const resizeObserver = ResizeObserver ? new ResizeObserver(async (entries) => {
+        //     for (const entry of entries) {
+        //         if (entry.target === masonry) {
+        //             if (masonry.parentElement === null) {
+        //                 resizeObserver?.unobserve(masonry);
+        //             }
+        //             else {
+        //                 updateItemsSize();
+        //             } // if
+        //         } // if
+        //     } // for
+        // }) : null;
+        // if (resizeObserver) {
+        //     resizeObserver.observe(masonry);
+        // }
+        // else {
+        //     window.addEventListener('resize', updateItemsSize);
+        // } // if
+        // //#endregion when masonry resized
+
+        
+        
+        //#region when masonry's children added/removed
+        const mutationObserver = new MutationObserver((entries) => {
+            for (const entry of entries) {
+                // added children:
+                for (const item of (Array.from(entry.addedNodes) as HTMLElement[])) {
+                    // update now:
+                    updateItemSize(item);
+
+                    // update at the future:
+                    childrenResizeObserver?.observe(item);
+                } // for
+
+                
+                
+                // removed children:
+                if (childrenResizeObserver) {
+                    for (const item of (Array.from(entry.removedNodes) as HTMLElement[])) {
+                        // stop update at the future:
+                        childrenResizeObserver.unobserve(item);
+                    } // for
+                } // if
+            } // for
+        });
+        mutationObserver.observe(masonry, { // watch for DOM structure changes
+            childList  : true,  // watch for child's DOM structure changes
+            subtree    : false, // don't care for grandchild's DOM structure changes
+
+            attributes : false, // don't care for any attribute changes
+        });
+        //#endregion when masonry's children added/removed
+        //#endregion update at the future
+
+        
+        
+        // cleanups:
         return () => {
-            window.removeEventListener('resize', refreshItemsSize);
+            //#region remove observer: masonry's children resized
+            if (childrenResizeObserver) childrenResizeObserver.disconnect();
+            //#endregion remove observer: masonry's children resized
+            
+            
+            
+            // *** if masonry resized => implicitly the masonry's items are resized too ***
+            // *** so watching for masonry's resizing is not required ***
+            // //#region remove observer: masonry resized
+            // if (resizeObserver) {
+            //     resizeObserver.disconnect();
+            // }
+            // else {
+            //     window.removeEventListener('resize', updateItemsSize);
+            // } // if
+            // //#endregion remove observer: masonry resized
+
+
+
+            //#region remove observer: masonry's children added/removed
+            mutationObserver.disconnect();
+            //#endregion remove observer: masonry's children added/removed
         };
-    }, [props.orientation]);
+    }, [props.orientation, props.size]);
 
 
 

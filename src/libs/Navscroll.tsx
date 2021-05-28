@@ -469,12 +469,12 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                 detachDescendants = attachDescendants(); // (re)attach
             }
             reAttachDescendants();
-            const observer = new MutationObserver(reAttachDescendants);
-            observer.observe(target, {
-                childList  : true,
-                subtree    : true,
+            const mutationObserver = new MutationObserver(reAttachDescendants);
+            mutationObserver.observe(target, { // watch for DOM structure changes
+                childList  : true,  // watch for child's DOM structure changes
+                subtree    : true,  // watch for grandchild's DOM structure changes
 
-                attributes : true,
+                attributes : false, // don't care for any attribute changes
             });
             
             
@@ -486,7 +486,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
                 
                 
-                observer.disconnect();
+                mutationObserver.disconnect();
                 detachDescendants?.(); // detach
             };
         } // if
