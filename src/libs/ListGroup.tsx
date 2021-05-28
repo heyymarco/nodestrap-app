@@ -15,6 +15,11 @@ import * as border          from './borders'    // configurable borders & border
 import {
     GenericElement,
     cssProps as ecssProps,
+    useVariantOrientation,
+}                           from './Element'
+import type {
+    OrientationStyle,
+    VariantOrientation,
 }                           from './Element'
 import {
     default  as Content,
@@ -513,16 +518,6 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export type OrientationStyle = 'block'|'inline'
-export interface VariantOrientation {
-    orientation?: OrientationStyle
-}
-export function useVariantOrientation(props: VariantOrientation) {
-    return {
-        class: props.orientation ? props.orientation : null,
-    };
-}
-
 export type ListStyle = 'bullet' // might be added more styles in the future
 export interface VariantList {
     listStyle?: ListStyle
@@ -637,3 +632,5 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
 
 export { ListgroupItem, ListgroupItem as Item }
 export type { ListgroupItems, ListgroupItems as Items }
+
+export type { OrientationStyle, VariantOrientation }

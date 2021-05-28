@@ -8,6 +8,7 @@ import
 // jss   (builds css  using javascript):
 import type {
     JssStyle,
+    Styles,
 }                          from 'jss'          // ts defs support for jss
 import {
     Cust,
@@ -18,10 +19,14 @@ import CssConfig           from './CssConfig'  // Stores & retrieves configurati
 import spacers             from './spacers'     // configurable spaces defs
 import {
     default  as Element,
-    GenericElement,
     ElementStylesBuilder,
+    useVariantOrientation,
 }                          from './Element'
 import type * as Elements  from './Element'
+import type {
+    OrientationStyle,
+    VariantOrientation,
+}                          from './Element'
 import {
     styles as contentStyles,
 }                          from './Content'
@@ -113,21 +118,30 @@ export class MasonryStylesBuilder extends ElementStylesBuilder implements IConte
 
             this.contentBasicStyle(),
         ] as JssStyle,
-
-
-
+    }}
+    public /*virtual*/ blockStyle(): JssStyle { return {
         // layout:
         display             : 'grid',
-        gridAutoFlow        : 'row',
-        gridTemplateColumns : `repeat(auto-fill, minmax(${cssProps.itemsMinInlineSize}, 1fr))`,
-        gridAutoRows        : cssProps.itemsMulBlockSize,
-        alignItems          : 'stretch', // distorting the item's height a bit for consistent multiplies of `itemsMulBlockSize`
+        gridAutoFlow        : 'row', // masonry's direction is to row
+        gridAutoRows        : cssProps.itemsRaiseSize,
+        gridTemplateColumns : `repeat(auto-fill, minmax(${cssProps.itemsMinColumnSize}, 1fr))`,
+        alignItems          : 'stretch', // distorting the item's height a bit for consistent multiplies of `itemsRaiseSize`
 
 
 
         // children:
         '&>*': {
-            marginBlockEnd : cssProps.rowGap,
+            /*
+            * use `marginBlockStart` as the replacement of the stripped out `rowGap`
+            * we use `marginBlockStart` instead of `marginBlockEnd`
+            * because finding grid's items at the begining is much easier than at the end
+            * (we don't need to count the number of grid's item)
+            */
+            marginBlockStart : cssProps.rowGap,
+
+
+
+            gridColumnEnd : [['unset'], '!important'], // clear from residual effect from inlineStyle (if was)
         },
 
 
@@ -135,11 +149,56 @@ export class MasonryStylesBuilder extends ElementStylesBuilder implements IConte
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
 
-
-        
-        // cannot be customized:
-        rowGap: 0,
+        rowGap    : [[0], '!important'], // strip out the `rowGap` because it will conflict with masonry's direction
     }}
+    public /*virtual*/ inlineStyle(): JssStyle { return {
+        // layout:
+        display             : 'inline-grid',
+        gridAutoFlow        : 'column', // masonry's direction is to column
+        gridAutoColumns     : cssProps.itemsRaiseSize,
+        gridTemplateRows    : `repeat(auto-fill, minmax(${cssProps.itemsMinColumnSize}, 1fr))`,
+        justifyItems        : 'stretch', // distorting the item's width a bit for consistent multiplies of `itemsRaiseSize`
+
+
+
+        // children:
+        '&>*': {
+            /*
+            * use `marginInlineStart` as the replacement of the stripped out `rowGap`
+            * we use `marginInlineStart` instead of `marginInlineEnd`
+            * because finding grid's items at the begining is much easier than at the end
+            * (we don't need to count the number of grid's item)
+            */
+            marginInlineStart : cssProps.rowGap,
+
+
+
+            gridRowEnd : [['unset'], '!important'], // clear from residual effect from blockStyle (if was)
+        },
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+
+        columnGap : [[0], '!important'], // strip out the `columnGap` because it will conflict with masonry's direction
+    }}
+    protected /*override*/ styles(): Styles<'main'> {
+        const styles = super.styles();
+        styles.main = {
+            extend: [
+                styles.main,
+                {
+                    '&:not(.inline)' : this.blockStyle(),  // block  style as default
+                    '&.inline'       : this.inlineStyle(), // inline style as optional
+                },
+            ] as JssStyle,
+        };
+
+
+
+        return styles;
+    }
 }
 export const styles = new MasonryStylesBuilder();
 
@@ -158,11 +217,20 @@ const cssConfig = new CssConfig(() => {
 
 
     return {
-        columnGap          : spacers.default,
-        rowGap             : spacers.default,
+        columnGap            : spacers.sm,
+        columnGapSm          : spacers.xs,
+        columnGapLg          : spacers.md,
+        rowGap               : spacers.sm,
+        rowGapSm             : spacers.xs,
+        rowGapLg             : spacers.md,
 
-        itemsMinInlineSize : '200px',
-        itemsMulBlockSize  : '0.5em',
+        itemsRaiseSize       : '0.5em',
+        itemsRaiseSizeSm     : '0.3em',
+        itemsRaiseSizeLg     : '0.8em',
+
+        itemsMinColumnSize   : '200px', // 5 * 40
+        itemsMinColumnSizeSm : '120px', // 3 * 40
+        itemsMinColumnSizeLg : '320px', // 8 * 40
     };
 }, /*prefix: */'msry');
 export const cssProps = cssConfig.refs;
@@ -174,16 +242,20 @@ export const cssDecls = cssConfig.decls;
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Elements.Props<TElement>
+        Elements.Props<TElement>,
+        VariantOrientation
 {
     // children:
     children? : React.ReactNode
 }
 export default function Masonry<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
-    const masonryStyles = styles.useStyles();
+    const masonryStyles   = styles.useStyles();
+
+    // themes:
+    const variOrientation = useVariantOrientation(props);
 
     // layouts:
-    const masonryRef    = useRef<TElement>(null);
+    const masonryRef      = useRef<TElement>(null);
 
 
 
@@ -191,37 +263,83 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
         const masonry = masonryRef.current;
         if (!masonry) return;
 
+
+
+        const blockStyle = props.orientation !== 'inline';
+
         
         
-        const refreshItemSize = async (item: HTMLElement, itemsMulBlockSize: number) => {
-            item.style.alignSelf = 'start';
+        const delay = async (interval: number) => new Promise<void>((resolve) => setTimeout(() => resolve(), interval));
+        const refreshItemSize = async (item: HTMLElement, itemsRaiseSize: number) => {
+            await delay(1); // low priority task => limits dominating cpu usage
+
+            
+            
+            // let's the item resize to its original size
+            if (blockStyle) {
+                item.style.alignSelf   = 'start'; // temporary overwrite grid's default alignItems   => let's the item apply its original size
+            }
+            else {
+                item.style.justifySelf = 'start'; // temporary overwrite grid's default justifyItems => let's the item apply its original size
+            } // if
+
             {
-                const height = item.offsetHeight;
-                const [marginBlockStart, marginBlockEnd] = (() => {
+                const size = blockStyle ? item.offsetHeight : item.offsetWidth;
+                const [marginSizeStart, marginSizeEnd] = (() => {
                     const style = getComputedStyle(item);
 
-                    return [
-                        Number.parseInt(style.marginBlockStart),
-                        Number.parseInt(style.marginBlockEnd),
-                    ];
+                    if (blockStyle) {
+                        return [
+                            Number.parseInt(style.marginBlockStart),
+                            Number.parseInt(style.marginBlockEnd),
+                        ];
+                    }
+                    else {
+                        return [
+                            Number.parseInt(style.marginInlineStart),
+                            Number.parseInt(style.marginInlineEnd),
+                        ];
+                    }
                 })();
-                const totalHeight = height + marginBlockStart + marginBlockEnd;
+                const totalSize = size + marginSizeStart + marginSizeEnd;
 
 
 
-                const spansNeeded = Math.round(totalHeight / itemsMulBlockSize);
-                item.style.gridRowEnd = `span ${spansNeeded}`;
+                const spansNeeded = Math.round(totalSize / itemsRaiseSize);
+                if (blockStyle) {
+                    item.style.gridRowEnd    = `span ${spansNeeded}`;
+                    item.style.gridColumnEnd = ''; // clear from residual effect from inlineStyle (if was)
+                }
+                else {
+                    item.style.gridRowEnd    = ''; // clear from residual effect from blockStyle (if was)
+                    item.style.gridColumnEnd = `span ${spansNeeded}`;
+                }
             }
-            item.style.alignSelf = '';
+            item.style.alignSelf   = ''; // switch back to grid's default alignItems   -or- clear from residual effect from blockStyle (if was)
+            item.style.justifySelf = ''; // switch back to grid's default justifyItems -or- clear from residual effect from inlineStyle (if was)
         };
         
         const refreshItemsSize = async () => {
-            const itemsMulBlockSize = Math.max(1, Number.parseInt(getComputedStyle(masonry).gridAutoRows) || 1);
+            await delay(1); // low priority task => limits dominating cpu usage
 
 
             
-            for (const item of (Array.from(masonry.children) as HTMLElement[])) {
-                await refreshItemSize(item, itemsMulBlockSize);
+            const itemsRaiseSize = Math.max(1, // limits precision to 1px
+                (
+                    blockStyle
+                    ?
+                    Number.parseInt(getComputedStyle(masonry).gridAutoRows)
+                    :
+                    Number.parseInt(getComputedStyle(masonry).gridAutoColumns)
+                )
+                ||
+                1 // if parsing error => default is 1px
+            );
+
+
+            
+            for (const item of await (Array.from(masonry.children) as HTMLElement[])) {
+                await refreshItemSize(item, itemsRaiseSize);
             } // for
         }
 
@@ -235,7 +353,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
         return () => {
             window.removeEventListener('resize', refreshItemsSize);
         };
-    }, []);
+    }, [props.orientation]);
 
 
 
@@ -247,6 +365,10 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
             // classes:
             mainClass={props.mainClass ?? masonryStyles.main}
+            themeClasses={[...(props.themeClasses ?? []),
+                // themes:
+                variOrientation.class,
+            ]}
 
 
             // essentials:
@@ -272,3 +394,5 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
         </Element>
     );
 }
+
+export type { OrientationStyle, VariantOrientation }

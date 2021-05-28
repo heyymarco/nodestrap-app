@@ -1047,6 +1047,16 @@ export function useVariantOutlined(props: VariantOutlined) {
     };
 }
 
+export type OrientationStyle = 'block'|'inline'
+export interface VariantOrientation {
+    orientation?: OrientationStyle
+}
+export function useVariantOrientation(props: VariantOrientation) {
+    return {
+        class: props.orientation ? props.orientation : null,
+    };
+}
+
 
 
 // react components:

@@ -10,6 +10,7 @@ import './MasonryApp.css';
 
 import Container from './libs/Container';
 import Masonry from './libs/Masonry';
+import type * as Masonries from './libs/Masonry';
 
 
 
@@ -54,6 +55,9 @@ function App() {
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
 
+	const orientations = [undefined, 'block', 'inline'];
+	const [orientation,    setOrientation     ] = useState<Masonries.OrientationStyle|undefined>(undefined);
+
 	
 
     return (
@@ -62,6 +66,8 @@ function App() {
                 <Masonry
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
+
+					orientation={orientation}
 				>
 					<img src="https://assets.codepen.io/12005/windmill.jpg" alt="A windmill" />
 					<img src="https://assets.codepen.io/12005/suspension-bridge.jpg" alt="The Clifton Suspension Bridge" />
@@ -123,6 +129,21 @@ function App() {
 						/>
 						outlined
 					</label>
+				</p>
+				<p>
+					OrientationStyle:
+					{
+						orientations.map(ori =>
+							<label key={ori ?? ''}>
+								<input type='radio'
+									value={ori}
+									checked={orientation===ori}
+									onChange={(e) => setOrientation((e.target.value || undefined) as (Masonries.OrientationStyle|undefined))}
+								/>
+								{`${ori}`}
+							</label>
+						)
+					}
 				</p>
             </Container>
         </div>
