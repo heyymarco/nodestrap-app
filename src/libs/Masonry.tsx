@@ -267,255 +267,145 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
 
 
-        const blockStyle     = props.orientation !== 'inline';
-        const itemsRaiseSize = Math.max(1, // limits precision to 1px
+        const isBlockStyle   = props.orientation !== 'inline'; // default is block if inline was not specified
+        const itemsRaiseSize = Math.max(1, // limits the precision to 1px, any value less than 1px will be scaled up to 1px
             (
-                blockStyle
+                isBlockStyle
                 ?
                 Number.parseInt(getComputedStyle(masonry).gridAutoRows)
                 :
                 Number.parseInt(getComputedStyle(masonry).gridAutoColumns)
             )
             ||
-            1 // if parsing error => default is 1px
+            1 // if parsing error (NaN) => falsy => default is 1px
         );
 
         
         
-        const delay = async (interval: number = 40) => new Promise<void>((resolve) => setTimeout(() => resolve(), interval));
+        const delay = (interval: number = 1) => new Promise<void>((resolve) => setTimeout(() => resolve(), interval));
         
-        type UpdateItemTask = { item: HTMLElement, abort: boolean };
-        const updateItemSizeTasks: UpdateItemTask[] = [];
-        const updateItemSize = (item: HTMLElement) => {
-            updateItemSizeTasks.forEach((task) => {
-                if (task.item === item) {
-                    task.abort = true;
+        const handleResize = async (item: HTMLElement) => { // keeps the UI responsive (not blocking) while handling the event
+            await delay(); // low priority task => limits dominating the cpu usage
+
+
+
+            // we're working with [height on blockStyle] or [width on inlineStyle]
+            const offsetSize = isBlockStyle ? item.offsetHeight : item.offsetWidth;
+
+            // calculate the related margins too:
+            const marginSize = (() => {
+                const style = getComputedStyle(item);
+
+                if (isBlockStyle) {
+                    return (
+                        Number.parseInt(style.marginBlockStart)
+                        +
+                        Number.parseInt(style.marginBlockEnd)
+                    );
+                }
+                else { // isInlineStyle
+                    return (
+                        Number.parseInt(style.marginInlineStart)
+                        +
+                        Number.parseInt(style.marginInlineEnd)
+                    );
                 } // if
-            });
-            
-            
-            
-            const newTask: UpdateItemTask = { item: item, abort: false };
-            updateItemSizeTasks.push(newTask);
+            })();
 
-            
-            
-            updateItemSizeTask(newTask); // fire & forget the Promise
-        };
-        const updateItemSizeTask = async (task: UpdateItemTask) => {
-            await delay(); // low priority task => limits dominating cpu usage
+            // calculate the total size including margins:
+            const totalSize = offsetSize + marginSize;
 
 
 
-            if (task.abort) { // newer call updateItemSizeTask() with the same task was performed => abort current execution
-                // mark current task as done => remove it from updateItemSizeTasks:
-                const index = updateItemSizeTasks.indexOf(task);
-                if (index >= 0) updateItemSizeTasks.splice(index, 1);
-
-                
-                
-                return;
+            // calculate the number of spans needed, rounded to the nearest integer:
+            const spansNeeded = `span ${Math.round(totalSize / itemsRaiseSize)}`;
+            if (isBlockStyle) {
+                item.style.gridRowEnd    = spansNeeded;
+                item.style.gridColumnEnd = ''; // clear from residual effect from inlineStyle (if was)
             }
-            const item = task.item;
-
-            
-            
-            // let's the item resize to its original size
-            if (blockStyle) {
-                item.style.alignSelf   = 'start'; // temporary overwrite grid's default alignItems   => let's the item apply its original size
-            }
-            else {
-                item.style.justifySelf = 'start'; // temporary overwrite grid's default justifyItems => let's the item apply its original size
+            else { // isInlineStyle
+                item.style.gridRowEnd    = ''; // clear from residual effect from blockStyle (if was)
+                item.style.gridColumnEnd = spansNeeded;
             } // if
-
-            {
-                const size = blockStyle ? item.offsetHeight : item.offsetWidth;
-                const [marginSizeStart, marginSizeEnd] = (() => {
-                    const style = getComputedStyle(item);
-
-                    if (blockStyle) {
-                        return [
-                            Number.parseInt(style.marginBlockStart),
-                            Number.parseInt(style.marginBlockEnd),
-                        ];
-                    }
-                    else {
-                        return [
-                            Number.parseInt(style.marginInlineStart),
-                            Number.parseInt(style.marginInlineEnd),
-                        ];
-                    }
-                })();
-                const totalSize = size + marginSizeStart + marginSizeEnd;
-
-
-
-                const spansNeeded = Math.round(totalSize / itemsRaiseSize);
-                if (blockStyle) {
-                    item.style.gridRowEnd    = `span ${spansNeeded}`;
-                    item.style.gridColumnEnd = ''; // clear from residual effect from inlineStyle (if was)
-                }
-                else {
-                    item.style.gridRowEnd    = ''; // clear from residual effect from blockStyle (if was)
-                    item.style.gridColumnEnd = `span ${spansNeeded}`;
-                }
-            }
-            item.style.alignSelf   = ''; // switch back to grid's default alignItems   -or- clear from residual effect from blockStyle (if was)
-            item.style.justifySelf = ''; // switch back to grid's default justifyItems -or- clear from residual effect from inlineStyle (if was)
-
-
-
-            // mark current task as done => remove it from updateItemSizeTasks:
-            const index = updateItemSizeTasks.indexOf(task);
-            if (index >= 0) updateItemSizeTasks.splice(index, 1);
-        };
-        
-        let updateItemSizesVersion = 0;
-        const updateItemsSize = () => {
-            updateItemSizesVersion++;
-            updateItemsSizeTask(updateItemSizesVersion); // fire & forget the Promise
-        };
-        const updateItemsSizeTask = async (oldVersion: number) => {
-            await delay(); // low priority task => limits dominating cpu usage
-
-
-
-            if (oldVersion < updateItemSizesVersion) {
-                return; // newer call updateItemsSizeAsync() was performed => abort current execution
-            }
-
-
-
-            // abort all updateItemSizeTasks
-            // because we'll update all items
-            updateItemSizeTasks.forEach((task) => {
-                task.abort = true;
-            });
-
-
-            
-            for (const item of (Array.from(masonry.children) as HTMLElement[])) {
-                updateItemSize(item);
-            } // for
         }
 
 
 
-        // update now:
-        updateItemsSize();
+        // update all items now:
+        (Array.from(masonry.children) as HTMLElement[]).forEach((item) => handleResize(item));
 
 
 
-        //#region update at the future
-        //#region when masonry's children resized
-        const childrenResizeObserver = ResizeObserver ? new ResizeObserver(async (entries) => {
+        //#region update in the future
+        //#region when items resized
+        const itemsResizeObserver = ResizeObserver ? new ResizeObserver((entries) => {
             for (const entry of entries) {
                 const item = entry.target as HTMLElement;
 
                 if (
-                    (item.parentElement !== masonry) // item removed from masonry
+                    (item.parentElement !== masonry) // item was removed from the masonry
                     ||
-                    (masonry.parentElement === null) // masonry removed from document
+                    (masonry.parentElement === null) // masonry was removed from the document
                 ) {
-                    childrenResizeObserver?.unobserve(item);
+                    // stop updating in the future:
+                    itemsResizeObserver?.unobserve(item);
                 }
                 else {
-                    updateItemSize(item);
+                    // resizing detected => update:
+                    handleResize(item);
                 } // if
             } // for
         }) : null;
-        if (childrenResizeObserver) {
+        if (itemsResizeObserver) {
             for (const item of (Array.from(masonry.children) as HTMLElement[])) {
-                childrenResizeObserver.observe(item);
+                // update in the future:
+                itemsResizeObserver.observe(item);
             } // for
         } // if
-        //#endregion when masonry's children resized
+        //#endregion when items resized
 
         
         
-        // *** if masonry resized => implicitly the masonry's items are resized too ***
-        // *** so watching for masonry's resizing is not required ***
-        // //#region when masonry resized
-        // const resizeObserver = ResizeObserver ? new ResizeObserver(async (entries) => {
-        //     for (const entry of entries) {
-        //         if (entry.target === masonry) {
-        //             if (masonry.parentElement === null) {
-        //                 resizeObserver?.unobserve(masonry);
-        //             }
-        //             else {
-        //                 updateItemsSize();
-        //             } // if
-        //         } // if
-        //     } // for
-        // }) : null;
-        // if (resizeObserver) {
-        //     resizeObserver.observe(masonry);
-        // }
-        // else {
-        //     window.addEventListener('resize', updateItemsSize);
-        // } // if
-        // //#endregion when masonry resized
-
-        
-        
-        //#region when masonry's children added/removed
-        const mutationObserver = new MutationObserver((entries) => {
+        //#region when items added/removed
+        const mutationObserver = MutationObserver ? new MutationObserver((entries) => {
             for (const entry of entries) {
-                // added children:
+                // added items:
                 for (const item of (Array.from(entry.addedNodes) as HTMLElement[])) {
                     // update now:
-                    updateItemSize(item);
+                    handleResize(item);
 
-                    // update at the future:
-                    childrenResizeObserver?.observe(item);
+                    // update in the future:
+                    itemsResizeObserver?.observe(item);
                 } // for
 
                 
                 
-                // removed children:
-                if (childrenResizeObserver) {
+                // removed items:
+                if (itemsResizeObserver) {
                     for (const item of (Array.from(entry.removedNodes) as HTMLElement[])) {
-                        // stop update at the future:
-                        childrenResizeObserver.unobserve(item);
+                        // stop updating in the future:
+                        itemsResizeObserver.unobserve(item);
                     } // for
                 } // if
             } // for
-        });
-        mutationObserver.observe(masonry, { // watch for DOM structure changes
-            childList  : true,  // watch for child's DOM structure changes
-            subtree    : false, // don't care for grandchild's DOM structure changes
-
-            attributes : false, // don't care for any attribute changes
-        });
-        //#endregion when masonry's children added/removed
-        //#endregion update at the future
+        }) : null;
+        if (mutationObserver) {
+            mutationObserver.observe(masonry, { // watch for DOM structure changes
+                childList  : true,  // watch for child's DOM structure changes
+                subtree    : false, // don't care for grandchild's DOM structure changes
+    
+                attributes : false, // don't care for any attribute changes
+            });
+        } // if
+        //#endregion when items added/removed
+        //#endregion update in the future
 
         
         
         // cleanups:
         return () => {
-            //#region remove observer: masonry's children resized
-            if (childrenResizeObserver) childrenResizeObserver.disconnect();
-            //#endregion remove observer: masonry's children resized
-            
-            
-            
-            // *** if masonry resized => implicitly the masonry's items are resized too ***
-            // *** so watching for masonry's resizing is not required ***
-            // //#region remove observer: masonry resized
-            // if (resizeObserver) {
-            //     resizeObserver.disconnect();
-            // }
-            // else {
-            //     window.removeEventListener('resize', updateItemsSize);
-            // } // if
-            // //#endregion remove observer: masonry resized
-
-
-
-            //#region remove observer: masonry's children added/removed
-            mutationObserver.disconnect();
-            //#endregion remove observer: masonry's children added/removed
+            itemsResizeObserver?.disconnect();
+            mutationObserver?.disconnect();
         };
     }, [props.orientation, props.size]);
 
