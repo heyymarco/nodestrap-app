@@ -132,13 +132,15 @@ export class MasonryStylesBuilder extends ElementStylesBuilder implements IConte
 
         // children:
         '&>*': {
-            /*
-            * use `marginBlockStart` as the replacement of the stripped out `rowGap`
-            * we use `marginBlockStart` instead of `marginBlockEnd`
-            * because finding grid's items at the begining is much easier than at the end
-            * (we don't need to count the number of grid's item)
-            */
-            marginBlockStart : cssProps.rowGap,
+            '&:not(.firstRow)': {
+                /*
+                * use `marginBlockStart` as the replacement of the stripped out `rowGap`
+                * we use `marginBlockStart` instead of `marginBlockEnd`
+                * because finding grid's items at the begining is much easier than at the end
+                * (we don't need to count the number of grid's item)
+                */
+                marginBlockStart : cssProps.rowGap,
+            },
 
 
 
@@ -165,13 +167,15 @@ export class MasonryStylesBuilder extends ElementStylesBuilder implements IConte
 
         // children:
         '&>*': {
-            /*
-            * use `marginInlineStart` as the replacement of the stripped out `rowGap`
-            * we use `marginInlineStart` instead of `marginInlineEnd`
-            * because finding grid's items at the begining is much easier than at the end
-            * (we don't need to count the number of grid's item)
-            */
-            marginInlineStart : cssProps.rowGap,
+            '&:not(.firstRow)': {
+                /*
+                * use `marginInlineStart` as the replacement of the stripped out `rowGap`
+                * we use `marginInlineStart` instead of `marginInlineEnd`
+                * because finding grid's items at the begining is much easier than at the end
+                * (we don't need to count the number of grid's item)
+                */
+                marginInlineStart : cssProps.rowGap,
+            },
 
 
 
@@ -288,9 +292,9 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
             await delay(); // low priority task => limits dominating the cpu usage
 
 
-
             // we're working with [height on blockStyle] or [width on inlineStyle]
             const offsetSize = isBlockStyle ? item.offsetHeight : item.offsetWidth;
+            // const offsetSize = isBlockStyle ? item.getBoundingClientRect().height : item.getBoundingClientRect().width; // use more precise measurement
 
             // calculate the related margins too:
             const marginSize = (() => {
@@ -317,7 +321,6 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
 
 
-            // calculate the number of spans needed, rounded to the nearest integer:
             const spansNeeded = `span ${Math.round(totalSize / itemsRaiseSize)}`;
             if (isBlockStyle) {
                 item.style.gridRowEnd    = spansNeeded;
@@ -329,9 +332,42 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
             } // if
         }
 
+        let firstRowItems: HTMLElement[] = [];
+        const updateFirstRowItems = async () => {
+            const newFirstRowItems = (() => {
+                const items = (Array.from(masonry.children) as HTMLElement[]);
+                let index = -1;
+                let prevPos = -1;
+                for (const item of items) {
+                    const currentPos = (isBlockStyle ? item.offsetLeft : item.offsetTop);
+                    if (currentPos < prevPos) break;
+    
+                    prevPos = currentPos + (isBlockStyle ? item.offsetWidth : item.offsetHeight);
+                    index++;
+                } // for
+                
+                return items.slice(0, index + 1);
+            })();
+
+
+
+            const removedItems =    firstRowItems.filter((item) => !newFirstRowItems.includes(item)); // old_items are not exist   in new_items
+            const addedItems   = newFirstRowItems.filter((item) =>    !firstRowItems.includes(item)); // new_items are not already in old_items
+
+
+
+            removedItems.forEach((removedItem) => removedItem.classList.remove('firstRow'));
+            addedItems.forEach((addedItem)     =>   addedItem.classList.add('firstRow'));
+
+
+
+            firstRowItems = newFirstRowItems;
+        }
+
 
 
         // update all items now:
+        updateFirstRowItems(); // need to be called first before handleResize, because the item's margin affected the resizing calculation
         (Array.from(masonry.children) as HTMLElement[]).forEach((item) => handleResize(item));
 
 
@@ -339,21 +375,26 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
         //#region update in the future
         //#region when items resized
         const itemsResizeObserver = ResizeObserver ? new ResizeObserver((entries) => {
-            for (const entry of entries) {
+            // filter only the existing entries
+            entries = entries.filter((entry) => {
                 const item = entry.target as HTMLElement;
 
-                if (
-                    (item.parentElement !== masonry) // item was removed from the masonry
-                    ||
-                    (masonry.parentElement === null) // masonry was removed from the document
-                ) {
-                    // stop updating in the future:
-                    itemsResizeObserver?.unobserve(item);
-                }
-                else {
-                    // resizing detected => update:
-                    handleResize(item);
-                } // if
+                if (item.parentElement !== masonry) return false; // not exist => item was removed from the masonry
+                if (masonry.parentElement === null) return false; // not exist => masonry was removed from the document
+                return true; // exist
+            });
+            if (!entries.length) return;
+
+
+
+            // any resizing of items causing the first_row_items need to be recalculated:
+            updateFirstRowItems(); // need to be called first before handleResize, because the item's margin affected the resizing calculation
+            
+            
+            
+            for (const entry of entries) {
+                // resizing detected => update:
+                handleResize(entry.target as HTMLElement);
             } // for
         }) : null;
         if (itemsResizeObserver) {
@@ -368,6 +409,11 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
         
         //#region when items added/removed
         const mutationObserver = MutationObserver ? new MutationObserver((entries) => {
+            // any adding/removing of items causing the first_row_items need to be recalculated:
+            updateFirstRowItems(); // need to be called first before handleResize, because the item's margin affected the resizing calculation
+
+
+            
             for (const entry of entries) {
                 // added items:
                 for (const item of (Array.from(entry.addedNodes) as HTMLElement[])) {
@@ -406,6 +452,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
         return () => {
             itemsResizeObserver?.disconnect();
             mutationObserver?.disconnect();
+            firstRowItems.forEach((firstRowItem) => firstRowItem.classList.remove('firstRow'));
         };
     }, [props.orientation, props.size]);
 
