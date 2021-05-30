@@ -145,9 +145,9 @@ export class CarouselStylesBuilder extends ElementStylesBuilder implements ICont
         // layout:
         gridArea       : '1 / 1 / -1 / -1', // fill the entire grid areas, from the first row/column to the last row/column
         display        : 'flex',    // use flexbox as the layout
-        flexDirection  : 'row',     // child items stacked horizontally
-        justifyContent : 'start',   // child items placed starting from the left
-        alignItems     : 'stretch', // child items width are follow the tallest one
+        flexDirection  : 'row',     // items are stacked horizontally
+        justifyContent : 'start',   // items are placed starting from the left
+        alignItems     : 'stretch', // items height are follow the tallest one
         flexWrap       : 'nowrap',  // no wrapping
 
 
@@ -178,7 +178,7 @@ export class CarouselStylesBuilder extends ElementStylesBuilder implements ICont
     protected /*virtual*/ carouselItemBasicStyle(): JssStyle { return {
         // layout:
         display         : 'flex',
-        flexDirection   : 'row',    // the flex direction to horz, so we can adjust the content's vertical position
+        flexDirection   : 'row',    // the flex direction to horz, so we can adjust the content's height
         justifyContent  : 'center', // center the content horizontally
         alignItems      : 'center', // if the content's height is shorter than the section, place it at the center
 

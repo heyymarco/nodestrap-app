@@ -212,9 +212,9 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
 
         // layout:
         display        : 'flex',    // use flexbox as the layout
-        flexDirection  : 'column',  // child items stacked vertically
-        justifyContent : 'center',  // child items placed starting from the center and then spread to both sides
-        alignItems     : 'stretch', // child items width are 100% of the parent
+        flexDirection  : 'column',  // items are stacked vertically
+        justifyContent : 'center',  // items are placed starting from the center and then spread to both sides
+        alignItems     : 'stretch', // items width are 100% of the parent
 
 
 
@@ -257,9 +257,9 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
         [wrapperElm]: { // wrapper of listItem
             // layout:
             display        : 'flex',    // use flexbox as the layout
-            flexDirection  : 'row',     // listItem stacked horizontally (or change to vertically, the listItem is just one, the direction is not matter)
-            justifyContent : 'stretch', // listItem width  is 100% of the wrapper (the listItem also need to have growable & shrinkable)
-            alignItems     : 'stretch', // listItem height is 100% of the wrapper
+            flexDirection  : 'column',  // listItems are stacked vertically (supports for the Accordion)
+            justifyContent : 'stretch', // listItems height are 100% of the wrapper (the listItems also need to have growable & shrinkable)
+            alignItems     : 'stretch', // listItems width  are 100% of the wrapper
     
     
     
@@ -318,7 +318,7 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
     public /*virtual*/ inlineStyle(): JssStyle { return {
         // layout:
         display        : 'inline-flex', // use flexbox as the layout
-        flexDirection  : 'row',         // child items stacked horizontally
+        flexDirection  : 'row',         // items are stacked horizontally
 
 
 

@@ -351,9 +351,9 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     public /*override*/ basicStyle(): JssStyle { return {
         // layout:
         display        : 'inline-flex', // use flexbox as the layout
-        flexDirection  : 'row',         // child items stacked horizontally
-        justifyContent : 'start',       // child items placed starting from the left
-        alignItems     : 'center',      // child items placed at the middle vertically
+        flexDirection  : 'row',         // items are stacked horizontally
+        justifyContent : 'start',       // items are placed starting from the left
+        alignItems     : 'center',      // items are placed at the middle vertically
         flexWrap       : 'wrap',
 
 

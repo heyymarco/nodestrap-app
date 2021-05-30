@@ -246,9 +246,9 @@ export class CardStylesBuilder extends ContentStylesBuilder {
     public /*override*/ basicStyle(): JssStyle { return {
         // layout:
         display        : 'flex',    // use flexbox as the layout
-        flexDirection  : 'column',  // child items stacked vertically
-        justifyContent : 'start',   // child items placed starting from the top
-        alignItems     : 'stretch', // child items width are 100% of the parent
+        flexDirection  : 'column',  // items are stacked vertically
+        justifyContent : 'start',   // items are placed starting from the top
+        alignItems     : 'stretch', // items width are 100% of the parent
 
 
 

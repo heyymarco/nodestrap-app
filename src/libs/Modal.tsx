@@ -349,8 +349,9 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
     public /*virtual*/ actionBarStyle(): JssStyle { return {
         // layout:
         display        : 'flex',
-        justifyContent : 'space-between', // separates items horizontally
-        alignItems     : 'center',        // center items vertically
+        flexDirection  : 'row',           // items are stacked horizontally
+        justifyContent : 'space-between', // items are separated horizontally
+        alignItems     : 'center',        // items are centered vertically
 
 
 

@@ -55,7 +55,7 @@ export class InputStylesBuilder extends EditableTextControlStylesBuilder {
 
         // layout:
         display        : 'flex',   // use flexbox as the layout
-        flexDirection  : 'row',    // child items stacked horizontally
+        flexDirection  : 'row',    // items are stacked horizontally
         justifyContent : 'center', // center items horizontally
         alignItems     : 'center', // center items vertically
     

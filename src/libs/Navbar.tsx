@@ -304,7 +304,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
     protected /*virtual*/ wrapperBasicStyle(): JssStyle { return {
         // layout:
         display        : 'flex',
-        flexDirection  : 'row',    // the flex direction to horz, so we can adjust the content's vertical position
+        flexDirection  : 'row',    // the flex direction to horz, so we can adjust the content's height
         justifyContent : 'center', // center the content horizontally
         alignItems     : 'center', // if the content's height is shorter than the section, place it at the center
 
