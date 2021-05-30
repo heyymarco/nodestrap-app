@@ -630,7 +630,7 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
     );
 }
 
+export type { OrientationStyle, VariantOrientation }
+
 export { ListgroupItem, ListgroupItem as Item }
 export type { ListgroupItems, ListgroupItems as Items }
-
-export type { OrientationStyle, VariantOrientation }

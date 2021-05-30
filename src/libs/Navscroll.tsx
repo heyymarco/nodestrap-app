@@ -11,6 +11,7 @@ import {
     ListgroupItem,
 }                           from './Listgroup'
 import type * as Listgroups from './Listgroup'
+import type { Items }       from './Listgroup'
 
 // other supports:
 import deepEqual            from 'deep-equal'
@@ -665,8 +666,10 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
     );
 }
 
-export { ListgroupItem as NavscrollItem, ListgroupItem as Item }
+type OrientationStyle   = Listgroups.OrientationStyle
+type VariantOrientation = Listgroups.VariantOrientation
+type ListStyle          = Listgroups.ListStyle
+export type { OrientationStyle, VariantOrientation, ListStyle }
 
-type OrientationStyle = Listgroups.OrientationStyle
-type ListStyle        = Listgroups.ListStyle
-export type { OrientationStyle, ListStyle }
+export { ListgroupItem, ListgroupItem as NavscrollItem, ListgroupItem as Item }
+export type { Items }

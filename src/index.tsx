@@ -13,10 +13,11 @@ import NavbarApp from './NavbarApp';
 import CarouselApp from './CarouselApp';
 import NavscrollApp from './NavscrollApp';
 import MasonryApp from './MasonryApp';
+import AccordionApp from './AccordionApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <MasonryApp />
+    <AccordionApp />
   </React.StrictMode>,
   document.getElementById('root')
 );
