@@ -21,7 +21,7 @@ import {
     cssProps as ecssProps,
 }                           from './Element'
 import {
-    default  as Indicator,
+    default as Indicator,
     IIndicatorStylesBuilder,
     IndicatorStylesBuilder,
 }                           from './Indicator'

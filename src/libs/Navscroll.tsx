@@ -21,7 +21,7 @@ import deepEqual            from 'deep-equal'
 
 
 
-// element utils:
+// utils:
 
 export class Viewport {
     /**
@@ -622,9 +622,14 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
                     // events:
-                    onClick={(child.props.actionCtrl ?? props.actionCtrl ?? false) ? (child.props.onClick ?? ((e) => {
-                        itemHandleClick(e, deepLevelsCurrent);
-                    })) : undefined}
+                    onClick={(e) => {
+                        // backwards:
+                        child.props.onClick?.(e);
+                        
+                        
+                        
+                        if (!e.defaultPrevented && (child.props.actionCtrl ?? props.actionCtrl ?? false)) itemHandleClick(e, deepLevelsCurrent);
+                    }}
 
 
                     // other props:

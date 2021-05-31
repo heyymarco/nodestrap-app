@@ -77,18 +77,38 @@ class ListItemStylesBuilder extends ContentStylesBuilder {
 
 
         // borders:
-        //#region strip out borders completely
+        //#region strip out borders almost completely
         /*
             border & borderRadius are moved from here to parent,
             for making consistent border color when the element's color are filtered.
             so we need to disable the border & borderRadius here.
+
+            supports for AccordionItem:
+            preserve the top-border for the AccordionItem's body,
+            so it has a clear boundary between its header & body.
         */
 
 
 
-        borderWidth  : 0,
+        //#region border-strokes
+        borderInlineWidth         : 0,  // remove (left|right)-border for all-items
+
+        // remove bottom-border at the last-item, so that it wouldn't collide with the wrapper's bottom-border
+        // and
+        // remove double border by removing bottom-border starting from the second-item to the last-item
+        borderBlockEndWidth       : 0,
+
+        // remove top-border at the first-item, so that it wouldn't collide with the wrapper's top-border
+        '&:first-child': {
+            borderBlockStartWidth : 0,
+        },
+        //#endregion border-strokes
+
+
+
+        // border radiuses:
         borderRadius : 0,
-        //#endregion strip out borders completely
+        //#endregion strip out borders almost completely
 
 
 

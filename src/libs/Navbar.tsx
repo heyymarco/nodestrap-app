@@ -27,6 +27,7 @@ import {
 import {
     default  as Indicator,
     styles as indicatorStyles,
+    useDynActivation,
 }                           from './Indicator'
 import type * as Indicators from './Indicator'
 import {
@@ -749,33 +750,31 @@ export function useCompactable<TElement extends HTMLElement = HTMLElement>(props
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
         Indicators.Props<TElement>,
+        Indicators.DynActivationProps,
         Compactable
 {
-    // accessibility:
-    defaultActive?  : boolean
-    onActiveChange? : (active: boolean) => void
-
-
-
     // children:
     children? : React.ReactNode
     logo?     : React.ReactChild | boolean
     toggler?  : React.ReactChild | boolean
 }
 export default function Navbar<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
-    const navbStyles  = styles.useStyles();
+    const navbStyles            = styles.useStyles();
+
+    // states:
+    const [isActive, setActive] = useDynActivation(props);
 
     // layouts:
-    const navbarRef   = useRef<TElement>(null);
-    const compactable = useCompactable(props, navbarRef);
+    const navbarRef             = useRef<TElement>(null);
+    const compactable           = useCompactable(props, navbarRef);
 
     
     
     const {
         // accessibility:
-        defaultActive,
-        active,
-        onActiveChange,
+        /*delete*/ defaultActive,
+        /*delete*/ active,
+        /*delete*/ onActiveChange,
 
 
         // children:
@@ -784,33 +783,6 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
         toggler,
         ...otherProps } = props;
 
-    
-    
-    // states:
-    if ((defaultActive !== undefined) && (active !== undefined)) {
-        console.warn('defaultActive & active are both set.');
-    } // if
-    const [activeDn, setActiveDn] = useState<boolean>(defaultActive ?? false); // uncontrollable (dynamic) state: true => user activate, false => user deactivate
-
-
-
-    /*
-     * state is active/passive based on [fully controllable active] (if set) and fallback to [uncontrollable active]
-     */
-    const activeFn: boolean = active ?? activeDn;
-
-
-
-    const handleActiveChange = (newActive: boolean) => {
-        // if controllable [active] is not set => set uncontrollable (dynamic) active
-        if (active === undefined) setActiveDn(newActive);
-
-
-        
-        // forwards:
-        onActiveChange?.(newActive);
-    };
-
     return (
         <Indicator<TElement>
             // essentials:
@@ -818,7 +790,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
 
             // accessibility:
-            active={activeFn}
+            active={isActive}
 
 
             // other props:
@@ -856,7 +828,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
             // events:
             // watch [escape key] on the whole navbar, including menus & toggler:
             onKeyDown={(e) => {
-                if (activeFn && ((e.code === 'Escape') || (e.key === 'Escape'))) handleActiveChange(false);
+                if (isActive && ((e.code === 'Escape') || (e.key === 'Escape'))) setActive(false);
 
 
                 // forwards:
@@ -867,9 +839,9 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
             <div className='toggler'>{ toggler ?? (
                 <TogglerMenuButton
                     // values:
-                    checked={activeFn}
+                    checked={isActive}
                     onChange={(e) => {
-                        handleActiveChange(e.target.checked);
+                        setActive(e.target.checked);
                     }}
                 />
             )}</div>

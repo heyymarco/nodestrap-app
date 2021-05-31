@@ -1,10 +1,3 @@
-// react (builds html using javascript):
-import
-    React, {
-    useEffect,
-    useReducer,
-}                           from 'react'        // base technology of our nodestrap components
-
 // nodestrap (modular web components):
 import Listgroup            from './Listgroup'
 import type * as Listgroups from './Listgroup'
@@ -15,30 +8,8 @@ import type * as AccordionItems from './AccordionItem'
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
-    extends
-        Listgroups.Props<TElement>
-{
-}
-
-export default function Accordion<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
-
-
-
-    const {
-        // children:
-        children,
-        ...otherProps } = props;
-    
-    return (
-        <Listgroup
-            // other props:
-            {...otherProps}
-        >
-            { children }
-        </Listgroup>
-    );
-}
+export type Props = Listgroups.Props
+export default Listgroup;
 
 type OrientationStyle   = Listgroups.OrientationStyle
 type VariantOrientation = Listgroups.VariantOrientation

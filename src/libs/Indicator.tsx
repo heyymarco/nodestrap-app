@@ -570,6 +570,47 @@ export function useStateActivePassive(props: IndicationProps, classes = { active
     };
 }
 
+export function useDynActivation(props: DynActivationProps): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
+    // props:
+    const propEnabled: boolean = (props.enabled ?? true); // if [enabled] was not specified => the default value is [enabled=true] (enabled)
+
+
+
+    // states:
+    if ((props.defaultActive !== undefined) && (props.active !== undefined)) {
+        console.warn('defaultActive & active are both set.');
+    } // if
+    const [activeDn, setActiveDn] = useState<boolean>(props.defaultActive ?? false); // uncontrollable (dynamic) state: true => user activate, false => user deactivate
+
+
+
+    /*
+     * state is active/passive based on [fully controllable active] (if set) and fallback to [uncontrollable active]
+     */
+    const activeFn: boolean = props.active ?? activeDn;
+
+
+
+    const setActive: React.Dispatch<React.SetStateAction<boolean>> = (newActive) => {
+        if (!propEnabled) return; // control is disabled => no response required
+        if (props.active !== undefined) return; // controllable [active] is set => no uncontrollable (dynamic) active
+
+
+        
+        const newActiveValue = (typeof newActive === 'function') ? newActive(activeFn) : newActive;
+        setActiveDn(newActiveValue);
+
+
+        
+        // forwards:
+        props.onActiveChange?.(newActiveValue);
+    };
+    return [
+        activeFn,
+        setActive,
+    ];
+}
+
 
 
 // react components:
@@ -583,6 +624,15 @@ export interface IndicationProps
     // accessibility:
     enabled?    : boolean
     active?     : boolean
+}
+
+export interface DynActivationProps
+    extends
+        IndicationProps
+{
+    // accessibility:
+    defaultActive?  : boolean
+    onActiveChange? : (active: boolean) => void
 }
 
 export interface Props<TElement extends HTMLElement = HTMLElement>

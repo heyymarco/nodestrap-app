@@ -84,7 +84,10 @@ function App() {
 					orientation={orientation}
 					listStyle={listStyle}
 				>
-					<AccordionItem label='test'>hello</AccordionItem>
+					<AccordionItem label='test'>
+						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
+						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
+					</AccordionItem>
 					<>hey</>
 					<ListgroupItem enabled={childEnabled}>
 						i'm {childEnabled ? 'enabled' : 'disabled'}
