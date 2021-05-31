@@ -16,6 +16,7 @@ import {
     GenericElement,
     cssProps as ecssProps,
     useVariantOrientation,
+    isTypeOf,
 }                           from './Element'
 import type {
     OrientationStyle,
@@ -553,10 +554,6 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
         tag,
 
 
-        // behaviors:
-        actionCtrl,
-
-
         // children:
         children,
         ...otherProps } = props;
@@ -588,13 +585,9 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
                     tag={wrapTag}
                 >
                     {
-                        (React.isValidElement(child) && (child.type === ListgroupItem))
+                        isTypeOf(child, ListgroupItem)
                         ?
-                        <ListgroupItem
-                            // behaviors:
-                            actionCtrl={actionCtrl}
-
-                            
+                        <child.type
                             // other props:
                             {...child.props}
 
@@ -611,10 +604,6 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
                         />
                         :
                         <ListgroupItem
-                            // behaviors:
-                            actionCtrl={actionCtrl}
-
-
                             // events:
                             onAnimationEnd={(e) =>
                                 // triggers Listgroup's onAnimationEnd event

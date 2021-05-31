@@ -7,6 +7,9 @@ import
 
 // nodestrap (modular web components):
 import {
+    isTypeOf,
+}                           from './Element'
+import {
     default  as Listgroup,
     ListgroupItem,
 }                           from './Listgroup'
@@ -607,9 +610,9 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
             const deepLevelsCurrent = [...deepLevelsParent, index];
 
             return (
-                (React.isValidElement<Listgroups.Items.Props>(child) && (child.type === ListgroupItem))
+                isTypeOf(child, ListgroupItem)
                 ?
-                <ListgroupItem
+                <child.type
                     // essentials:
                     key={index}
 
@@ -628,13 +631,13 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                     {...child.props}
                 >
                     {child.props.children && (Array.isArray(child.props.children) ? child.props.children : [child.props.children]).map((child, index) => (
-                        (React.isValidElement<Props>(child) && (child.type === Navscroll) && (child.props.targetRef === undefined))
+                        (isTypeOf(child, Navscroll) && (child.props.targetRef === undefined))
                         ?
                         mutateNestedNavscroll(child.props, index, /*deepLevelsParent: */deepLevelsCurrent)
                         :
                         child
                     ))}
-                </ListgroupItem>
+                </child.type>
                 :
                 <ListgroupItem
                     // essentials:

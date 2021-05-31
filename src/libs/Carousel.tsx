@@ -19,6 +19,7 @@ import {
     default  as Element,
     GenericElement,
     ElementStylesBuilder,
+    isTypeOf,
 }                          from './Element'
 import type * as Elements  from './Element'
 import {
@@ -35,6 +36,7 @@ import {
     NavscrollItem,
     Dimension,
 }                          from './Navscroll'
+import type * as Navscrolls from './Navscroll'
 
 
 
@@ -478,9 +480,9 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                     mainClass='items'
                 >
                 {(Array.isArray(children) ? children : [children]).map((child, index) => (
-                    (React.isValidElement(child) && (child.type === CarouselItem))
+                    isTypeOf(child, CarouselItem)
                     ?
-                    <CarouselItem
+                    <child.type
                         // essentials:
                         key={index}
                         tag={itemTag2}
@@ -502,13 +504,9 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
             {
                 //#region has class prevBtn
-                React.isValidElement(prevBtn)
+                isTypeOf(prevBtn, GenericElement)
                 &&
-                (
-                    (Array.isArray(prevBtn.props.classes) && prevBtn.props.classes.includes('prevBtn'))
-                    ||
-                    (/(?<!\w)prevBtn(?!\w)/).test(prevBtn.props.className)
-                )
+                prevBtn.props.classes?.includes('prevBtn')
                 //#endregion has class prevBtn
                 ?
                 prevBtn
@@ -552,13 +550,9 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
             {
                 //#region has class nextBtn
-                React.isValidElement(nextBtn)
+                isTypeOf(nextBtn, GenericElement)
                 &&
-                (
-                    (Array.isArray(nextBtn.props.classes) && nextBtn.props.classes.includes('nextBtn'))
-                    ||
-                    (/(?<!\w)nextBtn(?!\w)/).test(nextBtn.props.className)
-                )
+                nextBtn.props.classes?.includes('nextBtn')
                 //#endregion has class nextBtn
                 ?
                 nextBtn
@@ -604,7 +598,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                 nav
                 ?
                 (
-                    React.isValidElement(nav)
+                    isTypeOf(nav, GenericElement)
                     ?
                     <nav.type
                         // essentials:
@@ -621,11 +615,10 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                         ]}
 
 
-                        // NavScroll props:
-                        {...((nav.type === Navscroll) ? {
+                        {...(isTypeOf(nav, Navscroll) ? ({
                             // scrolls:
                             targetRef: listRef,
-                        } : {})}
+                        } as Navscrolls.Props) : {})}
                     />
                     :
                     nav
@@ -661,9 +654,9 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
 
                             // labels:
-                            {...(React.isValidElement<React.HTMLAttributes<HTMLElement>>(child) ? {
+                            {...(React.isValidElement<React.HTMLAttributes<HTMLElement>>(child) ? ({
                                 title : child.props.title,
-                            } : {})}
+                            } as React.HTMLAttributes<HTMLElement>) : {})}
                         />
                     ))}
                 </Navscroll>

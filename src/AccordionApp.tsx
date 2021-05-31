@@ -84,8 +84,7 @@ function App() {
 					orientation={orientation}
 					listStyle={listStyle}
 				>
-					<>hello</>
-					<></>
+					<AccordionItem label='test'>hello</AccordionItem>
 					<>hey</>
 					<ListgroupItem enabled={childEnabled}>
 						i'm {childEnabled ? 'enabled' : 'disabled'}

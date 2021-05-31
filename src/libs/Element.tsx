@@ -1008,6 +1008,30 @@ export const styles = new ElementStylesBuilder();
 
 
 
+// utils:
+
+export function isTypeOf<TProps>(element: React.ReactNode, funcComponent: React.JSXElementConstructor<TProps>): element is React.ReactElement<TProps, React.JSXElementConstructor<TProps>> {
+    return (
+        React.isValidElement<TProps>(element)
+        &&
+        (
+            (element.type === funcComponent)
+            ||
+            (
+                (typeof element.type === 'function')
+                &&
+                (
+                    (element.type.prototype instanceof funcComponent)
+                    ||
+                    (element.type.prototype === funcComponent.prototype)
+                )
+            )
+        )
+    );
+}
+
+
+
 // hooks:
 
 export interface VariantTheme {

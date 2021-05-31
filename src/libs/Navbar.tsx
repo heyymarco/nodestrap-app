@@ -19,6 +19,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 // nodestrap (modular web components):
 import {
     cssProps as ecssProps,
+    isTypeOf,
 }                           from './Element'
 import {
     cssProps as contCssProps,
@@ -874,9 +875,9 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
             )}</div>
             { children && <div className='menus'>
                 {(Array.isArray(children) ? children : [children]).map((child, index) => (
-                    (React.isValidElement(child) && (child.type === NavbarMenu))
+                    isTypeOf(child, NavbarMenu)
                     ?
-                    <NavbarMenu
+                    <child.type
                         // essentials:
                         key={index}
 
