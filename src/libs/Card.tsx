@@ -90,7 +90,7 @@ export class CardStylesBuilder extends ContentStylesBuilder {
         border       : ecssProps.border,         // copy from children (can't inherit because border(Inline|Block)Width might have been modified)
         borderColor  : this.ref(this._borderFn), // copy from children (can't inherit because border(Inline|Block)Width might have been modified)
 
-        borderInlineWidth         : 0,  // remove  (left|right)-border for all-children
+        borderInlineWidth         : 0,  // remove (left|right)-border for all-children
 
         // remove top-border at the first-child, so that it wouldn't collide with the (header|body|footer)'s top-border
         '&:first-child': {
@@ -126,23 +126,23 @@ export class CardStylesBuilder extends ContentStylesBuilder {
        
 
         //#region border-strokes as a separator
-        borderInlineWidth         : 0,  // remove  (left|right)-border for all-children
+        borderInlineWidth         : 0,  // remove (left|right)-border for all-children
 
-        // remove top-border at the first-child, so that it wouldn't collide with the card's top-border
+        // remove bottom-border at the last-child, so that it wouldn't collide with the Card's bottom-border
         // and
-        // remove double border by removing top-border starting from the second-child to the last-child
+        // remove double border by removing bottom-border starting from the third-last-child to the first-child
         // and
-        // *exception* for the second-child, do not remove, we need it as the replacement for the header's bottom-border
-        // assumes the card *always* have a body, so the second-child always a body
-        // a rare case the card only have a header & a footer, so the separator is from footer (affected by footer's css filter)
-        '&:not(:nth-child(2))': {
-            borderBlockStartWidth : 0,
+        // *exception* for the second-last-child, do not remove the bottom-border, we need it as the replacement for the footer's top-border
+        // assumes the card *always* have a body, so the second-last-child always a body
+        // a rare case the card only have a header & a footer, so the separator is from header (might affected by header's css filter)
+        '&:not(:nth-last-child(2))': {
+            borderBlockEndWidth   : 0,
         },
 
-        // remove bottom-border at the header, as the replacement => use second-child top-border
-        // remove bottom-border at the last-child, so that it wouldn't collide with the card's bottom-border
+        // remove top-border at the first-child, so that it wouldn't collide with the Card's top-border
+        // remove top-border at the footer, as the replacement => use second-last-child bottom-border
         '&:first-child, &:last-child': {
-            borderBlockEndWidth   : 0,
+            borderBlockStartWidth : 0,
         },
         //#endregion border-strokes as a separator
 

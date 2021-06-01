@@ -82,32 +82,38 @@ class ListItemStylesBuilder extends ContentStylesBuilder {
             border & borderRadius are moved from here to parent,
             for making consistent border color when the element's color are filtered.
             so we need to disable the border & borderRadius here.
-
-            supports for AccordionItem:
-            preserve the top-border for the AccordionItem's body,
-            so it has a clear boundary between its header & body.
         */
 
 
 
-        //#region border-strokes
-        borderInlineWidth         : 0,  // remove (left|right)-border for all-items
+        //#region border-strokes as a separator
+        /*
+            supports for AccordionItem:
+            preserve the top-border for the AccordionItem's body,
+            so it has a clear boundary between its header & body.
+
+            we play with top-border,
+            so if the AccordionItem's body is hidden,
+            the top-border separating the header & body is also hidden
+        */
+
+        borderInlineWidth         : 0, // remove (left|right)-border for all-items
 
         // remove bottom-border at the last-item, so that it wouldn't collide with the wrapper's bottom-border
         // and
-        // remove double border by removing bottom-border starting from the second-item to the last-item
+        // remove double border by removing bottom-border starting from the second-last-item to the first-item
         borderBlockEndWidth       : 0,
 
         // remove top-border at the first-item, so that it wouldn't collide with the wrapper's top-border
         '&:first-child': {
             borderBlockStartWidth : 0,
         },
-        //#endregion border-strokes
+        //#endregion border-strokes as a separator
 
 
 
         // border radiuses:
-        borderRadius : 0,
+        borderRadius : 0, // strip out border radius
         //#endregion strip out borders almost completely
 
 
@@ -120,6 +126,45 @@ class ListItemStylesBuilder extends ContentStylesBuilder {
 
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
+    }}
+    public /*virtual*/ inlineStyle(): JssStyle { return {
+        // borders:
+        //#region strip out borders almost completely
+        /*
+            border & borderRadius are moved from here to parent,
+            for making consistent border color when the element's color are filtered.
+            so we need to disable the border & borderRadius here.
+        */
+       
+        
+        
+        //#region border-strokes as a separator
+        /*
+            supports for AccordionItem:
+            preserve the left-border for the AccordionItem's body,
+            so it has a clear boundary between its header & body.
+
+            we play with left-border,
+            so if the AccordionItem's body is hidden,
+            the left-border separating the header & body is also hidden
+        */
+
+        border       : ecssProps.border,         // reset border from blockStyle
+        borderColor  : this.ref(this._borderFn), // reset border from blockStyle
+
+        borderBlockWidth           : 0, // remove (top|bottom)-border for all-items
+
+        // remove right-border at the last-item, so that it wouldn't collide with the wrapper's right-border
+        // and
+        // remove double border by removing right-border starting from the second-last-item to the first-item
+        borderInlineEndWidth       : 0,
+
+        // remove left-border at the first-item, so that it wouldn't collide with the wrapper's left-border
+        '&:first-child': {
+            borderInlineStartWidth : 0,
+        },
+        //#endregion border-strokes as a separator
+        //#endregion strip out borders almost completely
     }}
 }
 const listItemStyles = new ListItemStylesBuilder();
@@ -278,39 +323,38 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
         [wrapperElm]: { // wrapper of listItem
             // layout:
             display        : 'flex',    // use flexbox as the layout
-            flexDirection  : 'column',  // listItems are stacked vertically (supports for the Accordion)
+            flexDirection  : 'column',  // listItems are stacked vertically (supports for the Accordion at blockStyle)
             justifyContent : 'stretch', // listItems height are 100% of the wrapper (the listItems also need to have growable & shrinkable)
             alignItems     : 'stretch', // listItems width  are 100% of the wrapper
     
     
     
             // borders:
-            //#region make a nicely rounded corners
+            //#region border-strokes as a separator
             /*
-                border & borderRadius are moved from children to here,
-                for making consistent border color when the children's color are filtered.
-                so we need to reconstruct the border & borderRadius here.
+                we play with top-border,
+                because the top element is treated as the primary element
+                and the next one is treated as the secondary, tertiary, and so on
+
+                so if the secondary is hidden,
+                the top-border separating the primary & secondary is also hidden
             */
 
-
-
-            //#region border-strokes as a separator
             border       : ecssProps.border,         // moved in from children
             borderColor  : this.ref(this._borderFn), // moved in from children
 
-            borderInlineWidth         : 0,  // remove  (left|right)-border for all-wrapper
-
-            // remove top-border at the first-child, so that it wouldn't collide with the Listgroup's top-border
-            // and
-            // remove double border by removing top-border starting from the second-child to the last-child
-            borderBlockStartWidth     : 0,
+            borderInlineWidth         : 0, // remove (left|right)-border for all-wrappers
 
             // remove bottom-border at the last-child, so that it wouldn't collide with the Listgroup's bottom-border
-            '&:last-child': {
-                borderBlockEndWidth   : 0,
+            // and
+            // remove double border by removing bottom-border starting from the second-last-child to the first-child
+            borderBlockEndWidth       : 0,
+
+            // remove top-border at the first-child, so that it wouldn't collide with the Listgroup's top-border
+            '&:first-child': {
+                borderBlockStartWidth : 0,
             },
             //#endregion border-strokes as a separator
-            //#endregion make a nicely rounded corners
     
     
     
@@ -345,33 +389,45 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
 
         //#region children
         [wrapperElm]: { // wrapper of listItem
+            // layout:
+            flexDirection  : 'row',  // listItems are stacked horizontally (supports for the Accordion at inlineStyle)
+
+
+
             // borders:
-            //#region make a nicely rounded corners
+            //#region border-strokes as a separator
             /*
-                border & borderRadius are moved from children to here,
-                for making consistent border color when the children's color are filtered.
-                so we need to reconstruct the border & borderRadius here.
+                we play with left-border,
+                because the left element is treated as the primary element
+                and the next one is treated as the secondary, tertiary, and so on
+
+                so if the secondary is hidden,
+                the left-border separating the primary & secondary is also hidden
             */
 
-
-
-            //#region border-strokes as a separator
             border       : ecssProps.border,         // moved in from children
             borderColor  : this.ref(this._borderFn), // moved in from children
 
-            borderBlockWidth          : 0,  // remove  (top|bottom)-border for all-wrapper
-
-            // remove left-border at the first-child, so that it wouldn't collide with the Listgroup's left-border
-            // and
-            // remove double border by removing left-border starting from the second-child to the last-child
-            borderInlineStartWidth    : 0,
+            borderBlockWidth           : 0, // remove (top|bottom)-border for all-wrappers
 
             // remove right-border at the last-child, so that it wouldn't collide with the Listgroup's right-border
-            '&:last-child': {
-                borderInlineEndWidth  : 0,
+            // and
+            // remove double border by removing right-border starting from the second-last-child to the first-child
+            borderInlineEndWidth       : 0,
+
+            // remove left-border at the first-child, so that it wouldn't collide with the Listgroup's left-border
+            '&:first-child': {
+                borderInlineStartWidth : 0,
             },
             //#endregion border-strokes as a separator
-            //#endregion make a nicely rounded corners
+
+
+
+            // children:
+            [listItemElm]: {
+                '&:not(.actionCtrl)' : listItemStyles.inlineStyle(),
+                '&.actionCtrl'       : listItemActionCtrlStyles.inlineStyle(),
+            },
         } as JssStyle, // wrapper of listItem
         //#endregion children
     }}

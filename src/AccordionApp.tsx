@@ -88,14 +88,20 @@ function App() {
 						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
 						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
 					</AccordionItem>
-					<>hey</>
-					<ListgroupItem enabled={childEnabled}>
+					<AccordionItem label='hey'>
+						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
+						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
+					</AccordionItem>
+					<AccordionItem enabled={childEnabled} label={<>
 						i'm {childEnabled ? 'enabled' : 'disabled'}
 						<input type='checkbox'
 							checked={childEnabled}
 							onChange={(e) => setChildEnabled(e.target.checked)}
 						/>
-					</ListgroupItem>
+					</>}>
+						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
+						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
+					</AccordionItem>
 					'hoho'
 					<ListgroupItem active={childActive}>
 						i'm {childActive ? 'active' : 'passive'}
