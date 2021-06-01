@@ -499,8 +499,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
     const itemHandleClick = (e: React.MouseEvent<HTMLElement, MouseEvent>, deepLevelsCurrent: number[]) => {
-        e.preventDefault();
-        if (e.currentTarget !== e.target) return;
+        e.stopPropagation(); // do not bubbling click event to Navscroll's parent
 
 
 

@@ -17,7 +17,7 @@ import AccordionApp from './AccordionApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <CardApp />
+    <NavscrollApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

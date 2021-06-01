@@ -97,6 +97,7 @@ function App() {
 						<input type='checkbox'
 							checked={childEnabled}
 							onChange={(e) => setChildEnabled(e.target.checked)}
+							onClick={(e) => e.stopPropagation()}
 						/>
 					</>}>
 						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
@@ -110,7 +111,18 @@ function App() {
 							onChange={(e) => setChildActive(e.target.checked)}
 						/>
 					</ListgroupItem>
-					<>hehe</>
+					<ListgroupItem enabled={childEnabled} active={childActive}>
+						i'm {childEnabled ? 'enabled' : 'disabled'}
+						<input type='checkbox'
+							checked={childEnabled}
+							onChange={(e) => setChildEnabled(e.target.checked)}
+						/>
+						&amp; i'm {childActive ? 'active' : 'passive'}
+						<input type='checkbox'
+							checked={childActive}
+							onChange={(e) => setChildActive(e.target.checked)}
+						/>
+					</ListgroupItem>
 					<ListgroupItem theme='danger'>i'm angry</ListgroupItem>
 					<ListgroupItem theme='success'>i'm fine</ListgroupItem>
 					<ListgroupItem size='sm'>i'm small</ListgroupItem>

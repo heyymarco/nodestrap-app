@@ -664,6 +664,10 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
                         isTypeOf(child, ListgroupItem)
                         ?
                         <child.type
+                            // behaviors:
+                            actionCtrl={props.actionCtrl} // the default value of [actionCtrl] is belong to Listgroup's [actionCtrl]
+
+
                             // other props:
                             {...child.props}
 
@@ -680,6 +684,10 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
                         />
                         :
                         <ListgroupItem
+                            // behaviors:
+                            actionCtrl={props.actionCtrl} // the default value of [actionCtrl] is belong to Listgroup's [actionCtrl]
+
+                            
                             // events:
                             onAnimationEnd={(e) =>
                                 // triggers Listgroup's onAnimationEnd event
