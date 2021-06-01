@@ -193,7 +193,7 @@ export class Dimension {
     public static from(element: HTMLElement, viewport: Viewport|null = null): Dimension {
         const [parentOffsetLeft, parentOffsetTop] = (() => { // compensation for non positioned parent element
             const parent = element.parentElement;
-            if (!parent || ['relative', 'absolute'].includes(getComputedStyle(parent).position)) return [0, 0];
+            if (!parent || (parent === element.offsetParent)) return [0, 0];
 
             return [
                 parent.offsetLeft + parent.clientLeft,
@@ -290,7 +290,7 @@ export class Dimension {
 
         const [parentOffsetLeft, parentOffsetTop] = (() => { // compensation for non positioned parent element
             const parent = element.parentElement;
-            if (!parent || ['relative', 'absolute'].includes(getComputedStyle(parent).position)) return [0, 0];
+            if (!parent || (parent === element.offsetParent)) return [0, 0];
 
             return [
                 parent.offsetLeft + parent.clientLeft,

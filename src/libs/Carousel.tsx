@@ -155,7 +155,7 @@ export class CarouselStylesBuilder extends ElementStylesBuilder implements ICont
 
 
         // positions:
-        position       : [['relative'], '!important'], // makes calculating slide's pos easier
+        position       : [['relative'], '!important'], // (optional) makes calculating slide's offsetLeft/offsetTop faster
 
 
 

@@ -339,6 +339,11 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
                 let index = -1;
                 let prevPos = -1;
                 for (const item of items) {
+                    /*
+                        whatever the item's parent (Masonry) is positioned element ('relative' or 'absolute') or not is not problem
+                        because we just watching the *shifting* of the offsetLeft/offsetTop
+                        in order to detect the presence of a new row.
+                    */
                     const currentPos = (isBlockStyle ? item.offsetLeft : item.offsetTop);
                     if (currentPos < prevPos) break;
     
