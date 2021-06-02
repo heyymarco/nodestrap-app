@@ -149,14 +149,21 @@ export class StylesBuilder {
 
             // suffixes:
             /**
-             * For size-variant or state-variant
+             * For size-variant
              * Eg:
-             * somethingFoo
-             * somethingBoo
-             * animValid
-             * animInvalid
+             * somethingSm
+             * something0em
              */
-            if ((/(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|[0-9]+em|None|Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid|Full|Compact)$/).test(name)) continue; // exclude
+            if ((/(Xs|Sm|Nm|Md|Lg|Xl|Xxl|Xxxl|[0-9]+em|None)$/).test(name)) continue; // exclude
+
+            // suffixes:
+            /**
+             * For state-variant
+             * Eg:
+             * animValid
+             * animInvalidInline
+             */
+             if ((/(Enable|Disable|Active|Passive|Check|Clear|Hover|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid|Full|Compact)(Block|Inline)?$/).test(name)) continue; // exclude
 
             // special props:
             /**
@@ -472,7 +479,7 @@ export class StylesBuilder {
      * Creates an outlined definition for if the outlined feature is enabled.
      * @returns A `JssStyle` represents the outlined definition.
      */
-    public /*virtual*/ outlined(): JssStyle  { return {} }
+    public /*virtual*/ outlined(): JssStyle { return {} }
 
     /**
      * Watches & applies any theme related classes.

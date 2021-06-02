@@ -30,7 +30,7 @@ import type * as ListgroupItems from './ListgroupItem'
 
 // styles:
 
-const bodyElm   = '&~*';
+const bodyElm   = '&~.body.body'; // double the .body to win with Listgroup's *:not(.actionCtrl)
 
 export class AccordionItemStylesBuilder extends IndicatorStylesBuilder {
     //#region scoped css props
@@ -55,7 +55,7 @@ export class AccordionItemStylesBuilder extends IndicatorStylesBuilder {
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
     public /*override*/ gradient(): JssStyle { return {} }
-    public /*override*/ outlined(): JssStyle  { return {} }
+    public /*override*/ outlined(): JssStyle { return {} }
 
 
     
@@ -91,7 +91,7 @@ export class AccordionItemStylesBuilder extends IndicatorStylesBuilder {
                     [this.decl(this._bodyAnimActivePassive)] : cssProps.bodyAnimPassive,
                 },
             }),
-            this.stateNotActivePassivating({ // hides the modal if not [activating, actived, passivating]
+            this.stateNotActivePassivating({ // hides the body if not [activating, actived, passivating]
                 [bodyElm]: {
                     display: 'none',
                 },
@@ -105,6 +105,15 @@ export class AccordionItemStylesBuilder extends IndicatorStylesBuilder {
             //#endregion active, passive => body active, passive
             //#endregion specific states
         ] as JssStyle,
+
+
+
+        '*.inline>*>&': {
+            [bodyElm]: {
+                // overwrites propName = propName{Inline}:
+                ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, 'Inline')),
+            },
+        },
     }}
 
     public /*override*/ themesIf(): JssStyle {
@@ -190,14 +199,39 @@ const cssConfig = new CssConfig(() => {
         to   : keyframesBodyActive.from,
     };
 
+    const keyframesBodyActiveInline  : PropEx.Keyframes = {
+        from: {
+            overflow      : 'hidden',
+            maxInlineSize : 0,
+        },
+        '99%': {
+            overflow      : 'hidden',
+            maxInlineSize : '100vh',
+        },
+        to: {
+            overflow      : 'unset',
+            maxInlineSize : 'unset',
+        },
+    };
+    const keyframesBodyPassiveInline : PropEx.Keyframes = {
+        from : keyframesBodyActiveInline.to,
+        '1%' : keyframesBodyActiveInline['99%'],
+        to   : keyframesBodyActiveInline.from,
+    };
+
 
     return {
         // anim props:
 
-        '@keyframes bodyActive'  : keyframesBodyActive,
-        '@keyframes bodyPassive' : keyframesBodyPassive,
-        bodyAnimActive           : [['300ms', 'ease-out', 'both', keyframesBodyActive ]],
-        bodyAnimPassive          : [['300ms', 'ease-out', 'both', keyframesBodyPassive]],
+        '@keyframes bodyActive'        : keyframesBodyActive,
+        '@keyframes bodyPassive'       : keyframesBodyPassive,
+        bodyAnimActive                 : [['300ms', 'ease-out', 'both', keyframesBodyActive ]],
+        bodyAnimPassive                : [['300ms', 'ease-out', 'both', keyframesBodyPassive]],
+
+        '@keyframes bodyActiveInline'  : keyframesBodyActiveInline,
+        '@keyframes bodyPassiveInline' : keyframesBodyPassiveInline,
+        bodyAnimActiveInline           : [['300ms', 'ease-out', 'both', keyframesBodyActiveInline ]],
+        bodyAnimPassiveInline          : [['300ms', 'ease-out', 'both', keyframesBodyPassiveInline]],
     };
 }, /*prefix: */'acci');
 export const cssProps = cssConfig.refs;
@@ -273,7 +307,10 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
         >
             { label }
         </ListgroupItem>
-        <GenericElement>
+        <GenericElement
+            // classes:
+            mainClass='body'
+        >
             { children }
         </GenericElement>
     </>);
