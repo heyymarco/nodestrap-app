@@ -161,6 +161,12 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
     protected /*virtual*/ labelThemesIf(): JssStyle { return {} }
     protected /*virtual*/ labelStates(inherit = false): JssStyle { return {
+        /*
+            watch state on current element but forward the action to sibling element (label)
+        */
+        
+        
+        
         extend: [
             //#region specific states
             //#region check, clear => label active, passive
