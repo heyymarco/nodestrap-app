@@ -18,7 +18,7 @@ import PopupApp from './PopupApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <PopupApp />
+    <ModalApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

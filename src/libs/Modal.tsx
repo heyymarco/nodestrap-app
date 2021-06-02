@@ -18,6 +18,9 @@ import {
     Cust,
 }                           from './Css'        // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
+import type {
+    Dictionary,
+}                          from './CssConfig'   // ts defs support for jss
 
 // nodestrap (modular web components):
 import * as stripOuts       from './strip-outs'
@@ -29,10 +32,13 @@ import {
     styles as containerStyles,
 }                           from './Container'
 import {
-    default  as Indicator,
-    IndicatorStylesBuilder,
     cssDecls as icssDecls,
 }                           from './Indicator'
+import {
+    default  as Popup,
+    cssProps as pcssProps,
+    PopupStylesBuilder,
+}                           from './Popup'
 import {
     cssDecls as ccssDecls,
 }                           from './Content'
@@ -52,7 +58,7 @@ import typos                from './typos/index' // configurable typography (tex
 const cardElm        = '&>*';
 const cardItemsElm   = '&>*';
 
-export class ModalStylesBuilder extends IndicatorStylesBuilder {
+export class ModalStylesBuilder extends PopupStylesBuilder {
     //#region scoped css props
     /**
      * functional animations for the modal's overlay.
@@ -68,18 +74,12 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
 
-    //#region mixins
-    protected /*override*/ applyStateActive(): JssStyle { return {} }
-    //#endregion mixins
-
-
-
     // themes:
     // disable themes:
-    public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {} }
+    public /*override*/ themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle { return {} }
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // extend: [
-        //     super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        //     super.sizeOf(size, Size, sizeProp), // not copy sizes from base
         // ] as JssStyle,
 
 
@@ -93,12 +93,12 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
 
 
     // states:
-    public /*override*/ indicationThemesIf(): JssStyle { return {} }
-    public /*override*/ indicationStates(inherit = false): JssStyle { return {} }
-
-    public /*virtual*/ modalThemesIf(): JssStyle { return {} }
-    public /*virtual*/ modalStates(inherit = false): JssStyle { return {
+    public /*override*/ indicationStates(inherit = false): JssStyle { return {
         extend: [
+            // super.indicationStates(inherit), // not copy indicationStates from base
+
+
+
             this.iif(!inherit, {
                 //#region all initial states are none
                 [this.decl(this._animActivePassive)]        : ecssProps.animNone,
@@ -111,7 +111,7 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
             //#region specific states
             //#region active, passive
             this.stateActive({ // [activating, actived]
-                [this.decl(this._animActivePassive)]        : cssProps.animActive,
+                [this.decl(this._animActivePassive)]        : pcssProps.animActive,
                 [this.decl(this._overlayAnimActivePassive)] : cssProps.overlayAnimActive,
     
                 extend: [
@@ -119,10 +119,10 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
                 ] as JssStyle,
             }),
             this.statePassivating({ // [passivating]
-                [this.decl(this._animActivePassive)]        : cssProps.animPassive,
+                [this.decl(this._animActivePassive)]        : pcssProps.animPassive,
                 [this.decl(this._overlayAnimActivePassive)] : cssProps.overlayAnimPassive,
             }),
-            this.stateNotActivePassivating({ // hides the modal if not [activating, actived, passivating]
+            this.stateNotActivePassivating({ // hides the Modal if not [activating, actived, passivating]
                 display: 'none',
             }),
             {
@@ -135,31 +135,10 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         ] as JssStyle,
     }}
 
-    public /*override*/ themesIf(): JssStyle { return {
-        extend: [
-            super.themesIf(), // copy themes from base
-
-            this.modalThemesIf(),
-        ] as JssStyle,
-    }}
-    public /*override*/ states(inherit = false): JssStyle { return {
-        extend: [
-            super.states(inherit), // copy states from base
-    
-            this.modalStates(inherit),
-        ] as JssStyle,
-    }}
-
 
 
     // functions:
-    public /*override*/ indicationPropsFn(): JssStyle { return {} }
-    public /*override*/ indicationAnimFn(): JssStyle { return {} }
-
-    public /*virtual*/ modalPropsFn(): JssStyle { return {
-        ...this.modalAnimFn(),
-    }}
-    public /*virtual*/ modalAnimFn(): JssStyle { return {
+    public /*override*/ indicationAnimFn(): JssStyle { return {
         // define an *animations* func for the modal's content:
         [this.decl(this._animFn)]: [
             ecssProps.anim,
@@ -172,19 +151,10 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         ],
     }}
 
-    public /*override*/ propsFn(): JssStyle { return {
-        extend: [
-            super.propsFn(), // copy functional props from base
-
-            this.modalPropsFn(),
-        ] as JssStyle,
-    }}
-
 
 
     // styles:
-    public /*override*/ indicationBasicStyle(): JssStyle { return {} }
-    public /*virtual*/ modalBasicStyle(): JssStyle { return {
+    public /*override*/ indicationBasicStyle(): JssStyle { return {
         extend: [
             containerStyles.containerGridBasicStyle(), // apply responsive container functionality using css grid
         ] as JssStyle,
@@ -319,14 +289,6 @@ export class ModalStylesBuilder extends IndicatorStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'overlay')), // apply *general* cssProps starting with overlay***
     }}
-    public /*override*/ basicStyle(): JssStyle { return {
-        extend: [
-            // super.basicStyle(), // just a ghost wrapper, no basicStyle imported from base
-
-            this.indicationBasicStyle(),
-            this.modalBasicStyle(),
-        ] as JssStyle,
-    }}
     public /*virtual*/ scrollableStyle(): JssStyle { return {
         [cardElm]: { // card layer
             '&:not(._)': { // force overwrite
@@ -400,25 +362,6 @@ const cssConfig = new CssConfig(() => {
     // const middle  = 'middle';
 
 
-    const keyframesActive         : PropEx.Keyframes = {
-        from: {
-            opacity   : 0,
-            transform : 'scale(0)',
-        },
-        '70%': {
-            transform : 'scale(1.1)',
-        },
-        to: {
-            opacity   : 1,
-            transform : 'scale(1)',
-        },
-    };
-    const keyframesPassive        : PropEx.Keyframes = {
-        from  : keyframesActive.to,
-        '30%' : keyframesActive['70%'],
-        to    : keyframesActive.from,
-    };
-
     const keyframesOverlayActive  : PropEx.Keyframes = {
         from: {
             opacity    : 0,
@@ -443,11 +386,6 @@ const cssConfig = new CssConfig(() => {
         
 
         // anim props:
-
-        '@keyframes active'         : keyframesActive,
-        '@keyframes passive'        : keyframesPassive,
-        animActive                  : [['300ms', 'ease-out', 'both', keyframesActive ]],
-        animPassive                 : [['500ms', 'ease-out', 'both', keyframesPassive]],
 
         '@keyframes overlayActive'  : keyframesOverlayActive,
         '@keyframes overlayPassive' : keyframesOverlayPassive,
@@ -518,7 +456,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
     useEffect(() => {
         if (isActive) {
             if (cardRef.current && navigator.userAgent.toLowerCase().includes('firefox')) {
-                cardRef.current.style.overflow = 'visible';
+                cardRef.current.style.overflow = (props.modalStyle === 'scrollable') ? '' : 'visible';
 
                 // setTimeout(() => {
                 //     if (cardRef.current) cardRef.current.style.overflow = 'clip';
@@ -537,7 +475,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
             document.body.classList.remove(modStyles.body);
         } // if
-    }, [isActive, modStyles.body]);
+    }, [isActive, modStyles.body, props.modalStyle]);
 
 
 
@@ -579,7 +517,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
     ) : footer;
 
     return (
-        <Indicator
+        <Popup
             // classes:
             mainClass={props.mainClass ?? modStyles.main}
             themeClasses={[...(props.themeClasses ?? []),
@@ -659,6 +597,6 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
                 header={header2}
                 footer={footer2}
             />
-        </Indicator>
+        </Popup>
     );
 }

@@ -38,6 +38,7 @@ export class PopupStylesBuilder extends IndicatorStylesBuilder {
 
 
 
+            //#region specific states
             //#region active, passive
             this.stateActivePassivating({ // [activating, actived, passivating]
                 [this.decl(this._filterActivePassive)] : cssProps.filterActive,
@@ -48,10 +49,11 @@ export class PopupStylesBuilder extends IndicatorStylesBuilder {
             this.statePassivating({ // [passivating]
                 [this.decl(this._animActivePassive)]   : cssProps.animPassive,
             }),
-            this.stateNotActivePassivating({ // hides the popup if not [activating, actived, passivating]
+            this.stateNotActivePassivating({ // hides the Popup if not [activating, actived, passivating]
                 display: 'none',
             }),
             //#endregion active, passive
+            //#endregion specific states
         ] as JssStyle,
     }}
 }
