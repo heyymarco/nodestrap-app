@@ -19,10 +19,12 @@ import {
     GenericElement,
 }                           from './Element'
 import {
-    IndicatorStylesBuilder,
     useDynActivation,
 }                           from './Indicator'
 import type * as Indicators from './Indicator'
+import {
+    PopupStylesBuilder,
+}                           from './Popup'
 import ListgroupItem        from './ListgroupItem'
 import type * as ListgroupItems from './ListgroupItem'
 
@@ -30,25 +32,11 @@ import type * as ListgroupItems from './ListgroupItem'
 
 // styles:
 
-const bodyElm   = '&~.body.body'; // double the .body to win with Listgroup's *:not(.actionCtrl)
+const bodyElm = '&~.body.body'; // double the .body for winning to Listgroup's *:not(.actionCtrl)
 
-export class AccordionItemStylesBuilder extends IndicatorStylesBuilder {
-    //#region scoped css props
-    /**
-     * functional animations for the AccordionItem's body.
-     */
-    public    readonly _bodyAnimFn            = 'bodyAnimFn'
-
-
-
-    // anim props:
-
-    protected readonly _bodyAnimActivePassive = 'bodyAnimActivePassive'
-    //#endregion scoped css props
-
-
-
+export class AccordionItemStylesBuilder extends PopupStylesBuilder {
     // themes:
+    // disable themes:
     public /*override*/ themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle { return {} }
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrites propName = propName{Size}:
@@ -60,8 +48,7 @@ export class AccordionItemStylesBuilder extends IndicatorStylesBuilder {
 
     
     // states:
-    protected /*virtual*/ bodyThemesIf(): JssStyle { return {} }
-    protected /*virtual*/ bodyStates(inherit = false): JssStyle { return {
+    public /*override*/ indicationStates(inherit = false): JssStyle { return {
         /*
             watch state on current element but forward the action to sibling element (body)
         */
@@ -69,10 +56,14 @@ export class AccordionItemStylesBuilder extends IndicatorStylesBuilder {
         
         
         extend: [
+            // super.indicationStates(inherit), // not copy indicationStates from base
+
+
+
             this.iif(!inherit, {
                 //#region all initial states are none
                 [bodyElm]: {
-                    [this.decl(this._bodyAnimActivePassive)] : ecssProps.animNone,
+                    [this.decl(this._animActivePassive)] : ecssProps.animNone,
                 },
                 //#endregion all initial states are none
             }),
@@ -83,19 +74,23 @@ export class AccordionItemStylesBuilder extends IndicatorStylesBuilder {
             //#region active, passive => body active, passive
             this.stateActive({ // [activating, actived]
                 [bodyElm]: {
-                    [this.decl(this._bodyAnimActivePassive)] : cssProps.bodyAnimActive,
+                    [this.decl(this._animActivePassive)] : cssProps.bodyAnimActive,
                 },
-            }, /*actionCtrl =*/false),
+
+                extend: [
+                    this.applyStateActive(),
+                ] as JssStyle,
+            }),
             this.statePassivating({ // [passivating]
                 [bodyElm]: {
-                    [this.decl(this._bodyAnimActivePassive)] : cssProps.bodyAnimPassive,
+                    [this.decl(this._animActivePassive)] : cssProps.bodyAnimPassive,
                 },
             }),
-            this.stateNotActivePassivating({ // hides the body if not [activating, actived, passivating]
+            this.stateNotActivePassivating({ // hides the AccordionItem's body if not [activating, actived, passivating]
                 [bodyElm]: {
                     display: 'none',
                 },
-            }, /*actionCtrl =*/false),
+            }),
             {
                 // [actived]
                 '&.actived': { // if activated programmatically (not by user input), disable the animation
@@ -116,37 +111,23 @@ export class AccordionItemStylesBuilder extends IndicatorStylesBuilder {
         },
     }}
 
-    public /*override*/ themesIf(): JssStyle {
-        return this.bodyThemesIf();
-    }
-    public /*override*/ states(inherit = false): JssStyle {
-        return this.bodyStates(inherit);
-    }
-
 
 
     // functions:
-    protected /*virtual*/ bodyPropsFn(): JssStyle { return {
-        ...this.bodyAnimFn(),
-    }}
-    protected /*virtual*/ bodyAnimFn(): JssStyle { return {
+    public /*override*/ indicationAnimFn(): JssStyle { return {
         // define an *animations* func for the AccordionItem's body:
-        [this.decl(this._bodyAnimFn)]: [
-            this.ref(this._bodyAnimActivePassive),
+        [this.decl(this._animFn)]: [
+            ecssProps.anim,
+            this.ref(this._animActivePassive),
         ],
-    }}
-
-    public /*override*/ propsFn(): JssStyle { return {
-        // children:
-        [bodyElm]: this.bodyPropsFn(),
     }}
 
 
 
     // styles:
-    protected /*virtual*/ bodyBasicStyle(): JssStyle { return {
+    public /*override*/ indicationBasicStyle(): JssStyle { return {
         // apply fn props:
-        anim : this.ref(this._bodyAnimFn),
+        anim : this.ref(this._animFn),
 
 
 
@@ -155,7 +136,7 @@ export class AccordionItemStylesBuilder extends IndicatorStylesBuilder {
     }}
     public /*override*/ basicStyle(): JssStyle { return {
         // children:
-        [bodyElm]: this.bodyBasicStyle(),
+        [bodyElm]: this.indicationBasicStyle(),
 
 
 
@@ -272,20 +253,20 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
     
     return (<>
         <ListgroupItem
+            // other props:
+            {...otherProps}
+
+            
             // essentials:
-            tag='h1'
+            tag={props.tag ?? 'h1'}
 
 
             // behaviors:
-            actionCtrl={true}
+            actionCtrl={props.actionCtrl ?? true}
 
 
             // accessibility:
-            active={isActive}
-
-
-            // other props:
-            {...otherProps}
+            active={props.active ?? isActive}
 
 
             // classes:

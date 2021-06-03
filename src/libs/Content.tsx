@@ -252,12 +252,14 @@ const cssConfig = new CssConfig(() => {
     };
 
     return {
+        //#region spacings
         paddingInline        : spacers.default, // override to Element
         paddingBlock         : spacers.default, // override to Element
         paddingInlineSm      : spacers.sm,      // override to Element
         paddingBlockSm       : spacers.sm,      // override to Element
         paddingInlineLg      : spacers.lg,      // override to Element
         paddingBlockLg       : spacers.lg,      // override to Element
+        //#endregion spacings
 
 
         // anim props:

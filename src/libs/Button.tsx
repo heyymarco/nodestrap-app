@@ -247,12 +247,14 @@ const cssConfig = new CssConfig(() => {
         orientation : 'row',
         whiteSpace  : 'normal',
 
+        //#region spacings
         gapX        : spacers.sm,
         gapY        : spacers.sm,
         gapXSm      : spacers.xs,
         gapYSm      : spacers.xs,
         gapXLg      : spacers.md,
         gapYLg      : spacers.md,
+        //#endregion spacings
 
 
 

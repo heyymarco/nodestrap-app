@@ -36,10 +36,15 @@ const cssConfig = new CssConfig(() => {
         foreg             : inherit              as Prop.Color          | Cust.Ref,
         backg             : colors.warningTransp as Prop.Background     | Cust.Ref,
         
-        paddingInline     : '0.2em'              as Prop.PaddingInline  | Cust.Expr,
-        paddingBlock      : '0em'                as Prop.PaddingBlock   | Cust.Expr,
+        //#region borders
         border            : borders.default      as Prop.Border         | Cust.Expr,
         borderRadius      : border.radiuses.sm   as Prop.BorderRadius   | Cust.Expr,
+        //#endregion borders
+
+        //#region spacings
+        paddingInline     : '0.2em'              as Prop.PaddingInline  | Cust.Expr,
+        paddingBlock      : '0em'                as Prop.PaddingBlock   | Cust.Expr,
+        //#endregion spacings
     };
 }, /*prefix: */'mrk');
 export const cssProps = cssConfig.refs;

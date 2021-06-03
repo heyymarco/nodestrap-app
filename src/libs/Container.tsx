@@ -34,13 +34,19 @@ const cssConfig = new CssConfig(() => {
     // common css values:
     // const initial = 'initial';
     // const unset   = 'unset';
-    const none    = 'none';
+    // const none    = 'none';
     // const inherit = 'inherit';
     // const center  = 'center';
     // const middle  = 'middle';
 
 
     return {
+        //#region borders
+        borderWidth  : 0, // strip out Element's border
+        borderRadius : 0, // strip out Element's borderRadius
+        //#endregion borders
+        
+        //#region spacings
         paddingInline    : '12px' as PropEx.Length,
         paddingBlock     :  '9px' as PropEx.Length,
     
@@ -58,10 +64,7 @@ const cssConfig = new CssConfig(() => {
     
         paddingInlineXxl : '72px' as PropEx.Length,
         paddingBlockXxl  : '54px' as PropEx.Length,
-
-        borderInline     : none,
-        borderBlock      : none,
-        borderRadius     : 0,
+        //#endregion spacings
     };
 }, /*prefix: */'con');
 export const cssProps = cssConfig.refs;
@@ -156,6 +159,7 @@ export class ContainerStylesBuilder extends ElementStylesBuilder {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
 
+        // since we use grid as paddings, so the css paddings are not longer needed:
         paddingInline : null,
         paddingBlock  : null,
     }}

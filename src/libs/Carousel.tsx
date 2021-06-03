@@ -334,8 +334,10 @@ const cssConfig = new CssConfig(() => {
 
 
     return {
+        //#region spacings
         paddingInline      : 0,
         paddingBlock       : 0,
+        //#endregion spacings
 
 
 

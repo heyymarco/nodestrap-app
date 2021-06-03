@@ -36,10 +36,15 @@ const cssConfig = new CssConfig(() => {
         foreg             : colors.pink              as Prop.Color          | Cust.Ref,
         backg             : none                     as Prop.Background     | Cust.Ref,
         
-        paddingInline     : 0                        as Prop.PaddingInline  | Cust.Expr,
-        paddingBlock      : 0                        as Prop.PaddingBlock   | Cust.Expr,
+        //#region borders
         border            : none                     as Prop.Border         | Cust.Expr,
         borderRadius      : 0                        as Prop.BorderRadius   | Cust.Expr,
+        //#endregion borders
+
+        //#region spacings
+        paddingInline     : 0                        as Prop.PaddingInline  | Cust.Expr,
+        paddingBlock      : 0                        as Prop.PaddingBlock   | Cust.Expr,
+        //#endregion spacings
     };
 }, /*prefix: */'code');
 export const cssProps = cssConfig.refs;

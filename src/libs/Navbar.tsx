@@ -594,15 +594,19 @@ const cssConfig = new CssConfig(() => {
         zIndex        : 1020,
         position      : 'sticky',
 
-        paddingInline : contCssProps.paddingInline, // override to Element
-        paddingBlock  : ecssProps.paddingBlock,
-
+        //#region borders
         borderInline  : none,
         borderBlock   : none,
         borderRadius  : 0,
+        //#endregion borders
+
+        //#region spacings
+        paddingInline : contCssProps.paddingInline, // override to Element
+        paddingBlock  : ecssProps.paddingBlock,
 
         gapX          : ecssProps.paddingInline,
         gapY          : ecssProps.paddingBlock,
+        //#endregion spacings
 
 
 

@@ -6,10 +6,6 @@ import {
     jss as jssDefault,
 }                          from 'react-jss'         // base technology of our nodestrap components
 
-import {
-    Prop,
-}                           from './libs/Css'        // ts defs support for jss
-
 import Container from './libs/Container';
 import Button from './libs/Button';
 import Popup from './libs/Popup';

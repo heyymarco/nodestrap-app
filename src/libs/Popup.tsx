@@ -32,6 +32,7 @@ export class PopupStylesBuilder extends IndicatorStylesBuilder {
 
     
     // states:
+    public /*override*/ indicationThemesIf(): JssStyle { return {} } // no active color theme
     public /*override*/ indicationStates(inherit = false): JssStyle { return {
         extend: [
             super.indicationStates(inherit), // copy indicationStates from base

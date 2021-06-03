@@ -35,10 +35,15 @@ const cssConfig = new CssConfig(() => {
         foreg             : colors.white         as Prop.Color          | Cust.Ref,
         backg             : colors.grayDark      as Prop.Background     | Cust.Ref,
         
-        paddingInline     : '0.4em'              as Prop.PaddingInline  | Cust.Expr,
-        paddingBlock      : '0.2em'              as Prop.PaddingBlock   | Cust.Expr,
+        //#region borders
         border            : marks.border         as Prop.Border         | Cust.Expr,
         borderRadius      : marks.borderRadius   as Prop.BorderRadius   | Cust.Expr,
+        //#endregion borders
+
+        //#region spacings
+        paddingInline     : '0.4em'              as Prop.PaddingInline  | Cust.Expr,
+        paddingBlock      : '0.2em'              as Prop.PaddingBlock   | Cust.Expr,
+        //#endregion spacings
     };
 }, /*prefix: */'kbd');
 export const cssProps = cssConfig.refs;

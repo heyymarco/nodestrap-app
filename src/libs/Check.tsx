@@ -334,15 +334,15 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
 
-        // spacings:
-        paddingInline : undefined as unknown as null,
-        paddingBlock  : undefined as unknown as null,
-
-
-
         // borders:
         border        : undefined as unknown as null,
         borderRadius  : undefined as unknown as null,
+
+
+
+        // spacings:
+        paddingInline : undefined as unknown as null,
+        paddingBlock  : undefined as unknown as null,
         
     
         

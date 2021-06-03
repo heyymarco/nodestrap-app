@@ -59,6 +59,7 @@ const cssConfig = new CssConfig(() => {
     const keyframesNone   : PropEx.Keyframes = { };
 
     return {
+        //#region typos
         fontSize          : typos.fontSizeNm,
         fontSizeSm        : [['calc((', typos.fontSizeSm, '+', typos.fontSizeNm, ')/2)']],
         fontSizeLg        : typos.fontSizeMd,
@@ -67,25 +68,30 @@ const cssConfig = new CssConfig(() => {
         fontStyle         : inherit,
         textDecoration    : inherit,
         lineHeight        : inherit,
+        //#endregion typos
 
+        //#region foreg, backg, borders
         foreg             : 'currentColor',
         backg             : 'transparent',
         backgGrad         : [['linear-gradient(180deg, rgba(255,255,255, 0.2), rgba(0,0,0, 0.2))', 'border-box']],
-
-        opacity           : 1,
-
-        paddingInline     : [['calc((', spacers.sm, '+', spacers.md, ')/2)']],
-        paddingBlock      : [['calc((', spacers.xs, '+', spacers.sm, ')/2)']],
-        paddingInlineSm   : spacers.sm,
-        paddingBlockSm    : spacers.xs,
-        paddingInlineLg   : spacers.md,
-        paddingBlockLg    : spacers.sm,
         
         border            : borders.default,
         borderColor       : borders.color,
         borderRadius      : border.radiuses.md,
         borderRadiusSm    : border.radiuses.sm,
         borderRadiusLg    : border.radiuses.lg,
+        //#endregion foreg, backg, borders
+
+        //#region spacings
+        paddingInline     : [['calc((', spacers.sm, '+', spacers.md, ')/2)']],
+        paddingBlock      : [['calc((', spacers.xs, '+', spacers.sm, ')/2)']],
+        paddingInlineSm   : spacers.sm,
+        paddingBlockSm    : spacers.xs,
+        paddingInlineLg   : spacers.md,
+        paddingBlockLg    : spacers.sm,
+        //#endregion spacings
+
+        opacity           : 1,
 
 
         // anim props:

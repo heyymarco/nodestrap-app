@@ -61,7 +61,12 @@ const cardItemsElm   = '&>*';
 export class ModalStylesBuilder extends PopupStylesBuilder {
     //#region scoped css props
     /**
-     * functional animations for the modal's overlay.
+     * forwards functional animations to target element.
+     */
+    public    readonly _animFnFw                 = 'animFnFw'
+
+    /**
+     * functional animations for the Modal's overlay.
      */
     public    readonly _overlayAnimFn            = 'overlayAnimFn'
 
@@ -78,12 +83,6 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
     // disable themes:
     public /*override*/ themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle { return {} }
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
-        // extend: [
-        //     super.sizeOf(size, Size, sizeProp), // not copy sizes from base
-        // ] as JssStyle,
-
-
-
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
@@ -111,7 +110,7 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
             //#region specific states
             //#region active, passive
             this.stateActive({ // [activating, actived]
-                [this.decl(this._animActivePassive)]        : pcssProps.animActive,
+                [this.decl(this._animActivePassive)]        : cssProps.animActive,
                 [this.decl(this._overlayAnimActivePassive)] : cssProps.overlayAnimActive,
     
                 extend: [
@@ -119,7 +118,7 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
                 ] as JssStyle,
             }),
             this.statePassivating({ // [passivating]
-                [this.decl(this._animActivePassive)]        : pcssProps.animPassive,
+                [this.decl(this._animActivePassive)]        : cssProps.animPassive,
                 [this.decl(this._overlayAnimActivePassive)] : cssProps.overlayAnimPassive,
             }),
             this.stateNotActivePassivating({ // hides the Modal if not [activating, actived, passivating]
@@ -139,13 +138,13 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
 
     // functions:
     public /*override*/ indicationAnimFn(): JssStyle { return {
-        // define an *animations* func for the modal's content:
+        // define an *animations* func for the Modal's content:
         [this.decl(this._animFn)]: [
             ecssProps.anim,
             this.ref(this._animActivePassive),
         ],
 
-        // define an *animations* func for the modal's overlay:
+        // define an *animations* func for the Modal's overlay:
         [this.decl(this._overlayAnimFn)]: [
             this.ref(this._overlayAnimActivePassive),
         ],
@@ -162,7 +161,7 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
 
 
         // layout:
-     // display      : 'grid',             // already defined in containerStyles. we use grid, so we can align the card both horizontally & vertically
+     // display      : 'grid',             // already defined in containerStyles. we use grid, so we can align the Card both horizontally & vertically
         justifyItems : cssProps.horzAlign, // align (default center) horizontally
         alignItems   : cssProps.vertAlign, // align (default center) vertically
 
@@ -181,7 +180,7 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
 
             
         // scrollers:
-        // scroller at modal layer & at card's body layer:
+        // scroller at Modal's layer & at Card's body layer:
         '&, &>*>.body': {
             overflow : 'auto', // enable horz & vert scrolling
         },
@@ -189,12 +188,13 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
 
 
         // apply fn props:
-        anim : this.ref(this._overlayAnimFn),
+        anim                        : this.ref(this._overlayAnimFn),
+        [this.decl(this._animFnFw)] : this.ref(this._animFn),
 
 
 
         // children:
-        //#region card
+        //#region Card
         ...((): JssStyle => {
             const newCardProps = this.overwriteParentProps(
                 this.filterGeneralProps(cssProps), // apply *general* cssProps
@@ -212,7 +212,7 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
 
 
 
-                [cardElm]: { // card layer
+                [cardElm]: { // Card's layer
                     extend: [
                         stripOuts.focusableElement, // clear browser's default styles
                     ] as JssStyle,
@@ -239,7 +239,7 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
 
 
                         // apply fn props:
-                        [this.decl(this._animFn)] : 'inherit', // inherit from Modal
+                        anim       : this.ref(this._animFnFw),
 
 
 
@@ -249,12 +249,12 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
     
     
 
-                    // card items:
+                    // Card's items:
                     [cardItemsElm] : this.restoreProps(newCardProps), // restore cardProps
                 },
             };
         })(),
-        //#endregion card
+        //#endregion Card
 
 
 
@@ -290,7 +290,7 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'overlay')), // apply *general* cssProps starting with overlay***
     }}
     public /*virtual*/ scrollableStyle(): JssStyle { return {
-        [cardElm]: { // card layer
+        [cardElm]: { // Card's layer
             '&:not(._)': { // force overwrite
                 // sizes:
                 inlineSize    : 'auto', // follows the content's width, but
@@ -298,8 +298,8 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
                 blockSize     : 'auto', // follows the content's height, but
                 maxBlockSize  : '100%', // up to the maximum available parent's height
 
-                // this prop is not actually makes card scrollable,
-                // but makes card's body scrollable (indirect effect)
+                // this prop is not actually makes Card scrollable,
+                // but makes Card's body scrollable (indirect effect)
                 overflow      : 'auto', // turn on the scrolling
             },
         },
@@ -386,6 +386,9 @@ const cssConfig = new CssConfig(() => {
         
 
         // anim props:
+
+        animActive                  : pcssProps.animActive,
+        animPassive                 : pcssProps.animPassive,
 
         '@keyframes overlayActive'  : keyframesOverlayActive,
         '@keyframes overlayPassive' : keyframesOverlayPassive,
@@ -552,12 +555,12 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
 
             // events:
-            // watch [escape key] on the whole modal, including card & children:
+            // watch [escape key] on the whole Modal, including Card & Card's children:
             onKeyDown={(e) => {
                 if ((e.code === 'Escape') || (e.key === 'Escape')) props.onClose?.('shortcut');
             }}
 
-            // watch left click on the overlay only (not at the card):
+            // watch left click on the overlay only (not at the Card):
             onClick={(e) => {
                 if ((e.target === e.currentTarget) && (e.type === 'click')) props.onClose?.('overlay');
             }}

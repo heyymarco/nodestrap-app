@@ -579,6 +579,7 @@ const cssConfig = new CssConfig(() => {
 
 
     return {
+        //#region spacings
         bulletSpacing   : spacers.sm,
         bulletSpacingSm : spacers.xs,
         bulletSpacingLg : spacers.md,
@@ -586,6 +587,7 @@ const cssConfig = new CssConfig(() => {
         bulletPadding   : spacers.xs,
         bulletPaddingSm : spacers.xxs,
         bulletPaddingLg : spacers.sm,
+        //#endregion spacings
     };
 }, /*prefix: */'lg');
 export const cssProps = cssConfig.refs;
