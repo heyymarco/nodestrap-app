@@ -76,6 +76,11 @@ function App() {
     return (
         <div className="App">
             <Container>
+				<AccordionItem label='test'>
+					<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
+					<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
+				</AccordionItem>
+				<hr style={{flexBasis: '100%'}} />
                 <Accordion
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}

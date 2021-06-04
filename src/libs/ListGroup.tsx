@@ -58,6 +58,14 @@ class ListItemStylesBuilder extends ContentStylesBuilder {
 
 
 
+    // states:
+    public /*override*/ watchStates(inherit = true): JssStyle {
+        // change default inherit to true
+        return super.watchStates(inherit);
+    }
+
+
+
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
@@ -198,7 +206,7 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
         extend: [
             super.states(inherit), // copy states from base
             
-            this.controlStates(/*inherit =*/false), // do not inherit: parent element doesn't have [hover, leave, focus, blur]
+            this.controlStates(/*inherit =*/false), // do not inherit: Listgroup doesn't have [hover, leave, focus, blur]
         ] as JssStyle,
     }}
 
@@ -526,10 +534,10 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
                             '&:not(.actionCtrl)': {
                                 extend: [
                                     // watch theme classes:
-                                    listItemStyles.watchThemes(), // always inherit
+                                    listItemStyles.watchThemes(),
             
                                     // watch state classes/pseudo-classes:
-                                    listItemStyles.watchStates(/*inherit =*/true), // inherit from parent element: [enable, disable, active, passive]
+                                    listItemStyles.watchStates(),
             
                                     // after watching => use func props:
                                     listItemStyles.propsFn(),
@@ -538,10 +546,10 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
                             '&.actionCtrl': {
                                 extend: [
                                     // watch theme classes:
-                                    listItemActionCtrlStyles.watchThemes(), // always inherit
+                                    listItemActionCtrlStyles.watchThemes(),
             
                                     // watch state classes/pseudo-classes:
-                                    listItemActionCtrlStyles.watchStates(/*inherit =*/true),
+                                    listItemActionCtrlStyles.watchStates(),
             
                                     // after watching => use func props:
                                     listItemActionCtrlStyles.propsFn(),
@@ -640,13 +648,13 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
 
     return (
         <Content<TElement>
-            // essentials:
-            tag={parentTag}
-
-
             // other props:
             {...otherProps}
 
+
+            // essentials:
+            tag={parentTag}
+            
 
             // classes:
             mainClass={props.mainClass ?? lgStyles.main}
@@ -666,12 +674,12 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
                         isTypeOf(child, ListgroupItem)
                         ?
                         <child.type
-                            // behaviors:
-                            actionCtrl={props.actionCtrl} // the default value of [actionCtrl] is belong to Listgroup's [actionCtrl]
-
-
                             // other props:
                             {...child.props}
+
+
+                            // behaviors:
+                            actionCtrl={child.props.actionCtrl ?? props.actionCtrl} // the default value of [actionCtrl] is belong to Listgroup's [actionCtrl]
 
                             
                             // events:

@@ -93,11 +93,15 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
 
     // states:
     public /*override*/ indicationStates(inherit = false): JssStyle { return {
+        /*
+        skip indication's [enable, disable] states
+
+        watch [active, passive] state => apply to [animBody, animOverlay]
+        */
+
+
+
         extend: [
-            // super.indicationStates(inherit), // not copy indicationStates from base
-
-
-
             this.iif(!inherit, {
                 //#region all initial states are none
                 [this.decl(this._animActivePassive)]        : ecssProps.animNone,
@@ -134,6 +138,17 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
         ] as JssStyle,
     }}
 
+    public /*override*/ themesIf(): JssStyle {
+        // skip Element's conditional themes
+        // jump to indication's conditional Themes
+        return this.indicationThemesIf();
+    }
+    public /*override*/ states(inherit = false): JssStyle {
+        // skip Element's states
+        // jump to indication's states
+        return this.indicationStates(inherit);
+    }
+
 
 
     // functions:
@@ -141,14 +156,32 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
         // define an *animations* func for the Modal's content:
         [this.decl(this._animFn)]: [
             ecssProps.anim,
-            this.ref(this._animActivePassive),
+            this.ref(this._animActivePassive), // if Modal is active(d)  => the Modal's content is visible
         ],
 
         // define an *animations* func for the Modal's overlay:
         [this.decl(this._overlayAnimFn)]: [
-            this.ref(this._overlayAnimActivePassive),
+            this.ref(this._overlayAnimActivePassive), // if Modal is active(d)  => the Modal's overlay is visible
         ],
     }}
+
+    public /*override*/ propsFn(): JssStyle { return {
+        // skip Element's propsFn but preserves animFn
+        // jump to indication's propsFn
+
+        extend: [
+            this.indicationPropsFn(),
+        ] as JssStyle,
+
+
+
+        ...this.animFn(),
+    }}
+    public /*override*/ animFn(): JssStyle {
+        // skip Element's animFn
+        // jump to indication's animFn
+        return this.indicationAnimFn();
+    }
 
 
 
@@ -289,6 +322,11 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'overlay')), // apply *general* cssProps starting with overlay***
     }}
+    public /*override*/ basicStyle(): JssStyle {
+        // skip Element's basicStyle
+        // jump to indication's basicStyle
+        return this.indicationBasicStyle();
+    }
     public /*virtual*/ scrollableStyle(): JssStyle { return {
         [cardElm]: { // Card's layer
             '&:not(._)': { // force overwrite
