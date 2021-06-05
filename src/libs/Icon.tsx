@@ -445,12 +445,12 @@ export default function Icon<TElement extends HTMLElement = HTMLElement>(props: 
 
     return (
         <Element<TElement>
-            // default props:
-            tag='span'
-
-
             // other props:
             {...props}
+
+
+            // essentials:
+            tag={props.tag ?? 'span'}
 
 
             // classes:
@@ -462,9 +462,8 @@ export default function Icon<TElement extends HTMLElement = HTMLElement>(props: 
 
 
             // appearances:
-            style={{
+            style={{...(props.style ?? {}),
                 ...icon.style,
-                ...props.style,
             }}
         >
             { icon.children }

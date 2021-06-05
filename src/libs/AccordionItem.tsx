@@ -334,7 +334,7 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
 
 
             // accessibility:
-            active={props.active ?? isActive}
+            active={isActive}
 
 
             // classes:

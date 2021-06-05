@@ -329,28 +329,28 @@ export default function TogglerMenuButton(props: Props) {
 
     return (
         <Check
-            // arias:
-            aria-label='Toggle navigation'
+            // other props:
+            {...props}
+
+
+            // accessibility:
+            label={props.label ?? 'Toggle navigation'}
 
 
             // themes:
-            chkStyle='btn'
+            chkStyle={props.chkStyle ?? 'btn'}
 
 
             // validations:
-            enableValidation={false}
-
-
-            // other props:
-            {...props}
+            enableValidation={props.enableValidation ?? false}
 
 
             // classes:
             mainClass={props.mainClass ?? togglerStyles.main}
         >
-            { props.children || (
+            {((props.children === undefined) ? (
                 <svg viewBox='0 0 24 24'><polyline points='2,3 22,3' /><polyline points='2,12 22,12' /><polyline points='2,21 22,21' /></svg>
-            )}
+            ) : props.children)}
         </Check>
     );
 }

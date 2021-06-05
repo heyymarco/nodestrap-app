@@ -19,12 +19,12 @@ export interface Props
 export default function Radio(props: Props) {
     return (
         <Check
-            // default props:
-            type='radio'
-
-
             // other props:
             {...props}
+
+
+            // formats:
+            type={props.type ?? 'radio'}
         />
     );
 }

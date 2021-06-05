@@ -263,12 +263,12 @@ export default function Form(props: Props) {
 
     return (
         <Element<HTMLFormElement>
-            // default props:
-            tag='form'
-
-
             // other props:
             {...props}
+
+
+            // essentials:
+            tag={props.tag ?? 'form'}
 
 
             // classes:
@@ -279,7 +279,7 @@ export default function Form(props: Props) {
             ]}
 
 
-            // EditableControl props:
+            // validations:
             elmRef={(elm) => {
                 if (elm) {
                     formValidator.handleInit(elm);

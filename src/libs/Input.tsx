@@ -187,22 +187,20 @@ export default function Input(props: Props) {
         // formats:
         type,
         placeholder,
-
-
     ...otherProps}  = props;
 
     return (
         <EditableTextControl<HTMLInputElement>
-            // default props:
-            tag='span'
-
-
             // other props:
             {...otherProps}
 
 
-            // unchanged props:
-            tabIndex={-1}
+            // essentials:
+            tag={props.tag ?? 'span'}
+
+
+            // accessibility:
+            tabIndex={-1} // [tabIndex] is negative => act as *wrapper* element, if input is :focus (pseudo) => the wrapper is also .focus (synthetic)
 
 
             // classes:
@@ -222,7 +220,7 @@ export default function Input(props: Props) {
                 // values:
                 defaultValue={defaultValue}
                 value={value}
-             // onChange={onChange} // bubble to parent, let's the parent handle the onChange
+             // onChange={onChange} // let's bubbling to parent handle onChange
 
 
                 // validations:

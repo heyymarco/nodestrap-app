@@ -17,12 +17,12 @@ export interface Props<TElement extends HTMLElement = HTMLAnchorElement>
 export default function NavbarMenu<TElement extends HTMLElement = HTMLAnchorElement>(props: Props<TElement>) {
     return (
         <Control<TElement>
-            // default props:
-            tag='a'
-
-
             // other props:
             {...props}
+
+
+            // essentials:
+            tag={props.tag ?? 'a'}
 
 
             // classes:

@@ -727,8 +727,12 @@ export interface Props
     type?           : 'checkbox' | 'radio'
 
 
-    // labels:
+    // accessibility:
+    label?          : string
     text?           : string
+
+
+    // children:
     children?       : React.ReactNode
 }
 export default function Check(props: Props) {
@@ -774,16 +778,17 @@ export default function Check(props: Props) {
 
     return (
         <EditableControl<HTMLInputElement>
-            // default props:
-            tag='label'
-
-
             // other props:
             {...otherProps}
 
 
-            // unchanged props:
-            tabIndex={-1}
+            // essentials:
+            tag={props.tag ?? 'label'}
+
+
+            // accessibility:
+            aria-label={props.label}
+            tabIndex={-1} // [tabIndex] is negative => act as *wrapper* element, if input is :focus (pseudo) => the wrapper is also .focus (synthetic)
 
 
             // classes:
@@ -817,7 +822,7 @@ export default function Check(props: Props) {
                 value={value}
                 defaultChecked={defaultChecked}
                 checked={checked}
-                onChange={stateChkClr.handleChange}
+                onChange={stateChkClr.handleChange} // let's bubbling to parent handle onChange
 
 
                 // validations:

@@ -364,12 +364,12 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
 
     return (
         <Content<TElement>
-            // essentials:
-            tag='article'
-
-
             // other props:
             {...otherProps}
+
+
+            // essentials:
+            tag={props.tag ?? 'article'}
 
 
             // classes:
@@ -389,17 +389,17 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
                     (React.isValidElement(child) && (child.type === 'a'))
                     ?
                     <Button
+                        // other props:
+                        {...child.props}
+
+
                         // essentials:
-                        key={index}
+                        key={child.key ?? index}
                         tag='a'
 
 
                         // themes:
                         btnStyle='link'
-
-
-                        // other props:
-                        {...child.props}
                     />
                     :
                     child

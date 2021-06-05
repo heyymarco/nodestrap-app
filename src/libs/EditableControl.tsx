@@ -706,7 +706,7 @@ export default function EditableControl<TElement extends EditableControlElement 
             ]}
 
 
-            // EditableControl props:
+            // validations:
             elmRef={(elm) => {
                 if (elm) {
                     if (elm.validity) {

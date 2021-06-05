@@ -578,12 +578,12 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
 
     return (
         <Indicator<TElement>
-            // behaviors:
-            actionCtrl={true}
-
-
             // other props:
             {...props}
+
+
+            // behaviors:
+            actionCtrl={props.actionCtrl ?? true}
 
 
             // classes:
@@ -591,7 +591,7 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
             stateClasses={[...(props.stateClasses ?? []),
                 // states:
                 
-                // if [tabIndex] is negative => treats Control as *wrapper* element, so there's no *:focus* => replace with synthetic *.focus*
+                // if [tabIndex] is negative => treats Control as *wrapper* element, so there's no :focus (pseudo) => replace with .focus (synthetic)
                 (stateFocusBlur.class ?? ((stateFocusBlur.focus && ((props.tabIndex ?? 0) < 0)) ? 'focus' : null)),
 
                 stateHoverLeave.class,

@@ -588,18 +588,24 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
-    function mutateNestedNavscroll(nestNavProps: Props, index: number, deepLevelsParent: number[]) { return (
+    function mutateNestedNavscroll(nestNavProps: Props, key: React.Key|null, deepLevelsParent: number[]) { return (
         <Listgroup
-            // essentials:
-            key={index}
-
-
-            // inherits:
-            {...props}
-
-
             // other props:
-            {...nestNavProps}
+            {...((): {} => {
+                const combinedProps: { [name: string]: any } = { ...props };
+
+                for (const [name, value] of Object.entries(nestNavProps)) {
+                    if (value === undefined) continue;
+
+                    combinedProps[name] = value;
+                } // for
+
+                return combinedProps;
+            })()}
+
+
+            // essentials:
+            key={key}
         >
             { mutateListgroupItems(nestNavProps.children, /*deepLevelsParent: */deepLevelsParent) }
         </Listgroup>
@@ -612,12 +618,16 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                 isTypeOf(child, ListgroupItem)
                 ?
                 <child.type
+                    // other props:
+                    {...child.props}
+
+
                     // essentials:
-                    key={index}
+                    key={child.key ?? index}
 
 
                     // accessibility:
-                    active={index === activeIndices[deepLevelsCurrent.length - 1]}
+                    active={child.props.active ?? (index === activeIndices[deepLevelsCurrent.length - 1])}
 
 
                     // events:
@@ -629,15 +639,11 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                         
                         if (!e.defaultPrevented && (child.props.actionCtrl ?? props.actionCtrl ?? false)) itemHandleClick(e, deepLevelsCurrent);
                     }}
-
-
-                    // other props:
-                    {...child.props}
                 >
                     {child.props.children && (Array.isArray(child.props.children) ? child.props.children : [child.props.children]).map((child, index) => (
                         (isTypeOf(child, Navscroll) && (child.props.targetRef === undefined))
                         ?
-                        mutateNestedNavscroll(child.props, index, /*deepLevelsParent: */deepLevelsCurrent)
+                        mutateNestedNavscroll(child.props, child.key ?? index, /*deepLevelsParent: */deepLevelsCurrent)
                         :
                         child
                     ))}
@@ -649,7 +655,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
                     
                     // accessibility:
-                    active={index === activeIndices[deepLevelsCurrent.length - 1]}
+                    active={(index === activeIndices[deepLevelsCurrent.length - 1])}
 
 
                     // events:

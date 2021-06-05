@@ -789,27 +789,12 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
     return (
         <Indicator<TElement>
-            // essentials:
-            tag='nav'
-
-
-            // accessibility:
-            active={isActive}
-
-
             // other props:
             {...otherProps}
 
 
-            // classes:
-            mainClass={props.mainClass ?? navbStyles.main}
-            themeClasses={[...(props.themeClasses ?? []),
-                // themes:
-                compactable.class,
-            ]}
-
-
             // essentials:
+            tag={props.tag ?? 'nav'}
             elmRef={(elm) => {
                 // @ts-ignore
                 navbarRef.current = elm;
@@ -827,6 +812,18 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                     } // if
                 } // if
             }}
+
+
+            // accessibility:
+            active={isActive}
+
+
+            // classes:
+            mainClass={props.mainClass ?? navbStyles.main}
+            themeClasses={[...(props.themeClasses ?? []),
+                // themes:
+                compactable.class,
+            ]}
 
 
             // events:
@@ -854,12 +851,12 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                     isTypeOf(child, NavbarMenu)
                     ?
                     <child.type
-                        // essentials:
-                        key={index}
-
-
                         // other props:
                         {...child.props}
+
+
+                        // essentials:
+                        key={child.key ?? index}
 
                         
                         // events:

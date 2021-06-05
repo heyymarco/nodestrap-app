@@ -325,16 +325,16 @@ export default function Button(props: Props) {
 
     return (
         <Control<HTMLButtonElement>
-            // arias:
-            aria-label={props.label ?? props.text}
+            // other props:
+            {...otherProps}
+
+
+            // accessibility:
+            aria-label={props.label}
 
 
             // essentials:
             tag={tag2}
-
-
-            // other props:
-            {...otherProps}
 
 
             // classes:

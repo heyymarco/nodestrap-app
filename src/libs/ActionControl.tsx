@@ -152,16 +152,16 @@ export const styles = new ActionControlStylesBuilder();
 
 export function useStatePressRelease(props: IndicationProps, classes = { active: 'press' as (string|null), actived: 'pressed' as (string|null), passive: 'release' as (string|null) }) {
     return useStateActivePassive({
-        // behaviors:
-        actionCtrl : true,
-        
-        
         // other props:
         ...props,
 
 
+        // behaviors:
+        actionCtrl : true,      // always use actionCtrl implementation
+
+
         // accessibility:
-        active : undefined, // no [controllable active]
+        active     : undefined, // no [controllable active]
     }, classes);
 }
 

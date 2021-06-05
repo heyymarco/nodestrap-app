@@ -485,13 +485,13 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                     isTypeOf(child, CarouselItem)
                     ?
                     <child.type
-                        // essentials:
-                        key={index}
-                        tag={itemTag2}
-
-
                         // other props:
                         {...child.props}
+
+
+                        // essentials:
+                        key={child.key ?? index}
+                        tag={child.props.tag ?? itemTag2}
                     />
                     :
                     <CarouselItem
@@ -603,12 +603,12 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                     isTypeOf(nav, GenericElement)
                     ?
                     <nav.type
-                        // essentials:
-                        key={nav.key}
-
-
                         // other props:
                         {...nav.props}
+
+
+                        // essentials:
+                        key={nav.key}
 
 
                         // classes:
@@ -655,7 +655,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                             tag='button'
 
 
-                            // labels:
+                            // accessibility:
                             {...(React.isValidElement<React.HTMLAttributes<HTMLElement>>(child) ? ({
                                 title : child.props.title,
                             } as React.HTMLAttributes<HTMLElement>) : {})}
@@ -676,14 +676,14 @@ interface NavButtonProps
 function NavButton(props: NavButtonProps) {
     return (
         <Button
-            // themes:
-            size='lg'
-            enableGradient={true}
-            btnStyle='ghost'
-
-
             // other props:
             {...props}
+
+
+            // themes:
+            size={props.size ?? 'lg'}
+            enableGradient={props.enableGradient ?? true}
+            btnStyle={props.btnStyle ?? 'ghost'}
 
 
             // classes:
