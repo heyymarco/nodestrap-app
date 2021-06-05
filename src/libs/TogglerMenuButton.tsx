@@ -334,6 +334,7 @@ export default function TogglerMenuButton(props: Props) {
 
 
             // accessibility:
+            aria-expanded={props.active}
             label={props.label ?? 'Toggle navigation'}
 
 

@@ -559,6 +559,11 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
     return (
         <Popup
+            // accessibility:
+            role={active ? 'dialog' : undefined}
+            aria-modal={active ? true : undefined}
+
+
             // classes:
             mainClass={props.mainClass ?? modStyles.main}
             themeClasses={[...(props.themeClasses ?? []),

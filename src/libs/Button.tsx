@@ -329,12 +329,12 @@ export default function Button(props: Props) {
             {...otherProps}
 
 
-            // accessibility:
-            aria-label={props.label}
-
-
             // essentials:
             tag={tag2}
+
+
+            // accessibility:
+            aria-label={props.label}
 
 
             // classes:

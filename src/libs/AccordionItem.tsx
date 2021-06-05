@@ -329,12 +329,13 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
             tag={props.tag ?? 'h1'}
 
 
+            // accessibility:
+            aria-expanded={isActive}
+            active={isActive}
+
+
             // behaviors:
             actionCtrl={props.actionCtrl ?? true}
-
-
-            // accessibility:
-            active={isActive}
 
 
             // classes:

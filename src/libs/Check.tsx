@@ -807,11 +807,8 @@ export default function Check(props: Props) {
                 ref={elmRef}
 
 
-                // arias:
-                aria-hidden={isBtnStyle} // if btnStyle => hides the check
-
-
                 // accessibility:
+                aria-hidden={isBtnStyle} // if btnStyle => hides the check
                 disabled={props.enabled === false}
                 tabIndex={tabIndex}
                 readOnly={readOnly}

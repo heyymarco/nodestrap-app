@@ -634,14 +634,14 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                     orientation='inline'
 
 
+                    // behaviors:
+                    actionCtrl={true}
+
+
                     // classes:
                     classes={[
                         'nav',
                     ]}
-
-
-                    // behaviors:
-                    actionCtrl={true}
 
 
                     // scrolls:

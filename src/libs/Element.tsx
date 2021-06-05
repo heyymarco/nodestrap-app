@@ -1233,12 +1233,18 @@ const isHtmlProp = (propName: string) => propName.startsWith('on') || propName.s
 
 export interface GenericProps<TElement extends HTMLElement = HTMLElement>
     extends
-        React.DOMAttributes<TElement>
+        React.DOMAttributes<TElement>,
+        React.AriaAttributes
 {
     // essentials:
     tag?          : keyof JSX.IntrinsicElements
     style?        : React.CSSProperties
     elmRef?       : React.Ref<TElement>
+
+
+    // accessibility:
+    role?         : React.AriaRole
+
 
     // classes:
     mainClass?    :  string|null|undefined
@@ -1268,6 +1274,10 @@ export function GenericElement<TElement extends HTMLElement = HTMLElement>(props
         <Tag
             // other props:
             {...htmlProps}
+
+
+            // accessibility:
+            role={props.role}
 
 
             // classes:

@@ -617,13 +617,13 @@ export function useDynActivation(props: DynActivationProps): [boolean, React.Dis
 
 export interface IndicationProps
 {
-    // behaviors:
-    actionCtrl? : boolean
-
-
     // accessibility:
     enabled?    : boolean
     active?     : boolean
+
+
+    // behaviors:
+    actionCtrl? : boolean
 }
 
 export interface DynActivationProps
