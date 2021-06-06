@@ -24,7 +24,9 @@ import {
 }                           from './Element'
 import type * as Elements   from './Element'
 import {
+    usePropAccessibility,
     usePropEnabled,
+    AccessibilityProvider,
 }                           from './accessibilities'
 import type {
     Props as AccessibilityProps,
@@ -468,15 +470,16 @@ export function useStateEnableDisable(props: IndicationProps) {
     };
 }
 
-export function useStateActivePassive(props: IndicationProps, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }, mouses: string[]|null = ['click'], keys: string[]|null = ['space']) {
+export function useStateActivePassive(props: IndicationProps, inheritActive = true, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }, mouses: string[]|null = ['click'], keys: string[]|null = ['space']) {
     // fn props:
-    const propEnabled = usePropEnabled(props);
+    const propAccess  = usePropAccessibility(props);
+    const propEnabled = propAccess.enabled;
     const propClickable: boolean =  // control is clickable if [is actionCtrl] and [is enabled]
         (props.actionCtrl ?? false) // if [actionCtrl] was not specified => the default value is [actionCtrl=false] (readonly)
         &&
         propEnabled
         ;
-    const propActive: boolean = (props.active ?? false); // if [active] was not specified => the default value is [active=false] (released)
+    const propActive  = inheritActive ? propAccess.active : (props.active ?? false);
 
 
 
@@ -644,8 +647,13 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
         Elements.Props<TElement>,
         IndicationProps
 {
+    // accessibility:
+    inheritEnabled? : boolean
+    inheritActive?  : boolean
+
+
     // states:
-    stateActive?: [boolean, (newValue: boolean) => void]
+    stateActive?    : [boolean, (newValue: boolean) => void]
 }
 export default function Indicator<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     // styles:
@@ -671,6 +679,7 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
     ];
     const isHtmlCtrl   = props.tag && htmlCtrls.includes(props.tag);
     const isActionCtrl = props.actionCtrl ?? false;
+    const propAccess   = usePropAccessibility(props);
 
 
 
@@ -716,6 +725,14 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
                 // forwards:
                 props.onAnimationEnd?.(e);
             }}
-        />
+        >
+            { props.children && <AccessibilityProvider
+                // accessibility:
+                enabled={(props.inheritEnabled ?? true ) ? propAccess.enabled : undefined}
+                active ={(props.inheritActive  ?? false) ? propAccess.active  : undefined}
+            >
+                { props.children }
+            </AccessibilityProvider> }
+        </Element>
     );
 }

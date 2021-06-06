@@ -654,6 +654,10 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
 
             // essentials:
             tag={parentTag}
+
+
+            // accessibility:
+            inheritActive={props.inheritActive ?? true} // if Listgroup is active => the ListGroupItems are also active
             
 
             // classes:

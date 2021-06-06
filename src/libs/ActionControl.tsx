@@ -164,7 +164,7 @@ export function useStatePressRelease(props: IndicationProps, classes = { active:
 
         // behaviors:
         actionCtrl : true,      // always use actionCtrl implementation
-    }, classes);
+    }, /*inheritActive: */false, classes);
 }
 
 

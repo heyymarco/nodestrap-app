@@ -21,7 +21,7 @@ export interface Accessibility {
 
     /**
      * `true`      : component is in active state.  
-     * `false`     : component is in normal state.
+     * `false`     : component is in passive state.
      */
     active   : boolean
 }
@@ -39,16 +39,49 @@ Context.displayName  = 'Accessibility';
 
 // hooks:
 
+export function usePropAccessibility(props: Props): Accessibility {
+    // contexts:
+    const accessContext = useContext(Context);
+
+
+
+    return {
+        enabled:
+            accessContext.enabled   // if parent is enabled => current component *can be* enabled, otherwise disabled
+            &&
+            (props.enabled ?? true) // if [enabled] was not specified => the default value is [enabled=true] (enabled)
+            ,
+        active:
+            accessContext.active    // if parent is active => current component *is always* active, otherwise can be actived
+            ||
+            (props.active ?? false) // if [active] was not specified => the default value is [active=false] (passive)
+            ,
+    };
+}
+
 export function usePropEnabled(props: Props): boolean {
     // contexts:
-    const accsContext = useContext(Context);
+    const accessContext = useContext(Context);
 
 
 
     return (
-        accsContext.enabled     // if parent is disabled => current component is always disabled
+        accessContext.enabled   // if parent is enabled => current component *can be* enabled, otherwise disabled
         &&
         (props.enabled ?? true) // if [enabled] was not specified => the default value is [enabled=true] (enabled)
+    );
+}
+
+export function usePropActive(props: Props): boolean {
+    // contexts:
+    const accessContext = useContext(Context);
+
+
+
+    return (
+        accessContext.active    // if parent is active => current component *is always* active, otherwise can be actived
+        ||
+        (props.active ?? false) // if [active] was not specified => the default value is [active=false] (passive)
     );
 }
 
@@ -87,3 +120,4 @@ export default function AccessibilityProvider(props: Props) {
         </Context.Provider>
     );
 }
+export { AccessibilityProvider }
