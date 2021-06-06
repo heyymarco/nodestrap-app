@@ -35,6 +35,9 @@ import {
     styles as editableTextControlStyles,
 }                          from './EditableTextControl'
 import type * as Val       from './validations'
+import type {
+    Props as ValidationProps,
+}                          from './validations'
 
 
 
@@ -242,7 +245,7 @@ export function useFormValidator(customValidator?: CustomValidatorHandler) {
 export interface Props
     extends
         Elements.Props<HTMLFormElement>,
-        Val.Validation,
+        ValidationProps,
         React.FormHTMLAttributes<HTMLFormElement>
 {
     // validations:
@@ -253,14 +256,18 @@ export interface Props
     children?        : React.ReactNode
 }
 export default function Form(props: Props) {
+    // styles:
     const formStyles    = styles.useStyles();
 
+    
+    
     // states:
     const formValidator = useFormValidator(props.customValidator);
     const stateValInval = useStateValidInvalid(props, formValidator.validator);
 
 
 
+    // jsx:
     return (
         <Element<HTMLFormElement>
             // other props:

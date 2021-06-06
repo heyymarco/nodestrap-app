@@ -1,5 +1,7 @@
 // react (builds html using javascript):
-import React                from 'react'        // base technology of our nodestrap components
+import {
+    default as React,
+}                           from 'react'        // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
 import type {
@@ -18,6 +20,9 @@ import {
     EditableTextControlStylesBuilder,
 }                           from './EditableTextControl'
 import type * as EditableTextControls   from './EditableTextControl'
+import {
+    usePropEnabled,
+}                           from './accessibilities'
 
 
 
@@ -155,10 +160,12 @@ export interface Props
     placeholder?  : string
 }
 export default function Input(props: Props) {
-    const inpStyles       = styles.useStyles();
+    // styles:
+    const inpStyles   = styles.useStyles();
 
     
 
+    // rest props:
     const {
         // essentials:
         elmRef,
@@ -187,12 +194,20 @@ export default function Input(props: Props) {
         // formats:
         type,
         placeholder,
-    ...otherProps}  = props;
+    ...restProps}  = props;
 
+
+
+    // fn props:
+    const propEnabled = usePropEnabled(props);
+
+    
+    
+    // jsx:
     return (
         <EditableTextControl<HTMLInputElement>
             // other props:
-            {...otherProps}
+            {...restProps}
 
 
             // essentials:
@@ -212,7 +227,7 @@ export default function Input(props: Props) {
 
 
                 // accessibility:
-                disabled={props.enabled === false}
+                disabled={!propEnabled}
                 tabIndex={tabIndex}
                 readOnly={readOnly}
 

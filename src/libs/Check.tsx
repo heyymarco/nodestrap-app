@@ -1,6 +1,6 @@
 // react (builds html using javascript):
-import
-    React, {
+import {
+    default as React,
     useState,
 }                           from 'react'        // base technology of our nodestrap components
 
@@ -32,6 +32,9 @@ import {
 import {
     styles as buttonStyles,
 }                           from './Button'
+import {
+    usePropEnabled,
+}                           from './accessibilities'
 
 
 
@@ -736,20 +739,22 @@ export interface Props
     children?       : React.ReactNode
 }
 export default function Check(props: Props) {
+    // styles:
     const chkStyles   = styles.useStyles();
 
+    
+    
     // themes:
     const variCheck   = useVariantCheck(props, chkStyles);
 
+    
+    
     // states:
     const stateChkClr = useStateCheckClear(props);
 
-
-
-    const isBtnStyle  = props.chkStyle?.startsWith('btn') ?? false;
-
     
 
+    // rest props:
     const {
         // essentials:
         elmRef,
@@ -774,12 +779,21 @@ export default function Check(props: Props) {
 
         // formats:
         type,
-    ...otherProps}  = props;
+    ...restProps}  = props;
 
+
+
+    // fn props:
+    const propEnabled = usePropEnabled(props);
+    const isBtnStyle  = props.chkStyle?.startsWith('btn') ?? false;
+
+    
+    
+    // jsx:
     return (
         <EditableControl<HTMLInputElement>
             // other props:
-            {...otherProps}
+            {...restProps}
 
 
             // essentials:
@@ -809,7 +823,7 @@ export default function Check(props: Props) {
 
                 // accessibility:
                 aria-hidden={isBtnStyle} // if btnStyle => hides the check
-                disabled={props.enabled === false}
+                disabled={!propEnabled}
                 tabIndex={tabIndex}
                 readOnly={readOnly}
 

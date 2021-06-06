@@ -304,13 +304,17 @@ export interface Props
     children?    : React.ReactNode
 }
 export default function Button(props: Props) {
+    // styles:
     const btnStyles  = styles.useStyles();
 
+    
+    
     // themes:
     const variButton = useVariantButton(props);
 
 
 
+    // rest props:
     const {
         // essentials:
         tag,
@@ -318,15 +322,21 @@ export default function Button(props: Props) {
 
         // actions:
         type,
-        ...otherProps } = props;
+    ...restProps} = props;
     
+
+
+    // fn props:
     const tag2  = tag  ?? 'button';
     const type2 = type ?? (['button', 'input'].includes(tag2) ? 'button' : undefined);
 
+
+
+    // jsx:
     return (
         <Control<HTMLButtonElement>
             // other props:
-            {...otherProps}
+            {...restProps}
 
 
             // essentials:

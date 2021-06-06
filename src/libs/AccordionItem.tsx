@@ -1,5 +1,7 @@
 // react (builds html using javascript):
-import React                from 'react'       // base technology of our nodestrap components
+import {
+    default as React,
+}                           from 'react'        // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
 import type {
@@ -299,13 +301,17 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     label?          : string | React.ReactNode
 }
 export default function AccordionItem<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // styles:
     const accItemStyles         = styles.useStyles();
 
+    
+    
     // states:
     const [isActive, setActive] = useDynActivation(props);
 
     
     
+    // rest props:
     const {
         // accessibility:
         label,
@@ -317,12 +323,15 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
 
         // children:
         children,
-        ...otherProps } = props;
+    ...restProps} = props;
     
+    
+    
+    // jsx:
     return (<>
         <ListgroupItem
             // other props:
-            {...otherProps}
+            {...restProps}
 
             
             // essentials:

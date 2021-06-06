@@ -2,6 +2,7 @@
 import
     React, {
     createContext,
+    useContext,
 }                          from 'react'             // base technology of our nodestrap components
 
 
@@ -31,11 +32,10 @@ export type Result  = Nocheck|Error|Success;
  */
 export interface Validation {
     /**
-     * `undefined` : same as `true`.  
      * `true`      : validation feature is *enabled*, preserve `isValid` prop.  
      * `false`     : validation feature is *disabled*, equivalent as `isValid = null` (*uncheck*).
      */
-    enableValidation? : boolean
+    enableValidation  : boolean
 
     /**
      * `undefined` : *automatic* detect valid/invalid state.  
@@ -50,21 +50,63 @@ export interface Validation {
  * A react context for validation stuff.
  */
 export const Context = createContext<Validation>(/*defaultValue =*/{
-    enableValidation : true,
-    isValid          : undefined,
+    enableValidation  : true,
+    isValid           : undefined,
 });
 Context.displayName  = 'Validation';
+
+
+
+// hooks:
+
+export function usePropValidation(props: Props): Validation {
+    // contexts:
+    const valContext = useContext(Context);
+
+
+
+    return {
+        enableValidation:
+            valContext.enableValidation      // if parent is disabled => current component is always disabled
+            &&
+            (props.enableValidation ?? true) // if [enableValidation] was not specified => the default value is [enableValidation=true] (validation enabled)
+            ,
+
+        isValid:
+            (valContext.isValid !== undefined)
+            ?
+            valContext.isValid // if parent's validity is set => use the parent's validity
+            :
+            props.isValid      // otherwise, use component's validity
+            ,
+    };
+}
 
 
 
 // react components:
 
 export interface Props
-    extends
-        Validation
 {
+    /**
+     * `undefined` : same as `true`.  
+     * `true`      : validation feature is *enabled*, preserve `isValid` prop.  
+     * `false`     : validation feature is *disabled*, equivalent as `isValid = null` (*uncheck*).
+     */
+    enableValidation? : boolean
+
+    /**
+     * `undefined` : *automatic* detect valid/invalid state.  
+     * `null`      : force validation state to *uncheck*.  
+     * `true`      : force validation state to *valid*.  
+     * `false`     : force validation state to *invalid*.
+     */
+    isValid?          : Result
+
+
+
     // children:
-    children?         : React.ReactNode
+    children? : React.ReactNode
 }
 export default function ValidationProvider(props: Props) {
     return (

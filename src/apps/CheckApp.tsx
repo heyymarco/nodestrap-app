@@ -8,8 +8,8 @@ import {
 import logo from './logo.svg';
 import './App.css';
 
-import Container from './libs/Container';
-import Check, * as Checks   from './libs/Check';
+import Container from '../libs/Container';
+import Check, * as Checks   from '../libs/Check';
 
 
 

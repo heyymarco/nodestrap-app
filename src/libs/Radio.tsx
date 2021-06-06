@@ -17,6 +17,7 @@ export interface Props
 {
 }
 export default function Radio(props: Props) {
+    // jsx:
     return (
         <Check
             // other props:

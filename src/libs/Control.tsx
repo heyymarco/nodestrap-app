@@ -1,6 +1,6 @@
 // react (builds html using javascript):
-import
-    React, {
+import {
+    default as React,
     useState,
 }                           from 'react'        // base technology of our nodestrap components
 
@@ -26,6 +26,9 @@ import {
     IndicatorStylesBuilder,
 }                           from './Indicator'
 import type * as Indicators from './Indicator'
+import {
+    usePropEnabled,
+}                           from './accessibilities'
 
 
 
@@ -391,8 +394,8 @@ export const cssDecls = cssConfig.decls;
 // hooks:
 
 export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
-    // props:
-    const propEnabled: boolean = (props.enabled ?? true);  // if [enabled] was not specified => the default value is [enabled=true] (enabled)
+    // fn props:
+    const propEnabled = usePropEnabled(props);
     const propFocus:   boolean = (props.focus   ?? false); // if [focus]   was not specified => the default value is [focus=false]  (blurred)
 
 
@@ -462,8 +465,8 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
 }
 
 export function useStateHoverLeave<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>, stateFocusBlur: { focus: boolean, blurring: boolean }) {
-    // props:
-    const propEnabled: boolean = (props.enabled ?? true);  // if [enabled] was not specified => the default value is [enabled=true] (enabled)
+    // fn props:
+    const propEnabled = usePropEnabled(props);
 
 
 
@@ -568,14 +571,23 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     tabIndex? : number
 }
 export default function Control<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // styles:
     const ctrlStyles      = styles.useStyles();
 
+    
+    
     // states:
     const stateFocusBlur  = useStateFocusBlur(props);
     const stateHoverLeave = useStateHoverLeave(props, stateFocusBlur);
 
+
+
+    // fn props:
+    const propEnabled     = usePropEnabled(props);
+
     
 
+    // jsx:
     return (
         <Indicator<TElement>
             // other props:
@@ -601,7 +613,7 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
             // Control props:
             {...{
                 // accessibility:
-                tabIndex : (props.enabled ?? true) ? (props.tabIndex ?? 0) : -1,
+                tabIndex : propEnabled ? (props.tabIndex ?? 0) : -1,
             }}
         
 

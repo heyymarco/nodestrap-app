@@ -1,28 +1,34 @@
 // react (builds html using javascript):
-import
-    React, {
+import {
+    default as React,
     useState,
     useEffect,
-}                          from 'react'        // base technology of our nodestrap components
+}                           from 'react'        // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
 import type {
     JssStyle,
-}                          from 'jss'          // ts defs support for jss
+}                           from 'jss'          // ts defs support for jss
 import {
     PropEx,
     Cust,
-}                          from './Css'        // ts defs support for jss
-import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
+}                           from './Css'        // ts defs support for jss
+import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
-import colors              from './colors'     // configurable colors & theming defs
+import colors               from './colors'     // configurable colors & theming defs
 import {
     default  as Element,
     cssProps as ecssProps,
     ElementStylesBuilder,
-}                          from './Element'
-import type * as Elements  from './Element'
+}                           from './Element'
+import type * as Elements   from './Element'
+import {
+    usePropEnabled,
+}                           from './accessibilities'
+import type {
+    Props as AccessibilityProps,
+}                           from './accessibilities'
 
 
 
@@ -414,8 +420,8 @@ export const cssDecls = cssConfig.decls;
 // hooks:
 
 export function useStateEnableDisable(props: IndicationProps) {
-    // props:
-    const propEnabled: boolean = (props.enabled ?? true); // if [enabled] was not specified => the default value is [enabled=true] (enabled)
+    // fn props:
+    const propEnabled = usePropEnabled(props);
 
 
 
@@ -463,11 +469,12 @@ export function useStateEnableDisable(props: IndicationProps) {
 }
 
 export function useStateActivePassive(props: IndicationProps, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }, mouses: string[]|null = ['click'], keys: string[]|null = ['space']) {
-    // props:
+    // fn props:
+    const propEnabled = usePropEnabled(props);
     const propClickable: boolean =  // control is clickable if [is actionCtrl] and [is enabled]
         (props.actionCtrl ?? false) // if [actionCtrl] was not specified => the default value is [actionCtrl=false] (readonly)
         &&
-        (props.enabled    ?? true)  // if [enabled]    was not specified => the default value is [enabled=true]    (enabled)
+        propEnabled
         ;
     const propActive: boolean = (props.active ?? false); // if [active] was not specified => the default value is [active=false] (released)
 
@@ -571,8 +578,8 @@ export function useStateActivePassive(props: IndicationProps, classes = { active
 }
 
 export function useDynActivation(props: DynActivationProps): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
-    // props:
-    const propEnabled: boolean = (props.enabled ?? true); // if [enabled] was not specified => the default value is [enabled=true] (enabled)
+    // fn props:
+    const propEnabled = usePropEnabled(props);
 
 
 
@@ -616,12 +623,9 @@ export function useDynActivation(props: DynActivationProps): [boolean, React.Dis
 // react components:
 
 export interface IndicationProps
+    extends
+        AccessibilityProps
 {
-    // accessibility:
-    enabled?    : boolean
-    active?     : boolean
-
-
     // behaviors:
     actionCtrl? : boolean
 }
@@ -644,20 +648,18 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     stateActive?: [boolean, (newValue: boolean) => void]
 }
 export default function Indicator<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // styles:
     const indiStyles   = styles.useStyles();
+
+
 
     // states:
     const stateEnbDis  = useStateEnableDisable(props);
     const stateActPass = useStateActivePassive(props);
 
-
-
-    useEffect(() => { // guarantees the DOM has been fully rendered:
-        props.stateActive?.[1](!!stateActPass.class); // [activating, actived, passivating]
-    });
-
     
 
+    // fn props:
     const htmlCtrls    = [
         'button',
         'fieldset',
@@ -672,6 +674,14 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
+    // dom effects:
+    useEffect(() => { // guarantees the DOM has been fully rendered:
+        props.stateActive?.[1](!!stateActPass.class); // [activating, actived, passivating]
+    });
+
+
+
+    // jsx:
     return (
         <Element<TElement>
             // other props:

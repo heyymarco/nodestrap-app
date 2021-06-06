@@ -67,10 +67,12 @@ export interface Props
     icon?: string
 }
 export default function ButtonIcon(props: Props) {
+    // styles:
     const btnIcoStyles  = styles.useStyles();
 
 
 
+    // rest props:
     const {
         // appearances:
         icon,
@@ -82,12 +84,15 @@ export default function ButtonIcon(props: Props) {
 
         // children:
         children,
-        ...otherProps } = props;
+    ...restProps} = props;
     
+
+    
+    // jsx:
     return (
         <Button
             // other props:
-            {...otherProps}
+            {...restProps}
 
 
             // classes:

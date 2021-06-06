@@ -1,22 +1,21 @@
 import
     React, {
-    useState
+    useState,
+	useRef,
 }                          from 'react';
 import {
     jss as jssDefault,
 }                          from 'react-jss'         // base technology of our nodestrap components
 import logo from './logo.svg';
 import './App.css';
+import './NavscrollApp.css'
 
-import Container from './libs/Container';
-import Element   from './libs/Element';
-import Indicator from './libs/Indicator';
-import Control   from './libs/Control';
-import ActionControl   from './libs/ActionControl';
-import Button   from './libs/Button';
-import Content from './libs/Content';
-import Listgroup, {ListgroupItem} from './libs/Listgroup';
-import type * as Listgroups from './libs/Listgroup';
+import Container from '../libs/Container';
+import Element   from '../libs/Element';
+import Indicator from '../libs/Indicator';
+import Content from '../libs/Content';
+import Navscroll, {NavscrollItem} from '../libs/Navscroll';
+import type * as Navscrolls from '../libs/Navscroll';
 
 
 
@@ -67,124 +66,150 @@ function App() {
 	const actionCtrls = [false, undefined, true];
 	const [actionCtrl,      setActionCtrl   ] = useState<boolean|undefined>(undefined);
 
-	const [childEnabled,    setChildEnabled   ] = useState(false);
-	const [childActive,      setChildActive   ] = useState(true);
-
 	const orientations = [undefined, 'block', 'inline'];
-	const [orientation,    setOrientation     ] = useState<Listgroups.OrientationStyle|undefined>(undefined);
+	const [orientation,    setOrientation     ] = useState<Navscrolls.OrientationStyle|undefined>(undefined);
 
 	const listStyles = [undefined, 'bullet'];
-	const [listStyle,    setListStyle     ] = useState<Listgroups.ListStyle|undefined>(undefined);
+	const [listStyle,    setListStyle     ] = useState<Navscrolls.ListStyle|undefined>(undefined);
 
+
+	const articleRef = useRef<HTMLElement>(null);
 	
 
     return (
         <div className="App">
             <Container>
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                    Edit <code>src/App.tsx</code> and save to reload.
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
-                <hr style={{flexBasis: '100%'}} />
-                <Element
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
-				>
-                    element
-                </Element>
-                <Indicator
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+				<div style={{display: 'flex', flexDirection: 'row'}}>
+					<Navscroll classes={['nav']} style={{flex: '1 1'}}
+						theme={theme} size={size} enableGradient={enableGrad}
+						outlined={outlined}
 
-					enabled={enabled} active={active}
-				>
-                    indicator
-                </Indicator>
-                <Content
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+						enabled={enabled} active={active} actionCtrl={actionCtrl}
+						orientation={orientation}
+						listStyle={listStyle}
 
-					enabled={enabled} active={active}
-				>
-                    content
-                </Content>
-				<Control
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+						targetRef={articleRef}
+						targetFilter={(e) => e.tagName.toLowerCase() === 'section'}
+						interpolation={false}
+					>
+						<>First heading</>
+						<NavscrollItem>
+							Second heading
+							<Navscroll
+								theme='success' size='sm' enableGradient={enableGrad}
+								outlined={outlined}
 
-					enabled={enabled} active={active}
-				>
-                    control
-                </Control>
-				<ActionControl
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+								enabled={enabled} active={active}
+							>
+								<>Sub 2-1</>
+								<>Sub 2-2</>
+								<>Sub 2-3</>
+								<>Sub 2-4</>
+							</Navscroll>
+						</NavscrollItem>
+						<NavscrollItem theme='success'>Thrid heading</NavscrollItem>
+						<NavscrollItem>Fourth heading</NavscrollItem>
+						<NavscrollItem>Fifth heading</NavscrollItem>
+						<NavscrollItem>Sixth heading</NavscrollItem>
+						<NavscrollItem actionCtrl={true}>Seventh heading</NavscrollItem>
+						<NavscrollItem>Last heading</NavscrollItem>
+					</Navscroll>
 
-					enabled={enabled} active={active}
-				>
-                    action control
-                </ActionControl>
-				<Listgroup
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+					{/* <Navscroll classes={['nav']} style={{flex: '1 1'}}
+						theme={theme} size={size} enableGradient={enableGrad}
+						outlined={outlined}
 
-					enabled={enabled} active={active} actionCtrl={actionCtrl}
-					orientation={orientation}
-					listStyle={listStyle}
+						enabled={enabled} active={active}
+						orientation={orientation}
+						listStyle={listStyle}
+
+						targetRef={articleRef}
+						targetFilter={(e) => e.tagName.toLowerCase() === 'section'}
+						interpolation={true}
+					>
+						<>First heading</>
+						<NavscrollItem>
+							Second heading
+							<Navscroll
+								theme='success' size='sm' enableGradient={enableGrad}
+								outlined={outlined}
+
+								enabled={enabled} active={active}
+							>
+								<>Sub 2-1</>
+								<>Sub 2-2</>
+								<>Sub 2-3</>
+								<>Sub 2-4</>
+							</Navscroll>
+						</NavscrollItem>
+						<NavscrollItem theme='success'>Thrid heading</NavscrollItem>
+						<NavscrollItem>Fourth heading</NavscrollItem>
+						<NavscrollItem>Fifth heading</NavscrollItem>
+						<NavscrollItem>Sixth heading</NavscrollItem>
+						<NavscrollItem actionCtrl={true}>Seventh heading</NavscrollItem>
+						<NavscrollItem>Last heading</NavscrollItem>
+					</Navscroll> */}
+				</div>
+				<article
+					ref={articleRef}
+					
+					style={{
+						height: '150px',
+						width: '400px',
+						border: 'solid 1px black',
+						overflowY: 'auto',
+						marginBlockStart: '20px',
+						position: 'relative',
+						padding: '8px',
+						display: 'grid',
+						gridAutoFlow: 'row',
+						gap: '3px',
+					}}
 				>
-					<>hello</>
-					<></>
-					<>hey</>
-					<ListgroupItem enabled={childEnabled}>
-						i'm {childEnabled ? 'enabled' : 'disabled'}
-						<input type='checkbox'
-							checked={childEnabled}
-							onChange={(e) => setChildEnabled(e.target.checked)}
-						/>
-					</ListgroupItem>
-					'hoho'
-					<ListgroupItem active={childActive}>
-						i'm {childActive ? 'active' : 'passive'}
-						<input type='checkbox'
-							checked={childActive}
-							onChange={(e) => setChildActive(e.target.checked)}
-						/>
-					</ListgroupItem>
-					<ListgroupItem enabled={childEnabled} active={childActive}>
-						i'm {childEnabled ? 'enabled' : 'disabled'}
-						<input type='checkbox'
-							checked={childEnabled}
-							onChange={(e) => setChildEnabled(e.target.checked)}
-						/>
-						&amp; i'm {childActive ? 'active' : 'passive'}
-						<input type='checkbox'
-							checked={childActive}
-							onChange={(e) => setChildActive(e.target.checked)}
-						/>
-					</ListgroupItem>
-					<ListgroupItem theme='danger'>i'm angry</ListgroupItem>
-					<ListgroupItem theme='success'>i'm fine</ListgroupItem>
-					<ListgroupItem size='sm'>i'm small</ListgroupItem>
-					<ListgroupItem size='lg'>i'm big</ListgroupItem>
-					<ListgroupItem enableGradient={true}>i'm 3d</ListgroupItem>
-					<ListgroupItem outlined={true}>i'm transparent</ListgroupItem>
-					<ListgroupItem actionCtrl={true}>i'm controllable</ListgroupItem>
-					<ListgroupItem actionCtrl={true} active={true}>i'm controllable</ListgroupItem>
-					<ListgroupItem>
-						<Button>button</Button>
-					</ListgroupItem>
-					<ListgroupItem active={true}>
-						<Button>button</Button>
-					</ListgroupItem>
-                </Listgroup>
+					{/* <section></section> */}
+					<section style={{ height: '50px' }}>
+						<h6>First heading</h6>
+					</section>
+					<section style={{
+							// height: 'auto',
+							position: 'relative',
+
+							height: '240px',
+    						overflow: 'auto',
+						}}>
+						<h6>Second heading</h6>
+						<section style={{ height: '200px' }}>
+							Second sub heading 1
+						</section>
+						<section style={{ height: '100px' }}>
+							Second sub heading 2
+						</section>
+						<section style={{ height: '160px' }}>
+							Second sub heading 3
+						</section>
+						<section style={{ height: '50px' }}>
+							Second sub heading 4
+						</section>
+					</section>
+					<section style={{ height: '40px' }}>
+						<h6>Thrid heading</h6>
+					</section>
+					<section style={{ height: '300px' }}>
+						<h6>Fourth heading</h6>
+					</section>
+					<section style={{ height: '50px' }}>
+						<h6>Fifth heading</h6>
+					</section>
+					<section style={{ height: '40px' }}>
+						<h6>Sixth heading</h6>
+					</section>
+					<section style={{ height: '300px' }}>
+						<h6>Seventh heading</h6>
+					</section>
+					<section style={{ height: '50px' }}>
+						<h6>Last heading</h6>
+					</section>
+				</article>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:
@@ -283,7 +308,7 @@ function App() {
 								<input type='radio'
 									value={ori}
 									checked={orientation===ori}
-									onChange={(e) => setOrientation((e.target.value || undefined) as (Listgroups.OrientationStyle|undefined))}
+									onChange={(e) => setOrientation((e.target.value || undefined) as (Navscrolls.OrientationStyle|undefined))}
 								/>
 								{`${ori}`}
 							</label>
@@ -298,7 +323,7 @@ function App() {
 								<input type='radio'
 									value={st}
 									checked={listStyle===st}
-									onChange={(e) => setListStyle((e.target.value || undefined) as (Listgroups.ListStyle|undefined))}
+									onChange={(e) => setListStyle((e.target.value || undefined) as (Navscrolls.ListStyle|undefined))}
 								/>
 								{`${st}`}
 							</label>

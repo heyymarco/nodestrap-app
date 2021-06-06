@@ -8,11 +8,11 @@ import {
 import logo from './logo.svg';
 import './App.css';
 
-import Container from './libs/Container';
-import Element   from './libs/Element';
-import Indicator from './libs/Indicator';
-import Content from './libs/Content';
-import Card from './libs/Card';
+import Container from '../libs/Container';
+import Element   from '../libs/Element';
+import Indicator from '../libs/Indicator';
+import Content from '../libs/Content';
+import Card from '../libs/Card';
 
 
 

@@ -8,23 +8,23 @@ import {
 import logo from './logo.svg';
 import './App.css';
 
-import Container from './libs/Container';
-import Element   from './libs/Element';
-import Indicator from './libs/Indicator';
-import Content from './libs/Content';
-import Control from './libs/Control';
-import ActionControl from './libs/ActionControl';
-import EditableControl from './libs/EditableControl';
-import EditableTextControl from './libs/EditableTextControl';
+import Container from '../libs/Container';
+import Element   from '../libs/Element';
+import Indicator from '../libs/Indicator';
+import Content from '../libs/Content';
+import Control from '../libs/Control';
+import ActionControl from '../libs/ActionControl';
+import EditableControl from '../libs/EditableControl';
+import EditableTextControl from '../libs/EditableTextControl';
 
-import Button, * as Buttons from './libs/Button';
-import ButtonIcon from './libs/ButtonIcon';
-import CloseButton from './libs/CloseButton';
-import TogglerMenuButton from './libs/TogglerMenuButton';
-import Input from './libs/Input';
-import Check from './libs/Check';
+import Button, * as Buttons from '../libs/Button';
+import ButtonIcon from '../libs/ButtonIcon';
+import CloseButton from '../libs/CloseButton';
+import TogglerMenuButton from '../libs/TogglerMenuButton';
+import Input from '../libs/Input';
+import Check from '../libs/Check';
 
-import Icon   from './libs/Icon';
+import Icon   from '../libs/Icon';
 
 
 

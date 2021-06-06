@@ -5,12 +5,10 @@ import
 import {
     jss as jssDefault,
 }                          from 'react-jss'         // base technology of our nodestrap components
-import './App.css';
-import './MasonryApp.css';
 
-import Container from './libs/Container';
-import Masonry from './libs/Masonry';
-import type * as Masonries from './libs/Masonry';
+import Container from '../libs/Container';
+import Button from '../libs/Button';
+import Popup from '../libs/Popup';
 
 
 
@@ -55,33 +53,22 @@ function App() {
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
 
-	const orientations = [undefined, 'block', 'inline'];
-	const [orientation,    setOrientation     ] = useState<Masonries.OrientationStyle|undefined>(undefined);
+	const [enabled,    setEnabled   ] = useState(true);
+	const [active,      setActive   ] = useState(false);
 
 	
 
     return (
         <div className="App">
             <Container>
-                <Masonry
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
-
-					orientation={orientation}
+				<Button onClick={() => setActive(true)}>Show popup</Button>
+				<Popup theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled}
+				
+					active={active}
 				>
-					<img src="https://assets.codepen.io/12005/windmill.jpg" alt="A windmill" />
-					<img src="https://assets.codepen.io/12005/suspension-bridge.jpg" alt="The Clifton Suspension Bridge" />
-					<img src="https://assets.codepen.io/12005/sunset.jpg" alt="Sunset and boats" />
-					<img src="https://assets.codepen.io/12005/snowy.jpg" alt="a river in the snow" />
-					<img src="https://assets.codepen.io/12005/bristol-balloons1.jpg" alt="a single checked balloon" />
-					<img src="https://assets.codepen.io/12005/dog-balloon.jpg" alt="a hot air balloon shaped like a dog" />
-					<img src="https://assets.codepen.io/12005/abq-balloons.jpg" alt="View from a hot air balloon of other balloons" />
-					<img src="https://assets.codepen.io/12005/disney-balloon.jpg" alt="a balloon fairground ride" />
-					<img src="https://assets.codepen.io/12005/bristol-harbor.jpg" alt="sunrise over a harbor" />
-					<img src="https://assets.codepen.io/12005/bristol-balloons2.jpg" alt="three hot air balloons in a blue sky" />
-					<img src="https://assets.codepen.io/12005/toronto.jpg" alt="the Toronto light up sign at night" />
-				</Masonry>
-                <hr style={{flexBasis: '100%'}} />
+					Hopla!
+				</Popup>
+				<hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:
 					{
@@ -131,19 +118,22 @@ function App() {
 					</label>
 				</p>
 				<p>
-					OrientationStyle:
-					{
-						orientations.map(ori =>
-							<label key={ori ?? ''}>
-								<input type='radio'
-									value={ori}
-									checked={orientation===ori}
-									onChange={(e) => setOrientation((e.target.value || undefined) as (Masonries.OrientationStyle|undefined))}
-								/>
-								{`${ori}`}
-							</label>
-						)
-					}
+					<label>
+						<input type='checkbox'
+							checked={enabled}
+							onChange={(e) => setEnabled(e.target.checked)}
+						/>
+						enabled
+					</label>
+				</p>
+				<p>
+					<label>
+						<input type='checkbox'
+							checked={active}
+							onChange={(e) => setActive(e.target.checked)}
+						/>
+						active
+					</label>
 				</p>
             </Container>
         </div>

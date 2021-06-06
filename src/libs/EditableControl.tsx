@@ -1,9 +1,8 @@
 // react (builds html using javascript):
-import
-    React, {
+import {
+    default as React,
     useState,
     useEffect,
-    useContext,
 }                           from 'react'        // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
@@ -25,8 +24,13 @@ import {
     ControlStylesBuilder,
 }                           from './Control'
 import type * as Controls   from './Control'
-import * as validations     from './validations'
+import {
+    usePropValidation,
+}                           from './validations'
 import type * as Val        from './validations'
+import type {
+    Props as ValidationProps,
+}                           from './validations'
 
 
 
@@ -482,9 +486,9 @@ export function useInputValidator(customValidator?: CustomValidatorHandler) {
         handleChange : handleChange,
     };
 }
-export function useStateValidInvalid(props: Val.Validation, validator?: ValidatorHandler) {
-    // contexts:
-    const valContext = useContext(validations.Context);
+export function useStateValidInvalid(props: ValidationProps, validator?: ValidatorHandler) {
+    // fn props:
+    const propValidation = usePropValidation(props);
 
 
 
@@ -495,20 +499,14 @@ export function useStateValidInvalid(props: Val.Validation, validator?: Validato
     
     // states:
     const [valided,       setValided      ] = useState<Val.Result|undefined>((): (Val.Result|undefined) => {
-        // use context as the primary validator:
-        if (valContext.enableValidation === false) return null;               // disabled => uncheck
-        if (valContext.isValid !== undefined)      return valContext.isValid; // force state to uncheck/valid/invalid
+        // use prop as the primary validator:
+        if (!propValidation.enableValidation)     return null;                   // validation is disabled => uncheck
+        if (propValidation.isValid !== undefined) return propValidation.isValid; // validity is set => set state to uncheck/valid/invalid
 
         
         
-        // use own controllable validator as secondary:
-        if (props.enableValidation === false)      return null;          // disabled => uncheck
-        if (props.isValid !== undefined)           return props.isValid; // force state to uncheck/valid/invalid
-
-        
-        
-        // use input validator as tertiary:
-        if (validator)                             return undefined; // undefined means => evaluate the validator *at startup*
+        // use input validator as secondary:
+        if (validator)                            return undefined; // undefined means => evaluate the validator *at startup*
 
         
         
@@ -528,20 +526,14 @@ export function useStateValidInvalid(props: Val.Validation, validator?: Validato
      * otherwise return undefined (represents: no change needed)
      */
     const validFn = ((): (Val.Result|undefined) => {
-        // use context as the primary validator:
-        if (valContext.enableValidation === false) return null;               // disabled => uncheck
-        if (valContext.isValid !== undefined)      return valContext.isValid; // force state to uncheck/valid/invalid
+        // use prop as the primary validator:
+        if (!propValidation.enableValidation)     return null;                   // validation is disabled => uncheck
+        if (propValidation.isValid !== undefined) return propValidation.isValid; // validity is set => set state to uncheck/valid/invalid
 
         
         
-        // use own controllable validator as secondary:
-        if (props.enableValidation === false)      return null;          // disabled => uncheck
-        if (props.isValid !== undefined)           return props.isValid; // force state to uncheck/valid/invalid
-
-        
-        
-        // use input validator as tertiary:
-        if ((valided !== undefined) && validator)  return validator(); // now validator has been loaded => evaluate the validator *now*
+        // use input validator as secondary:
+        if ((valided !== undefined) && validator) return validator(); // now validator has been loaded => evaluate the validator *now*
 
         
         
@@ -601,10 +593,8 @@ export function useStateValidInvalid(props: Val.Validation, validator?: Validato
         setErrAnimating(null);  // stop err-animation/unerr-animation
     }
     const valDisabled = // causing the validator() not evaluated (disabled):
-        (valContext.enableValidation === false) ||
-        (valContext.isValid === null) ||
-        (props.enableValidation === false) ||
-        (props.isValid === null) ||
+        (!propValidation.enableValidation) ||
+        (propValidation.isValid === null) ||
         (!validator);
     return {
         /**
@@ -659,7 +649,7 @@ export function useStateValidInvalid(props: Val.Validation, validator?: Validato
 export interface Props<TElement extends EditableControlElement = EditableControlElement>
     extends
         Controls.Props<TElement>,
-        Val.Validation
+        ValidationProps
 {
     // accessibility:
     readOnly?        : boolean
@@ -676,14 +666,18 @@ export interface Props<TElement extends EditableControlElement = EditableControl
     required?        : boolean
 }
 export default function EditableControl<TElement extends EditableControlElement = EditableControlElement>(props: Props<TElement>) {
+    // styles:
     const ectrlStyles    = styles.useStyles();
 
+    
+    
     // states:
     const inputValidator = useInputValidator(props.customValidator);
     const stateValInval  = useStateValidInvalid(props, inputValidator.validator);
 
     
 
+    // fn props:
     const htmlEditCtrls   = [
         'input',
         'select',
@@ -692,6 +686,7 @@ export default function EditableControl<TElement extends EditableControlElement 
 
 
     
+    // jsx:
     return (
         <Control<TElement>
             // other props:

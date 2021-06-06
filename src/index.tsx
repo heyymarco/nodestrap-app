@@ -3,18 +3,18 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
-import App from './App';
-import CheckApp from './CheckApp';
-import ListgroupApp from './ListgroupApp';
-import CardApp from './CardApp';
-import ModalApp from './ModalApp';
-import FormApp from './FormApp';
-import NavbarApp from './NavbarApp';
-import CarouselApp from './CarouselApp';
-import NavscrollApp from './NavscrollApp';
-import MasonryApp from './MasonryApp';
-import AccordionApp from './AccordionApp';
-import PopupApp from './PopupApp';
+import App from './apps/App';
+import CheckApp from './apps/CheckApp';
+import ListgroupApp from './apps/ListgroupApp';
+import CardApp from './apps/CardApp';
+import ModalApp from './apps/ModalApp';
+import FormApp from './apps/FormApp';
+import NavbarApp from './apps/NavbarApp';
+import CarouselApp from './apps/CarouselApp';
+import NavscrollApp from './apps/NavscrollApp';
+import MasonryApp from './apps/MasonryApp';
+import AccordionApp from './apps/AccordionApp';
+import PopupApp from './apps/PopupApp';
 
 ReactDOM.render(
   <React.StrictMode>

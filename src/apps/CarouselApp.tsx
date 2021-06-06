@@ -10,15 +10,15 @@ import './App.css';
 
 import {
     Prop,
-}                           from './libs/Css'        // ts defs support for jss
+}                           from '../libs/Css'        // ts defs support for jss
 
-import Container from './libs/Container';
-import Element   from './libs/Element';
-import Indicator from './libs/Indicator';
-import Content from './libs/Content';
-import Button from './libs/Button';
-import ButtonIcon from './libs/ButtonIcon';
-import Modal, * as Modals from './libs/Modal';
+import Container from '../libs/Container';
+import Element   from '../libs/Element';
+import Indicator from '../libs/Indicator';
+import Content from '../libs/Content';
+import Button from '../libs/Button';
+import ButtonIcon from '../libs/ButtonIcon';
+import Carousel, { CarouselItem } from '../libs/Carousel';
 
 
 
@@ -65,16 +65,6 @@ function App() {
 
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
-	
-	const modalStyles = [undefined, 'scrollable'];
-	const [modalStyle,    setModalStyle     ] = useState<Modals.ModalStyle|undefined>(undefined);
-
-	const aligns = [undefined, 'start', 'center', 'end'];
-	const [horzAlign,  setHorzAlign   ] = useState<Prop.JustifyItems|undefined>(undefined);
-	const [vertAlign,  setVertAlign   ] = useState<Prop.AlignItems|undefined>(undefined);
-
-	const [wideContent, setWideContent   ] = useState(false);
-	const [tallContent, setTallContent   ] = useState(false);
 
 	
 
@@ -116,23 +106,15 @@ function App() {
 				>
                         test
                 </Content>
-				<Button onClick={() => setActive(true)}>Show modal</Button>
-				<ButtonIcon btnStyle='link' theme='secondary' aria-label='Close' icon='close' />
-				<Modal theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}
-
-					header=
-					'Lorem ipsum dolor'
-
-					footer=
-					'dolor sit amet'
-
-					onClose={() => setActive(false)}
-
-					modalStyle={modalStyle}
-					horzAlign={horzAlign}
-					vertAlign={vertAlign}
+				<Carousel theme={theme} size={size} enableGradient={enableGrad} outlined={outlined}
 				>
-					<p>
+					<CarouselItem><img src='https://picsum.photos/400/600' alt='' /></CarouselItem>
+					<CarouselItem><img src='https://picsum.photos/600/400' alt='' /></CarouselItem>
+					<CarouselItem><img src='https://picsum.photos/400/400' alt='' /></CarouselItem>
+					<CarouselItem><img src='https://picsum.photos/600/600' alt='' /></CarouselItem>
+				</Carousel>
+                <hr style={{flexBasis: '100%'}} />
+				<p>
 						Theme:
 						{
 							themes.map(th =>
@@ -180,119 +162,6 @@ function App() {
 							outlined
 						</label>
 					</p>
-					<p>
-						<label>
-							<input type='checkbox'
-								checked={enabled}
-								onChange={(e) => setEnabled(e.target.checked)}
-							/>
-							enabled
-						</label>
-					</p>
-					<p>
-						ModalStyle:
-						{
-							modalStyles.map(st =>
-								<label key={st ?? ''}>
-									<input type='radio'
-										value={st}
-										checked={modalStyle===st}
-										onChange={(e) => setModalStyle((e.target.value || undefined) as (Modals.ModalStyle|undefined))}
-									/>
-									{`${st}`}
-								</label>
-							)
-						}
-					</p>
-					<p>
-						horzAlign:
-						{
-							aligns.map(al =>
-								<label key={al ?? ''}>
-									<input type='radio'
-										value={al}
-										checked={horzAlign===al}
-										onChange={(e) => setHorzAlign((e.target.value || undefined) as (Prop.JustifyItems|undefined))}
-									/>
-									{`${al}`}
-								</label>
-							)
-						}
-					</p>
-					<p>
-						vertAlign:
-						{
-							aligns.map(al =>
-								<label key={al ?? ''}>
-									<input type='radio'
-										value={al}
-										checked={vertAlign===al}
-										onChange={(e) => setVertAlign((e.target.value || undefined) as (Prop.AlignItems|undefined))}
-									/>
-									{`${al}`}
-								</label>
-							)
-						}
-					</p>
-					<p>
-						<label>
-							<input type='checkbox'
-								checked={wideContent}
-								onChange={(e) => setWideContent(e.target.checked)}
-							/>
-							simulate wide content
-						</label>
-					</p>
-					<p>
-						<label>
-							<input type='checkbox'
-								checked={tallContent}
-								onChange={(e) => setTallContent(e.target.checked)}
-							/>
-							simulate tall content
-						</label>
-					</p>
-					{wideContent && <>
-						<p style={{whiteSpace: 'nowrap'}}>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit qui provident vero at, veniam eligendi velit, culpa odit modi cumque fugit dicta facere asperiores autem iusto tenetur saepe, accusamus cum?
-						</p>
-					</>}
-					{tallContent && <>
-						<p>
-							Lorem<br/>
-							ipsum<br/>
-							dolor<br/>
-							sit,<br/>
-							amet<br/>
-							consectetur<br/>
-							adipisicing<br/>
-							elit.<br/>
-							Obcaecati,<br/>
-							fugiat<br/>
-							quam<br/>
-							corrupti<br/>
-							doloremque<br/>
-							mollitia<br/>
-							fuga<br/>
-							tempora<br/>
-							sequi<br/>
-							repellat?<br/>
-							Sint<br/>
-							quia<br/>
-							doloremque,<br/>
-							accusantium<br/>
-							perferendis<br/>
-							autem<br/>
-							cupiditate!<br/>
-							Sapiente<br/>
-							odio<br/>
-							sit<br/>
-							voluptatem<br/>
-							accusamus.
-						</p>
-					</>}
-				</Modal>
-                <hr style={{flexBasis: '100%'}} />
             </Container>
         </div>
     );

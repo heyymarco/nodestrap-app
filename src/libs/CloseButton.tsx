@@ -15,6 +15,7 @@ export interface Props
 {
 }
 export default function CloseButton(props: Props) {
+    // jsx:
     return (
         <ButtonIcon
             // other props:

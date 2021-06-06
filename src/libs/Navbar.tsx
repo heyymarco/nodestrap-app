@@ -1,6 +1,6 @@
 // react (builds html using javascript):
-import
-    React, {
+import {
+    default as React,
     useState,
     useEffect,
     useRef,
@@ -763,17 +763,23 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     toggler?  : React.ReactChild | boolean
 }
 export default function Navbar<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // styles:
     const navbStyles            = styles.useStyles();
 
+    
+    
     // states:
     const [isActive, setActive] = useDynActivation(props);
 
+    
+    
     // layouts:
     const navbarRef             = useRef<TElement>(null);
     const compactable           = useCompactable(props, navbarRef);
 
     
     
+    // rest props:
     const {
         // accessibility:
         /*delete*/ defaultActive,
@@ -785,12 +791,15 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
         children,
         logo,
         toggler,
-        ...otherProps } = props;
+    ...restProps} = props;
 
+
+
+    // jsx:
     return (
         <Indicator<TElement>
             // other props:
-            {...otherProps}
+            {...restProps}
 
 
             // essentials:

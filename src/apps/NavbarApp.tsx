@@ -5,23 +5,15 @@ import
 import {
     jss as jssDefault,
 }                          from 'react-jss'         // base technology of our nodestrap components
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 
-import Form from './libs/Form';
-import Element   from './libs/Element';
-import Indicator from './libs/Indicator';
-import Content from './libs/Content';
-import Control from './libs/Control';
-import EditableControl from './libs/EditableControl';
-import EditableTextControl from './libs/EditableTextControl';
-
-import Button, * as Buttons from './libs/Button';
-import ButtonIcon from './libs/ButtonIcon';
-import Input from './libs/Input';
-import Check from './libs/Check';
-
-import Icon   from './libs/Icon';
+import Container from '../libs/Container';
+import Element   from '../libs/Element';
+import Indicator from '../libs/Indicator';
+import Content from '../libs/Content';
+// import ButtonIcon   from '../libs/ButtonIcon';
+import Navbar, {NavbarMenu} from '../libs/Navbar';
 
 
 
@@ -66,35 +58,67 @@ function App() {
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
 
-	const isValids = [undefined, false, null, true];
-	const [enableVal, setEnableVal  ] = useState(true);
-	const [isValid,   setIsValid    ] = useState<boolean|null|undefined>(undefined);
+	const [enabled,    setEnabled   ] = useState(true);
+	const [active,      setActive   ] = useState(false);
 
+	const compacts = [undefined, false, true];
+	const [compact,    setCompact   ] = useState<boolean|undefined>(undefined);
 
+	const [hasLogo,      setHasLogo   ] = useState(true);
 
+	
 
     return (
-        <div className="App">
-            <Form
-				theme={theme} size={size} enableGradient={enableGrad} outlined={outlined}
+        <div className="App" style={{background: 'url("/stone--.svg")'}}>
+			
+			<Navbar
+				theme={theme} size={size} enableGradient={enableGrad}
+				outlined={outlined}
 
-				enableValidation={enableVal}
-				isValid={isValid}
+				enabled={enabled}
+				
+				// defaultActive={true}
+				active={active}
+				onActiveChange={(active) => setActive(active)}
+
+				compact={compact}
+
+				logo={hasLogo && <img src="/logo.png" alt="" style={{height: '30px'}}  />}
+				// toggler={<ButtonIcon icon='close'>Close</ButtonIcon>}
 			>
-				<Input
-					theme={undefined}
+				<>hello</>
+				<NavbarMenu enabled={false}>disabled</NavbarMenu>
+				'hoho'
+				<NavbarMenu active={true}>active</NavbarMenu>
+				<NavbarMenu theme='danger'>angry</NavbarMenu>
+				<NavbarMenu theme='success'>fine</NavbarMenu>
+				<NavbarMenu size='sm'>small</NavbarMenu>
+				<NavbarMenu size='lg'>big</NavbarMenu>
+				<NavbarMenu enableGradient={true}>i'm 3d</NavbarMenu>
+			</Navbar>
+            <Container>
+                <Element
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+				>
+                        test
+                </Element>
+                <Indicator
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
 
-					type='text'
-					defaultValue=''
-					minLength={4}
-					maxLength={8}
-				/>
-                <Input
-					theme={undefined}
+					enabled={enabled} active={active}
+				>
+                        test
+                </Indicator>
+                <Content
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
 
-					type='email'
-					defaultValue='yourmail'
-				/>
+					enabled={enabled} active={active}
+				>
+                        test
+                </Content>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:
@@ -147,37 +171,54 @@ function App() {
 				<p>
 					<label>
 						<input type='checkbox'
-							checked={enableVal}
-							onChange={(e) => setEnableVal(e.target.checked)}
+							checked={enabled}
+							onChange={(e) => setEnabled(e.target.checked)}
 						/>
-						enable validation
+						enabled
 					</label>
 				</p>
 				<p>
-					is valid:
+					<label>
+						<input type='checkbox'
+							checked={active}
+							onChange={(e) => setActive(e.target.checked)}
+						/>
+						active
+					</label>
+				</p>
+				<p>
+					Compact:
 					{
-						isValids.map(val =>
-							<label key={`${val}`}>
+						compacts.map(cp =>
+							<label key={`${cp}`}>
 								<input type='radio'
-									value={`${val}`}
-									checked={isValid===val}
-									onChange={(e) => setIsValid((() => {
+									value={`${cp}`}
+									checked={compact===cp}
+									onChange={(e) => setCompact((() => {
 										const value = e.target.value;
 										if (!value) return undefined;
 										switch (value) {
 											case 'true' : return true;
 											case 'false': return false;
-											case 'null' : return null;
 											default     : return undefined;
 										} // switch
 									})())}
 								/>
-								{`${(val===undefined) ? 'auto' : val}`}
+								{`${cp ?? 'auto'}`}
 							</label>
 						)
 					}
 				</p>
-            </Form>
+				<p>
+					<label>
+						<input type='checkbox'
+							checked={hasLogo}
+							onChange={(e) => setHasLogo(e.target.checked)}
+						/>
+						has logo
+					</label>
+				</p>
+            </Container>
         </div>
     );
 }

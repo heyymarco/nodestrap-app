@@ -5,10 +5,23 @@ import
 import {
     jss as jssDefault,
 }                          from 'react-jss'         // base technology of our nodestrap components
+import logo from './logo.svg';
+import './App.css';
 
-import Container from './libs/Container';
-import Button from './libs/Button';
-import Popup from './libs/Popup';
+import Form from '../libs/Form';
+import Element   from '../libs/Element';
+import Indicator from '../libs/Indicator';
+import Content from '../libs/Content';
+import Control from '../libs/Control';
+import EditableControl from '../libs/EditableControl';
+import EditableTextControl from '../libs/EditableTextControl';
+
+import Button, * as Buttons from '../libs/Button';
+import ButtonIcon from '../libs/ButtonIcon';
+import Input from '../libs/Input';
+import Check from '../libs/Check';
+
+import Icon   from '../libs/Icon';
 
 
 
@@ -53,22 +66,36 @@ function App() {
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
 
-	const [enabled,    setEnabled   ] = useState(true);
-	const [active,      setActive   ] = useState(false);
+	const isValids = [undefined, false, null, true];
+	const [enableVal, setEnableVal  ] = useState(true);
+	const [isValid,   setIsValid    ] = useState<boolean|null|undefined>(undefined);
 
-	
+
+
 
     return (
         <div className="App">
-            <Container>
-				<Button onClick={() => setActive(true)}>Show popup</Button>
-				<Popup theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled}
-				
-					active={active}
-				>
-					Hopla!
-				</Popup>
-				<hr style={{flexBasis: '100%'}} />
+            <Form
+				theme={theme} size={size} enableGradient={enableGrad} outlined={outlined}
+
+				enableValidation={enableVal}
+				isValid={isValid}
+			>
+				<Input
+					theme={undefined}
+
+					type='text'
+					defaultValue=''
+					minLength={4}
+					maxLength={8}
+				/>
+                <Input
+					theme={undefined}
+
+					type='email'
+					defaultValue='yourmail'
+				/>
+                <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:
 					{
@@ -120,22 +147,37 @@ function App() {
 				<p>
 					<label>
 						<input type='checkbox'
-							checked={enabled}
-							onChange={(e) => setEnabled(e.target.checked)}
+							checked={enableVal}
+							onChange={(e) => setEnableVal(e.target.checked)}
 						/>
-						enabled
+						enable validation
 					</label>
 				</p>
 				<p>
-					<label>
-						<input type='checkbox'
-							checked={active}
-							onChange={(e) => setActive(e.target.checked)}
-						/>
-						active
-					</label>
+					is valid:
+					{
+						isValids.map(val =>
+							<label key={`${val}`}>
+								<input type='radio'
+									value={`${val}`}
+									checked={isValid===val}
+									onChange={(e) => setIsValid((() => {
+										const value = e.target.value;
+										if (!value) return undefined;
+										switch (value) {
+											case 'true' : return true;
+											case 'false': return false;
+											case 'null' : return null;
+											default     : return undefined;
+										} // switch
+									})())}
+								/>
+								{`${(val===undefined) ? 'auto' : val}`}
+							</label>
+						)
+					}
 				</p>
-            </Container>
+            </Form>
         </div>
     );
 }

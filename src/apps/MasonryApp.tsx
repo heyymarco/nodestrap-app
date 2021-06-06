@@ -5,15 +5,12 @@ import
 import {
     jss as jssDefault,
 }                          from 'react-jss'         // base technology of our nodestrap components
-// import logo from './logo.svg';
 import './App.css';
+import './MasonryApp.css';
 
-import Container from './libs/Container';
-import Element   from './libs/Element';
-import Indicator from './libs/Indicator';
-import Content from './libs/Content';
-// import ButtonIcon   from './libs/ButtonIcon';
-import Navbar, {NavbarMenu} from './libs/Navbar';
+import Container from '../libs/Container';
+import Masonry from '../libs/Masonry';
+import type * as Masonries from '../libs/Masonry';
 
 
 
@@ -58,67 +55,32 @@ function App() {
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
 
-	const [enabled,    setEnabled   ] = useState(true);
-	const [active,      setActive   ] = useState(false);
-
-	const compacts = [undefined, false, true];
-	const [compact,    setCompact   ] = useState<boolean|undefined>(undefined);
-
-	const [hasLogo,      setHasLogo   ] = useState(true);
+	const orientations = [undefined, 'block', 'inline'];
+	const [orientation,    setOrientation     ] = useState<Masonries.OrientationStyle|undefined>(undefined);
 
 	
 
     return (
-        <div className="App" style={{background: 'url("/stone--.svg")'}}>
-			
-			<Navbar
-				theme={theme} size={size} enableGradient={enableGrad}
-				outlined={outlined}
-
-				enabled={enabled}
-				
-				// defaultActive={true}
-				active={active}
-				onActiveChange={(active) => setActive(active)}
-
-				compact={compact}
-
-				logo={hasLogo && <img src="/logo.png" alt="" style={{height: '30px'}}  />}
-				// toggler={<ButtonIcon icon='close'>Close</ButtonIcon>}
-			>
-				<>hello</>
-				<NavbarMenu enabled={false}>disabled</NavbarMenu>
-				'hoho'
-				<NavbarMenu active={true}>active</NavbarMenu>
-				<NavbarMenu theme='danger'>angry</NavbarMenu>
-				<NavbarMenu theme='success'>fine</NavbarMenu>
-				<NavbarMenu size='sm'>small</NavbarMenu>
-				<NavbarMenu size='lg'>big</NavbarMenu>
-				<NavbarMenu enableGradient={true}>i'm 3d</NavbarMenu>
-			</Navbar>
+        <div className="App">
             <Container>
-                <Element
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
-				>
-                        test
-                </Element>
-                <Indicator
+                <Masonry
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
 
-					enabled={enabled} active={active}
+					orientation={orientation}
 				>
-                        test
-                </Indicator>
-                <Content
-					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
-
-					enabled={enabled} active={active}
-				>
-                        test
-                </Content>
+					<img src="https://assets.codepen.io/12005/windmill.jpg" alt="A windmill" />
+					<img src="https://assets.codepen.io/12005/suspension-bridge.jpg" alt="The Clifton Suspension Bridge" />
+					<img src="https://assets.codepen.io/12005/sunset.jpg" alt="Sunset and boats" />
+					<img src="https://assets.codepen.io/12005/snowy.jpg" alt="a river in the snow" />
+					<img src="https://assets.codepen.io/12005/bristol-balloons1.jpg" alt="a single checked balloon" />
+					<img src="https://assets.codepen.io/12005/dog-balloon.jpg" alt="a hot air balloon shaped like a dog" />
+					<img src="https://assets.codepen.io/12005/abq-balloons.jpg" alt="View from a hot air balloon of other balloons" />
+					<img src="https://assets.codepen.io/12005/disney-balloon.jpg" alt="a balloon fairground ride" />
+					<img src="https://assets.codepen.io/12005/bristol-harbor.jpg" alt="sunrise over a harbor" />
+					<img src="https://assets.codepen.io/12005/bristol-balloons2.jpg" alt="three hot air balloons in a blue sky" />
+					<img src="https://assets.codepen.io/12005/toronto.jpg" alt="the Toronto light up sign at night" />
+				</Masonry>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:
@@ -169,54 +131,19 @@ function App() {
 					</label>
 				</p>
 				<p>
-					<label>
-						<input type='checkbox'
-							checked={enabled}
-							onChange={(e) => setEnabled(e.target.checked)}
-						/>
-						enabled
-					</label>
-				</p>
-				<p>
-					<label>
-						<input type='checkbox'
-							checked={active}
-							onChange={(e) => setActive(e.target.checked)}
-						/>
-						active
-					</label>
-				</p>
-				<p>
-					Compact:
+					OrientationStyle:
 					{
-						compacts.map(cp =>
-							<label key={`${cp}`}>
+						orientations.map(ori =>
+							<label key={ori ?? ''}>
 								<input type='radio'
-									value={`${cp}`}
-									checked={compact===cp}
-									onChange={(e) => setCompact((() => {
-										const value = e.target.value;
-										if (!value) return undefined;
-										switch (value) {
-											case 'true' : return true;
-											case 'false': return false;
-											default     : return undefined;
-										} // switch
-									})())}
+									value={ori}
+									checked={orientation===ori}
+									onChange={(e) => setOrientation((e.target.value || undefined) as (Masonries.OrientationStyle|undefined))}
 								/>
-								{`${cp ?? 'auto'}`}
+								{`${ori}`}
 							</label>
 						)
 					}
-				</p>
-				<p>
-					<label>
-						<input type='checkbox'
-							checked={hasLogo}
-							onChange={(e) => setHasLogo(e.target.checked)}
-						/>
-						has logo
-					</label>
 				</p>
             </Container>
         </div>

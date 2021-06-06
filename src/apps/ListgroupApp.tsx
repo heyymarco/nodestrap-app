@@ -5,13 +5,18 @@ import
 import {
     jss as jssDefault,
 }                          from 'react-jss'         // base technology of our nodestrap components
+import logo from './logo.svg';
 import './App.css';
 
-import Container from './libs/Container';
-import Button   from './libs/Button';
-import {ListgroupItem} from './libs/Listgroup';
-import Accordion, {AccordionItem} from './libs/Accordion';
-import type * as Accordions from './libs/Accordion';
+import Container from '../libs/Container';
+import Element   from '../libs/Element';
+import Indicator from '../libs/Indicator';
+import Control   from '../libs/Control';
+import ActionControl   from '../libs/ActionControl';
+import Button   from '../libs/Button';
+import Content from '../libs/Content';
+import Listgroup, {ListgroupItem} from '../libs/Listgroup';
+import type * as Listgroups from '../libs/Listgroup';
 
 
 
@@ -66,22 +71,68 @@ function App() {
 	const [childActive,      setChildActive   ] = useState(true);
 
 	const orientations = [undefined, 'block', 'inline'];
-	const [orientation,    setOrientation     ] = useState<Accordions.OrientationStyle|undefined>(undefined);
+	const [orientation,    setOrientation     ] = useState<Listgroups.OrientationStyle|undefined>(undefined);
 
 	const listStyles = [undefined, 'bullet'];
-	const [listStyle,    setListStyle     ] = useState<Accordions.ListStyle|undefined>(undefined);
+	const [listStyle,    setListStyle     ] = useState<Listgroups.ListStyle|undefined>(undefined);
 
 	
 
     return (
         <div className="App">
             <Container>
-				<AccordionItem label='test'>
-					<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
-					<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
-				</AccordionItem>
-				<hr style={{flexBasis: '100%'}} />
-                <Accordion
+                <img src={logo} className="App-logo" alt="logo" />
+                <p>
+                    Edit <code>src/App.tsx</code> and save to reload.
+                </p>
+                <a
+                    className="App-link"
+                    href="https://reactjs.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Learn React
+                </a>
+                <hr style={{flexBasis: '100%'}} />
+                <Element
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+				>
+                    element
+                </Element>
+                <Indicator
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+				>
+                    indicator
+                </Indicator>
+                <Content
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+				>
+                    content
+                </Content>
+				<Control
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+				>
+                    control
+                </Control>
+				<ActionControl
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+				>
+                    action control
+                </ActionControl>
+				<Listgroup
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
 
@@ -89,25 +140,16 @@ function App() {
 					orientation={orientation}
 					listStyle={listStyle}
 				>
-					<AccordionItem label='test'>
-						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
-						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
-					</AccordionItem>
-					<AccordionItem label='hey'>
-						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
-						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
-					</AccordionItem>
-					<AccordionItem enabled={childEnabled} label={<>
+					<>hello</>
+					<></>
+					<>hey</>
+					<ListgroupItem enabled={childEnabled}>
 						i'm {childEnabled ? 'enabled' : 'disabled'}
 						<input type='checkbox'
 							checked={childEnabled}
 							onChange={(e) => setChildEnabled(e.target.checked)}
-							onClick={(e) => e.stopPropagation()}
 						/>
-					</>}>
-						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
-						<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur odit voluptatum esse debitis praesentium non labore error ex eius mollitia, aliquid quos asperiores ullam. Cupiditate pariatur vitae minus nisi provident?</p>
-					</AccordionItem>
+					</ListgroupItem>
 					'hoho'
 					<ListgroupItem active={childActive}>
 						i'm {childActive ? 'active' : 'passive'}
@@ -142,7 +184,7 @@ function App() {
 					<ListgroupItem active={true}>
 						<Button>button</Button>
 					</ListgroupItem>
-                </Accordion>
+                </Listgroup>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:
@@ -241,7 +283,7 @@ function App() {
 								<input type='radio'
 									value={ori}
 									checked={orientation===ori}
-									onChange={(e) => setOrientation((e.target.value || undefined) as (Accordions.OrientationStyle|undefined))}
+									onChange={(e) => setOrientation((e.target.value || undefined) as (Listgroups.OrientationStyle|undefined))}
 								/>
 								{`${ori}`}
 							</label>
@@ -256,7 +298,7 @@ function App() {
 								<input type='radio'
 									value={st}
 									checked={listStyle===st}
-									onChange={(e) => setListStyle((e.target.value || undefined) as (Accordions.ListStyle|undefined))}
+									onChange={(e) => setListStyle((e.target.value || undefined) as (Listgroups.ListStyle|undefined))}
 								/>
 								{`${st}`}
 							</label>
