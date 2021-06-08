@@ -27,7 +27,7 @@ import {
 import {
     default  as Indicator,
     styles as indicatorStyles,
-    useDynActivation,
+    useTogglerActive,
 }                           from './Indicator'
 import type * as Indicators from './Indicator'
 import {
@@ -257,7 +257,6 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         extend: [
             // super.themesIf(),        // skip using Control's theming => uses Control's base's theming
             
-            // @ts-ignore
             indicatorStyles.themesIf(), // copy themes from Indicator (Control's base)
         ] as JssStyle,
     }}
@@ -658,16 +657,16 @@ export const cssDecls = cssConfig.decls;
 export interface Compactable {
     compact? : boolean
 }
-export function useCompactable<TElement extends HTMLElement = HTMLElement>(props: Compactable, navbarRef: React.MutableRefObject<TElement|null>) {
+export function useStateCompact<TElement extends HTMLElement = HTMLElement>(props: Compactable, navbarRef: React.MutableRefObject<TElement|null>) {
     // states:
     const [compactDn, setCompactDn] = useState<boolean>(false); // uncontrollable (dynamic) state: true => compact mode is needed, false => compact mode is not needed
 
 
 
     /*
-     * state is compact/full based on [fully controllable compact] (if set) and fallback to [uncontrollable compact]
+     * state is compact/full based on [controllable compact] (if set) and fallback to [uncontrollable compact]
      */
-    const compactFn: boolean = props.compact ?? compactDn;
+    const compactFn: boolean = props.compact /*controllable*/ ?? compactDn /*uncontrollable*/;
 
 
 
@@ -754,7 +753,7 @@ export function useCompactable<TElement extends HTMLElement = HTMLElement>(props
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
         Indicators.Props<TElement>,
-        Indicators.DynActivationProps,
+        Indicators.TogglerActiveProps,
         Compactable
 {
     // children:
@@ -769,13 +768,10 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
     
     
     // states:
-    const [isActive, setActive] = useDynActivation(props);
+    const [isActive, setActive] = useTogglerActive(props);
 
-    
-    
-    // layouts:
     const navbarRef             = useRef<TElement>(null);
-    const compactable           = useCompactable(props, navbarRef);
+    const stateCompact          = useStateCompact(props, navbarRef);
 
     
     
@@ -829,9 +825,9 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
             // classes:
             mainClass={props.mainClass ?? navbStyles.main}
-            themeClasses={[...(props.themeClasses ?? []),
-                // themes:
-                compactable.class,
+            stateClasses={[...(props.stateClasses ?? []),
+                // states:
+                stateCompact.class,
             ]}
 
 

@@ -645,14 +645,14 @@ export function useStateCheckClear(props: Props) {
     const [checked,   setChecked  ] = useState<boolean>(props.checked        ?? defaultChecked); // true => checked, false => cleared
     const [animating, setAnimating] = useState<boolean|null>(null);                              // null => no-animation, true => checking-animation, false => clearing-animation
 
-    const [checkedDn, setCheckedDn] = useState<boolean>(props.defaultChecked ?? defaultChecked); // uncontrollable (dynamic) state: true => user press, false => user release
+    const [checkedDn, setCheckedDn] = useState<boolean>(props.defaultChecked ?? defaultChecked); // uncontrollable (dynamic) state: true => user checked, false => user cleared
 
 
 
     /*
-     * state is checked/cleared based on [fully controllable checked] (if set) and fallback to [uncontrollable checked]
+     * state is checked/cleared based on [controllable checked] (if set) and fallback to [uncontrollable checked]
      */
-    const checkedFn: boolean = props.checked ?? checkedDn;
+    const checkedFn: boolean = props.checked /*controllable*/ ?? checkedDn /*uncontrollable*/;
 
     if (checked !== checkedFn) { // change detected => apply the change & start animating
         setChecked(checkedFn);   // remember the last change

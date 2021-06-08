@@ -14,16 +14,30 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
         ActCtrls.Props<TElement>
 {
+    // accessibility:
+    /**
+     * `undefined` : same as `true`.  
+     * `true`      : inherits `active` from `Listgroup`.  
+     * `false`     : independent `active`.
+     */
+    inheritActive? : boolean
+
+
     // children:
-    children? : React.ReactNode
+    children?      : React.ReactNode
 }
 export default function ListgroupItem<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // jsx:
     return (
         props.actionCtrl
         ?
         <ActionControl<TElement>
             // other props:
             {...props}
+
+
+            // accessibility:
+            inheritActive={props.inheritActive ?? true}
 
 
             // classes:
@@ -33,6 +47,10 @@ export default function ListgroupItem<TElement extends HTMLElement = HTMLElement
         <Indicator<TElement>
             // other props:
             {...props}
+
+
+            // accessibility:
+            inheritActive={props.inheritActive ?? true}
 
 
             // classes:

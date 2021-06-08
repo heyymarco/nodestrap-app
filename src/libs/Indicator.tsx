@@ -434,9 +434,10 @@ export function useStateEnableDisable(props: IndicationProps) {
     
     
     /*
-     * state is enabled/disabled based on [fully controllable enabled]
+     * state is enabled/disabled based on [controllable enabled]
+     * [uncontrollable enabled] is not supported
      */
-    const enabledFn: boolean = propEnabled;
+    const enabledFn: boolean = propEnabled /*controllable*/;
 
     if (enabled !== enabledFn) { // change detected => apply the change & start animating
         setEnabled(enabledFn);   // remember the last change
@@ -470,43 +471,42 @@ export function useStateEnableDisable(props: IndicationProps) {
     };
 }
 
-export function useStateActivePassive(props: IndicationProps, inheritActive = true, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }, mouses: string[]|null = ['click'], keys: string[]|null = ['space']) {
+export function useStateActivePassive(props: IndicationProps, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }, mouses: string[]|null = ['click'], keys: string[]|null = ['space']) {
     // fn props:
-    const propAccess  = usePropAccessibility(props);
+    const propAccess  = usePropAccessibility<boolean, boolean|undefined>(props, undefined, undefined);
     const propEnabled = propAccess.enabled;
+    const propActive  = propAccess.active;
     const propClickable: boolean =  // control is clickable if [is actionCtrl] and [is enabled]
         (props.actionCtrl ?? false) // if [actionCtrl] was not specified => the default value is [actionCtrl=false] (readonly)
         &&
         propEnabled
         ;
-    const propActive  = inheritActive ? propAccess.active : (props.active ?? false);
 
 
 
     // states:
-    const [actived,   setActived  ] = useState<boolean>(propActive); // true => active, false => passive
-    const [animating, setAnimating] = useState<boolean|null>(null);  // null => no-animation, true => pressing-animation, false => releasing-animation
+    const [actived,   setActived  ] = useState<boolean>(propActive ?? false); // true => active, false => passive
+    const [animating, setAnimating] = useState<boolean|null>(null);           // null => no-animation, true => activating-animation, false => deactivating-animation
 
-    const [activeDn,  setActiveDn ] = useState<boolean>(false);      // uncontrollable (dynamic) state: true => user press, false => user release
+    const [activeDn,  setActiveDn ] = useState<boolean>(false);               // uncontrollable (dynamic) state: true => user activate, false => user deactivate
 
     
 
     /*
-     * state is active if [partially controllable active]
-     * state is active if [clickable] && [uncontrollable active]
+     * state is active/passive based on [controllable active] (if set) and fallback to [uncontrollable active]
      */
-    const activeFn: boolean = propActive || (propClickable && activeDn);
+    const activeFn: boolean = propActive /*controllable*/ ?? (propClickable && activeDn /*uncontrollable*/);
 
     if (actived !== activeFn) { // change detected => apply the change & start animating
         setActived(activeFn);   // remember the last change
-        setAnimating(activeFn); // start pressing-animation/releasing-animation
+        setAnimating(activeFn); // start activating-animation/deactivating-animation
     }
 
 
 
     useEffect(() => {
-        if (!propClickable) return; // control is not clickable => no response required
-        if (propActive)     return; // controllable [active] is set => no uncontrollable required
+        if (!propClickable)           return; // control is not clickable => no response required
+        if (propActive !== undefined) return; // controllable [active] is set => no uncontrollable required
 
 
 
@@ -524,8 +524,8 @@ export function useStateActivePassive(props: IndicationProps, inheritActive = tr
     
 
     const handleActivating = () => {
-        if (!propClickable) return; // control is not clickable => no response required
-        if (propActive)     return; // controllable [active] is set => no uncontrollable required
+        if (!propClickable)           return; // control is not clickable => no response required
+        if (propActive !== undefined) return; // controllable [active] is set => no uncontrollable required
 
 
 
@@ -534,7 +534,7 @@ export function useStateActivePassive(props: IndicationProps, inheritActive = tr
     const handleIdle = () => {
         // clean up finished animation
 
-        setAnimating(null); // stop pressing-animation/releasing-animation
+        setAnimating(null); // stop activating-animation/deactivating-animation
     }
     return {
         /**
@@ -580,35 +580,35 @@ export function useStateActivePassive(props: IndicationProps, inheritActive = tr
     };
 }
 
-export function useDynActivation(props: DynActivationProps): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
+export function useTogglerActive(props: TogglerActiveProps): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
     // fn props:
-    const propEnabled = usePropEnabled(props);
+    const propAccess  = usePropAccessibility<boolean, boolean|undefined>(props, undefined, undefined);
+    const propEnabled = propAccess.enabled;
+    const propActive  = propAccess.active;
 
 
 
     // states:
-    if ((props.defaultActive !== undefined) && (props.active !== undefined)) {
-        console.warn('defaultActive & active are both set.');
-    } // if
-    const [activeDn, setActiveDn] = useState<boolean>(props.defaultActive ?? false); // uncontrollable (dynamic) state: true => user activate, false => user deactivate
+    const [activeTg, setActiveTg] = useState<boolean>(props.defaultActive ?? false); // uncontrollable (dynamic) state: true => user activate, false => user deactivate
 
 
 
     /*
-     * state is active/passive based on [fully controllable active] (if set) and fallback to [uncontrollable active]
+     * state is active/passive based on [controllable active] (if set) and fallback to [uncontrollable active]
      */
-    const activeFn: boolean = props.active ?? activeDn;
+    const activeFn: boolean = propActive /*controllable*/ ?? activeTg /*uncontrollable*/;
 
 
 
     const setActive: React.Dispatch<React.SetStateAction<boolean>> = (newActive) => {
-        if (!propEnabled) return; // control is disabled => no response required
-        if (props.active !== undefined) return; // controllable [active] is set => no uncontrollable (dynamic) active
+        if (!propEnabled)             return; // control is disabled => no response required
+        if (propActive !== undefined) return; // controllable [active] is set => no uncontrollable required
 
 
         
         const newActiveValue = (typeof newActive === 'function') ? newActive(activeFn) : newActive;
-        setActiveDn(newActiveValue);
+        if (newActiveValue === activeFn) return; // no change needed
+        setActiveTg(newActiveValue);
 
 
         
@@ -633,7 +633,7 @@ export interface IndicationProps
     actionCtrl? : boolean
 }
 
-export interface DynActivationProps
+export interface TogglerActiveProps
     extends
         IndicationProps
 {
@@ -647,11 +647,6 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
         Elements.Props<TElement>,
         IndicationProps
 {
-    // accessibility:
-    inheritEnabled? : boolean
-    inheritActive?  : boolean
-
-
     // states:
     stateActive?    : [boolean, (newValue: boolean) => void]
 }
@@ -726,11 +721,7 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
                 props.onAnimationEnd?.(e);
             }}
         >
-            { props.children && <AccessibilityProvider
-                // accessibility:
-                enabled={(props.inheritEnabled ?? true ) ? propAccess.enabled : undefined}
-                active ={(props.inheritActive  ?? false) ? propAccess.active  : undefined}
-            >
+            { props.children && <AccessibilityProvider {...propAccess}>
                 { props.children }
             </AccessibilityProvider> }
         </Element>

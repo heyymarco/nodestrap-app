@@ -627,37 +627,48 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
 {
 }
 export default function Listgroup<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // styles:
     const lgStyles        = styles.useStyles();
 
+    
+    
     // themes:
     const variOrientation = useVariantOrientation(props);
     const variList        = useVariantList(props);
 
 
 
+    // rest props:
     const {
         // essentials:
         tag,
 
 
+        // behaviors:
+        actionCtrl,
+
+
         // children:
         children,
-        ...otherProps } = props;
+    ...restProps} = props;
+
+
+
+    // fn props:
     const parentTag = tag ?? 'ul';
     const wrapTag   = ['ul', 'ol'].includes(parentTag) ? 'li' : 'div';
 
+
+
+    // jsx:
     return (
         <Content<TElement>
             // other props:
-            {...otherProps}
+            {...restProps}
 
 
             // essentials:
             tag={parentTag}
-
-
-            // accessibility:
-            inheritActive={props.inheritActive ?? true} // if Listgroup is active => the ListGroupItems are also active
             
 
             // classes:
@@ -683,7 +694,7 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
 
 
                             // behaviors:
-                            actionCtrl={child.props.actionCtrl ?? props.actionCtrl} // the default value of [actionCtrl] is belong to Listgroup's [actionCtrl]
+                            actionCtrl={child.props.actionCtrl ?? actionCtrl} // the default value of [actionCtrl] is belong to Listgroup's [actionCtrl]
 
                             
                             // events:
@@ -699,7 +710,7 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
                         :
                         <ListgroupItem
                             // behaviors:
-                            actionCtrl={props.actionCtrl} // the default value of [actionCtrl] is belong to Listgroup's [actionCtrl]
+                            actionCtrl={actionCtrl} // the default value of [actionCtrl] is belong to Listgroup's [actionCtrl]
 
                             
                             // events:

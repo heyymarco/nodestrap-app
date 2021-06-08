@@ -159,12 +159,13 @@ export function useStatePressRelease(props: IndicationProps, classes = { active:
 
 
         // accessibility:
-        active     : undefined, // no [controllable active]
+        active        : undefined, // do not `.press`/`.release` when [active] (no [controllable active])
+        inheritActive : false,     // do not `.press`/`.release` when parent [active]
 
 
         // behaviors:
-        actionCtrl : true,      // always use actionCtrl implementation
-    }, /*inheritActive: */false, classes);
+        actionCtrl    : true,      // always use actionCtrl implementation
+    }, classes);
 }
 
 

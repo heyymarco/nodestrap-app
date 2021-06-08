@@ -22,7 +22,7 @@ import {
 }                           from './Element'
 import {
     cssProps as icssProps,
-    useDynActivation,
+    useTogglerActive,
 }                           from './Indicator'
 import type * as Indicators from './Indicator'
 import {
@@ -295,7 +295,7 @@ export const cssDecls = cssConfig.decls;
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
         ListgroupItems.Props<TElement>,
-        Indicators.DynActivationProps
+        Indicators.TogglerActiveProps
 {
     // accessibility:
     label?          : string | React.ReactNode
@@ -307,7 +307,7 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
     
     
     // states:
-    const [isActive, setActive] = useDynActivation(props);
+    const [isActive, setActive] = useTogglerActive(props);
 
     
     

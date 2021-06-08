@@ -396,12 +396,11 @@ export const cssDecls = cssConfig.decls;
 export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     // fn props:
     const propEnabled = usePropEnabled(props);
-    const propFocus:   boolean = (props.focus   ?? false); // if [focus]   was not specified => the default value is [focus=false]  (blurred)
 
 
 
     // states:
-    const [focused,   setFocused  ] = useState<boolean>(propFocus); // true => focus, false => blur
+    const [focused,   setFocused  ] = useState<boolean>(props.focus ?? false); // true => focus, false => blur
     const [animating, setAnimating] = useState<boolean|null>(null); // null => no-animation, true => focusing-animation, false => blurring-animation
 
     const [focusDn,   setFocusDn  ] = useState<boolean>(false);     // uncontrollable (dynamic) state: true => user focus, false => user blur
@@ -410,9 +409,9 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
     
     /*
      * state is always blur if disabled
-     * state is focus if [partially controllable focus] || [uncontrollable focus]
+     * state is focus/blur based on [controllable focus] (if set) and fallback to [uncontrollable focus]
      */
-    const focusFn: boolean = propEnabled && (propFocus || focusDn);
+    const focusFn: boolean = propEnabled && (props.focus /*controllable*/ ?? focusDn /*uncontrollable*/);
 
     if (focused !== focusFn) { // change detected => apply the change & start animating
         setFocused(focusFn);   // remember the last change
@@ -422,16 +421,16 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
 
     
     const handleFocus = () => {
-        if (!propEnabled) return; // control is disabled => no response required
-        if (propFocus)    return; // controllable [focus] is set => no uncontrollable required
+        if (!propEnabled)              return; // control is disabled => no response required
+        if (props.focus !== undefined) return; // controllable [focus] is set => no uncontrollable required
 
 
 
         setFocusDn(true);
     }
     const handleBlur = () => {
-        if (!propEnabled) return; // control is disabled => no response required
-        if (propFocus)    return; // controllable [focus] is set => no uncontrollable required
+        if (!propEnabled)              return; // control is disabled => no response required
+        if (props.focus !== undefined) return; // controllable [focus] is set => no uncontrollable required
 
 
 
@@ -446,7 +445,7 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
         focus    : focused,
         blurring : (animating === false),
         class    : ((): string|null => {
-            if (animating === true)  return (propFocus ? 'focus' : null); // focusing by prop => use .focus, otherwise use pseudo :focus
+            if (animating === true)  return ((props.focus !== undefined) ? 'focus' : null); // focusing by controllable prop => use .focus, otherwise use pseudo :focus
             if (animating === false) return 'blur';
 
             if (focused) return 'focused';
@@ -483,7 +482,7 @@ export function useStateHoverLeave<TElement extends HTMLElement = HTMLElement>(p
      * state is hover/leave based on [uncontrollable hover]
      * [controllable hover] is not supported
      */
-    const hoverFn: boolean = propEnabled && hoverDn;
+    const hoverFn: boolean = propEnabled && hoverDn /*uncontrollable*/;
 
     if (hovered !== hoverFn) { // change detected => apply the change & start animating
         setHovered(hoverFn);   // remember the last change
