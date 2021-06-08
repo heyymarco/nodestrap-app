@@ -159,7 +159,7 @@ export function useStatePressRelease(props: IndicationProps, classes = { active:
 
 
         // accessibility:
-        active        : undefined, // do not `.press`/`.release` when [active] (no [controllable active])
+        active        : undefined, // do not `.press`/`.release` when [active] (no *controllable active*)
         inheritActive : false,     // do not `.press`/`.release` when parent [active]
 
 

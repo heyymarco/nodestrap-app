@@ -778,9 +778,9 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
     // rest props:
     const {
         // accessibility:
-        /*delete*/ defaultActive,
-        /*delete*/ active,
-        /*delete*/ onActiveChange,
+        defaultActive,  // delete, already handled by useTogglerActive
+        onActiveChange, // delete, already handled by useTogglerActive
+        active,         // delete, already handled by useTogglerActive
 
 
         // children:

@@ -473,7 +473,7 @@ export function useStateEnableDisable(props: IndicationProps) {
 
 export function useStateActivePassive(props: IndicationProps, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }, mouses: string[]|null = ['click'], keys: string[]|null = ['space']) {
     // fn props:
-    const propAccess  = usePropAccessibility<boolean, boolean|undefined>(props, undefined, undefined);
+    const propAccess  = usePropAccessibility(props);
     const propEnabled = propAccess.enabled;
     const propActive  = propAccess.active;
     const propClickable: boolean =  // control is clickable if [is actionCtrl] and [is enabled]
@@ -495,7 +495,7 @@ export function useStateActivePassive(props: IndicationProps, classes = { active
     /*
      * state is active/passive based on [controllable active] (if set) and fallback to [uncontrollable active]
      */
-    const activeFn: boolean = propActive /*controllable*/ ?? (propClickable && activeDn /*uncontrollable*/);
+    const activeFn: boolean = (((props.active !== undefined) || undefined) && propActive /*controllable*/) ?? (propClickable && activeDn /*uncontrollable*/);
 
     if (actived !== activeFn) { // change detected => apply the change & start animating
         setActived(activeFn);   // remember the last change
@@ -582,7 +582,7 @@ export function useStateActivePassive(props: IndicationProps, classes = { active
 
 export function useTogglerActive(props: TogglerActiveProps): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
     // fn props:
-    const propAccess  = usePropAccessibility<boolean, boolean|undefined>(props, undefined, undefined);
+    const propAccess  = usePropAccessibility(props);
     const propEnabled = propAccess.enabled;
     const propActive  = propAccess.active;
 
@@ -596,7 +596,7 @@ export function useTogglerActive(props: TogglerActiveProps): [boolean, React.Dis
     /*
      * state is active/passive based on [controllable active] (if set) and fallback to [uncontrollable active]
      */
-    const activeFn: boolean = propActive /*controllable*/ ?? activeTg /*uncontrollable*/;
+    const activeFn: boolean = (((props.active !== undefined) || undefined) && propActive /*controllable*/) ?? activeTg /*uncontrollable*/;
 
 
 
@@ -647,8 +647,6 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
         Elements.Props<TElement>,
         IndicationProps
 {
-    // states:
-    stateActive?    : [boolean, (newValue: boolean) => void]
 }
 export default function Indicator<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     // styles:
@@ -675,13 +673,6 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
     const isHtmlCtrl   = props.tag && htmlCtrls.includes(props.tag);
     const isActionCtrl = props.actionCtrl ?? false;
     const propAccess   = usePropAccessibility(props);
-
-
-
-    // dom effects:
-    useEffect(() => { // guarantees the DOM has been fully rendered:
-        props.stateActive?.[1](!!stateActPass.class); // [activating, actived, passivating]
-    });
 
 
 

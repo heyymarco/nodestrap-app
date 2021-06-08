@@ -15,6 +15,7 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
         ActCtrls.Props<TElement>
 {
     // accessibility:
+    // change default value to `true`
     /**
      * `undefined` : same as `true`.  
      * `true`      : inherits `active` from `Listgroup`.  
@@ -37,7 +38,7 @@ export default function ListgroupItem<TElement extends HTMLElement = HTMLElement
 
 
             // accessibility:
-            inheritActive={props.inheritActive ?? true}
+            inheritActive={props.inheritActive ?? true} // change default value to `true`
 
 
             // classes:
@@ -50,7 +51,7 @@ export default function ListgroupItem<TElement extends HTMLElement = HTMLElement
 
 
             // accessibility:
-            inheritActive={props.inheritActive ?? true}
+            inheritActive={props.inheritActive ?? true} // change default value to `true`
 
 
             // classes:

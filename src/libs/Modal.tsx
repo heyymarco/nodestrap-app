@@ -1,7 +1,6 @@
 // react (builds html using javascript):
-import
-    React, {
-    useState,
+import {
+    default as React,
     useRef,
     useEffect,
 }                           from 'react'        // base technology of our nodestrap components
@@ -33,6 +32,7 @@ import {
 }                           from './Container'
 import {
     cssDecls as icssDecls,
+    useStateActivePassive,
 }                           from './Indicator'
 import {
     default  as Popup,
@@ -483,17 +483,69 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     onClose?    : (closeType: CloseType) => void
 }
 export default function Modal<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
-    const modStyles   = styles.useStyles();
+    // styles:
+    const modStyles    = styles.useStyles();
 
+
+
+    // states:
+    const stateActPass = useStateActivePassive(props);
+    const isActive     = !!stateActPass.class;
+
+    
+    
     // layouts:
-    const variModal   = useVariantModal(props);
-    const alignModal  = useAlignModal(props);
+    const variModal    = useVariantModal(props);
+    const alignModal   = useAlignModal(props);
 
 
 
-    const stateActive = useState(props.active ?? false);
-    const isActive    = stateActive[0];
-    const cardRef     = useRef<TElement>(null);
+    // rest props:
+    const {
+        // essentials:
+        elmRef,
+
+
+        // accessibility:
+        active,         // from accessibilities
+        inheritActive,  // from accessibilities
+        tabIndex,       // from Modal
+
+
+        // actions:
+        onClose,        // from Modal
+
+
+        // layouts:
+        modalStyle,
+        
+
+        // children:
+        header,
+        footer,
+    ...restProps} = props;
+    
+
+
+    // fn props:
+    const header2 = ((header === undefined) || (typeof(header) === 'string')) ? (
+        <h5 className={modStyles.actionBar}>
+            { header }
+            <CloseButton onClick={() => props.onClose?.('ui')} />
+        </h5>
+    ) : header;
+
+    const footer2 = ((footer === undefined) || (typeof(footer) === 'string')) ? (
+        <p className={modStyles.actionBar}>
+            { footer }
+            <Button text='Close' onClick={() => props.onClose?.('ui')} />
+        </p>
+    ) : footer;
+
+
+
+    // dom effects:
+    const cardRef      = useRef<TElement>(null);
     useEffect(() => {
         if (isActive) {
             if (cardRef.current && navigator.userAgent.toLowerCase().includes('firefox')) {
@@ -520,48 +572,14 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
 
 
-    const {
-        // essentials:
-        elmRef,
-
-
-        // accessibility:
-        active,
-        tabIndex,
-
-
-        // actions:
-        onClose,
-
-
-        // layouts:
-        modalStyle,
-        
-
-        // children:
-        header,
-        footer,
-        ...otherProps } = props;
-    
-    const header2 = ((header === undefined) || (typeof(header) === 'string')) ? (
-        <h5 className={modStyles.actionBar}>
-            { header }
-            <CloseButton onClick={() => props.onClose?.('ui')} />
-        </h5>
-    ) : header;
-
-    const footer2 = ((footer === undefined) || (typeof(footer) === 'string')) ? (
-        <p className={modStyles.actionBar}>
-            { footer }
-            <Button text='Close' onClick={() => props.onClose?.('ui')} />
-        </p>
-    ) : footer;
-
+    // jsx:
     return (
         <Popup
             // accessibility:
             role={active ? 'dialog' : undefined}
             aria-modal={active ? true : undefined}
+            active={active}
+            inheritActive={inheritActive}
 
 
             // classes:
@@ -583,20 +601,6 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
             }}
 
 
-            // indications:
-            active={active}
-
-
-            // states:
-            stateActive={[
-                props.stateActive?.[0] ?? stateActive[0],
-                (newValue: boolean) => {
-                    props.stateActive?.[1](newValue);
-                            stateActive[1](newValue);
-                },
-            ]}
-
-
             // events:
             // watch [escape key] on the whole Modal, including Card & Card's children:
             onKeyDown={(e) => {
@@ -610,7 +614,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
         >
             <Card<TElement>
                 // other props:
-                {...otherProps}
+                {...restProps}
 
                 
                 // essentials:

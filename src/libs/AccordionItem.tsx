@@ -314,11 +314,11 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
     // rest props:
     const {
         // accessibility:
-        label,
+        label,          // delete, moved to children
 
-        /*delete*/ defaultActive,
-        /*delete*/ active,
-        /*delete*/ onActiveChange,
+        defaultActive,  // delete, already handled by useTogglerActive
+        onActiveChange, // delete, already handled by useTogglerActive
+        active,         // delete, already handled by useTogglerActive
 
 
         // children:
