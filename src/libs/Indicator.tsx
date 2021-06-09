@@ -473,7 +473,7 @@ export function useStateEnableDisable(props: IndicationProps) {
 
 export function useStateActivePassive(props: IndicationProps, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }, mouses: string[]|null = ['click'], keys: string[]|null = ['space']) {
     // fn props:
-    const propAccess  = usePropAccessibility(props);
+    const propAccess  = usePropAccessibility<boolean, null>(props, undefined, null);
     const propEnabled = propAccess.enabled;
     const propActive  = propAccess.active;
     const propClickable: boolean =  // control is clickable if [is actionCtrl] and [is enabled]
@@ -495,7 +495,7 @@ export function useStateActivePassive(props: IndicationProps, classes = { active
     /*
      * state is active/passive based on [controllable active] (if set) and fallback to [uncontrollable active]
      */
-    const activeFn: boolean = (((props.active !== undefined) || undefined) && propActive /*controllable*/) ?? (propClickable && activeDn /*uncontrollable*/);
+    const activeFn: boolean = propActive /*controllable*/ ?? (propClickable && activeDn /*uncontrollable*/);
 
     if (actived !== activeFn) { // change detected => apply the change & start animating
         setActived(activeFn);   // remember the last change
@@ -505,8 +505,8 @@ export function useStateActivePassive(props: IndicationProps, classes = { active
 
 
     useEffect(() => {
-        if (!propClickable)           return; // control is not clickable => no response required
-        if (propActive !== undefined) return; // controllable [active] is set => no uncontrollable required
+        if (!propClickable)      return; // control is not clickable => no response required
+        if (propActive !== null) return; // controllable [active] is set => no uncontrollable required
 
 
 
@@ -524,8 +524,8 @@ export function useStateActivePassive(props: IndicationProps, classes = { active
     
 
     const handleActivating = () => {
-        if (!propClickable)           return; // control is not clickable => no response required
-        if (propActive !== undefined) return; // controllable [active] is set => no uncontrollable required
+        if (!propClickable)      return; // control is not clickable => no response required
+        if (propActive !== null) return; // controllable [active] is set => no uncontrollable required
 
 
 
@@ -582,7 +582,7 @@ export function useStateActivePassive(props: IndicationProps, classes = { active
 
 export function useTogglerActive(props: TogglerActiveProps): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
     // fn props:
-    const propAccess  = usePropAccessibility(props);
+    const propAccess  = usePropAccessibility<boolean, null>(props, undefined, null);
     const propEnabled = propAccess.enabled;
     const propActive  = propAccess.active;
 
@@ -596,13 +596,13 @@ export function useTogglerActive(props: TogglerActiveProps): [boolean, React.Dis
     /*
      * state is active/passive based on [controllable active] (if set) and fallback to [uncontrollable active]
      */
-    const activeFn: boolean = (((props.active !== undefined) || undefined) && propActive /*controllable*/) ?? activeTg /*uncontrollable*/;
+    const activeFn: boolean = propActive /*controllable*/ ?? activeTg /*uncontrollable*/;
 
 
 
     const setActive: React.Dispatch<React.SetStateAction<boolean>> = (newActive) => {
-        if (!propEnabled)             return; // control is disabled => no response required
-        if (propActive !== undefined) return; // controllable [active] is set => no uncontrollable required
+        if (!propEnabled)        return; // control is disabled => no response required
+        if (propActive !== null) return; // controllable [active] is set => no uncontrollable required
 
 
         

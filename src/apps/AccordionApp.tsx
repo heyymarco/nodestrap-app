@@ -128,6 +128,18 @@ function App() {
 							onChange={(e) => setChildActive(e.target.checked)}
 						/>
 					</ListgroupItem>
+					<ListgroupItem enabled={childEnabled} active={childActive} inheritActive={false}>
+						i'm {childEnabled ? 'enabled' : 'disabled'}
+						<input type='checkbox'
+							checked={childEnabled}
+							onChange={(e) => setChildEnabled(e.target.checked)}
+						/>
+						&amp; i'm (independent) {childActive ? 'active' : 'passive'}
+						<input type='checkbox'
+							checked={childActive}
+							onChange={(e) => setChildActive(e.target.checked)}
+						/>
+					</ListgroupItem>
 					<ListgroupItem theme='danger'>i'm angry</ListgroupItem>
 					<ListgroupItem theme='success'>i'm fine</ListgroupItem>
 					<ListgroupItem size='sm'>i'm small</ListgroupItem>

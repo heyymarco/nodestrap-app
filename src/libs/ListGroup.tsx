@@ -59,10 +59,10 @@ class ListItemStylesBuilder extends ContentStylesBuilder {
 
 
     // states:
-    public /*override*/ watchStates(inherit = true): JssStyle {
-        // change default inherit to true
-        return super.watchStates(inherit);
-    }
+    // public /*override*/ watchStates(inherit = true): JssStyle {
+    //     // change default inherit to true
+    //     return super.watchStates(inherit);
+    // }
 
 
 

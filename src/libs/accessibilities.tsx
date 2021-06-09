@@ -9,6 +9,11 @@ import {
 
 // contexts:
 
+export interface TAccessibility<TDefaultEnabled = boolean, TDefaultActive = boolean> {
+    enabled  : boolean|TDefaultEnabled
+    active   : boolean|TDefaultActive
+}
+
 /**
  * Contains accessibility props.
  */
@@ -38,7 +43,7 @@ Context.displayName  = 'Accessibility';
 
 
 // hooks:
-export function usePropAccessibility(props: Props): Accessibility {
+export function usePropAccessibility<TDefaultEnabled = boolean, TDefaultActive = boolean>(props: Props, defaultEnabled: boolean|TDefaultEnabled = true, defaultActive: boolean|TDefaultActive = false): Accessibility|TAccessibility<TDefaultEnabled, TDefaultActive> {
     // contexts:
     const accessContext = useContext(Context);
 
@@ -54,7 +59,7 @@ export function usePropAccessibility(props: Props): Accessibility {
                 true                           // otherwise => treat parent as enabled
             )
             &&
-            (props.enabled ?? true)            // if [enabled] was not specified => the default value is [enabled=true]
+            (props.enabled ?? defaultEnabled)  // if [enabled] was not specified => the default value is [enabled=true]
         ),
         active: (
             (
@@ -65,12 +70,12 @@ export function usePropAccessibility(props: Props): Accessibility {
                 false                          // otherwise => treat parent as passive
             )
             ||
-            (props.active ?? false)            // if [active] was not specified => the default value is [active=false]
+            (props.active ?? defaultActive)    // if [active] was not specified => the default value is [active=false]
         ),
     };
 }
 
-export function usePropEnabled(props: Props): boolean {
+export function usePropEnabled<TDefaultEnabled = boolean>(props: Props, defaultEnabled: boolean|TDefaultEnabled = true): boolean|TDefaultEnabled {
     // contexts:
     const accessContext = useContext(Context);
 
@@ -85,11 +90,11 @@ export function usePropEnabled(props: Props): boolean {
             true                           // otherwise => treat parent as enabled
         )
         &&
-        (props.enabled ?? true)            // if [enabled] was not specified => the default value is [enabled=true]
+        (props.enabled ?? defaultEnabled)  // if [enabled] was not specified => the default value is [enabled=true]
     );
 }
 
-export function usePropActive(props: Props): boolean {
+export function usePropActive<TDefaultActive = boolean>(props: Props, defaultActive: boolean|TDefaultActive = false): boolean|TDefaultActive {
     // contexts:
     const accessContext = useContext(Context);
 
@@ -104,7 +109,7 @@ export function usePropActive(props: Props): boolean {
             false                          // otherwise => treat parent as passive
         )
         ||
-        (props.active ?? false)            // if [active] was not specified => the default value is [active=false]
+        (props.active ?? defaultActive)    // if [active] was not specified => the default value is [active=false]
     );
 }
 
