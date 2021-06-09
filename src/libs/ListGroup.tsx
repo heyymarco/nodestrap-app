@@ -515,15 +515,18 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
                             },
                         },
                     },
+                    /*
+                    // not needed because the [.active] state is self handled
                     ...this.stateActive({
                         [wrapperElm]: {
                             [listItemElm]: {
                                 '&:not(.actionCtrl), &.actionCtrl': {
-                                    '&:not(._)': this.toggleOffOutlined(),
+                                    '&:not(._x)': this.toggleOffOutlined(),
                                 },
                             },
                         },
                     }),
+                    */
                     //#endregion forwards outlined to list items
         
         
