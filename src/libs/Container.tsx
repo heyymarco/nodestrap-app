@@ -146,8 +146,8 @@ export class ContainerStylesBuilder extends ElementStylesBuilder {
     public /*virtual*/ containerGridBasicStyle(): JssStyle { return {
         // layout:
         display             : 'grid',
-        gridTemplateColumns : [[cssProps.paddingInline, 'auto', cssProps.paddingInline]],
         gridTemplateRows    : [[cssProps.paddingBlock,  'auto', cssProps.paddingBlock ]],
+        gridTemplateColumns : [[cssProps.paddingInline, 'auto', cssProps.paddingInline]],
         gridTemplateAreas   : [[
             '"...         blockStart       ..."',
             '"inlineStart  content   inlineEnd"',

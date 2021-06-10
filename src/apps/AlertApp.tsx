@@ -8,7 +8,7 @@ import {
 
 import Container from '../libs/Container';
 import Button from '../libs/Button';
-import Popup from '../libs/Popup';
+import Alert from '../libs/Alert';
 
 
 
@@ -54,20 +54,24 @@ function App() {
 	const [outlined,   setOutlined  ] = useState(false);
 
 	const [enabled,    setEnabled   ] = useState(true);
-	const [active,      setActive   ] = useState(false);
+	const [active,      setActive   ] = useState(true);
 
 	
 
     return (
         <div className="App">
             <Container>
-				<Button onClick={() => setActive(!active)}>Toggle popup</Button>
-				<Popup theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled}
+				<Button onClick={() => setActive(!active)}>Toggle alert</Button>
+				<Alert theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled}
 				
 					active={active}
+					onClose={() => setActive(false)}
 				>
-					Hopla!
-				</Popup>
+					<h4>Well done!</h4>
+					<p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
+					<hr/>
+					<p>Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+				</Alert>
 				<hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:

@@ -15,10 +15,11 @@ import NavscrollApp from './apps/NavscrollApp';
 import MasonryApp from './apps/MasonryApp';
 import AccordionApp from './apps/AccordionApp';
 import PopupApp from './apps/PopupApp';
+import AlertApp from './apps/AlertApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <FormApp />
+    <AlertApp />
   </React.StrictMode>,
   document.getElementById('root')
 );
