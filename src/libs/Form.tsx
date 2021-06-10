@@ -34,6 +34,10 @@ import type {
 import {
     styles as editableTextControlStyles,
 }                          from './EditableTextControl'
+import {
+    usePropValidation,
+    ValidationProvider,
+}                          from './validations'
 import type * as Val       from './validations'
 import type {
     Props as ValidationProps,
@@ -257,13 +261,18 @@ export interface Props
 }
 export default function Form(props: Props) {
     // styles:
-    const formStyles    = styles.useStyles();
+    const formStyles     = styles.useStyles();
 
     
     
     // states:
-    const formValidator = useFormValidator(props.customValidator);
-    const stateValInval = useStateValidInvalid(props, formValidator.validator);
+    const formValidator  = useFormValidator(props.customValidator);
+    const stateValInval  = useStateValidInvalid(props, formValidator.validator);
+
+
+
+    // fn props:
+    const propValidation = usePropValidation(props);
 
 
 
@@ -324,6 +333,10 @@ export default function Form(props: Props) {
                 // forwards:
                 props.onAnimationEnd?.(e);
             }}
-        />
+        >
+            { props.children && <ValidationProvider {...propValidation}>
+                { props.children }
+            </ValidationProvider> }
+        </Element>
     );
 }

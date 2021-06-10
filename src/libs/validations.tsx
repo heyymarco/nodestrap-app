@@ -12,7 +12,7 @@ import
 /**
  * Validation was skipped because its not required. Neither success nor error shown.
  */
-export type Nocheck = null
+export type Uncheck = null
 /**
  * Validation was failed because the value did not meet the criteria.
  */
@@ -21,7 +21,7 @@ export type Error   = false
  * Validation was successful and the value meet the criteria.
  */
 export type Success = true
-export type Result  = Nocheck|Error|Success;
+export type Result  = Uncheck|Error|Success;
 
 
 
@@ -65,20 +65,39 @@ export function usePropValidation(props: Props): Validation {
 
 
 
-    return {
-        enableValidation:
-            valContext.enableValidation      // if parent is disabled => current component is always disabled
-            &&
-            (props.enableValidation ?? true) // if [enableValidation] was not specified => the default value is [enableValidation=true] (validation enabled)
-            ,
-
-        isValid:
-            (valContext.isValid !== undefined)
+    const isInheritValidation = (props.inheritValidation ?? true); // if [inheritValidation] was not specified => the default value is [inheritValidation=true]
+    const enableValidation = (
+        (
+            isInheritValidation          // check if the [inheritValidation] was enabled
             ?
-            valContext.isValid // if parent's validity is set => use the parent's validity
+            valContext.enableValidation  // => if parent's validation is enabled => current component's validation is *might* enabled too, otherwise *always* disabled
             :
-            props.isValid      // otherwise, use component's validity
-            ,
+            true                         // otherwise => treat parent's validation as enabled
+        )
+        &&
+        (props.enableValidation ?? true) // if [enableValidation] was not specified => the default value is [enableValidation=true]
+    );
+    const isValid = ((): Result|undefined => {
+        if (!enableValidation) return null; // if validation was disabled => treat validity as *uncheck* (null)
+
+        
+        
+        const contextIsValid = (
+            isInheritValidation          // check if the [inheritValidation] was enabled
+            ?
+            valContext.isValid           // => use the parent's validity
+            :
+            undefined                    // otherwise => treat parent's validity as *auto* (undefined)
+        );
+        if (contextIsValid !== undefined) return contextIsValid; // if the parent's validity was set other than *auto* (undefined) => use it
+        
+        
+        
+        return props.isValid;                                    // otherwise => use the component's validity
+    })();
+    return {
+        enableValidation : enableValidation,
+        isValid          : isValid,
     };
 }
 
@@ -93,7 +112,7 @@ export interface Props
      * `true`      : validation feature is *enabled*, preserve `isValid` prop.  
      * `false`     : validation feature is *disabled*, equivalent as `isValid = null` (*uncheck*).
      */
-    enableValidation? : boolean
+    enableValidation?  : boolean
 
     /**
      * `undefined` : *automatic* detect valid/invalid state.  
@@ -101,12 +120,19 @@ export interface Props
      * `true`      : force validation state to *valid*.  
      * `false`     : force validation state to *invalid*.
      */
-    isValid?          : Result
+    isValid?           : Result
+
+    /**
+     * `undefined` : same as `true`.  
+     * `true`      : inherits `enableValidation` & `isValid` from parent (`ValidationProvider` context).  
+     * `false`     : independent `enableValidation` & `isValid`.
+     */
+    inheritValidation? : boolean
 
 
 
     // children:
-    children? : React.ReactNode
+    children?          : React.ReactNode
 }
 export default function ValidationProvider(props: Props) {
     return (
@@ -118,3 +144,4 @@ export default function ValidationProvider(props: Props) {
         </Context.Provider>
     );
 }
+export { ValidationProvider }

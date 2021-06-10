@@ -500,7 +500,6 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
     // states:
     const [valided,       setValided      ] = useState<Val.Result|undefined>((): (Val.Result|undefined) => {
         // use prop as the primary validator:
-        if (!propValidation.enableValidation)     return null;                   // validation is disabled => uncheck
         if (propValidation.isValid !== undefined) return propValidation.isValid; // validity is set => set state to uncheck/valid/invalid
 
         
@@ -520,14 +519,12 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
     
     
     /*
-     * state is set as context      if [context's      validation is enabled] && [     context.isValid is set]
-     * state is set as controllable if [controllable's validation is enabled] && [controllable.isValid is set]
-     * state is set as validator    if [validator's    validation is enabled] && [   validator.isValid is set]
-     * otherwise return undefined (represents: no change needed)
+     * state is set as [context and / or controllable] if [            validation is enabled] && [            validity is set]
+     * state is set as validator                       if [validator's validation is enabled] && [validator's validity is set]
+     * otherwise return undefined (represents no change needed)
      */
     const validFn = ((): (Val.Result|undefined) => {
         // use prop as the primary validator:
-        if (!propValidation.enableValidation)     return null;                   // validation is disabled => uncheck
         if (propValidation.isValid !== undefined) return propValidation.isValid; // validity is set => set state to uncheck/valid/invalid
 
         
@@ -593,7 +590,6 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
         setErrAnimating(null);  // stop err-animation/unerr-animation
     }
     const valDisabled = // causing the validator() not evaluated (disabled):
-        (!propValidation.enableValidation) ||
         (propValidation.isValid === null) ||
         (!validator);
     return {

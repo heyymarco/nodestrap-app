@@ -152,7 +152,7 @@ export interface Props
 
 
     // children:
-    children? : React.ReactNode
+    children?       : React.ReactNode
 }
 export default function AccessibilityProvider(props: Props) {
     return (
