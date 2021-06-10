@@ -285,10 +285,12 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     children? : React.ReactNode
 }
 export default function Content<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // styles:
     const ctStyles = styles.useStyles();
 
     
     
+    // jsx:
     return (
         <Indicator<TElement>
             // other props:

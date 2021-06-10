@@ -346,26 +346,34 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     footer? : React.ReactNode
 }
 export default function Card<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // styles:
     const crdStyles = styles.useStyles();
 
 
 
+    // rest props:
     const {
         // children:
         children,
         header,
         footer,
-        ...otherProps } = props;
+    ...restProps} = props;
     
+
+    
+    // handlers:
     const handleAnimationEnd = (e: React.AnimationEvent<HTMLElement>) => {
         // triggers Card's onAnimationEnd event
         e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }))
     };
 
+
+
+    // jsx:
     return (
         <Content<TElement>
             // other props:
-            {...otherProps}
+            {...restProps}
 
 
             // essentials:

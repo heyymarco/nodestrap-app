@@ -436,13 +436,17 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     icon: string
 }
 export default function Icon<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // styles:
     const icoStyles = styles.useStyles();
 
+    
+    
     // appearances:
     const icon      = useIcon(props);
 
 
 
+    // jsx:
     return (
         <Element<TElement>
             // other props:
@@ -461,8 +465,9 @@ export default function Icon<TElement extends HTMLElement = HTMLElement>(props: 
             ]}
 
 
-            // appearances:
+            // styles:
             style={{...(props.style ?? {}),
+                // appearances:
                 ...icon.style,
             }}
         >

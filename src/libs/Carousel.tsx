@@ -368,18 +368,12 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     nav?      : React.ReactChild | boolean
 }
 export default function Carousel<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // styles:
     const crslStyles = styles.useStyles();
 
-    // states:
-    // TODO: add states here
 
 
-
-    // scrolls:
-    const listRef = useRef<HTMLElement>(null);
-
-
-
+    // rest props:
     const {
         // essentials:
         elmRef,
@@ -392,11 +386,23 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
         prevBtn,
         nextBtn,
         nav,
-        ...otherProps } = props;
+    ...restProps} = props;
+
+
+
+    // fn props:
     const itemsTag2 = itemsTag ?? 'ul';
     const itemTag2  = itemTag  ?? ['ul', 'ol'].includes(itemsTag2) ? 'li' : 'div';
 
-    const scrollBy = (itemsElm: HTMLElement, nextSlide: boolean) => {
+
+
+    // dom effects:
+    const listRef   = useRef<HTMLElement>(null);
+
+
+
+    // functions:
+    const scrollBy  = (itemsElm: HTMLElement, nextSlide: boolean) => {
         const parent = itemsElm;
 
 
@@ -419,7 +425,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
             behavior : 'smooth',
         });
     }
-    const scrollTo = (targetSlide: HTMLElement|null) => {
+    const scrollTo  = (targetSlide: HTMLElement|null) => {
         if (!targetSlide) return;
         const parent = targetSlide.parentElement! as HTMLElement;
 
@@ -448,10 +454,13 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
         });
     };
 
+
+
+    // jsx:
     return (
         <Element<TElement>
             // other props:
-            {...otherProps}
+            {...restProps}
 
 
             // classes:
@@ -674,6 +683,7 @@ interface NavButtonProps
     id? : string
 }
 function NavButton(props: NavButtonProps) {
+    // jsx:
     return (
         <Button
             // other props:

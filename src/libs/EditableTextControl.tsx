@@ -278,10 +278,12 @@ export interface Props<TElement extends EditableTextControlElement = EditableTex
     pattern?   : string
 }
 export default function EditableTextControl<TElement extends EditableTextControlElement = EditableTextControlElement>(props: Props<TElement>) {
-    const etctrlStyles       = styles.useStyles();
+    // styles:
+    const etctrlStyles = styles.useStyles();
 
     
 
+    // jsx:
     return (
         <EditableControl<TElement>
             // other props:

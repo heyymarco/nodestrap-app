@@ -118,10 +118,12 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
 {
 }
 export default function Popup<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // styles:
     const popStyles = styles.useStyles();
 
 
 
+    // jsx:
     return (
         <Indicator<TElement>
             // other props:

@@ -1253,6 +1253,7 @@ export interface GenericProps<TElement extends HTMLElement = HTMLElement>
     stateClasses? : (string|null|undefined)[]
 }
 export function GenericElement<TElement extends HTMLElement = HTMLElement>(props: GenericProps<TElement>) {
+    // html props:
     const htmlProps = useMemo(() => {
         const htmlProps = {
             ref : props.elmRef as any,
@@ -1263,13 +1264,18 @@ export function GenericElement<TElement extends HTMLElement = HTMLElement>(props
                 (htmlProps as any)[name] = (props as any)[name];
             } // if
         } // for
+        
         return htmlProps;
     }, [props]);
 
 
 
+    // fn props:
     const Tag = (props.tag ?? 'div');
 
+    
+    
+    // jsx:
     return (
         <Tag
             // other props:
@@ -1316,8 +1322,11 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
 {
 }
 export default function Element<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // styles:
     const elmStyles    = styles.useStyles();
 
+    
+    
     // themes:
     const variTheme    = useVariantTheme(props);
     const variSize     = useVariantSize(props);
@@ -1326,6 +1335,7 @@ export default function Element<TElement extends HTMLElement = HTMLElement>(prop
 
 
 
+    // jsx:
     return (
         <GenericElement<TElement>
             // other props:

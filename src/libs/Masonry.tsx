@@ -255,16 +255,18 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     children? : React.ReactNode
 }
 export default function Masonry<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // styles:
     const masonryStyles   = styles.useStyles();
 
+    
+    
     // themes:
     const variOrientation = useVariantOrientation(props);
 
-    // layouts:
+    
+    
+    // dom effects:
     const masonryRef      = useRef<TElement>(null);
-
-
-
     useEffect(() => {
         const masonry = masonryRef.current;
         if (!masonry) return;
@@ -463,18 +465,11 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
 
 
+    // jsx:
     return (
         <Element<TElement>
             // other props:
             {...props}
-
-
-            // classes:
-            mainClass={props.mainClass ?? masonryStyles.main}
-            themeClasses={[...(props.themeClasses ?? []),
-                // themes:
-                variOrientation.class,
-            ]}
 
 
             // essentials:
@@ -495,6 +490,14 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
                     } // if
                 } // if
             }}
+
+
+            // classes:
+            mainClass={props.mainClass ?? masonryStyles.main}
+            themeClasses={[...(props.themeClasses ?? []),
+                // themes:
+                variOrientation.class,
+            ]}
         >
             { props.children }
         </Element>

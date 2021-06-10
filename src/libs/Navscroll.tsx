@@ -373,6 +373,7 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     readOnly?        : boolean
 }
 export default function Navscroll<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+    // states:
     const [activeIndices, setActiveIndices] = useReducer((indices: number[], newIndices: number[]): number[] => {
         if (deepEqual(newIndices, indices)) return indices; // already the same, use the old as by-reference
         return newIndices; // update with the new one
@@ -380,6 +381,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
+    // dom effects:
     useEffect(() => {
         const target = props.targetRef?.current;
         const handleScroll = () => {
@@ -498,6 +500,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
+    // handlers:
     const itemHandleClick = (e: React.MouseEvent<HTMLElement, MouseEvent>, deepLevelsCurrent: number[]) => {
         e.stopPropagation(); // do not bubbling click event to Navscroll's parent
 
@@ -588,6 +591,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
+    // jsx functions:
     function mutateNestedNavscroll(nestNavProps: Props, key: React.Key|null, deepLevelsParent: number[]) { return (
         <Listgroup
             // other props:
@@ -669,6 +673,9 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
         })
     )}
 
+
+
+    // jsx:
     return (
         <Listgroup
             // other props:

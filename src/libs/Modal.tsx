@@ -591,11 +591,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
 
             // styles:
-            style={{
-                // additionals:
-                ...(props.style ?? {}),
-
-
+            style={{...(props.style ?? {}),
                 // layouts:
                 ...alignModal.style,
             }}

@@ -15,6 +15,7 @@ export interface Props<TElement extends HTMLElement = HTMLDivElement>
 {
 }
 export default function CarouselItem<TElement extends HTMLElement = HTMLDivElement>(props: Props<TElement>) {
+    // jsx:
     return (
         <GenericElement<TElement>
             // other props:

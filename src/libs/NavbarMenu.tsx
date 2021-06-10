@@ -15,6 +15,7 @@ export interface Props<TElement extends HTMLElement = HTMLAnchorElement>
 {
 }
 export default function NavbarMenu<TElement extends HTMLElement = HTMLAnchorElement>(props: Props<TElement>) {
+    // jsx:
     return (
         <Control<TElement>
             // other props:
