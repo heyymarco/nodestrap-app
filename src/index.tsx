@@ -16,6 +16,7 @@ import MasonryApp from './apps/MasonryApp';
 import AccordionApp from './apps/AccordionApp';
 import PopupApp from './apps/PopupApp';
 import AlertApp from './apps/AlertApp';
+import IconApp from './apps/IconApp';
 
 ReactDOM.render(
   <React.StrictMode>

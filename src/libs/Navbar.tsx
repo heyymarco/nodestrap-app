@@ -419,8 +419,8 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
         // implicit areas:
         gridAutoFlow        : 'column',      // if child's grid are is not specified => place automatically at horz direction
-        gridAutoColumns     : 'min-content', // other areas than menus should take a minimum required width
         gridAutoRows        : 'min-content', // other areas than menus should take a minimum required height
+        gridAutoColumns     : 'min-content', // other areas than menus should take a minimum required width
         // the grid's size configured as *minimum* size required => no free space left to distribute => so (justify|algin)Content is *not required*
         // default placement for each navbar's sections:
 

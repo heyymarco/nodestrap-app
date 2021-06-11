@@ -5,14 +5,17 @@ import React                from 'react'        // base technology of our nodest
 import type {
     JssStyle,
 }                           from 'jss'          // ts defs support for jss
+import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
 import {
+    cssProps as ecssProps,
     cssDecls as ecssDecls,
 }                           from './Element'
 import {
     default  as Button,
     ButtonStylesBuilder,
+    cssProps as bcssProps,
 }                           from './Button'
 import type * as Buttons    from './Button'
 import {
@@ -27,7 +30,25 @@ import typos               from './typos/index' // configurable typography (text
 
 export class ButtonIconStylesBuilder extends ButtonStylesBuilder {
     // themes:
-    /* -- same as parent -- */
+    public /*override*/ sizeOptions(): string[] {
+        return ['xs', 'sm', 'lg', 'xl'];
+    }
+    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+        extend: [
+            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+        ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...(() => {
+            console.log(Size)
+            console.log(this.filterSuffixProps(cssProps, Size))
+            console.log(this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)))
+            return {};
+        })(),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+    }}
 
 
 
@@ -51,9 +72,62 @@ export class ButtonIconStylesBuilder extends ButtonStylesBuilder {
         ')']],
         // set icon's color as parent's font color:
         [icssDecls.foreg] : 'currentColor',
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
 export const styles = new ButtonIconStylesBuilder();
+
+
+
+// configs:
+
+const cssConfig = new CssConfig(() => {
+    // common css values:
+    // const initial = 'initial';
+    // const unset   = 'unset';
+    // const none    = 'none';
+    // const inherit = 'inherit';
+    // const center  = 'center';
+    // const middle  = 'middle';
+
+
+    return {
+        //#region typos
+        fontSize          : typos.fontSize,
+        fontSizeXs        : typos.fontSizeSm,
+        fontSizeXl        : typos.fontSizeLg,
+        //#endregion typos
+
+        //#region foreg, backg, borders
+        borderRadius      : ecssProps.borderRadius,
+        borderRadiusXs    : ecssProps.borderRadiusSm,
+        borderRadiusXl    : ecssProps.borderRadiusLg,
+        //#endregion foreg, backg, borders
+
+        //#region spacings
+        paddingInline     : ecssProps.paddingInline,
+        paddingBlock      : ecssProps.paddingBlock,
+        paddingInlineXs   : ecssProps.paddingInlineSm,
+        paddingBlockXs    : ecssProps.paddingBlockSm,
+        paddingInlineXl   : ecssProps.paddingInlineLg,
+        paddingBlockXl    : ecssProps.paddingBlockLg,
+
+        
+        gapX              : bcssProps.gapX,
+        gapY              : bcssProps.gapY,
+        gapXXs            : bcssProps.gapXSm,
+        gapYXs            : bcssProps.gapYSm,
+        gapXXl            : bcssProps.gapXLg,
+        gapYXl            : bcssProps.gapYLg,
+        //#endregion spacings
+    };
+}, /*prefix: */'btni');
+export const cssProps = cssConfig.refs;
+export const cssDecls = cssConfig.decls;
 
 
 

@@ -28,7 +28,9 @@ import {
 import type {
     IContentStylesBuilder,
 }                           from './Content'
+import Icon                 from './Icon'
 import CloseButton          from './CloseButton'
+import spacers              from './spacers'     // configurable spaces defs
 
 
 
@@ -110,7 +112,7 @@ export class AlertStylesBuilder extends PopupStylesBuilder implements IContentSt
     }
     protected /*virtual*/ iconBasicStyle(): JssStyle { return {
         // layout:
-        gridArea    : 'icon',
+        gridArea    : '1 / -3', // the first row / the third column starting from the last
         justifySelf : 'center', // align horizontally to center
         alignSelf   : 'start',  // align vertically   to top
 
@@ -130,7 +132,7 @@ export class AlertStylesBuilder extends PopupStylesBuilder implements IContentSt
     }}
     protected /*virtual*/ controlBasicStyle(): JssStyle { return {
         // layout:
-        gridArea    : 'control',
+        gridArea    : '1 / 2',  // the first row / the second column
         justifySelf : 'center', // align horizontally to center
         alignSelf   : 'start',  // align vertically   to top
 
@@ -153,10 +155,15 @@ export class AlertStylesBuilder extends PopupStylesBuilder implements IContentSt
 
         // explicit areas:
         gridTemplateRows    : [['auto']],
-        gridTemplateColumns : [['min-content', 'auto', 'min-content']],
+        gridTemplateColumns : [['auto']],
         gridTemplateAreas   : [[
-            '"icon body control"',
+            '"body"',
         ]],
+
+        // implicit areas:
+        gridAutoFlow        : 'column',
+        gridAutoRows        : 'min-content',
+        gridAutoColumns     : 'min-content',
 
         // child alignments:
         justifyItems        : 'stretch', // each section fill the entire area's width
@@ -192,6 +199,10 @@ const cssConfig = new CssConfig(() => {
 
 
     return {
+        //#region spacings
+        gapX : spacers.default,
+        gapY : spacers.default,
+        //#endregion spacings
     };
 }, /*prefix: */'alrt');
 export const cssProps = cssConfig.refs;
@@ -233,20 +244,33 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
     // jsx fn props:
     const iconFn = (() => {
         // default (unset):
-        if (icon === undefined) return (
-            <CloseButton
+        if ((icon === undefined) || (typeof icon === 'string')) return (
+            <Icon
+                // appearances:
+                icon={icon ?? (() => {
+                    switch (props.theme) {
+                        case 'success'   : return 'check_circle';
+                        case 'warning'   : return 'warning';
+                        case 'danger'    : return 'error';
+                     // case 'primary'   :
+                     // case 'secondary' :
+                     // case 'info'      :
+                     // case 'light'     :
+                     // case 'dark'      :
+                        default          : return 'info';
+                    } // switch
+                })()}
+
+
                 // themes:
-                size='sm'
+                theme={props.theme}
+                size='md'
 
 
                 // classes:
                 classes={[
-                    'icon',
+                    'icon', // inject icon class
                 ]}
-
-
-                // actions:
-                onClick={() => props.onClose?.()}
             />
         );
 
@@ -259,10 +283,6 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
                 classes={[...(icon.props.classes ?? []),
                     'icon', // inject icon class
                 ]}
-
-
-                // actions:
-                onClick={props.onClick ?? (() => props.onClose?.())}
             />
         );
 
@@ -295,12 +315,12 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
         if (control === undefined) return (
             <CloseButton
                 // themes:
-                size='sm'
+                size='xs'
 
 
                 // classes:
                 classes={[
-                    'control',
+                    'control', // inject control class
                 ]}
 
 

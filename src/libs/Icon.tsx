@@ -39,19 +39,25 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
     // themes:
     public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
-        [this.decl(this._foregTh)] : themeColor,
+        extend: [
+            super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
+        ] as JssStyle,
+
+
+
+        // to be able to inherit theme from parent, we use _outlinedForegTh** as the variable name
+        // other unecessary variables are deleted
+        [this.decl(this._foregTh)]          : null,
+        [this.decl(this._backgTh)]          : null,
+        [this.decl(this._borderTh)]         : null,
+        [this.decl(this._boxShadowFocusTh)] : null,
+     // [this.decl(this._outlinedForegTh)]  : null,
     }}
 
     public /*override*/ sizeOptions(): string[] {
         return ['sm', 'nm', 'md', 'lg', '1em'];
     }
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
-        // extend: [
-        //     super.sizeOf(size, Size, sizeProp), // copy sizes from base
-        // ] as JssStyle,
-
-
-
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
@@ -61,8 +67,19 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
     // states:
     public /*override*/ themesIf(): JssStyle { return {
-        // define a *default* color theme:
-        [this.decl(this._foregIf)] : cssProps.foreg,
+        extend: [
+            super.themesIf(), // copy themes from base
+        ] as JssStyle,
+
+
+
+        // to be able to inherit theme from parent, we use _outlinedForegTh** as the variable name
+        // other unecessary variables are deleted
+        [this.decl(this._foregIf)]          : null,
+        [this.decl(this._backgIf)]          : null,
+        [this.decl(this._borderIf)]         : null,
+        [this.decl(this._boxShadowFocusIf)] : null,
+     // [this.decl(this._outlinedForegIf)]  : null,
     }}
 
 
@@ -75,13 +92,22 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
 
 
-        //#region delete *unecessary* functional props from base:
-        [this.decl(this._backgFn)]         : null,
-        [this.decl(this._outlinedForegFn)] : null,
-        [this.decl(this._outlinedBackgFn)] : null,
-        [this.decl(this._animFn)]          : null,
-        //#endregion delete *unecessary* functional props from base:
+        [this.decl(this._outlinedForegTh)]  : 'initial', // prevent theme from inheritance, so the Icon always use currentColor if the theme is not set
+
+
+
+        // to be able to inherit theme from parent, we use _outlinedForegTh** as the variable name
+        // other unecessary variables are deleted
+        [this.decl(this._backgNone)]        : null,
+        [this.decl(this._foregFn)]          : null,
+        [this.decl(this._backgLy)]          : null,
+        [this.decl(this._backgFn)]          : null,
+        [this.decl(this._borderFn)]         : null,
+        [this.decl(this._boxShadowFocusFn)] : null,
+     // [this.decl(this._outlinedForegFn)]  : null,
+        [this.decl(this._outlinedBackgFn)]  : null,
     }}
+    public /*override*/ animFn(): JssStyle { return {} } // remove animations
 
 
 
@@ -132,8 +158,8 @@ export class IconStylesBuilder extends ElementStylesBuilder {
             
 
             // colors:
-            backg         : 'transparent',           // setup backg color
-            foreg         : this.ref(this._foregFn), // setup icon's color
+            backg         : 'transparent',                   // setup backg color
+            foreg         : this.ref(this._outlinedForegFn), // setup icon's color
             
     
             // sizes:
@@ -185,7 +211,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
     }}
     public /*virtual*/ imgBasicStyle(): JssStyle { return {
         // colors:
-        backg         : this.ref(this._foregFn), // setup icon's color
+        backg         : this.ref(this._outlinedForegFn), // setup icon's color
         
         
         // transition:
@@ -243,7 +269,9 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         [this.decl(this._img)]     : img,
 
         // setup icon's color:
-        [this.decl(this._foregFn)] : (foreg && (foreg !== this.decl(this._foregFn))) ? foreg : null,
+        ...((foreg && (foreg !== this.ref(this._outlinedForegFn))) ? {
+            [this.decl(this._outlinedForegFn)] : foreg,
+        } : {}),
     }}
 
     protected /*override*/ styles(): Styles<'main'> {

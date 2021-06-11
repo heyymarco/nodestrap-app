@@ -292,7 +292,8 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         [iconElm]: {
             extend: [
                 iconStyles.imgStyle( // apply icon
-                    /*img :*/ cssProps.img
+                    /*img   :*/ cssProps.img,
+                    /*foreg :*/ this.ref(this._foregFn)
                 ),
             ] as JssStyle,
 

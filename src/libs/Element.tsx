@@ -273,6 +273,7 @@ export class StylesBuilder {
         const cssPropsCopy: Dictionary<any> = {};
         for (const [name, prop] of Object.entries(cssProps)) {
             const varDecl = (cssDecls as unknown as DictionaryOf<typeof cssDecls>)[name];
+            if (!varDecl) continue;
             cssPropsCopy[varDecl] = prop;
         }
         return cssPropsCopy as JssStyle;
@@ -295,6 +296,7 @@ export class StylesBuilder {
 
                 return name; // not found => use the original decl name
             })();
+            if (!varDecl) continue;
             cssPropsCopy[varDecl] = prop;
         }
         return cssPropsCopy as JssStyle;
