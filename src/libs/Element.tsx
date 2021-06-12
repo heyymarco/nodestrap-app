@@ -372,7 +372,7 @@ export class StylesBuilder {
 
 
 
-    // themes:
+    // variants:
     /**
      * Gets the all available theme options.
      * @returns A `[string, Cust.Ref][]` represents the all available theme options.
@@ -490,15 +490,28 @@ export class StylesBuilder {
     public /*virtual*/ outlined(): JssStyle { return {} }
 
     /**
-     * Watches & applies any theme related classes.
-     * @returns A `JssStyle` represents the implementation of the themes.
+     * Creates css rule definitions for every *specific* variant by overriding some *scoped css props*.
+     * @returns A `JssStyle` represents the css rule definitions for every *specific* variant.
      */
-    public /*virtual*/ watchThemes(): JssStyle { return {
+    public /*virtual*/ variants(): JssStyle { return {
         extend: [
             this.themes(),                      // variant themes
             this.sizes(),                       // variant sizes
             { '&.gradient' : this.gradient() }, // variant gradient
             { '&.outlined' : this.outlined() }, // variant outlined
+        ] as JssStyle,
+    }}
+
+    /**
+     * Watches & applies any variant related classes.
+     * @returns A `JssStyle` represents the implementation of the variants.
+     */
+    public /*virtual*/ watchVariants(): JssStyle { return {
+        extend: [
+            // this.iif(!inherit,
+            //     // variants always inherit
+            // ),
+            this.variants(), // variant rules
         ] as JssStyle,
     }}
 
@@ -539,13 +552,13 @@ export class StylesBuilder {
      * Creates a functional prop definitions in which the values *depends on* the themes and/or the states using *fallback* strategy.
      * @returns A `JssStyle` represents the functional prop definitions.
      */
-    public /*virtual*/ propsFn(): JssStyle  { return {} }
+    public /*virtual*/ propsFn(): JssStyle { return {} }
 
 
 
     // styles:
     /**
-     * Creates a basic style of a component *without* any themes nor states applied.
+     * Creates a basic style of a component *without* any variants nor states applied.
      * @returns A `JssStyle` represents a basic style definition.
      */
     public /*virtual*/ basicStyle(): JssStyle { return {} }
@@ -560,8 +573,8 @@ export class StylesBuilder {
                 extend: [
                     this.basicStyle(), // basic style
         
-                    // watch theme classes:
-                    this.watchThemes(),
+                    // watch variant classes:
+                    this.watchVariants(),
         
                     // watch state classes/pseudo-classes:
                     this.watchStates(),
@@ -842,7 +855,7 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
 
-    // themes:
+    // variants:
     public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props:
     
@@ -864,6 +877,25 @@ export class ElementStylesBuilder extends StylesBuilder {
         // *toggle on* the outlined props:
         return this.toggleOnOutlined();
     }
+    public /*override*/ variants(): JssStyle { return {
+        extend: [
+            super.variants(), // copy variants from base
+
+
+
+            //#region all initial states are none
+            // *toggle off* the background gradient prop:
+            // but still be able to *toggle on* by parent (inherit)
+            this.toggleOffGradient(/*inherit =*/true),
+
+
+
+            // *toggle off* the outlined props:
+            // but still be able to *toggle on* by parent (inherit)
+            this.toggleOffOutlined(/*inherit =*/true),
+            //#endregion all initial states are none
+        ] as JssStyle,
+    }}
 
 
 
@@ -875,23 +907,6 @@ export class ElementStylesBuilder extends StylesBuilder {
         [this.decl(this._borderIf)]         : cssProps.borderColor,
         [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
         [this.decl(this._outlinedForegIf)]  : cssProps.foreg,
-    }}
-    public /*override*/ states(inherit = false): JssStyle { return {
-        extend: [
-            this.iif(!inherit, {
-                //#region all initial states are none
-                // *toggle off* the background gradient prop:
-                // but still be *toggle on* by parent (inherit)
-                ...this.toggleOffGradient(/*inherit =*/true),
-
-
-
-                // *toggle off* the outlined props:
-                // but still be *toggle on* by parent (inherit)
-                ...this.toggleOffOutlined(/*inherit =*/true),
-                //#endregion all initial states are none
-            }),
-        ] as JssStyle,
     }}
 
 
@@ -1239,20 +1254,20 @@ export interface GenericProps<TElement extends HTMLElement = HTMLElement>
         React.AriaAttributes
 {
     // essentials:
-    tag?          : keyof JSX.IntrinsicElements
-    style?        : React.CSSProperties
-    elmRef?       : React.Ref<TElement>
+    tag?            : keyof JSX.IntrinsicElements
+    style?          : React.CSSProperties
+    elmRef?         : React.Ref<TElement>
 
 
     // accessibility:
-    role?         : React.AriaRole
+    role?           : React.AriaRole
 
 
     // classes:
-    mainClass?    :  string|null|undefined
-    classes?      : (string|null|undefined)[]
-    themeClasses? : (string|null|undefined)[]
-    stateClasses? : (string|null|undefined)[]
+    mainClass?      :  string|null|undefined
+    classes?        : (string|null|undefined)[]
+    variantClasses? : (string|null|undefined)[]
+    stateClasses?   : (string|null|undefined)[]
 }
 export function GenericElement<TElement extends HTMLElement = HTMLElement>(props: GenericProps<TElement>) {
     // html props:
@@ -1298,8 +1313,8 @@ export function GenericElement<TElement extends HTMLElement = HTMLElement>(props
                 ...(props.classes ?? []),
 
 
-                // themes:
-                ...(props.themeClasses ?? []),
+                // variants:
+                ...(props.variantClasses ?? []),
 
 
                 // states:
@@ -1329,7 +1344,7 @@ export default function Element<TElement extends HTMLElement = HTMLElement>(prop
 
     
     
-    // themes:
+    // variants:
     const variTheme    = useVariantTheme(props);
     const variSize     = useVariantSize(props);
     const variGradient = useVariantGradient(props);
@@ -1346,8 +1361,7 @@ export default function Element<TElement extends HTMLElement = HTMLElement>(prop
 
             // classes:
             mainClass={props.mainClass ?? elmStyles.main}
-            themeClasses={[...(props.themeClasses ?? []),
-                // themes:
+            variantClasses={[...(props.variantClasses ?? []),
                 variTheme.class,
                 variSize.class,
                 variGradient.class,

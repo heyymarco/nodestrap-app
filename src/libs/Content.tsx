@@ -31,7 +31,7 @@ import type * as Indicators from './Indicator'
 // styles:
 
 export interface IContentStylesBuilder {
-    // themes:
+    // variants:
     contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle
     contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle
 
@@ -87,7 +87,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
 
-    // themes:
+    // variants:
     public /*virtual*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props:
     

@@ -41,7 +41,7 @@ const bodyElm    = '&>.body';
 const controlElm = '&>.control';
 
 export class AlertStylesBuilder extends PopupStylesBuilder implements IContentStylesBuilder {
-    // themes:
+    // variants:
     public /*implement*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
         return contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from Content
     }
@@ -262,7 +262,7 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
                 })()}
 
 
-                // themes:
+                // variants:
                 theme={props.theme}
                 size='md'
 
@@ -314,7 +314,7 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
         // default (unset):
         if (control === undefined) return (
             <CloseButton
-                // themes:
+                // variants:
                 size='xs'
 
 

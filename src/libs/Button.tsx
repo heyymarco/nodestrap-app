@@ -23,7 +23,7 @@ import type * as Controls   from './Control'
 // styles:
 
 export class ButtonStylesBuilder extends ControlStylesBuilder {
-    // themes:
+    // variants:
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
@@ -309,7 +309,7 @@ export default function Button(props: Props) {
 
     
     
-    // themes:
+    // variants:
     const variButton = useVariantButton(props);
 
 
@@ -349,8 +349,7 @@ export default function Button(props: Props) {
 
             // classes:
             mainClass={props.mainClass ?? btnStyles.main}
-            themeClasses={[...(props.themeClasses ?? []),
-                // themes:
+            variantClasses={[...(props.variantClasses ?? []),
                 variButton.class,
             ]}
 

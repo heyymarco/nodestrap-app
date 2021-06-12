@@ -49,7 +49,7 @@ const prevBtnElm = '&>.prevBtn';
 const nextBtnElm = '&>.nextBtn';
 
 export class CarouselStylesBuilder extends ElementStylesBuilder implements IContentStylesBuilder {
-    // themes:
+    // variants:
     public /*implement*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
         return contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from Content
     }
@@ -622,7 +622,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
                         // classes:
                         classes={[...(nav.props.classes ?? []),
-                            'nav',
+                            'nav', // inject nav class
                         ]}
 
 
@@ -636,7 +636,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                 )
                 :
                 <Navscroll
-                    // themes:
+                    // variants:
                     theme={props.theme}
                     size={props.size}
                     listStyle='bullet'
@@ -649,7 +649,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
                     // classes:
                     classes={[
-                        'nav',
+                        'nav', // inject nav class
                     ]}
 
 
@@ -690,7 +690,7 @@ function NavButton(props: NavButtonProps) {
             {...props}
 
 
-            // themes:
+            // variants:
             size={props.size ?? 'lg'}
             enableGradient={props.enableGradient ?? true}
             btnStyle={props.btnStyle ?? 'ghost'}

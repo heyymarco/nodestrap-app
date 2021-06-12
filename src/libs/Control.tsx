@@ -141,7 +141,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
 
-    // themes:
+    // variants:
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
@@ -600,7 +600,6 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
             // classes:
             mainClass={props.mainClass ?? ctrlStyles.main}
             stateClasses={[...(props.stateClasses ?? []),
-                // states:
                 
                 // if [tabIndex] is negative => treats Control as *wrapper* element, so there's no :focus (pseudo) => replace with .focus (synthetic)
                 (stateFocusBlur.class ?? ((stateFocusBlur.focus && ((props.tabIndex ?? 0) < 0)) ? 'focus' : null)),

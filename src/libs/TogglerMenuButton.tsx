@@ -54,7 +54,7 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
 
 
 
-    // themes:
+    // variants:
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
@@ -340,7 +340,7 @@ export default function TogglerMenuButton(props: Props) {
             label={props.label ?? 'Toggle navigation'}
 
 
-            // themes:
+            // variants:
             chkStyle={props.chkStyle ?? 'btn'}
 
 

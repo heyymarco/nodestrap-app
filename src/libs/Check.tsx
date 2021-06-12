@@ -112,7 +112,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
 
-    // themes:
+    // variants:
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
@@ -745,7 +745,7 @@ export default function Check(props: Props) {
 
     
     
-    // themes:
+    // variants:
     const variCheck   = useVariantCheck(props, chkStyles);
 
     
@@ -808,12 +808,10 @@ export default function Check(props: Props) {
 
             // classes:
             mainClass={props.mainClass ?? chkStyles.main}
-            themeClasses={[...(props.themeClasses ?? []),
-                // themes:
+            variantClasses={[...(props.variantClasses ?? []),
                 variCheck.class,
             ]}
             stateClasses={[...(props.stateClasses ?? []),
-                // states:
                 stateChkClr.class ?? (stateChkClr.checked ? 'checked' : null),
             ]}
         >

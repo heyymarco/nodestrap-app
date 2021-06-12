@@ -79,8 +79,8 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
 
 
 
-    // themes:
-    // disable themes:
+    // variants:
+    // disable variants:
     public /*override*/ themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle { return {} }
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrites propName = propName{Size}:
@@ -140,7 +140,7 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
 
     public /*override*/ themesIf(): JssStyle {
         // skip Element's conditional themes
-        // jump to indication's conditional Themes
+        // jump to indication's conditional themes
         return this.indicationThemesIf();
     }
     public /*override*/ states(inherit = false): JssStyle {
@@ -584,8 +584,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
             // classes:
             mainClass={props.mainClass ?? modStyles.main}
-            themeClasses={[...(props.themeClasses ?? []),
-                // themes:
+            variantClasses={[...(props.variantClasses ?? []),
                 variModal.class,
             ]}
 

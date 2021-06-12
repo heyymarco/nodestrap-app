@@ -39,7 +39,7 @@ import type {
 // styles:
 
 export class MasonryStylesBuilder extends ElementStylesBuilder implements IContentStylesBuilder {
-    // themes:
+    // variants:
     public /*implement*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
         return contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from Content
     }
@@ -260,7 +260,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
     
     
-    // themes:
+    // variants:
     const variOrientation = useVariantOrientation(props);
 
     
@@ -494,8 +494,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
             // classes:
             mainClass={props.mainClass ?? masonryStyles.main}
-            themeClasses={[...(props.themeClasses ?? []),
-                // themes:
+            variantClasses={[...(props.variantClasses ?? []),
                 variOrientation.class,
             ]}
         >

@@ -202,7 +202,6 @@ export default function ActionControl<TElement extends HTMLElement = HTMLElement
             // classes:
             mainClass={props.mainClass ?? actCtrlStyles.main}
             stateClasses={[...(props.stateClasses ?? []),
-                // states:
                 statePrssRls.class,
             ]}
         

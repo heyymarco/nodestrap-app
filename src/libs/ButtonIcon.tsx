@@ -29,7 +29,7 @@ import typos               from './typos/index' // configurable typography (text
 // styles:
 
 export class ButtonIconStylesBuilder extends ButtonStylesBuilder {
-    // themes:
+    // variants:
     public /*override*/ sizeOptions(): string[] {
         return ['xs', 'sm', 'lg', 'xl'];
     }

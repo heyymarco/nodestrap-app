@@ -49,7 +49,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
 
-    // themes:
+    // variants:
     public /*implement*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
         return contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from Content
     }

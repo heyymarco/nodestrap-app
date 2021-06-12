@@ -48,7 +48,7 @@ import type {
 // styles:
 
 export class FormStylesBuilder extends ElementStylesBuilder implements IContentStylesBuilder, IValidationStylesBuilder {
-    // themes:
+    // variants:
     public /*implement*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
         return editableTextControlStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from EditableTextControl
     }
@@ -290,7 +290,6 @@ export default function Form(props: Props) {
             // classes:
             mainClass={props.mainClass ?? formStyles.main}
             stateClasses={[...(props.stateClasses ?? []),
-                // validations:
                 stateValInval.class,
             ]}
 

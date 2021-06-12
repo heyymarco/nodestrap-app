@@ -183,7 +183,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
 
 
 
-    // themes:
+    // variants:
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
@@ -686,7 +686,6 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
             // classes:
             mainClass={props.mainClass ?? indiStyles.main}
             stateClasses={[...(props.stateClasses ?? []),
-                // states:
                 (stateEnbDis.class ?? ((stateEnbDis.disabled && !isHtmlCtrl) ? 'disabled' : null)),
                 stateActPass.class,
             ]}

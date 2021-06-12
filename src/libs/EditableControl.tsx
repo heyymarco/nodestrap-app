@@ -194,7 +194,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
 
 
 
-    // themes:
+    // variants:
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
@@ -692,7 +692,6 @@ export default function EditableControl<TElement extends EditableControlElement 
             // classes:
             mainClass={props.mainClass ?? ectrlStyles.main}
             stateClasses={[...(props.stateClasses ?? []),
-                // validations:
                 stateValInval.class,
             ]}
 

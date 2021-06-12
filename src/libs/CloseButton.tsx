@@ -30,7 +30,7 @@ export default function CloseButton(props: Props) {
             icon={props.icon ?? 'close'}
 
 
-            // themes:
+            // variants:
             btnStyle={props.btnStyle ?? 'link'}
             theme={props.theme ?? 'secondary'}
         />

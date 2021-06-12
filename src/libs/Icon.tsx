@@ -37,7 +37,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
 
 
-    // themes:
+    // variants:
     public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
             super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
@@ -61,7 +61,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
-    public /*override*/ outlined(): JssStyle  { return {} } // remove outlined style
+    public /*override*/ outlined(): JssStyle { return {} } // remove outlined style
 
 
 

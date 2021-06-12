@@ -105,7 +105,7 @@ createJss().setup({plugins:[
 // styles:
 
 export class ContainerStylesBuilder extends ElementStylesBuilder {
-    // themes:
+    // variants:
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base

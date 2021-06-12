@@ -31,7 +31,7 @@ import {
 const inpElm  = '&>:first-child';
 
 export class InputStylesBuilder extends EditableTextControlStylesBuilder {
-    // themes:
+    // variants:
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base

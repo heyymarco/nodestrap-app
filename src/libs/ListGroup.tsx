@@ -44,7 +44,7 @@ const wrapperElm  = '&>li, &>*';
 const listItemElm = '&>*';
 
 class ListItemStylesBuilder extends ContentStylesBuilder {
-    // themes:
+    // variants:
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
@@ -250,7 +250,7 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
 const listItemActionCtrlStyles = new ListItemActionCtrlStylesBuilder();
 
 export class ListgroupStylesBuilder extends ContentStylesBuilder {
-    // themes:
+    // variants:
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
@@ -536,8 +536,8 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
                         [listItemElm]: {
                             '&:not(.actionCtrl)': {
                                 extend: [
-                                    // watch theme classes:
-                                    listItemStyles.watchThemes(),
+                                    // watch variant classes:
+                                    listItemStyles.watchVariants(),
             
                                     // watch state classes/pseudo-classes:
                                     listItemStyles.watchStates(),
@@ -548,8 +548,8 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
                             },
                             '&.actionCtrl': {
                                 extend: [
-                                    // watch theme classes:
-                                    listItemActionCtrlStyles.watchThemes(),
+                                    // watch variant classes:
+                                    listItemActionCtrlStyles.watchVariants(),
             
                                     // watch state classes/pseudo-classes:
                                     listItemActionCtrlStyles.watchStates(),
@@ -635,7 +635,7 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
 
     
     
-    // themes:
+    // variants:
     const variOrientation = useVariantOrientation(props);
     const variList        = useVariantList(props);
 
@@ -676,8 +676,7 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
 
             // classes:
             mainClass={props.mainClass ?? lgStyles.main}
-            themeClasses={[...(props.themeClasses ?? []),
-                // themes:
+            variantClasses={[...(props.variantClasses ?? []),
                 variOrientation.class,
                 variList.class,
             ]}

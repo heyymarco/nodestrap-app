@@ -82,7 +82,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
 
-    // themes:
+    // variants:
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         extend: [
             super.sizeOf(size, Size, sizeProp), // copy sizes from base
@@ -477,8 +477,8 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                 extend: [
                     this.basicStyle(), // basic style
         
-                    // watch theme classes:
-                    this.watchThemes(),
+                    // watch variant classes:
+                    this.watchVariants(),
                     {
                         // TODO: fix the outlined behavior
                         
@@ -532,11 +532,11 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                 [menusElm] : this.propsFn(), // use func props so we can disable the gradient
                 [menuElm]  : {
                     extend: [
-                        // watch theme classes:
-                        this.watchThemes(), // always inherit
+                        // watch variant classes:
+                        this.watchVariants(), // always inherit
     
                         // watch state classes/pseudo-classes:
-                        this.watchStates(/*inherit =*/false),
+                        this.watchStates(),
 
                         // force inherit for enable/disable state props:
                         {
@@ -826,7 +826,6 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
             // classes:
             mainClass={props.mainClass ?? navbStyles.main}
             stateClasses={[...(props.stateClasses ?? []),
-                // states:
                 stateCompact.class,
             ]}
 

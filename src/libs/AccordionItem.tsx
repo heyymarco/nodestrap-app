@@ -38,8 +38,8 @@ import type * as ListgroupItems from './ListgroupItem'
 const bodyElm = '&~.body.body'; // double the .body for winning to Listgroup's *:not(.actionCtrl)
 
 export class AccordionItemStylesBuilder extends PopupStylesBuilder {
-    // themes:
-    // disable themes:
+    // variants:
+    // disable variants:
     public /*override*/ themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle { return {} }
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrites propName = propName{Size}:
@@ -142,17 +142,13 @@ export class AccordionItemStylesBuilder extends PopupStylesBuilder {
 
     public /*override*/ themesIf(): JssStyle {
         // skip Element's conditional themes
-        // jump to indication's conditional Themes
+        // jump to indication's conditional themes
         return this.indicationThemesIf();
     }
     public /*override*/ states(inherit = false): JssStyle {
         // skip Element's states
         // jump to indication's states
         return this.indicationStates(inherit);
-    }
-    public /*override*/ watchStates(inherit = true): JssStyle {
-        // change default inherit to true
-        return super.watchStates(inherit);
     }
 
 
