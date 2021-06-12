@@ -18,6 +18,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 
 // nodestrap (modular web components):
 import {
+    GenericElement,
     cssProps as ecssProps,
     isTypeOf,
 }                           from './Element'
@@ -34,16 +35,19 @@ import {
     ControlStylesBuilder,
 }                           from './Control'
 import NavbarMenu           from './NavbarMenu'
+import Check                from './Check'
+import type * as Checks     from './Check'
 import TogglerMenuButton    from './TogglerMenuButton'
 
 
 
 // styles:
 
-const logoElm    = '&>.logo';
-const togglerElm = '&>.toggler';
-const menusElm   = '&>.menus';
-const menuElm    = '&>.menus>*';
+const wrapperElm    = '& .wrapper';
+const logoElm       = '&>.logo';
+const togglerElm    = '&>.toggler';
+const menusElm      = '&>.menus';
+const menuElm       = '&>.menus>*';
 
 // Navbar is not a Control, but an Indicator wrapping of NavbarMenu (Control)
 // We use ControlStylesBuilder for serving styling of NavbarMenu (Control)
@@ -316,7 +320,14 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         paddingBlock   : ecssProps.paddingBlock,
     }}
     protected /*virtual*/ navbarSecondaryItemBasicStyle(): JssStyle { return {
-        paddingInline : 0,
+        // layout:
+        justifySelf    : 'center', // center horizontally
+        alignSelf      : 'center', // center vertically
+
+
+
+        // spacings:
+        paddingInline  : 0,
     }}
     protected /*virtual*/ navbarItemBasicStyle(): JssStyle { return {
         // customize:
@@ -324,7 +335,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
     }}
     protected /*virtual*/ navbarLogoBasicStyle(): JssStyle { return {
         // layout:
-        gridArea : '1 / -3', // place the same row as menus / place at the 3rd column from the right (negative columns are placed after all positive ones are placed)
+        gridArea       : '1 / -3', // place the same row as menus / place at the 3rd column from the right (negative columns are placed after all positive ones are placed)
 
 
 
@@ -333,7 +344,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
     }}
     protected /*virtual*/ navbarTogglerBasicStyle(): JssStyle { return {
         // layout:
-        gridArea : '1 / 2', // place the same row as menus / place at the 2nd column from the left
+        gridArea       : '1 / 2', // place the same row as menus / place at the 2nd column from the left
 
 
 
@@ -359,8 +370,8 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
         
         // apply fn props:
-        backg : this.ref(this._backgFn),
-        anim  : this.ref(this._menusAnimFn),
+        backg          : this.ref(this._backgFn),
+        anim           : this.ref(this._menusAnimFn),
 
 
 
@@ -439,8 +450,9 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         //#region children
         [[
             // wrapper elements:
-            logoElm,
-            togglerElm,
+            // logoElm,
+            // togglerElm,
+            wrapperElm,
             menuElm,
         ].join(',')] : this.wrapperBasicStyle(),
 
@@ -475,8 +487,6 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         return {
             main: {
                 extend: [
-                    this.basicStyle(), // basic style
-        
                     // watch variant classes:
                     this.watchVariants(),
                     {
@@ -524,6 +534,10 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     // after watching => use func props:
                     this.propsFn(),           // for themes
                     this.indicationPropsFn(), // overwrite animFn only for indication
+
+                    // all the required stuff has been loaded,
+                    // now load the basicStyle:
+                    this.basicStyle(), // basic style
                 ] as JssStyle,
 
 
@@ -538,7 +552,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                         // watch state classes/pseudo-classes:
                         this.watchStates(),
 
-                        // force inherit for enable/disable state props:
+                        // force inherit for enable/disable states:
                         {
                             [this.decl(this._filterEnableDisable)] : 'inherit',
                             [this.decl(this._animEnableDisable)]   : 'inherit',
@@ -622,7 +636,7 @@ const cssConfig = new CssConfig(() => {
 
         // menus:
         // kill margin top & bottom:
-        itemMarginBlock           : [['calc(0px -', ecssProps.paddingBlock, ')']],
+        menusMarginBlock          : [['calc(0px -', ecssProps.paddingBlock, ')']],
 
         // on mobile, on the menu group, kill margin left & right:
         menusMarginInlineCompact  : [['calc(0px -', contCssProps.paddingInline, ')']],
@@ -757,9 +771,9 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
         Compactable
 {
     // children:
-    children? : React.ReactNode
     logo?     : React.ReactChild | boolean
     toggler?  : React.ReactChild | boolean
+    children? : React.ReactNode
 }
 export default function Navbar<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     // styles:
@@ -784,10 +798,89 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
 
         // children:
-        children,
         logo,
         toggler,
+        children,
     ...restProps} = props;
+
+
+
+    // jsx fn props:
+    const logoFn = (() => {
+        // nodestrap's component:
+        if (isTypeOf(logo, GenericElement)) return (
+            <logo.type
+                // classes:
+                classes={[...(logo.props.classes ?? []),
+                    'logo', // inject logo class
+                ]}
+            />
+        );
+
+
+
+        // other component:
+        return logo && (
+            <div
+                // classes:
+                className='logo wrapper'
+            >
+                { logo }
+            </div>
+        );
+    })();
+
+    const togglerFn = (() => {
+        // default (unset):
+        if (toggler === undefined) return (
+            <TogglerMenuButton
+                // classes:
+                classes={[
+                    'toggler', // inject toggler class
+                ]}
+
+
+                // values:
+                checked={isActive}
+                onChange={(e) => {
+                    setActive(e.target.checked);
+                }}
+            />
+        );
+
+
+
+        // nodestrap's component:
+        if (isTypeOf(toggler, GenericElement)) return (
+            <toggler.type
+                // classes:
+                classes={[...(toggler.props.classes ?? []),
+                    'toggler', // inject toggler class
+                ]}
+
+
+                {...(isTypeOf(toggler, Check) ? ({
+                    // values:
+                    checked  : toggler.props.checked  ?? isActive,
+                    onChange : toggler.props.onChange ?? ((e) => {
+                        setActive(e.target.checked);
+                    }),
+                } as Checks.Props) : {})}
+            />
+        );
+
+
+
+        // other component:
+        return toggler && (
+            <div
+                // classes:
+                className='toggler wrapper'
+            >
+                { toggler }
+            </div>
+        );
+    })();
 
 
 
@@ -840,17 +933,19 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                 props.onKeyDown?.(e);
             }}
         >
-            { logo && <div className='logo'>{ logo }</div> }
-            <div className='toggler'>{ toggler ?? (
-                <TogglerMenuButton
-                    // values:
-                    checked={isActive}
-                    onChange={(e) => {
-                        setActive(e.target.checked);
-                    }}
-                />
-            )}</div>
-            { children && <div className='menus'>
+            { logoFn }
+            { togglerFn }
+            { children && <div
+                // classes:
+                className='menus'
+
+
+                // events:
+                onAnimationEnd={(e) =>
+                    // triggers Navbar's onAnimationEnd event
+                    e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }))
+                }
+            >
                 {(Array.isArray(children) ? children : [children]).map((child, index) => (
                     isTypeOf(child, NavbarMenu)
                     ?

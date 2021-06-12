@@ -20,7 +20,7 @@ import IconApp from './apps/IconApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <AccordionApp />
+    <NavbarApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

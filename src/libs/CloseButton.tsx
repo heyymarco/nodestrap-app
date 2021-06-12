@@ -36,3 +36,4 @@ export default function CloseButton(props: Props) {
         />
     );
 }
+CloseButton.prototype = ButtonIcon.prototype; // mark as ButtonIcon compatible

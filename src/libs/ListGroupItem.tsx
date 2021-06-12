@@ -42,7 +42,10 @@ export default function ListgroupItem<TElement extends HTMLElement = HTMLElement
 
 
             // classes:
-            mainClass={props.mainClass ?? 'actionCtrl'}
+            mainClass={props.mainClass ?? ''}
+            classes={[...(props.classes ?? []),
+                'actionCtrl',
+            ]}
         />
         :
         <Indicator<TElement>

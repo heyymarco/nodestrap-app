@@ -27,6 +27,9 @@ import {
     cssProps as ecssProps,
     cssDecls as ecssDecls,
 }                           from './Element'
+import type {
+    ClassList,
+}                           from './Element'
 import {
     styles as containerStyles,
 }                           from './Container'
@@ -80,7 +83,7 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
 
 
     // variants:
-    // disable variants:
+    // disable some variants:
     public /*override*/ themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle { return {} }
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrites propName = propName{Size}:
@@ -88,6 +91,28 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
     }}
     public /*override*/ gradient(): JssStyle { return {} }
     public /*override*/ outlined(): JssStyle { return {} }
+    public /*virtual*/ scrollableStyle(): JssStyle { return {
+        [cardElm]: { // Card's layer
+            '&:not(._)': { // force overwrite
+                // sizes:
+                inlineSize    : 'auto', // follows the content's width, but
+                maxInlineSize : '100%', // up to the maximum available parent's width
+                blockSize     : 'auto', // follows the content's height, but
+                maxBlockSize  : '100%', // up to the maximum available parent's height
+
+                // this prop is not actually makes Card scrollable,
+                // but makes Card's body scrollable (indirect effect)
+                overflow      : 'auto', // turn on the scrolling
+            },
+        },
+    }}
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
+
+
+        
+        [ 'scrollable', this.scrollableStyle() ],
+    ]}
 
 
 
@@ -327,21 +352,6 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
         // jump to indication's basicStyle
         return this.indicationBasicStyle();
     }
-    public /*virtual*/ scrollableStyle(): JssStyle { return {
-        [cardElm]: { // Card's layer
-            '&:not(._)': { // force overwrite
-                // sizes:
-                inlineSize    : 'auto', // follows the content's width, but
-                maxInlineSize : '100%', // up to the maximum available parent's width
-                blockSize     : 'auto', // follows the content's height, but
-                maxBlockSize  : '100%', // up to the maximum available parent's height
-
-                // this prop is not actually makes Card scrollable,
-                // but makes Card's body scrollable (indirect effect)
-                overflow      : 'auto', // turn on the scrolling
-            },
-        },
-    }}
     public /*virtual*/ bodyStyle(): JssStyle { return {
         // kill the scroll on the body:
         overflow: 'hidden',
@@ -360,26 +370,14 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
             marginInlineStart: 'auto',
         },
     }}
-    protected /*override*/ styles(): Styles<'main'|'body'|'actionBar'> {
-        const styles = super.styles();
-        styles.main = {
-            extend: [
-                styles.main,
-                {
-                    '&.scrollable' : this.scrollableStyle(),
-                },
-            ] as JssStyle,
-        };
+    protected /*override*/ styles(): Styles<'main'|'body'|'actionBar'> { return {
+        ...super.styles(),
 
-
-
-        return {
-            ...styles,
-
-            body      : this.bodyStyle(),
-            actionBar : this.actionBarStyle(),
-        };
-    }
+        
+        
+        body      : this.bodyStyle(),
+        actionBar : this.actionBarStyle(),
+    }}
     public /*override*/ useStyles(): Classes<'main'|'body'|'actionBar'> {
         return super.useStyles() as Classes<'main'|'body'|'actionBar'>;
     }
@@ -486,17 +484,17 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
     // styles:
     const modStyles    = styles.useStyles();
 
+    
+    
+    // variants:
+    const variModal    = useVariantModal(props);
+    const alignModal   = useAlignModal(props);
+
 
 
     // states:
     const stateActPass = useStateActivePassive(props);
     const isActive     = !!stateActPass.class;
-
-    
-    
-    // layouts:
-    const variModal    = useVariantModal(props);
-    const alignModal   = useAlignModal(props);
 
 
 
@@ -516,7 +514,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
         onClose,        // from Modal
 
 
-        // layouts:
+        // variants:
         modalStyle,
         
 
@@ -524,23 +522,6 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
         header,
         footer,
     ...restProps} = props;
-    
-
-
-    // fn props:
-    const header2 = ((header === undefined) || (typeof(header) === 'string')) ? (
-        <h5 className={modStyles.actionBar}>
-            { header }
-            <CloseButton onClick={() => props.onClose?.('ui')} />
-        </h5>
-    ) : header;
-
-    const footer2 = ((footer === undefined) || (typeof(footer) === 'string')) ? (
-        <p className={modStyles.actionBar}>
-            { footer }
-            <Button text='Close' onClick={() => props.onClose?.('ui')} />
-        </p>
-    ) : footer;
 
 
 
@@ -549,7 +530,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
     useEffect(() => {
         if (isActive) {
             if (cardRef.current && navigator.userAgent.toLowerCase().includes('firefox')) {
-                cardRef.current.style.overflow = (props.modalStyle === 'scrollable') ? '' : 'visible';
+                cardRef.current.style.overflow = (modalStyle === 'scrollable') ? '' : 'visible';
 
                 // setTimeout(() => {
                 //     if (cardRef.current) cardRef.current.style.overflow = 'clip';
@@ -568,7 +549,46 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
             document.body.classList.remove(modStyles.body);
         } // if
-    }, [isActive, modStyles.body, props.modalStyle]);
+    }, [isActive, modStyles.body, modalStyle]);
+    
+
+
+    // jsx fn props:
+    const headerFn = (() => {
+        // default (unset) or string:
+        if ((header === undefined) || (typeof header === 'string')) return (
+            <h5
+                // classes:
+                className={modStyles.actionBar}
+            >
+                { header }
+                <CloseButton onClick={() => props.onClose?.('ui')} />
+            </h5>
+        );
+
+
+
+        // other component:
+        return header;
+    })();
+
+    const footerFn = (() => {
+        // default (unset) or string:
+        if ((footer === undefined) || (typeof footer === 'string')) return (
+            <p
+                // classes:
+                className={modStyles.actionBar}
+            >
+                { footer }
+                <Button text='Close' onClick={() => props.onClose?.('ui')} />
+            </p>
+        );
+
+
+
+        // other component:
+        return footer;
+    })();
 
 
 
@@ -591,7 +611,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
             // styles:
             style={{...(props.style ?? {}),
-                // layouts:
+                // variants:
                 ...alignModal.style,
             }}
 
@@ -639,8 +659,8 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
 
                 // children:
-                header={header2}
-                footer={footer2}
+                header={headerFn}
+                footer={footerFn}
             />
         </Popup>
     );

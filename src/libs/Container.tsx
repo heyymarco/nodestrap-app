@@ -1,30 +1,33 @@
+// react (builds html using javascript):
+import React                from 'react'        // base technology of our nodestrap components
+
 // jss   (builds css  using javascript):
 import { 
     create as createJss,
-}                          from 'jss'          // base technology of our nodestrap components
-import type { JssStyle }   from 'jss'          // ts defs support for jss
+}                           from 'jss'          // base technology of our nodestrap components
+import type { JssStyle }    from 'jss'          // ts defs support for jss
 
-import jssPluginGlobal     from 'jss-plugin-global'
+import jssPluginGlobal      from 'jss-plugin-global'
 
-import { PropEx }          from './Css'        // ts defs support for jss
-import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
+import { PropEx }           from './Css'        // ts defs support for jss
+import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 import type {
     Dictionary,
     ValueOf,
-}                          from './CssConfig'  // ts defs support for jss
+}                           from './CssConfig'  // ts defs support for jss
 
 // nodestrap (modular web components):
 import {
     GenericElement,
     ElementStylesBuilder,
-}                          from './Element'
-import type * as Elements  from './Element'
+}                           from './Element'
+import type * as Elements   from './Element'
 import
     breakpoints,
-    * as breakpoint        from './breakpoints'
+    * as breakpoint         from './breakpoints'
 
 // other supports:
-import { pascalCase }      from 'pascal-case'
+import { pascalCase }       from 'pascal-case'
 
 
 

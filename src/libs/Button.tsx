@@ -4,7 +4,6 @@ import React                from 'react'        // base technology of our nodest
 // jss   (builds css  using javascript):
 import type {
     JssStyle,
-    Styles,
 }                           from 'jss'          // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
@@ -12,6 +11,9 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 import colors               from './colors'     // configurable colors & theming defs
 import * as border          from './borders'     // configurable borders & border radiuses defs
 import spacers              from './spacers'     // configurable spaces defs
+import type {
+    ClassList,
+}                           from './Element'
 import {
     default  as Control,
     ControlStylesBuilder,
@@ -33,54 +35,6 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
 
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
-    }}
-
-
-
-    // states:
-    /* -- same as parent -- */
-
-
-
-    // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
-        extend: [
-            super.basicStyle(), // copy basicStyle from base
-        ] as JssStyle,
-
-
-
-        // layout:
-        display        : 'inline-flex',        // use flexbox as the layout
-        flexDirection  : cssProps.orientation, // customizable orientation
-        justifyContent : 'center',             // center items horizontally
-        alignItems     : 'center',             // center items vertically
-
-        
-
-        // positions:
-        verticalAlign  : 'baseline', // button's text should be aligned with sibling text, so the button behave like <span> wrapper
-
-
-
-        // sizes:
-        /* -- auto size depends on the text's/content's size -- */
-        boxSizing      : 'content-box', // the final size is excluding borders & paddings
-
-
-
-        // typos:
-        textAlign      : 'center',
-
-
-
-        // accessibility:
-        userSelect     : 'none', // disable selecting button's text
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
     protected /*virtual*/ staticOutlinedStyle(): JssStyle { return {
         '&:not(.outlined)' : {
@@ -210,22 +164,62 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'ghost')), // apply *general* cssProps starting with ghost***
     }}
-    protected /*override*/ styles(): Styles<'main'> {
-        const styles = super.styles();
-        styles.main = {
-            extend: [
-                styles.main,
-                {
-                    '&.link'  : this.linkStyle(),
-                    '&.ghost' : this.ghostStyle(),
-                },
-            ] as JssStyle,
-        };
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
 
 
 
-        return styles;
-    }
+        [ 'link' , this.linkStyle()  ],
+        [ 'ghost', this.ghostStyle() ],
+    ]}
+
+
+
+    // states:
+    /* -- same as parent -- */
+
+
+
+    // styles:
+    public /*override*/ basicStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(), // copy basicStyle from base
+        ] as JssStyle,
+
+
+
+        // layout:
+        display        : 'inline-flex',        // use flexbox as the layout
+        flexDirection  : cssProps.orientation, // customizable orientation
+        justifyContent : 'center',             // center items horizontally
+        alignItems     : 'center',             // center items vertically
+
+        
+
+        // positions:
+        verticalAlign  : 'baseline', // button's text should be aligned with sibling text, so the button behave like <span> wrapper
+
+
+
+        // sizes:
+        /* -- auto size depends on the text's/content's size -- */
+        boxSizing      : 'content-box', // the final size is excluding borders & paddings
+
+
+
+        // typos:
+        textAlign      : 'center',
+
+
+
+        // accessibility:
+        userSelect     : 'none', // disable selecting button's text
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
 }
 export const styles = new ButtonStylesBuilder();
 
@@ -327,8 +321,8 @@ export default function Button(props: Props) {
 
 
     // fn props:
-    const tag2  = tag  ?? 'button';
-    const type2 = type ?? (['button', 'input'].includes(tag2) ? 'button' : undefined);
+    const tagFn  = tag  ?? 'button';
+    const typeFn = type ?? (['button', 'input'].includes(tagFn) ? 'button' : undefined);
 
 
 
@@ -340,7 +334,7 @@ export default function Button(props: Props) {
 
 
             // essentials:
-            tag={tag2}
+            tag={tagFn}
 
 
             // accessibility:
@@ -357,7 +351,7 @@ export default function Button(props: Props) {
             // Button props:
             {...{
                 // actions:
-                type    : type2,
+                type    : typeFn,
                 onClick : props.onClick,
             }}
         >

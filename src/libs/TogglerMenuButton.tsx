@@ -328,6 +328,21 @@ export default function TogglerMenuButton(props: Props) {
 
 
 
+    // jsx fn props:
+    const childrenFn = (() => {
+        // default (unset):
+        if (props.children === undefined) return (
+            <svg viewBox='0 0 24 24'><polyline points='2,3 22,3' /><polyline points='2,12 22,12' /><polyline points='2,21 22,21' /></svg>
+        );
+
+
+
+        // other component:
+        return props.children;
+    })();
+
+
+
     // jsx:
     return (
         <Check
@@ -340,20 +355,19 @@ export default function TogglerMenuButton(props: Props) {
             label={props.label ?? 'Toggle navigation'}
 
 
-            // variants:
-            chkStyle={props.chkStyle ?? 'btn'}
-
-
             // validations:
             enableValidation={props.enableValidation ?? false}
+
+
+            // variants:
+            chkStyle={props.chkStyle ?? 'btn'}
 
 
             // classes:
             mainClass={props.mainClass ?? togglerStyles.main}
         >
-            {((props.children === undefined) ? (
-                <svg viewBox='0 0 24 24'><polyline points='2,3 22,3' /><polyline points='2,12 22,12' /><polyline points='2,21 22,21' /></svg>
-            ) : props.children)}
+            { childrenFn }
         </Check>
     );
 }
+TogglerMenuButton.prototype = Check.prototype; // mark as Check compatible

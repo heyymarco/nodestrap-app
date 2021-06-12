@@ -243,7 +243,7 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
 
     // jsx fn props:
     const iconFn = (() => {
-        // default (unset):
+        // default (unset) or string:
         if ((icon === undefined) || (typeof icon === 'string')) return (
             <Icon
                 // appearances:

@@ -5,7 +5,6 @@ import
 import {
     jss as jssDefault,
 }                          from 'react-jss'         // base technology of our nodestrap components
-import logo from './logo.svg';
 import './App.css';
 
 import Container from '../libs/Container';
@@ -69,10 +68,10 @@ function App() {
 					outlined={outlined}
 				>
 					element
-					<Icon icon='face' />
-					<Icon icon='face' theme={theme} />
-					<Icon icon='instagram' />
-					<Icon icon='instagram' theme={theme} />
+					<Icon icon='face' size={size} />
+					<Icon icon='face' theme={theme} size={size} />
+					<Icon icon='instagram' size={size} />
+					<Icon icon='instagram' theme={theme} size={size} />
                 </Element>
                 <Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -81,10 +80,10 @@ function App() {
 					enabled={enabled}
 				>
 					indicator
-					<Icon icon='face' />
-					<Icon icon='face' theme={theme} />
-					<Icon icon='instagram' />
-					<Icon icon='instagram' theme={theme} />
+					<Icon icon='face' size={size} />
+					<Icon icon='face' theme={theme} size={size} />
+					<Icon icon='instagram' size={size} />
+					<Icon icon='instagram' theme={theme} size={size} />
                 </Indicator>
                 <Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -93,10 +92,10 @@ function App() {
 					enabled={enabled} active={true}
 				>
 					indicator active
-					<Icon icon='face' />
-					<Icon icon='face' theme={theme} />
-					<Icon icon='instagram' />
-					<Icon icon='instagram' theme={theme} />
+					<Icon icon='face' size={size} />
+					<Icon icon='face' theme={theme} size={size} />
+					<Icon icon='instagram' size={size} />
+					<Icon icon='instagram' theme={theme} size={size} />
                 </Indicator>
                 <Content
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -105,10 +104,10 @@ function App() {
 					enabled={enabled}
 				>
 					content
-					<Icon icon='face' />
-					<Icon icon='face' theme={theme} />
-					<Icon icon='instagram' />
-					<Icon icon='instagram' theme={theme} />
+					<Icon icon='face' size={size} />
+					<Icon icon='face' theme={theme} size={size} />
+					<Icon icon='instagram' size={size} />
+					<Icon icon='instagram' theme={theme} size={size} />
                 </Content>
 				<Content
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -117,15 +116,15 @@ function App() {
 					enabled={enabled} active={true}
 				>
 					content active
-					<Icon icon='face' />
-					<Icon icon='face' theme={theme} />
-					<Icon icon='instagram' />
-					<Icon icon='instagram' theme={theme} />
+					<Icon icon='face' size={size} />
+					<Icon icon='face' theme={theme} size={size} />
+					<Icon icon='instagram' size={size} />
+					<Icon icon='instagram' theme={theme} size={size} />
                 </Content>
-				<Icon icon='face' />
-				<Icon icon='face' theme={theme} />
-				<Icon icon='instagram' />
-				<Icon icon='instagram' theme={theme} />
+				<Icon icon='face' size={size} />
+				<Icon icon='face' theme={theme} size={size} />
+				<Icon icon='instagram' size={size} />
+				<Icon icon='instagram' theme={theme} size={size} />
 				<hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:

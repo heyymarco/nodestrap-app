@@ -198,7 +198,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         //#region children
         [iconElm]: {
             extend: [
-                iconStyles.imgStyle( // apply icon
+                iconStyles.createStyle( // apply icon
                     /*img   :*/ this.ref(this._iconValInv),
                     /*foreg :*/ this.ref(this._outlinedForegFn)
                 ),

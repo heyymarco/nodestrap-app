@@ -39,7 +39,7 @@ const bodyElm = '&~.body.body'; // double the .body for winning to Listgroup's *
 
 export class AccordionItemStylesBuilder extends PopupStylesBuilder {
     // variants:
-    // disable variants:
+    // disable some variants:
     public /*override*/ themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle { return {} }
     public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
         // overwrites propName = propName{Size}:
@@ -344,10 +344,7 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
 
 
             // classes:
-            mainClass={props.mainClass ?? [
-                accItemStyles.main,
-                'actionCtrl',
-            ].join(' ')}
+            mainClass={props.mainClass ?? accItemStyles.main}
 
 
             // events:
@@ -370,4 +367,4 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
         </GenericElement>
     </>);
 }
-AccordionItem.prototype = ListgroupItem.prototype;
+AccordionItem.prototype = ListgroupItem.prototype; // mark as ListgroupItem compatible

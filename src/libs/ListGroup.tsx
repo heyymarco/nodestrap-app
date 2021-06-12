@@ -19,6 +19,7 @@ import {
     isTypeOf,
 }                           from './Element'
 import type {
+    ClassList,
     OrientationStyle,
     VariantOrientation,
 }                           from './Element'
@@ -261,6 +262,121 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
+    public /*virtual*/ inlineStyle(): JssStyle { return {
+        // layout:
+        display        : 'inline-flex', // use flexbox as the layout
+        flexDirection  : 'row',         // items are stacked horizontally
+
+
+
+        //#region children
+        [wrapperElm]: { // wrapper of listItem
+            // layout:
+            flexDirection  : 'row',  // listItems are stacked horizontally (supports for the Accordion at inlineStyle)
+
+
+
+            // borders:
+            //#region border-strokes as a separator
+            /*
+                we play with left-border,
+                because the left element is treated as the primary element
+                and the next one is treated as the secondary, tertiary, and so on
+
+                so if the secondary is hidden,
+                the left-border separating the primary & secondary is also hidden
+            */
+
+            border       : ecssProps.border,         // moved in from children
+            borderColor  : this.ref(this._borderFn), // moved in from children
+
+            borderBlockWidth           : 0, // remove (top|bottom)-border for all-wrappers
+
+            // remove right-border at the last-child, so that it wouldn't collide with the Listgroup's right-border
+            // and
+            // remove double border by removing right-border starting from the second-last-child to the first-child
+            borderInlineEndWidth       : 0,
+
+            // remove left-border at the first-child, so that it wouldn't collide with the Listgroup's left-border
+            '&:first-child': {
+                borderInlineStartWidth : 0,
+            },
+            //#endregion border-strokes as a separator
+
+
+
+            // children:
+            [listItemElm]: {
+                '&:not(.actionCtrl)' : listItemStyles.inlineStyle(),
+                '&.actionCtrl'       : listItemActionCtrlStyles.inlineStyle(),
+            },
+        } as JssStyle, // wrapper of listItem
+        //#endregion children
+    }}
+    public /*virtual*/ bulletStyle(): JssStyle { return {
+        // layout:
+        alignItems   : 'center', // child items are centered horizontally
+
+
+
+        // borders:
+        // kill borders surrounding Listgroup:
+        borderWidth  : 0,
+        borderRadius : 0,
+        overflow     : 'unset',
+
+
+
+        // spacings:
+        // add space between bullets:
+        gap          : cssProps.bulletSpacing,
+
+
+
+        //#region children
+        '&, &.inline': { // for normal and .inline style
+            [wrapperElm]: { // wrapper of listItem
+                // kill separator between bullets:
+                borderWidth : 0,
+            },
+        } as JssStyle, // wrapper of listItem
+
+        [wrapperElm]: { // wrapper of listItem
+            // children:
+            [listItemElm]: {
+                '&:not(.actionCtrl), &.actionCtrl': {
+                    // borders:
+                    //#region bullet style border
+                    //#region border-strokes
+                    border       : ecssProps.border,         // moved in from children
+                    borderColor  : this.ref(this._borderFn), // moved in from children
+                    //#endregion border-strokes
+    
+    
+    
+                    //#region border radiuses
+                    borderRadius : border.radiuses.pill, // big rounded corner
+                    overflow     : 'hidden',             // clip the children at the rounded corners
+                    //#endregion border radiuses
+                    //#endregion bullet style border
+    
+    
+    
+                    // customize:
+                    ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'bullet')), // apply *general* cssProps starting with bullet***
+                },
+            } as JssStyle,
+        } as JssStyle, // wrapper of listItem
+        //#endregion children
+    }}
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
+
+
+
+        [ 'inline', this.inlineStyle() ],
+        [ 'bullet', this.bulletStyle() ],
+    ]}
 
 
 
@@ -388,113 +504,6 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    public /*virtual*/ inlineStyle(): JssStyle { return {
-        // layout:
-        display        : 'inline-flex', // use flexbox as the layout
-        flexDirection  : 'row',         // items are stacked horizontally
-
-
-
-        //#region children
-        [wrapperElm]: { // wrapper of listItem
-            // layout:
-            flexDirection  : 'row',  // listItems are stacked horizontally (supports for the Accordion at inlineStyle)
-
-
-
-            // borders:
-            //#region border-strokes as a separator
-            /*
-                we play with left-border,
-                because the left element is treated as the primary element
-                and the next one is treated as the secondary, tertiary, and so on
-
-                so if the secondary is hidden,
-                the left-border separating the primary & secondary is also hidden
-            */
-
-            border       : ecssProps.border,         // moved in from children
-            borderColor  : this.ref(this._borderFn), // moved in from children
-
-            borderBlockWidth           : 0, // remove (top|bottom)-border for all-wrappers
-
-            // remove right-border at the last-child, so that it wouldn't collide with the Listgroup's right-border
-            // and
-            // remove double border by removing right-border starting from the second-last-child to the first-child
-            borderInlineEndWidth       : 0,
-
-            // remove left-border at the first-child, so that it wouldn't collide with the Listgroup's left-border
-            '&:first-child': {
-                borderInlineStartWidth : 0,
-            },
-            //#endregion border-strokes as a separator
-
-
-
-            // children:
-            [listItemElm]: {
-                '&:not(.actionCtrl)' : listItemStyles.inlineStyle(),
-                '&.actionCtrl'       : listItemActionCtrlStyles.inlineStyle(),
-            },
-        } as JssStyle, // wrapper of listItem
-        //#endregion children
-    }}
-    public /*virtual*/ bulletStyle(): JssStyle { return {
-        // layout:
-        alignItems   : 'center', // child items are centered horizontally
-
-
-
-        // borders:
-        // kill borders surrounding Listgroup:
-        borderWidth  : 0,
-        borderRadius : 0,
-        overflow     : 'unset',
-
-
-
-        // spacings:
-        // add space between bullets:
-        gap          : cssProps.bulletSpacing,
-
-
-
-        //#region children
-        '&, &.inline': { // for normal and .inline style
-            [wrapperElm]: { // wrapper of listItem
-                // kill separator between bullets:
-                borderWidth : 0,
-            },
-        } as JssStyle, // wrapper of listItem
-
-        [wrapperElm]: { // wrapper of listItem
-            // children:
-            [listItemElm]: {
-                '&:not(.actionCtrl), &.actionCtrl': {
-                    // borders:
-                    //#region bullet style border
-                    //#region border-strokes
-                    border       : ecssProps.border,         // moved in from children
-                    borderColor  : this.ref(this._borderFn), // moved in from children
-                    //#endregion border-strokes
-    
-    
-    
-                    //#region border radiuses
-                    borderRadius : border.radiuses.pill, // big rounded corner
-                    overflow     : 'hidden',             // clip the children at the rounded corners
-                    //#endregion border radiuses
-                    //#endregion bullet style border
-    
-    
-    
-                    // customize:
-                    ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'bullet')), // apply *general* cssProps starting with bullet***
-                },
-            } as JssStyle,
-        } as JssStyle, // wrapper of listItem
-        //#endregion children
-    }}
     protected /*override*/ styles(): Styles<'main'> {
         const styles = super.styles();
         styles.main = {
@@ -560,10 +569,6 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
                             },
                         },
                     },
-                },
-                {
-                    '&.inline' : this.inlineStyle(),
-                    '&.bullet' : this.bulletStyle(),
                 },
             ] as JssStyle,
         };

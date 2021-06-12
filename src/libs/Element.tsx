@@ -1,46 +1,46 @@
 // react (builds html using javascript):
-import
-    React, {
+import {
+    default as React,
     useContext,
     useMemo,
-}                          from 'react'         // base technology of our nodestrap components
+}                           from 'react'         // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
 import type {
     JssStyle,
     Styles,
     Classes,
-}                          from 'jss'           // ts defs support for jss
+}                           from 'jss'           // ts defs support for jss
 import {
     jss as jssDefault,
     createUseStyles,
     JssContext,
-}                          from 'react-jss'     // base technology of our nodestrap components
+}                           from 'react-jss'     // base technology of our nodestrap components
 import
     jssPluginNormalizeShorthands
-                           from './jss-plugin-normalize-shorthands'
+                            from './jss-plugin-normalize-shorthands'
 import {
     Prop,
     PropEx,
     Cust,
-}                          from './Css'         // ts defs support for jss
-import CssConfig           from './CssConfig'   // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
+}                           from './Css'         // ts defs support for jss
+import CssConfig            from './CssConfig'   // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 import type {
     Dictionary,
     DictionaryOf,
-}                          from './CssConfig'   // ts defs support for jss
-import { pascalCase }      from 'pascal-case'   // pascal-case support for jss
-import { camelCase }       from 'camel-case'    // camel-case  support for jss
+}                           from './CssConfig'   // ts defs support for jss
+import { pascalCase }       from 'pascal-case'   // pascal-case support for jss
+import { camelCase }        from 'camel-case'    // camel-case  support for jss
 
 // nodestrap (modular web components):
 import
     colors,
-    * as color             from './colors'      // configurable colors & theming defs
+    * as color              from './colors'      // configurable colors & theming defs
 import
     borders,
-    * as border            from './borders'     // configurable borders & border radiuses defs
-import spacers             from './spacers'     // configurable spaces defs
-import typos               from './typos/index' // configurable typography (texting) defs
+    * as border             from './borders'     // configurable borders & border radiuses defs
+import spacers              from './spacers'     // configurable spaces defs
+import typos                from './typos/index' // configurable typography (texting) defs
 
 
 
@@ -124,6 +124,9 @@ export const cssDecls = cssConfig.decls;
 
 
 // styles:
+
+export type ClassEntry = [string|null, JssStyle]
+export type ClassList  = ClassEntry[]
 
 /**
  * A css builder for styling our components.
@@ -389,7 +392,7 @@ export class StylesBuilder {
     public /*virtual*/ themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle {
         for (const [theme, themeColor] of options) {
             const Theme     = pascalCase(theme);
-            const themeProp = `&.th${Theme}`;
+            const themeProp = `th${Theme}`;
             themes[themeProp] = {
                 ...themes[themeProp],
                 extend: ((): JssStyle[] => {
@@ -442,7 +445,7 @@ export class StylesBuilder {
     public /*virtual*/ sizes(sizes: Dictionary<JssStyle> = {}, options = this.sizeOptions()): JssStyle {
         for (const size of options) {
             const Size     = pascalCase(size);
-            const sizeProp = `&.sz${Size}`;
+            const sizeProp = `sz${Size}`;
             sizes[sizeProp] = {
                 ...sizes[sizeProp],
                 extend: ((): JssStyle[] => {
@@ -493,14 +496,14 @@ export class StylesBuilder {
      * Creates css rule definitions for every *specific* variant by overriding some *scoped css props*.
      * @returns A `JssStyle` represents the css rule definitions for every *specific* variant.
      */
-    public /*virtual*/ variants(): JssStyle { return {
-        extend: [
-            this.themes(),                      // variant themes
-            this.sizes(),                       // variant sizes
-            { '&.gradient' : this.gradient() }, // variant gradient
-            { '&.outlined' : this.outlined() }, // variant outlined
-        ] as JssStyle,
-    }}
+    public /*virtual*/ variants(): ClassList { return [
+        // TODO: this.themes(),                      // variant themes
+        // TODO: this.sizes(),                       // variant sizes
+        ...Object.entries(this.themes()).map(([key, style]) => [key as string, style as JssStyle] as ClassEntry),
+        ...Object.entries(this.sizes()).map(([key, style]) => [key as string, style as JssStyle] as ClassEntry),
+        [ 'gradient', this.gradient() ], // variant gradient
+        [ 'outlined', this.outlined() ], // variant outlined
+    ]}
 
     /**
      * Watches & applies any variant related classes.
@@ -511,7 +514,11 @@ export class StylesBuilder {
             // this.iif(!inherit,
             //     // variants always inherit
             // ),
-            this.variants(), // variant rules
+
+            
+            
+            // variant rules:
+            ...this.variants().map(([variant, style]) => ({ [variant ? (variant.includes('&') ? variant : `&.${variant}`) : '&'] : style })),
         ] as JssStyle,
     }}
 
@@ -571,16 +578,18 @@ export class StylesBuilder {
         return {
             main: {
                 extend: [
-                    this.basicStyle(), // basic style
-        
                     // watch variant classes:
                     this.watchVariants(),
         
                     // watch state classes/pseudo-classes:
                     this.watchStates(),
-
+                    
                     // after watching => use func props:
                     this.propsFn(),
+
+                    // all the required stuff has been loaded,
+                    // now load the basicStyle:
+                    this.basicStyle(),
                 ] as JssStyle,
             },
         };
@@ -877,25 +886,23 @@ export class ElementStylesBuilder extends StylesBuilder {
         // *toggle on* the outlined props:
         return this.toggleOnOutlined();
     }
-    public /*override*/ variants(): JssStyle { return {
-        extend: [
-            super.variants(), // copy variants from base
+    public /*override*/ variants(): ClassList { return [
+            ...super.variants(), // copy variants from base
 
 
 
             //#region all initial states are none
             // *toggle off* the background gradient prop:
             // but still be able to *toggle on* by parent (inherit)
-            this.toggleOffGradient(/*inherit =*/true),
+            [ '&', this.toggleOffGradient(/*inherit =*/true) ],
 
 
 
             // *toggle off* the outlined props:
             // but still be able to *toggle on* by parent (inherit)
-            this.toggleOffOutlined(/*inherit =*/true),
+            [ '&', this.toggleOffOutlined(/*inherit =*/true) ],
             //#endregion all initial states are none
-        ] as JssStyle,
-    }}
+    ]}
 
 
 

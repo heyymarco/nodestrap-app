@@ -22,7 +22,7 @@ import {
     default  as Icon,
     cssDecls as icssDecls,
 }                           from './Icon'
-import typos               from './typos/index' // configurable typography (texting) defs
+import typos                from './typos/index' // configurable typography (texting) defs
 
 
 
@@ -178,3 +178,4 @@ export default function ButtonIcon(props: Props) {
         </Button>
     );
 }
+ButtonIcon.prototype = Button.prototype; // mark as Button compatible

@@ -628,7 +628,9 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
                         {...(isTypeOf(nav, Navscroll) ? ({
                             // scrolls:
-                            targetRef: listRef,
+                            // TODO:
+                            // @ts-ignore
+                            targetRef : nav.props.targetRef ?? listRef,
                         } as Navscrolls.Props) : {})}
                     />
                     :

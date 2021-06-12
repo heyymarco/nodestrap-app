@@ -7,7 +7,6 @@ import {
 // jss   (builds css  using javascript):
 import type {
     JssStyle,
-    Styles,
 }                           from 'jss'          // ts defs support for jss
 import {
     PropEx,
@@ -17,6 +16,9 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 // nodestrap (modular web components):
 import {
     cssProps as ecssProps,
+}                           from './Element'
+import type {
+    ClassList,
 }                           from './Element'
 import {
     cssProps as icssProps,
@@ -123,6 +125,106 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
+    public /*virtual*/ buttonStyle(): JssStyle { return {
+        // children:
+
+        [chkElm]   : {
+            //#region hides the checkbox while still preserving animation & focus working
+            // appearances:
+            opacity    : 0,
+
+
+
+            // sizes:
+            boxSizing  : 'border-box', // the final size is including borders & paddings
+            inlineSize : 0,
+            blockSize  : 0,
+
+
+
+            // spacings:
+            padding    : 0,
+
+
+
+            // borders:
+            border     : 0,
+            //#endregion hides the checkbox while still preserving animation & focus working
+
+
+
+            // spacings:
+            // kill spacing between check & label:
+            '&:not(:last-child)': {
+                marginInlineEnd: 0,
+            },
+        },
+
+        [labelElm] : {
+            extend: [
+                buttonStyles.basicStyle(),
+            ] as JssStyle,
+
+
+
+            // customize:
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'btn')), // apply *general* cssProps starting with btn***
+        },
+    }}
+    public /*virtual*/ switchStyle(): JssStyle { return {
+        //#region specific states
+        extend: [
+            //#region check, clear
+            { // [checking, checked, clearing, cleared => all states]
+                [this.decl(this._filterCheckClearIn)]  : cssProps.switchFilterCheck,
+                [this.decl(this._filterCheckClearOut)] : cssProps.switchFilterClear,
+
+                [this.decl(this._switchTransfIn)]      : cssProps.switchTransfCheck,
+                [this.decl(this._switchTransfOut)]     : cssProps.switchTransfClear,
+            },
+            this.stateCheck({ // [checking, checked]
+                [this.decl(this._animCheckClear)]      : cssProps.switchAnimCheck,
+            }),
+            this.stateNotCheck({ // [not-checking, not-checked] => [clearing, cleared]
+                [this.decl(this._animCheckClear)]      : cssProps.switchAnimClear,
+            }),
+            //#endregion check, clear
+        ] as JssStyle,
+        //#endregion specific states
+
+
+
+        // children:
+        [chkElm]: {
+            // sizes:
+            inlineSize   : '2em',   // makes the width twice the height
+
+
+
+            // borders:
+            borderRadius : '0.5em', // makes circle corners
+
+
+
+            // children:
+            [iconElm]: {
+                [iconStyles.decl(iconStyles._img)] : cssProps.switchImg,
+            },
+
+
+
+            // customize:
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'switch')), // apply *general* cssProps starting with switch***
+        },
+    }}
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
+
+
+
+        [ 'btn'   , this.buttonStyle() ],
+        [ 'switch', this.switchStyle() ],
+    ]}
 
 
 
@@ -291,7 +393,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         // children:
         [iconElm]: {
             extend: [
-                iconStyles.imgStyle( // apply icon
+                iconStyles.createStyle( // apply icon
                     /*img   :*/ cssProps.img,
                     /*foreg :*/ this.ref(this._foregFn)
                 ),
@@ -405,114 +507,6 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             },
         },
     }}
-    public /*virtual*/ buttonStyle(): JssStyle { return {
-        // children:
-
-        [chkElm]   : {
-            //#region hides the checkbox while still preserving animation & focus working
-            // appearances:
-            opacity    : 0,
-
-
-
-            // sizes:
-            boxSizing  : 'border-box', // the final size is including borders & paddings
-            inlineSize : 0,
-            blockSize  : 0,
-
-
-
-            // spacings:
-            padding    : 0,
-
-
-
-            // borders:
-            border     : 0,
-            //#endregion hides the checkbox while still preserving animation & focus working
-
-
-
-            // spacings:
-            // kill spacing between check & label:
-            '&:not(:last-child)': {
-                marginInlineEnd: 0,
-            },
-        },
-
-        [labelElm] : {
-            extend: [
-                buttonStyles.basicStyle(),
-            ] as JssStyle,
-
-
-
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'btn')), // apply *general* cssProps starting with btn***
-        },
-    }}
-    public /*virtual*/ switchStyle(): JssStyle { return {
-        //#region specific states
-        extend: [
-            //#region check, clear
-            { // [checking, checked, clearing, cleared => all states]
-                [this.decl(this._filterCheckClearIn)]  : cssProps.switchFilterCheck,
-                [this.decl(this._filterCheckClearOut)] : cssProps.switchFilterClear,
-
-                [this.decl(this._switchTransfIn)]      : cssProps.switchTransfCheck,
-                [this.decl(this._switchTransfOut)]     : cssProps.switchTransfClear,
-            },
-            this.stateCheck({ // [checking, checked]
-                [this.decl(this._animCheckClear)]      : cssProps.switchAnimCheck,
-            }),
-            this.stateNotCheck({ // [not-checking, not-checked] => [clearing, cleared]
-                [this.decl(this._animCheckClear)]      : cssProps.switchAnimClear,
-            }),
-            //#endregion check, clear
-        ] as JssStyle,
-        //#endregion specific states
-
-
-
-        // children:
-        [chkElm]: {
-            // sizes:
-            inlineSize   : '2em',   // makes the width twice the height
-
-
-
-            // borders:
-            borderRadius : '0.5em', // makes circle corners
-
-
-
-            // children:
-            [iconElm]: {
-                [iconStyles.decl(iconStyles._img)] : cssProps.switchImg,
-            },
-
-
-
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'switch')), // apply *general* cssProps starting with switch***
-        },
-    }}
-    protected /*override*/ styles(): Styles<'main'> {
-        const styles = super.styles();
-        styles.main = {
-            extend: [
-                styles.main,
-                {
-                    '&.btn'    : this.buttonStyle(),
-                    '&.switch' : this.switchStyle(),
-                },
-            ] as JssStyle,
-        };
-
-
-
-        return styles;
-    }
 }
 export const styles = new CheckStylesBuilder();
 

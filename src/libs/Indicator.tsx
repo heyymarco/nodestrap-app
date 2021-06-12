@@ -601,19 +601,21 @@ export function useTogglerActive(props: TogglerActiveProps): [boolean, React.Dis
 
 
     const setActive: React.Dispatch<React.SetStateAction<boolean>> = (newActive) => {
-        if (!propEnabled)        return; // control is disabled => no response required
-        if (propActive !== null) return; // controllable [active] is set => no uncontrollable required
+        if (!propEnabled) return; // control is disabled => no response required
 
-
-        
         const newActiveValue = (typeof newActive === 'function') ? newActive(activeFn) : newActive;
         if (newActiveValue === activeFn) return; // no change needed
-        setActiveTg(newActiveValue);
-
 
         
+        
+        if (propActive !== null) { // controllable [active] is set => no uncontrollable required
+            setActiveTg(newActiveValue); // set dynamic (uncontrollable)
+        } // if
+        
+        
+        
         // forwards:
-        props.onActiveChange?.(newActiveValue);
+        props.onActiveChange?.(newActiveValue); // notify changed -or- request to change
     };
     return [
         activeFn,

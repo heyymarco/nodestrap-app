@@ -1,27 +1,29 @@
 // react (builds html using javascript):
-import
-    React, {
+import {
+    default as React,
     useMemo,
-}                          from 'react'        // base technology of our nodestrap components
+}                           from 'react'        // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
 import type {
     JssStyle,
-    Styles,
-}                          from 'jss'          // ts defs support for jss
+}                           from 'jss'          // ts defs support for jss
 import {
     Cust,
-}                          from './Css'        // ts defs support for jss
-import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
+}                           from './Css'        // ts defs support for jss
+import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
-import fontMaterial        from './Icon-font-material'
+import fontMaterial         from './Icon-font-material'
 import {
     default  as Element,
     ElementStylesBuilder,
     cssProps as ecssProps,
-}                          from './Element'
-import type * as Elements  from './Element'
+}                           from './Element'
+import type * as Elements   from './Element'
+import type {
+    ClassList,
+}                           from './Element'
 
 
 
@@ -62,6 +64,120 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
     public /*override*/ outlined(): JssStyle { return {} } // remove outlined style
+    public /*virtual*/ iconFont(): JssStyle { return {
+        '&::after': {
+            // layout:
+            content    : this.ref(this._img),
+            display    : 'inline',
+            
+
+            // colors:
+            backg         : 'transparent',                   // setup backg color
+            foreg         : this.ref(this._outlinedForegFn), // setup icon's color
+            
+    
+            // sizes:
+            fontSize      : cssProps.size,  // setup icon's size
+            overflowY     : 'hidden',       // hide the pseudo-inherited underline
+            
+            
+            // transition:
+            transition    : ecssProps.transition,
+    
+    
+            // accessibility:
+            userSelect    : 'none',         // disable selecting icon's text
+    
+    
+            //#region fonts
+            //#region custom font
+            // load custom font:
+            '@global': {
+                '@font-face': {
+                    ...config.font.styles,
+                    src: config.font.files.map((fileName) => `url("${styles.concatUrl(fileName, config.font.path)}") ${this.formatOf(fileName)}`).join(','),
+                },
+            },
+    
+    
+    
+            // apply custom font:
+            ...config.font.styles,
+            //#endregion custom font
+    
+    
+            lineHeight    : 1,
+            textTransform : 'none',
+            letterSpacing : 'normal',
+            wordWrap      : 'normal',
+            whiteSpace    : 'nowrap',
+            direction     : 'ltr',
+    
+    
+            //#region browser supports
+            '-webkit-font-smoothing'  : 'antialiased',        // support for all WebKit browsers
+            'textRendering'           : 'optimizeLegibility', // support for Safari and Chrome
+            '-moz-osx-font-smoothing' : 'grayscale',          // support for Firefox
+            fontFeatureSettings       : 'liga',               // support for IE
+            //#endregion browser supports
+            //#endregion fonts
+        },
+    }}
+    public /*virtual*/ iconImg(): JssStyle { return {
+        // colors:
+        backg         : this.ref(this._outlinedForegFn), // setup icon's color
+        
+        
+        // transition:
+        transition    : ecssProps.transition,
+
+
+        // sizes:
+        //#region children
+        // just a *dummy* element for calculating the image's width
+        '&>img': {
+            // layout:
+            display    : 'inline-block', // use inline-block
+
+
+
+            // appearances:
+            visibility : 'hidden', // hide the element, but still consume the dimension
+
+
+
+            // sizes:
+            blockSize  : cssProps.size, // follow config's size
+            inlineSize : 'auto',        // calculates the width by [height * aspect-ratio]
+
+
+
+            // transition:
+            transition : 'inherit',
+
+
+
+            // accessibility:
+            userSelect : 'none', // disable selecting icon's img
+        },
+        //#endregion children
+
+
+        //#region image masking
+        maskSize      : 'contain',           // default image props
+        maskRepeat    : 'no-repeat',         // default image props
+        maskPosition  : 'center',            // default image props
+        mask          : this.ref(this._img), // image with additional image's props
+        //#endregion image masking
+    }}
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
+
+
+
+        [ 'font', this.iconFont() ],
+        [ 'img' , this.iconImg()  ],
+    ]}
 
 
 
@@ -150,117 +266,10 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
         foreg         : null, // delete from cssProps; in img-icon: foreg => backgColor ; in font-icon: foreg => foreg => color (font-color)
     }}
-    public /*virtual*/ fontBasicStyle(): JssStyle { return {
-        '&::after': {
-            // layout:
-            content    : this.ref(this._img),
-            display    : 'inline',
-            
-
-            // colors:
-            backg         : 'transparent',                   // setup backg color
-            foreg         : this.ref(this._outlinedForegFn), // setup icon's color
-            
-    
-            // sizes:
-            fontSize      : cssProps.size,  // setup icon's size
-            overflowY     : 'hidden',       // hide the pseudo-inherited underline
-            
-            
-            // transition:
-            transition    : ecssProps.transition,
-    
-    
-            // accessibility:
-            userSelect    : 'none',         // disable selecting icon's text
-    
-    
-            //#region fonts
-            //#region custom font
-            // load custom font:
-            '@global': {
-                '@font-face': {
-                    ...config.font.styles,
-                    src: config.font.files.map((fileName) => `url("${styles.concatUrl(fileName, config.font.path)}") ${this.formatOf(fileName)}`).join(','),
-                },
-            },
-    
-    
-    
-            // apply custom font:
-            ...config.font.styles,
-            //#endregion custom font
-    
-    
-            lineHeight    : 1,
-            textTransform : 'none',
-            letterSpacing : 'normal',
-            wordWrap      : 'normal',
-            whiteSpace    : 'nowrap',
-            direction     : 'ltr',
-    
-    
-            //#region browser supports
-            '-webkit-font-smoothing'  : 'antialiased',        // support for all WebKit browsers
-            'textRendering'           : 'optimizeLegibility', // support for Safari and Chrome
-            '-moz-osx-font-smoothing' : 'grayscale',          // support for Firefox
-            fontFeatureSettings       : 'liga',               // support for IE
-            //#endregion browser supports
-            //#endregion fonts
-        },
-    }}
-    public /*virtual*/ imgBasicStyle(): JssStyle { return {
-        // colors:
-        backg         : this.ref(this._outlinedForegFn), // setup icon's color
-        
-        
-        // transition:
-        transition    : ecssProps.transition,
-
-
-        // sizes:
-        //#region children
-        // just a *dummy* element for calculating the image's width
-        '&>img': {
-            // layout:
-            display    : 'inline-block', // use inline-block
-
-
-
-            // appearances:
-            visibility : 'hidden', // hide the element, but still consume the dimension
-
-
-
-            // sizes:
-            blockSize  : cssProps.size, // follow config's size
-            inlineSize : 'auto',        // calculates the width by [height * aspect-ratio]
-
-
-
-            // transition:
-            transition : 'inherit',
-
-
-
-            // accessibility:
-            userSelect : 'none', // disable selecting icon's img
-        },
-        //#endregion children
-
-
-        //#region image masking
-        maskSize      : 'contain',           // default image props
-        maskRepeat    : 'no-repeat',         // default image props
-        maskPosition  : 'center',            // default image props
-        mask          : this.ref(this._img), // image with additional image's props
-        //#endregion image masking
-    }}
-
-    public /*virtual*/ imgStyle(img: Cust.Ref, foreg?: Cust.Ref): JssStyle { return {
+    public /*virtual*/ createStyle(img: Cust.Ref, foreg?: Cust.Ref): JssStyle { return {
         extend: [
             this.basicStyle(),
-            this.imgBasicStyle(),
+            this.iconImg(),
         ] as JssStyle,
 
 
@@ -273,23 +282,6 @@ export class IconStylesBuilder extends ElementStylesBuilder {
             [this.decl(this._outlinedForegFn)] : foreg,
         } : {}),
     }}
-
-    protected /*override*/ styles(): Styles<'main'> {
-        const styles = super.styles();
-        styles.main = {
-            extend: [
-                styles.main,
-                {
-                    '&.font' : this.fontBasicStyle(),
-                    '&.img'  : this.imgBasicStyle(),
-                },
-            ] as JssStyle,
-        };
-
-
-
-        return styles;
-    }
 
 
 
