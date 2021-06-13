@@ -49,18 +49,18 @@ import type {
 
 export class FormStylesBuilder extends ElementStylesBuilder implements IContentStylesBuilder, IValidationStylesBuilder {
     // variants:
-    public /*implement*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
-        return editableTextControlStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from EditableTextControl
+    public /*implement*/ contentTheme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
+        return editableTextControlStyles.contentTheme(theme, Theme, themeProp, themeColor); // copy themes from EditableTextControl
     }
     public /*implement*/ contentSize(size: string, Size: string): JssStyle {
         return contentStyles.contentSize(size, Size); // copy sizes from Content
     }
 
-    public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public /*override*/ theme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
-            super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
+            super.theme(theme, Theme, themeProp, themeColor), // copy themes from base
 
-            this.contentThemeOf(theme, Theme, themeProp, themeColor),
+            this.contentTheme(theme, Theme, themeProp, themeColor),
         ] as JssStyle,
     }}
     public /*override*/ size(size: string, Size: string): JssStyle { return {

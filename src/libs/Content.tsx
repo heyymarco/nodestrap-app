@@ -32,7 +32,7 @@ import type * as Indicators from './Indicator'
 
 export interface IContentStylesBuilder {
     // variants:
-    contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle
+    contentTheme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle
     contentSize(size: string, Size: string): JssStyle
 
 
@@ -88,7 +88,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // variants:
-    public /*virtual*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public /*virtual*/ contentTheme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props:
     
         //#region overwrite base's themes with *softer* colors
@@ -101,11 +101,11 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
 
-    public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public /*override*/ theme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
-            super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
+            super.theme(theme, Theme, themeProp, themeColor), // copy themes from base
 
-            this.contentThemeOf(theme, Theme, themeProp, themeColor),
+            this.contentTheme(theme, Theme, themeProp, themeColor),
         ] as JssStyle,
     }}
     public /*override*/ size(size: string, Size: string): JssStyle { return {

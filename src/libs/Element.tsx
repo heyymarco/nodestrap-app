@@ -425,7 +425,7 @@ export class StylesBuilder {
             themes[themeProp] = {
                 ...themes[themeProp],
                 extend: ((): JssStyle[] => {
-                    const newEntry = this.themeOf(
+                    const newEntry = this.theme(
                         theme,     // camel  case
                         Theme,     // pascal case
                         themeProp, // prop name
@@ -456,7 +456,7 @@ export class StylesBuilder {
      * @param themeColor The backg color of the current `theme`.
      * @returns A `JssStyle` represents the color definition for the current `theme`.
      */
-    public /*virtual*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {} }
+    public /*virtual*/ theme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {} }
 
     /**
      * Gets the all available size options.
@@ -864,7 +864,7 @@ export class ElementStylesBuilder extends StylesBuilder {
             [ null, this.toggleOffOutlined(/*inherit =*/true) ],
             //#endregion all initial states are none
     ]}
-    public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public /*override*/ theme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props:
     
         [this.decl(this._foregTh)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg

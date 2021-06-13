@@ -50,8 +50,8 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
     // variants:
-    public /*implement*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
-        return contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from Content
+    public /*implement*/ contentTheme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
+        return contentStyles.contentTheme(theme, Theme, themeProp, themeColor); // copy themes from Content
     }
     public /*implement*/ contentSize(size: string, Size: string): JssStyle {
         const contentSize = contentStyles.contentSize(size, Size); // copy sizes from Content
@@ -61,11 +61,11 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         return contentSize;
     }
 
-    public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public /*override*/ theme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
-            super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
+            super.theme(theme, Theme, themeProp, themeColor), // copy themes from base
             
-            this.contentThemeOf(theme, Theme, themeProp, themeColor),
+            this.contentTheme(theme, Theme, themeProp, themeColor),
         ] as JssStyle,
     }}
     public /*override*/ size(size: string, Size: string): JssStyle { return {
