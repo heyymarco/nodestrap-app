@@ -17,9 +17,6 @@ import {
     Cust,
 }                           from './Css'        // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-import type {
-    Dictionary,
-}                          from './CssConfig'   // ts defs support for jss
 
 // nodestrap (modular web components):
 import * as stripOuts       from './strip-outs'
@@ -90,7 +87,7 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
         
         [ 'scrollable', this.scrollable() ],
     ]}
-    public /*override*/ themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle { return {} } // disabled
+    public /*override*/ themes(): ClassList { return [] } // disabled
     public /*override*/ size(size: string, Size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),

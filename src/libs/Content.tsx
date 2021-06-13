@@ -7,7 +7,6 @@ import type {
 }                           from 'jss'          // ts defs support for jss
 import {
     PropEx,
-    Cust,
 }                           from './Css'        // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 import type {
@@ -32,7 +31,7 @@ import type * as Indicators from './Indicator'
 
 export interface IContentStylesBuilder {
     // variants:
-    contentTheme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle
+    contentTheme(theme: string, Theme: string): JssStyle
     contentSize(size: string, Size: string): JssStyle
 
 
@@ -88,7 +87,22 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // variants:
-    public /*virtual*/ contentTheme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
+        extend: [
+            super.theme(theme, Theme), // copy themes from base
+
+            this.contentTheme(theme, Theme),
+        ] as JssStyle,
+    }}
+    public /*override*/ size(size: string, Size: string): JssStyle { return {
+        extend: [
+            super.size(size, Size), // copy sizes from base
+
+            this.contentSize(size, Size),
+        ] as JssStyle,
+    }}
+
+    public /*virtual*/ contentTheme(theme: string, Theme: string): JssStyle { return {
         // customize the *themed* props:
     
         //#region overwrite base's themes with *softer* colors
@@ -99,21 +113,6 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
     public /*virtual*/ contentSize(size: string, Size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
-    }}
-
-    public /*override*/ theme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
-        extend: [
-            super.theme(theme, Theme, themeProp, themeColor), // copy themes from base
-
-            this.contentTheme(theme, Theme, themeProp, themeColor),
-        ] as JssStyle,
-    }}
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
-        extend: [
-            super.size(size, Size), // copy sizes from base
-
-            this.contentSize(size, Size),
-        ] as JssStyle,
     }}
 
 

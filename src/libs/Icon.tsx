@@ -48,9 +48,9 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         [ 'font', this.font()  ],
         [ 'img' , this.image() ],
     ]}
-    public /*override*/ theme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
         extend: [
-            super.theme(theme, Theme, themeProp, themeColor), // copy themes from base
+            super.theme(theme, Theme), // copy themes from base
         ] as JssStyle,
 
 

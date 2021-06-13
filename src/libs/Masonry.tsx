@@ -9,9 +9,6 @@ import {
 import type {
     JssStyle,
 }                           from 'jss'          // ts defs support for jss
-import {
-    Cust,
-}                           from './Css'        // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
@@ -48,11 +45,11 @@ export class MasonryStylesBuilder extends ElementStylesBuilder implements IConte
         [ '&:not(.inline)', this.block()  ], // block  style as default
         [ '&.inline'      , this.inline() ], // inline style as optional
     ]}
-    public /*override*/ theme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
         extend: [
-            super.theme(theme, Theme, themeProp, themeColor), // copy themes from base
+            super.theme(theme, Theme), // copy themes from base
             
-            this.contentTheme(theme, Theme, themeProp, themeColor),
+            this.contentTheme(theme, Theme),
         ] as JssStyle,
     }}
     public /*override*/ size(size: string, Size: string): JssStyle { return {
@@ -138,8 +135,8 @@ export class MasonryStylesBuilder extends ElementStylesBuilder implements IConte
         columnGap : [[0], '!important'], // strip out the `columnGap` because it will conflict with masonry's direction
     }}
 
-    public /*implement*/ contentTheme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
-        return contentStyles.contentTheme(theme, Theme, themeProp, themeColor); // copy themes from Content
+    public /*implement*/ contentTheme(theme: string, Theme: string): JssStyle {
+        return contentStyles.contentTheme(theme, Theme); // copy themes from Content
     }
     public /*implement*/ contentSize(size: string, Size: string): JssStyle {
         return contentStyles.contentSize(size, Size); // copy sizes from Content

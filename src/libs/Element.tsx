@@ -398,8 +398,7 @@ export class StylesBuilder {
      * @returns A `ClassList` represents the css rule definitions for every *specific* variant.
      */
     public /*virtual*/ variants(): ClassList { return [
-        // TODO: this.themes(),                      // variant themes
-        ...Object.entries(this.themes()).map(([key, style]) => [key as string, style as JssStyle] as ClassEntry),
+        ...this.themes(),
         ...this.sizes(),
         [ 'gradient', this.gradient() ],
         [ 'outlined', this.outlined() ],
@@ -407,46 +406,28 @@ export class StylesBuilder {
 
     /**
      * Gets the all available theme options.
-     * @returns A `[string, Cust.Ref][]` represents the all available theme options.
+     * @returns A `string[]` represents the all available theme options.
      */
-    public /*virtual*/ themeOptions(): [string, Cust.Ref][] {
-        return Object.entries(color.themes);
+    public /*virtual*/ themeOptions(): string[] {
+        return Object.keys(color.themes);
     }
     /**
-     * Creates color definitions *for each* theme `options`.
-     * @param themes The previous theme definitions to *extend*.
-     * @param options The list of the theme options.
-     * @returns A `JssStyle` represents the color definitions *for each* theme `options`.
+     * Creates color definitions *for each* `themeOptions()`.
+     * @returns A `ClassList` represents the color definitions *for each* `themeOptions()`.
      */
-    public /*virtual*/ themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle {
-        for (const [theme, themeColor] of options) {
+    public /*virtual*/ themes(): ClassList {
+        return this.themeOptions().map((theme) => {
             const Theme     = pascalCase(theme);
             const themeProp = `th${Theme}`;
-            themes[themeProp] = {
-                ...themes[themeProp],
-                extend: ((): JssStyle[] => {
-                    const newEntry = this.theme(
-                        theme,     // camel  case
-                        Theme,     // pascal case
-                        themeProp, // prop name
-                        themeColor // current theme color
-                    );
 
-                    const extend = (themes[themeProp] as any)?.extend as (undefined|JssStyle|JssStyle[]);
-                    if (Array.isArray(extend)) {
-                        extend.push(newEntry);
-                        return extend;
-                    }
-                    else {
-                        return [
-                            ...(extend ? [extend] : []),
-                            newEntry
-                        ];
-                    }
-                })() as JssStyle,
-            };
-        }
-        return themes;
+            return [
+                themeProp,
+                this.theme(
+                    theme, // camel  case
+                    Theme, // pascal case
+                )
+            ] as ClassEntry;
+        });
     }
     /**
      * Creates a color definition for the specified `theme`.
@@ -456,7 +437,7 @@ export class StylesBuilder {
      * @param themeColor The backg color of the current `theme`.
      * @returns A `JssStyle` represents the color definition for the current `theme`.
      */
-    public /*virtual*/ theme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {} }
+    public /*virtual*/ theme(theme: string, Theme: string): JssStyle { return {} }
 
     /**
      * Gets the all available size options.
@@ -864,14 +845,14 @@ export class ElementStylesBuilder extends StylesBuilder {
             [ null, this.toggleOffOutlined(/*inherit =*/true) ],
             //#endregion all initial states are none
     ]}
-    public /*override*/ theme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
         // customize the *themed* props:
     
         [this.decl(this._foregTh)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
-        [this.decl(this._backgTh)]          : this.solidBackg(themeColor),
+        [this.decl(this._backgTh)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
         [this.decl(this._borderTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
         [this.decl(this._boxShadowFocusTh)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
-        [this.decl(this._outlinedForegTh)]  : themeColor,
+        [this.decl(this._outlinedForegTh)]  : (colors as DictionaryOf<typeof colors>)[theme],
     }}
     public /*override*/ size(size: string, Size: string): JssStyle { return {
         // overwrites propName = propName{Size}:

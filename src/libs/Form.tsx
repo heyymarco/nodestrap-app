@@ -8,9 +8,6 @@ import
 import type {
     JssStyle,
 }                          from 'jss'          // ts defs support for jss
-import {
-    Cust,
-}                          from './Css'        // ts defs support for jss
 import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
@@ -49,18 +46,11 @@ import type {
 
 export class FormStylesBuilder extends ElementStylesBuilder implements IContentStylesBuilder, IValidationStylesBuilder {
     // variants:
-    public /*implement*/ contentTheme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
-        return editableTextControlStyles.contentTheme(theme, Theme, themeProp, themeColor); // copy themes from EditableTextControl
-    }
-    public /*implement*/ contentSize(size: string, Size: string): JssStyle {
-        return contentStyles.contentSize(size, Size); // copy sizes from Content
-    }
-
-    public /*override*/ theme(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
+    public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
         extend: [
-            super.theme(theme, Theme, themeProp, themeColor), // copy themes from base
+            super.theme(theme, Theme), // copy themes from base
 
-            this.contentTheme(theme, Theme, themeProp, themeColor),
+            this.contentTheme(theme, Theme),
         ] as JssStyle,
     }}
     public /*override*/ size(size: string, Size: string): JssStyle { return {
@@ -75,6 +65,13 @@ export class FormStylesBuilder extends ElementStylesBuilder implements IContentS
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
+
+    public /*implement*/ contentTheme(theme: string, Theme: string): JssStyle {
+        return editableTextControlStyles.contentTheme(theme, Theme); // copy themes from EditableTextControl
+    }
+    public /*implement*/ contentSize(size: string, Size: string): JssStyle {
+        return contentStyles.contentSize(size, Size); // copy sizes from Content
+    }
 
 
 
