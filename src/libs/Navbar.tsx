@@ -87,9 +87,9 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
     // variants:
-    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ size(size: string, Size: string): JssStyle { return {
         extend: [
-            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+            super.size(size, Size), // copy sizes from base
         ] as JssStyle,
 
 

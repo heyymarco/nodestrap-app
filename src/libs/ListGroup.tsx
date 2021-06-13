@@ -46,9 +46,9 @@ const listItemElm = '&>*';
 
 class ListItemStylesBuilder extends ContentStylesBuilder {
     // variants:
-    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ size(size: string, Size: string): JssStyle { return {
         extend: [
-            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+            super.size(size, Size), // copy sizes from base
         ] as JssStyle,
 
 
@@ -252,9 +252,17 @@ const listItemActionCtrlStyles = new ListItemActionCtrlStylesBuilder();
 
 export class ListgroupStylesBuilder extends ContentStylesBuilder {
     // variants:
-    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
+
+
+
+        [ 'inline', this.inline() ],
+        [ 'bullet', this.bullet() ],
+    ]}
+    public /*override*/ size(size: string, Size: string): JssStyle { return {
         extend: [
-            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+            super.size(size, Size), // copy sizes from base
         ] as JssStyle,
 
 
@@ -262,7 +270,7 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
-    public /*virtual*/ inlineStyle(): JssStyle { return {
+    public /*virtual*/ inline(): JssStyle { return {
         // layout:
         display        : 'inline-flex', // use flexbox as the layout
         flexDirection  : 'row',         // items are stacked horizontally
@@ -313,7 +321,7 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
         } as JssStyle, // wrapper of listItem
         //#endregion children
     }}
-    public /*virtual*/ bulletStyle(): JssStyle { return {
+    public /*virtual*/ bullet(): JssStyle { return {
         // layout:
         alignItems   : 'center', // child items are centered horizontally
 
@@ -369,14 +377,6 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
         } as JssStyle, // wrapper of listItem
         //#endregion children
     }}
-    public /*override*/ variants(): ClassList { return [
-        ...super.variants(), // copy variants from base
-
-
-
-        [ 'inline', this.inlineStyle() ],
-        [ 'bullet', this.bulletStyle() ],
-    ]}
 
 
 

@@ -115,9 +115,17 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
     // variants:
-    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
+
+
+
+        [ 'btn'   , this.button() ],
+        [ 'switch', this.switch() ],
+    ]}
+    public /*override*/ size(size: string, Size: string): JssStyle { return {
         extend: [
-            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+            super.size(size, Size), // copy sizes from base
         ] as JssStyle,
 
 
@@ -125,7 +133,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
-    public /*virtual*/ buttonStyle(): JssStyle { return {
+    public /*virtual*/ button(): JssStyle { return {
         // children:
 
         [chkElm]   : {
@@ -171,7 +179,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'btn')), // apply *general* cssProps starting with btn***
         },
     }}
-    public /*virtual*/ switchStyle(): JssStyle { return {
+    public /*virtual*/ switch(): JssStyle { return {
         //#region specific states
         extend: [
             //#region check, clear
@@ -217,14 +225,6 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'switch')), // apply *general* cssProps starting with switch***
         },
     }}
-    public /*override*/ variants(): ClassList { return [
-        ...super.variants(), // copy variants from base
-
-
-
-        [ 'btn'   , this.buttonStyle() ],
-        [ 'switch', this.switchStyle() ],
-    ]}
 
 
 

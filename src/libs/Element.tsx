@@ -127,6 +127,7 @@ export const cssDecls = cssConfig.decls;
 
 export type ClassEntry = [string|null, JssStyle]
 export type ClassList  = ClassEntry[]
+export type ThemeEntry = [string, Cust.Ref]
 
 /**
  * A css builder for styling our components.
@@ -377,6 +378,34 @@ export class StylesBuilder {
 
     // variants:
     /**
+     * Watches & applies any variant related classes.
+     * @returns A `JssStyle` represents the implementation of the variants.
+     */
+    public /*virtual*/ watchVariants(): JssStyle { return {
+        extend: [
+            // this.iif(!inherit,
+            //     // variants always inherit
+            // ),
+
+            
+            
+            // variant rules:
+            ...this.variants().map(([variant, style]) => ({ [variant ? (variant.includes('&') ? variant : `&.${variant}`) : '&'] : style })),
+        ] as JssStyle,
+    }}
+    /**
+     * Creates css rule definitions for every *specific* variant by overriding some *scoped css props*.
+     * @returns A `ClassList` represents the css rule definitions for every *specific* variant.
+     */
+    public /*virtual*/ variants(): ClassList { return [
+        // TODO: this.themes(),                      // variant themes
+        ...Object.entries(this.themes()).map(([key, style]) => [key as string, style as JssStyle] as ClassEntry),
+        ...this.sizes(),
+        [ 'gradient', this.gradient() ],
+        [ 'outlined', this.outlined() ],
+    ]}
+
+    /**
      * Gets the all available theme options.
      * @returns A `[string, Cust.Ref][]` represents the all available theme options.
      */
@@ -437,39 +466,22 @@ export class StylesBuilder {
         return ['sm', 'lg'];
     }
     /**
-     * Creates sizing definitions *for each* size `options`.
-     * @param sizes The previous size definitions to *extend*.
-     * @param options The list of the size options.
-     * @returns A `JssStyle` represents the sizing definitions *for each* size `options`.
+     * Creates sizing definitions *for each* `sizeOptions()`.
+     * @returns A `ClassList` represents the sizing definitions *for each* `sizeOptions()`.
      */
-    public /*virtual*/ sizes(sizes: Dictionary<JssStyle> = {}, options = this.sizeOptions()): JssStyle {
-        for (const size of options) {
+    public /*virtual*/ sizes(): ClassList {
+        return this.sizeOptions().map((size) => {
             const Size     = pascalCase(size);
             const sizeProp = `sz${Size}`;
-            sizes[sizeProp] = {
-                ...sizes[sizeProp],
-                extend: ((): JssStyle[] => {
-                    const newEntry = this.sizeOf(
-                        size,    // camel  case
-                        Size,    // pascal case
-                        sizeProp // prop name
-                    );
 
-                    const extend = (sizes[sizeProp] as any)?.extend as (undefined|JssStyle|JssStyle[]);
-                    if (Array.isArray(extend)) {
-                        extend.push(newEntry);
-                        return extend;
-                    }
-                    else {
-                        return [
-                            ...(extend ? [extend] : []),
-                            newEntry
-                        ];
-                    }
-                })() as JssStyle,
-            };
-        }
-        return sizes;
+            return [
+                sizeProp,
+                this.size(
+                    size, // camel  case
+                    Size, // pascal case
+                )
+            ] as ClassEntry;
+        });
     }
     /**
      * Creates a sizing definition for the specified `size`.
@@ -478,7 +490,7 @@ export class StylesBuilder {
      * @param sizeProp The prop name of the current `size`.
      * @returns A `JssStyle` represents the sizing definition for the current `size`.
      */
-    public /*virtual*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {} }
+    public /*virtual*/ size(size: string, Size: string): JssStyle { return {} }
 
     /**
      * Creates a gradient definition for if the gradient feature is enabled.
@@ -491,36 +503,6 @@ export class StylesBuilder {
      * @returns A `JssStyle` represents the outlined definition.
      */
     public /*virtual*/ outlined(): JssStyle { return {} }
-
-    /**
-     * Creates css rule definitions for every *specific* variant by overriding some *scoped css props*.
-     * @returns A `JssStyle` represents the css rule definitions for every *specific* variant.
-     */
-    public /*virtual*/ variants(): ClassList { return [
-        // TODO: this.themes(),                      // variant themes
-        // TODO: this.sizes(),                       // variant sizes
-        ...Object.entries(this.themes()).map(([key, style]) => [key as string, style as JssStyle] as ClassEntry),
-        ...Object.entries(this.sizes()).map(([key, style]) => [key as string, style as JssStyle] as ClassEntry),
-        [ 'gradient', this.gradient() ], // variant gradient
-        [ 'outlined', this.outlined() ], // variant outlined
-    ]}
-
-    /**
-     * Watches & applies any variant related classes.
-     * @returns A `JssStyle` represents the implementation of the variants.
-     */
-    public /*virtual*/ watchVariants(): JssStyle { return {
-        extend: [
-            // this.iif(!inherit,
-            //     // variants always inherit
-            // ),
-
-            
-            
-            // variant rules:
-            ...this.variants().map(([variant, style]) => ({ [variant ? (variant.includes('&') ? variant : `&.${variant}`) : '&'] : style })),
-        ] as JssStyle,
-    }}
 
 
 
@@ -865,6 +847,23 @@ export class ElementStylesBuilder extends StylesBuilder {
 
 
     // variants:
+    public /*override*/ variants(): ClassList { return [
+            ...super.variants(), // copy variants from base
+
+
+
+            //#region all initial states are none
+            // *toggle off* the background gradient prop:
+            // but still be able to *toggle on* by parent (inherit)
+            [ null, this.toggleOffGradient(/*inherit =*/true) ],
+
+
+
+            // *toggle off* the outlined props:
+            // but still be able to *toggle on* by parent (inherit)
+            [ null, this.toggleOffOutlined(/*inherit =*/true) ],
+            //#endregion all initial states are none
+    ]}
     public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         // customize the *themed* props:
     
@@ -874,7 +873,7 @@ export class ElementStylesBuilder extends StylesBuilder {
         [this.decl(this._boxShadowFocusTh)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
         [this.decl(this._outlinedForegTh)]  : themeColor,
     }}
-    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ size(size: string, Size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
@@ -886,23 +885,6 @@ export class ElementStylesBuilder extends StylesBuilder {
         // *toggle on* the outlined props:
         return this.toggleOnOutlined();
     }
-    public /*override*/ variants(): ClassList { return [
-            ...super.variants(), // copy variants from base
-
-
-
-            //#region all initial states are none
-            // *toggle off* the background gradient prop:
-            // but still be able to *toggle on* by parent (inherit)
-            [ '&', this.toggleOffGradient(/*inherit =*/true) ],
-
-
-
-            // *toggle off* the outlined props:
-            // but still be able to *toggle on* by parent (inherit)
-            [ '&', this.toggleOffOutlined(/*inherit =*/true) ],
-            //#endregion all initial states are none
-    ]}
 
 
 

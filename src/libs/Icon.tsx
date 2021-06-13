@@ -40,6 +40,14 @@ export class IconStylesBuilder extends ElementStylesBuilder {
 
 
     // variants:
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
+
+
+
+        [ 'font', this.font()  ],
+        [ 'img' , this.image() ],
+    ]}
     public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
             super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
@@ -55,16 +63,15 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         [this.decl(this._boxShadowFocusTh)] : null,
      // [this.decl(this._outlinedForegTh)]  : null,
     }}
-
     public /*override*/ sizeOptions(): string[] {
         return ['sm', 'nm', 'md', 'lg', '1em'];
     }
-    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ size(size: string, Size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
     public /*override*/ outlined(): JssStyle { return {} } // remove outlined style
-    public /*virtual*/ iconFont(): JssStyle { return {
+    public /*virtual*/ font(): JssStyle { return {
         '&::after': {
             // layout:
             content    : this.ref(this._img),
@@ -123,7 +130,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
             //#endregion fonts
         },
     }}
-    public /*virtual*/ iconImg(): JssStyle { return {
+    public /*virtual*/ image(): JssStyle { return {
         // colors:
         backg         : this.ref(this._outlinedForegFn), // setup icon's color
         
@@ -170,14 +177,6 @@ export class IconStylesBuilder extends ElementStylesBuilder {
         mask          : this.ref(this._img), // image with additional image's props
         //#endregion image masking
     }}
-    public /*override*/ variants(): ClassList { return [
-        ...super.variants(), // copy variants from base
-
-
-
-        [ 'font', this.iconFont() ],
-        [ 'img' , this.iconImg()  ],
-    ]}
 
 
 
@@ -269,7 +268,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
     public /*virtual*/ createStyle(img: Cust.Ref, foreg?: Cust.Ref): JssStyle { return {
         extend: [
             this.basicStyle(),
-            this.iconImg(),
+            this.image(),
         ] as JssStyle,
 
 

@@ -20,7 +20,7 @@ import IconApp from './apps/IconApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <NavbarApp />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -41,7 +41,7 @@ export class AccordionItemStylesBuilder extends PopupStylesBuilder {
     // variants:
     // disable some variants:
     public /*override*/ themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle { return {} }
-    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ size(size: string, Size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}

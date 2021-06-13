@@ -83,15 +83,21 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
 
 
     // variants:
-    // disable some variants:
-    public /*override*/ themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle { return {} }
-    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
+
+
+        
+        [ 'scrollable', this.scrollable() ],
+    ]}
+    public /*override*/ themes(themes: Dictionary<JssStyle> = {}, options = this.themeOptions()): JssStyle { return {} } // disabled
+    public /*override*/ size(size: string, Size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
-    public /*override*/ gradient(): JssStyle { return {} }
-    public /*override*/ outlined(): JssStyle { return {} }
-    public /*virtual*/ scrollableStyle(): JssStyle { return {
+    public /*override*/ gradient(): JssStyle { return {} } // disabled
+    public /*override*/ outlined(): JssStyle { return {} } // disabled
+    public /*virtual*/ scrollable(): JssStyle { return {
         [cardElm]: { // Card's layer
             '&:not(._)': { // force overwrite
                 // sizes:
@@ -106,13 +112,6 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
             },
         },
     }}
-    public /*override*/ variants(): ClassList { return [
-        ...super.variants(), // copy variants from base
-
-
-        
-        [ 'scrollable', this.scrollableStyle() ],
-    ]}
 
 
 

@@ -33,20 +33,14 @@ export class ButtonIconStylesBuilder extends ButtonStylesBuilder {
     public /*override*/ sizeOptions(): string[] {
         return ['xs', 'sm', 'lg', 'xl'];
     }
-    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ size(size: string, Size: string): JssStyle { return {
         extend: [
-            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+            super.size(size, Size), // copy sizes from base
         ] as JssStyle,
 
 
 
         // overwrites propName = propName{Size}:
-        ...(() => {
-            console.log(Size)
-            console.log(this.filterSuffixProps(cssProps, Size))
-            console.log(this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)))
-            return {};
-        })(),
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
 

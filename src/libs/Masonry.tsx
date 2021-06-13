@@ -40,13 +40,14 @@ import type {
 
 export class MasonryStylesBuilder extends ElementStylesBuilder implements IContentStylesBuilder {
     // variants:
-    public /*implement*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
-        return contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from Content
-    }
-    public /*implement*/ contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle {
-        return contentStyles.contentSizeOf(size, Size, sizeProp); // copy sizes from Content
-    }
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
 
+
+        
+        [ '&:not(.inline)', this.block()  ], // block  style as default
+        [ '&.inline'      , this.inline() ], // inline style as optional
+    ]}
     public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
         extend: [
             super.themeOf(theme, Theme, themeProp, themeColor), // copy themes from base
@@ -54,11 +55,11 @@ export class MasonryStylesBuilder extends ElementStylesBuilder implements IConte
             this.contentThemeOf(theme, Theme, themeProp, themeColor),
         ] as JssStyle,
     }}
-    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ size(size: string, Size: string): JssStyle { return {
         extend: [
-            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+            super.size(size, Size), // copy sizes from base
 
-            this.contentSizeOf(size, Size, sizeProp),
+            this.contentSize(size, Size),
         ] as JssStyle,
 
 
@@ -66,7 +67,7 @@ export class MasonryStylesBuilder extends ElementStylesBuilder implements IConte
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
-    public /*virtual*/ blockStyle(): JssStyle { return {
+    public /*virtual*/ block(): JssStyle { return {
         // layout:
         display             : 'grid',
         gridAutoFlow        : 'row', // masonry's direction is to row
@@ -101,7 +102,7 @@ export class MasonryStylesBuilder extends ElementStylesBuilder implements IConte
 
         rowGap    : [[0], '!important'], // strip out the `rowGap` because it will conflict with masonry's direction
     }}
-    public /*virtual*/ inlineStyle(): JssStyle { return {
+    public /*virtual*/ inline(): JssStyle { return {
         // layout:
         display             : 'inline-grid',
         gridAutoFlow        : 'column', // masonry's direction is to column
@@ -136,14 +137,13 @@ export class MasonryStylesBuilder extends ElementStylesBuilder implements IConte
 
         columnGap : [[0], '!important'], // strip out the `columnGap` because it will conflict with masonry's direction
     }}
-    public /*override*/ variants(): ClassList { return [
-        ...super.variants(), // copy variants from base
 
-
-        
-        [ '&:not(.inline)', this.blockStyle()  ],  // block  style as default
-        [ '&.inline'      , this.inlineStyle() ], // inline style as optional
-    ]}
+    public /*implement*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
+        return contentStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from Content
+    }
+    public /*implement*/ contentSize(size: string, Size: string): JssStyle {
+        return contentStyles.contentSize(size, Size); // copy sizes from Content
+    }
 
 
 

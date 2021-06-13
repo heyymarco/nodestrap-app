@@ -52,8 +52,8 @@ export class FormStylesBuilder extends ElementStylesBuilder implements IContentS
     public /*implement*/ contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle {
         return editableTextControlStyles.contentThemeOf(theme, Theme, themeProp, themeColor); // copy themes from EditableTextControl
     }
-    public /*implement*/ contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle {
-        return contentStyles.contentSizeOf(size, Size, sizeProp); // copy sizes from Content
+    public /*implement*/ contentSize(size: string, Size: string): JssStyle {
+        return contentStyles.contentSize(size, Size); // copy sizes from Content
     }
 
     public /*override*/ themeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle { return {
@@ -63,11 +63,11 @@ export class FormStylesBuilder extends ElementStylesBuilder implements IContentS
             this.contentThemeOf(theme, Theme, themeProp, themeColor),
         ] as JssStyle,
     }}
-    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ size(size: string, Size: string): JssStyle { return {
         extend: [
-            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+            super.size(size, Size), // copy sizes from base
 
-            this.contentSizeOf(size, Size, sizeProp),
+            this.contentSize(size, Size),
         ] as JssStyle,
 
 

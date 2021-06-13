@@ -33,7 +33,7 @@ import type * as Indicators from './Indicator'
 export interface IContentStylesBuilder {
     // variants:
     contentThemeOf(theme: string, Theme: string, themeProp: string, themeColor: Cust.Ref): JssStyle
-    contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle
+    contentSize(size: string, Size: string): JssStyle
 
 
 
@@ -96,7 +96,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
         [this.decl(this._passiveBackgTh)]  : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]), // thin opacity with slightly color from background
         //#endregion overwrite base's themes with *softer* colors
     }}
-    public /*virtual*/ contentSizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*virtual*/ contentSize(size: string, Size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
@@ -108,11 +108,11 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
             this.contentThemeOf(theme, Theme, themeProp, themeColor),
         ] as JssStyle,
     }}
-    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ size(size: string, Size: string): JssStyle { return {
         extend: [
-            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+            super.size(size, Size), // copy sizes from base
 
-            this.contentSizeOf(size, Size, sizeProp),
+            this.contentSize(size, Size),
         ] as JssStyle,
     }}
 

@@ -26,9 +26,17 @@ import type * as Controls   from './Control'
 
 export class ButtonStylesBuilder extends ControlStylesBuilder {
     // variants:
-    public /*override*/ sizeOf(size: string, Size: string, sizeProp: string): JssStyle { return {
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
+
+
+
+        [ 'link' , this.link()  ],
+        [ 'ghost', this.ghost() ],
+    ]}
+    public /*override*/ size(size: string, Size: string): JssStyle { return {
         extend: [
-            super.sizeOf(size, Size, sizeProp), // copy sizes from base
+            super.size(size, Size), // copy sizes from base
         ] as JssStyle,
 
 
@@ -58,7 +66,7 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
             ] as JssStyle,
         },
     }}
-    public /*virtual*/ linkStyle(): JssStyle { return {
+    public /*virtual*/ link(): JssStyle { return {
         extend: [
             this.outlined(), // copy outlined style from base
         ] as JssStyle,
@@ -115,7 +123,7 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'link')), // apply *general* cssProps starting with link***
     }}
-    public /*virtual*/ ghostStyle(): JssStyle { return {
+    public /*virtual*/ ghost(): JssStyle { return {
         extend: [
             this.outlined(), // copy outlined style from base
 
@@ -164,14 +172,6 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'ghost')), // apply *general* cssProps starting with ghost***
     }}
-    public /*override*/ variants(): ClassList { return [
-        ...super.variants(), // copy variants from base
-
-
-
-        [ 'link' , this.linkStyle()  ],
-        [ 'ghost', this.ghostStyle() ],
-    ]}
 
 
 
