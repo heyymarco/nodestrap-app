@@ -23,6 +23,9 @@ import {
     ElementStylesBuilder,
 }                           from './Element'
 import type * as Elements   from './Element'
+import type {
+    ClassList,
+}                           from './Element'
 import {
     usePropAccessibility,
     usePropEnabled,
@@ -198,6 +201,49 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
 
 
     // states:
+    public /*override*/ stateX(): ClassList { return [
+        ...super.stateX(), // copy states from base
+
+
+
+        [ '&:not(.enable):not(.disable):not(.disabled):not(:disabled)'  , this.enabled()     ],
+        [ '&.enable'                                                    , this.enabling()    ],
+        [ '&.disable'                                                   , this.disabling()   ],
+        [ '&.disabled,&:disabled'                                       , this.disabled()    ],
+
+        
+        
+        [ '&.actived,&:checked:not(.active)'                            , this.actived()     ],
+        [ '&.active'                                                    , this.activating()  ],
+        [ '&.passive'                                                   , this.passivating() ],
+        [ '&:not(.active):not(.actived):not(:checked):not(.passive)'    , this.passived()    ],
+
+
+
+        [ '&.pressed'                                                   , this.pressed()     ],
+        [ '&.press,&:active:not(.disable):not(.disabled):not(:disabled)', this.pressing()    ],
+        [ '&.release'                                                   , this.releasing()   ],
+        [ '&:not(.press):not(:active):not(.pressed):not(.release),' +
+          '&:not(.press).disable:not(.pressed):not(.release),'      +
+          '&:not(.press).disabled:not(.pressed):not(.release),'     +
+          '&:not(.press):disabled:not(.pressed):not(.release)'          , this.released()    ],
+    ]}
+    
+    public /*virtual*/ enabled(): JssStyle { return {} }
+    public /*virtual*/ enabling(): JssStyle { return {} }
+    public /*virtual*/ disabling(): JssStyle { return {} }
+    public /*virtual*/ disabled(): JssStyle { return {} }
+
+    public /*virtual*/ actived(): JssStyle { return {} }
+    public /*virtual*/ activating(): JssStyle { return {} }
+    public /*virtual*/ passivating(): JssStyle { return {} }
+    public /*virtual*/ passived(): JssStyle { return {} }
+
+    public /*virtual*/ pressed(): JssStyle { return {} }
+    public /*virtual*/ pressing(): JssStyle { return {} }
+    public /*virtual*/ releasing(): JssStyle { return {} }
+    public /*virtual*/ released(): JssStyle { return {} }
+
     public /*virtual*/ indicationThemesIf(): JssStyle { return {
         // define an *active* color theme:
         [this.decl(this._foregIfAct)]          : colors.secondaryText,

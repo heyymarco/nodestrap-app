@@ -394,8 +394,8 @@ export class StylesBuilder {
         ] as JssStyle,
     }}
     /**
-     * Creates css rule definitions for every *specific* variant by overriding some *scoped css props*.
-     * @returns A `ClassList` represents the css rule definitions for every *specific* variant.
+     * Creates css rule definitions for all variants by overriding some *scoped css props*.
+     * @returns A `ClassList` represents the css rule definitions for all variants.
      */
     public /*virtual*/ variants(): ClassList { return [
         ...this.themes(),
@@ -489,19 +489,6 @@ export class StylesBuilder {
 
     // states:
     /**
-     * Creates conditional color definitions for every *specific* condition (state).
-     * @returns A `JssStyle` represents the conditional color definitions for every *specific* condition (state).
-     */
-    public /*virtual*/ themesIf(): JssStyle { return {} }
-
-    /**
-     * Creates css rule definitions for every *specific* state by overriding some *scoped css props* and applied some `themesIf`.
-     * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
-     * @returns A `JssStyle` represents the css rule definitions for every *specific* state.
-     */
-    public /*virtual*/ states(inherit = false): JssStyle   { return {} }
-
-    /**
      * Watches & applies any state related classes.
      * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
      * @returns A `JssStyle` represents the implementation of the states.
@@ -512,8 +499,31 @@ export class StylesBuilder {
                 this.themesIf()   // conditional themes
             ),
             this.states(inherit), // state rules
+            
+            // TODO: state rules (experimental)
+            // state rules:
+            ...this.stateX().map(([state, style]) => ({ [state ? (state.includes('&') ? state : `&.${state}`) : '&'] : style })),
         ] as JssStyle,
     }}
+
+    /**
+     * Creates css rule definitions for every *specific* state by overriding some *scoped css props* and applied some `themesIf`.
+     * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
+     * @returns A `JssStyle` represents the css rule definitions for every *specific* state.
+     */
+    public /*virtual*/ states(inherit = false): JssStyle   { return {} }
+
+    /**
+     * Creates css rule definitions for all states by overriding some *scoped css props* and applied some `themesIf`.
+     * @returns A `ClassList` represents the css rule definitions for all states.
+     */
+    public /*virtual*/ stateX(): ClassList { return [] }
+
+    /**
+     * Creates conditional color definitions for every *specific* condition (state).
+     * @returns A `JssStyle` represents the conditional color definitions for every *specific* condition (state).
+     */
+    public /*virtual*/ themesIf(): JssStyle { return {} }
 
 
 
@@ -829,21 +839,21 @@ export class ElementStylesBuilder extends StylesBuilder {
 
     // variants:
     public /*override*/ variants(): ClassList { return [
-            ...super.variants(), // copy variants from base
+        ...super.variants(), // copy variants from base
 
 
 
-            //#region all initial states are none
-            // *toggle off* the background gradient prop:
-            // but still be able to *toggle on* by parent (inherit)
-            [ null, this.toggleOffGradient(/*inherit =*/true) ],
+        //#region all initial states are none
+        // *toggle off* the background gradient prop:
+        // but still be able to *toggle on* by parent (inherit)
+        [ null, this.toggleOffGradient(/*inherit =*/true) ],
 
 
 
-            // *toggle off* the outlined props:
-            // but still be able to *toggle on* by parent (inherit)
-            [ null, this.toggleOffOutlined(/*inherit =*/true) ],
-            //#endregion all initial states are none
+        // *toggle off* the outlined props:
+        // but still be able to *toggle on* by parent (inherit)
+        [ null, this.toggleOffOutlined(/*inherit =*/true) ],
+        //#endregion all initial states are none
     ]}
     public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
         // customize the *themed* props:
