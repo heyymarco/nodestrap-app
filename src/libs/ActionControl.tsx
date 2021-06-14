@@ -11,7 +11,7 @@ import type {
 // nodestrap (modular web components):
 import {
     cssProps as ecssProps,
-}                           from './Element'
+}                           from './BasicComponent'
 import {
     cssProps as icssProps,
     IndicationProps,

@@ -18,12 +18,12 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 
 // nodestrap (modular web components):
 import {
-    GenericElement,
+    Component,
     isTypeOf,
 }                           from './nodestrap'
 import {
     cssProps as ecssProps,
-}                           from './Element'
+}                           from './BasicComponent'
 import {
     cssProps as contCssProps,
 }                           from './Container'
@@ -811,7 +811,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
     // jsx fn props:
     const logoFn = (() => {
         // nodestrap's component:
-        if (isTypeOf(logo, GenericElement)) return (
+        if (isTypeOf(logo, Component)) return (
             <logo.type
                 // classes:
                 classes={[...(logo.props.classes ?? []),
@@ -854,7 +854,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
 
         // nodestrap's component:
-        if (isTypeOf(toggler, GenericElement)) return (
+        if (isTypeOf(toggler, Component)) return (
             <toggler.type
                 // classes:
                 classes={[...(toggler.props.classes ?? []),

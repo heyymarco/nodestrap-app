@@ -14,7 +14,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 import {
     cssProps as ecssProps,
     cssDecls as ecssDecls,
-}                           from './Element'
+}                           from './BasicComponent'
 import {
     default  as Check,
     CheckStylesBuilder,

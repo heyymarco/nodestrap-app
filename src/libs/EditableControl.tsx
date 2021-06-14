@@ -18,7 +18,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 import colors               from './colors'     // configurable colors & theming defs
 import {
     cssProps as ecssProps,
-}                           from './Element'
+}                           from './BasicComponent'
 import {
     default  as Control,
     ControlStylesBuilder,

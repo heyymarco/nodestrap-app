@@ -13,7 +13,7 @@ import {
 }                           from '../libs/Css'        // ts defs support for jss
 
 import Container from '../libs/Container';
-import Element   from '../libs/Element';
+import BasicComponent   from '../libs/BasicComponent';
 import Indicator from '../libs/Indicator';
 import Content from '../libs/Content';
 import Button from '../libs/Button';
@@ -94,12 +94,12 @@ function App() {
                     Learn React
                 </a>
                 <hr style={{flexBasis: '100%'}} />
-                <Element
+                <BasicComponent
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
 				>
                         test
-                </Element>
+                </BasicComponent>
                 <Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}

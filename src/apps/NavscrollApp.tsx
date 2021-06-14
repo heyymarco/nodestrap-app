@@ -11,7 +11,7 @@ import './App.css';
 import './NavscrollApp.css'
 
 import Container from '../libs/Container';
-import Element   from '../libs/Element';
+import BasicComponent   from '../libs/BasicComponent';
 import Indicator from '../libs/Indicator';
 import Content from '../libs/Content';
 import Navscroll, {NavscrollItem} from '../libs/Navscroll';

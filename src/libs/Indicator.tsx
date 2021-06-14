@@ -19,9 +19,9 @@ import {
 import {
     default  as Element,
     cssProps as ecssProps,
-    ElementStylesBuilder,
-}                           from './Element'
-import type * as Elements   from './Element'
+    BasicComponentStyles,
+}                           from './BasicComponent'
+import type * as Elements   from './BasicComponent'
 import {
     usePropAccessibility,
     usePropEnabled,
@@ -35,7 +35,7 @@ import type {
 
 // styles:
 
-export class IndicatorStylesBuilder extends ElementStylesBuilder {
+export class IndicatorStylesBuilder extends BasicComponentStyles {
     //#region scoped css props
     // anim props:
 
@@ -594,7 +594,7 @@ export interface TogglerActiveProps
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Elements.Props<TElement>,
+        Elements.BasicComponentProps<TElement>,
         IndicationProps
 {
 }

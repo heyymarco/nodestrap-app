@@ -18,7 +18,7 @@ import colors               from './colors'     // configurable colors & theming
 import spacers              from './spacers'    // configurable spaces defs
 import {
     cssProps as ecssProps,
-}                           from './Element'
+}                           from './BasicComponent'
 import {
     default  as Indicator,
     IndicatorStylesBuilder,

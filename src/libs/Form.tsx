@@ -13,9 +13,9 @@ import CssConfig           from './CssConfig'  // Stores & retrieves configurati
 // nodestrap (modular web components):
 import {
     default  as Element,
-    ElementStylesBuilder,
-}                          from './Element'
-import type * as Elements  from './Element'
+    BasicComponentStyles,
+}                          from './BasicComponent'
+import type * as Elements  from './BasicComponent'
 import {
     styles as contentStyles,
 }                          from './Content'
@@ -44,7 +44,7 @@ import type {
 
 // styles:
 
-export class FormStylesBuilder extends ElementStylesBuilder implements IContentStylesBuilder, IValidationStylesBuilder {
+export class FormStylesBuilder extends BasicComponentStyles implements IContentStylesBuilder, IValidationStylesBuilder {
     // variants:
     public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
         extend: [
@@ -245,7 +245,7 @@ export function useFormValidator(customValidator?: CustomValidatorHandler) {
 
 export interface Props
     extends
-        Elements.Props<HTMLFormElement>,
+        Elements.BasicComponentProps<HTMLFormElement>,
         ValidationProps,
         React.FormHTMLAttributes<HTMLFormElement>
 {

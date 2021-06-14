@@ -8,7 +8,7 @@ import {
 import './App.css';
 
 import Container from '../libs/Container';
-import Element   from '../libs/Element';
+import BasicComponent   from '../libs/BasicComponent';
 import Indicator from '../libs/Indicator';
 import Content from '../libs/Content';
 import Icon from '../libs/Icon';
@@ -63,7 +63,7 @@ function App() {
     return (
         <div className="App">
             <Container>
-                <Element
+                <BasicComponent
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
 				>
@@ -72,7 +72,7 @@ function App() {
 					<Icon icon='face' theme={theme} size={size} />
 					<Icon icon='instagram' size={size} />
 					<Icon icon='instagram' theme={theme} size={size} />
-                </Element>
+                </BasicComponent>
                 <Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}

@@ -19,7 +19,7 @@ import {
 }                           from './nodestrap'
 import {
     cssProps as ecssProps,
-}                           from './Element'
+}                           from './BasicComponent'
 import {
     cssProps as icssProps,
 }                           from './Indicator'

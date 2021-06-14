@@ -18,12 +18,12 @@ import type {
 
 // nodestrap (modular web components):
 import {
-    GenericProps,
-    GenericElement,
+    ComponentProps,
+    Component,
 }                           from './nodestrap'
 import {
-    ElementStylesBuilder,
-}                           from './Element'
+    BasicComponentStyles,
+}                           from './BasicComponent'
 import
     breakpoints,
     * as breakpoint         from './breakpoints'
@@ -109,7 +109,7 @@ createJss().setup({plugins:[
 
 // styles:
 
-export class ContainerStylesBuilder extends ElementStylesBuilder {
+export class ContainerStylesBuilder extends BasicComponentStyles {
     // variants:
     public /*override*/ size(size: string, Size: string): JssStyle { return {
         extend: [
@@ -184,7 +184,7 @@ export const styles = new ContainerStylesBuilder();
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        GenericProps<TElement>
+        ComponentProps<TElement>
 {
     // children:
     children? : React.ReactNode
@@ -197,7 +197,7 @@ export default function Container<TElement extends HTMLElement = HTMLElement>(pr
 
     // jsx:
     return (
-        <GenericElement<TElement>
+        <Component<TElement>
             // other props:
             {...props}
 

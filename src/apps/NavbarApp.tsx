@@ -9,7 +9,7 @@ import {
 import './App.css';
 
 import Container from '../libs/Container';
-import Element   from '../libs/Element';
+import BasicComponent   from '../libs/BasicComponent';
 import Indicator from '../libs/Indicator';
 import Content from '../libs/Content';
 // import ButtonIcon   from '../libs/ButtonIcon';
@@ -97,12 +97,12 @@ function App() {
 				<NavbarMenu enableGradient={true}>i'm 3d</NavbarMenu>
 			</Navbar>
             <Container>
-                <Element
+                <BasicComponent
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
 				>
                         test
-                </Element>
+                </BasicComponent>
                 <Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}

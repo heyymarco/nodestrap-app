@@ -11,7 +11,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 // nodestrap (modular web components):
 import {
     ClassList,
-    GenericElement,
+    Component,
     isTypeOf,
 }                           from './nodestrap'
 import * as stripOuts       from './strip-outs'
@@ -20,11 +20,11 @@ import * as border          from './borders'    // configurable borders & border
 import {
     cssProps as ecssProps,
     useVariantOrientation,
-}                           from './Element'
+}                           from './BasicComponent'
 import type {
     OrientationStyle,
     VariantOrientation,
-}                           from './Element'
+}                           from './BasicComponent'
 import {
     default  as Content,
     ContentStylesBuilder,
@@ -691,7 +691,7 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
             ]}
         >
             {children && (Array.isArray(children) ? children : [children]).map((child, index) => (
-                <GenericElement
+                <Component
                     // essentials:
                     key={index}
                     tag={wrapTag}
@@ -733,7 +733,7 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
                             { child }
                         </ListgroupItem>
                     }
-                </GenericElement>
+                </Component>
             ))}
         </Content>
     );

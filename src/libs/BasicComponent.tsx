@@ -17,10 +17,10 @@ import {
     ClassEntry,
     ClassList,
 
-    StylesBuilder,
+    ComponentStyles,
 
-    GenericProps,
-    GenericElement,
+    ComponentProps,
+    Component,
 
     pascalCase,
 }                           from './nodestrap'
@@ -116,7 +116,7 @@ export const cssDecls = cssConfig.decls;
 
 // styles:
 
-export class ElementStylesBuilder extends StylesBuilder {
+export class BasicComponentStyles extends ComponentStyles {
     //#region scoped css props
     //#region foreground
     /**
@@ -617,7 +617,7 @@ export class ElementStylesBuilder extends StylesBuilder {
         boxShadow   : [[this.boxShadowFn()]] as JssStyle, // triple array (including from the returning function) => bug fix in JSS => makes the JSS treat as comma separated values
     }}
 }
-export const styles = new ElementStylesBuilder();
+export const basicComponentStyles = new BasicComponentStyles();
 
 
 
@@ -674,9 +674,9 @@ export function useVariantOrientation(props: VariantOrientation) {
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface BasicComponentProps<TElement extends HTMLElement = HTMLElement>
     extends
-        GenericProps<TElement>,
+        ComponentProps<TElement>,
         
         VariantTheme,
         VariantSize,
@@ -684,9 +684,9 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
         VariantOutlined
 {
 }
-export default function Element<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function BasicComponent<TElement extends HTMLElement = HTMLElement>(props: BasicComponentProps<TElement>) {
     // styles:
-    const elmStyles    = styles.useStyles();
+    const styles       = basicComponentStyles.useStyles();
 
     
     
@@ -700,13 +700,13 @@ export default function Element<TElement extends HTMLElement = HTMLElement>(prop
 
     // jsx:
     return (
-        <GenericElement<TElement>
+        <Component<TElement>
             // other props:
             {...props}
 
 
             // classes:
-            mainClass={props.mainClass ?? elmStyles.main}
+            mainClass={props.mainClass ?? styles.main}
             variantClasses={[...(props.variantClasses ?? []),
                 variTheme.class,
                 variSize.class,

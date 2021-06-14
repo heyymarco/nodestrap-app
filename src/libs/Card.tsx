@@ -12,7 +12,7 @@ import * as stripOuts       from './strip-outs'
 import spacers              from './spacers'    // configurable spaces defs
 import {
     cssProps as ecssProps,
-}                           from './Element'
+}                           from './BasicComponent'
 import {
     default  as Content,
     ContentStylesBuilder,

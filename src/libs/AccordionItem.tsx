@@ -15,11 +15,11 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 // nodestrap (modular web components):
 import {
     ClassList,
-    GenericElement,
+    Component,
 }                           from './nodestrap'
 import {
     cssProps as ecssProps,
-}                           from './Element'
+}                           from './BasicComponent'
 import {
     cssProps as icssProps,
     useTogglerActive,
@@ -350,12 +350,12 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
         >
             { label }
         </ListgroupItem>
-        <GenericElement
+        <Component
             // classes:
             mainClass='body'
         >
             { children }
-        </GenericElement>
+        </Component>
     </>);
 }
 AccordionItem.prototype = ListgroupItem.prototype; // mark as ListgroupItem compatible

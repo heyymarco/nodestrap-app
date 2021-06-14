@@ -18,14 +18,14 @@ import {
 import spacers              from './spacers'     // configurable spaces defs
 import {
     default  as Element,
-    ElementStylesBuilder,
+    BasicComponentStyles,
     useVariantOrientation,
-}                           from './Element'
-import type * as Elements   from './Element'
+}                           from './BasicComponent'
+import type * as Elements   from './BasicComponent'
 import type {
     OrientationStyle,
     VariantOrientation,
-}                           from './Element'
+}                           from './BasicComponent'
 import {
     styles as contentStyles,
 }                           from './Content'
@@ -37,7 +37,7 @@ import type {
 
 // styles:
 
-export class MasonryStylesBuilder extends ElementStylesBuilder implements IContentStylesBuilder {
+export class MasonryStylesBuilder extends BasicComponentStyles implements IContentStylesBuilder {
     // variants:
     public /*override*/ variants(): ClassList { return [
         ...super.variants(), // copy variants from base
@@ -239,7 +239,7 @@ export const cssDecls = cssConfig.decls;
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Elements.Props<TElement>,
+        Elements.BasicComponentProps<TElement>,
         VariantOrientation
 {
     // children:

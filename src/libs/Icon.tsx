@@ -20,16 +20,16 @@ import {
 import fontMaterial         from './Icon-font-material'
 import {
     default  as Element,
-    ElementStylesBuilder,
+    BasicComponentStyles,
     cssProps as ecssProps,
-}                           from './Element'
-import type * as Elements   from './Element'
+}                           from './BasicComponent'
+import type * as Elements   from './BasicComponent'
 
 
 
 // styles:
 
-export class IconStylesBuilder extends ElementStylesBuilder {
+export class IconStylesBuilder extends BasicComponentStyles {
     //#region scoped css props
     /**
      * Icon's image url (with additional image's props).
@@ -449,7 +449,7 @@ export function useIcon<TElement extends HTMLElement = HTMLElement>(props: Props
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Elements.Props<TElement>
+        Elements.BasicComponentProps<TElement>
 {
     // appearances:
     icon: string

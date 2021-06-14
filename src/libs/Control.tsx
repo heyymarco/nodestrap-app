@@ -18,7 +18,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 import * as stripOuts       from './strip-outs'
 import {
     cssProps as ecssProps,
-}                           from './Element'
+}                           from './BasicComponent'
 import {
     default as Indicator,
     IndicatorStylesBuilder,

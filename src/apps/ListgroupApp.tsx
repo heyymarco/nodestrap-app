@@ -9,7 +9,7 @@ import logo from './logo.svg';
 import './App.css';
 
 import Container from '../libs/Container';
-import Element   from '../libs/Element';
+import BasicComponent   from '../libs/BasicComponent';
 import Indicator from '../libs/Indicator';
 import Control   from '../libs/Control';
 import ActionControl   from '../libs/ActionControl';
@@ -94,12 +94,12 @@ function App() {
                     Learn React
                 </a>
                 <hr style={{flexBasis: '100%'}} />
-                <Element
+                <BasicComponent
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}
 				>
                     element
-                </Element>
+                </BasicComponent>
                 <Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined}

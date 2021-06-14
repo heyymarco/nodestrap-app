@@ -12,15 +12,15 @@ import CssConfig           from './CssConfig'  // Stores & retrieves configurati
 
 // nodestrap (modular web components):
 import {
-    GenericElement,
+    Component,
     isTypeOf,
 }                           from './nodestrap'
 import * as stripOuts      from './strip-outs'
 import {
     default  as Element,
-    ElementStylesBuilder,
-}                          from './Element'
-import type * as Elements  from './Element'
+    BasicComponentStyles,
+}                          from './BasicComponent'
+import type * as Elements  from './BasicComponent'
 import {
     styles as contentStyles,
 }                          from './Content'
@@ -47,7 +47,7 @@ const navElm     = '&>.nav';
 const prevBtnElm = '&>.prevBtn';
 const nextBtnElm = '&>.nextBtn';
 
-export class CarouselStylesBuilder extends ElementStylesBuilder implements IContentStylesBuilder {
+export class CarouselStylesBuilder extends BasicComponentStyles implements IContentStylesBuilder {
     // variants:
     public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
         extend: [
@@ -352,7 +352,7 @@ export const cssDecls = cssConfig.decls;
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Elements.Props<TElement>
+        Elements.BasicComponentProps<TElement>
 {
     // essentials:
     itemsTag? : keyof JSX.IntrinsicElements
@@ -465,7 +465,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
             // classes:
             mainClass={props.mainClass ?? crslStyles.main}
         >
-            { children && <GenericElement<TElement>
+            { children && <Component<TElement>
                     // essentials:
                     tag={itemsTag2}
                     elmRef={(elm) => {
@@ -510,11 +510,11 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                         { child }
                     </CarouselItem>
                 ))}
-            </GenericElement> }
+            </Component> }
 
             {
                 //#region has class prevBtn
-                isTypeOf(prevBtn, GenericElement)
+                isTypeOf(prevBtn, Component)
                 &&
                 prevBtn.props.classes?.includes('prevBtn')
                 //#endregion has class prevBtn
@@ -560,7 +560,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
             {
                 //#region has class nextBtn
-                isTypeOf(nextBtn, GenericElement)
+                isTypeOf(nextBtn, Component)
                 &&
                 nextBtn.props.classes?.includes('nextBtn')
                 //#endregion has class nextBtn
@@ -608,7 +608,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                 nav
                 ?
                 (
-                    isTypeOf(nav, GenericElement)
+                    isTypeOf(nav, Component)
                     ?
                     <nav.type
                         // other props:

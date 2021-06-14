@@ -9,7 +9,7 @@ import logo from './logo.svg';
 import './App.css';
 
 import Form from '../libs/Form';
-import Element   from '../libs/Element';
+import BasicComponent   from '../libs/BasicComponent';
 import Indicator from '../libs/Indicator';
 import Content from '../libs/Content';
 import Control from '../libs/Control';

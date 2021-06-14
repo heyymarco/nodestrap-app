@@ -14,7 +14,7 @@ import * as stripOuts       from './strip-outs'
 import {
     cssProps as ecssProps,
     cssDecls as ecssDecls,
-}                           from './Element'
+}                           from './BasicComponent'
 import {
     default  as EditableTextControl,
     EditableTextControlStylesBuilder,
