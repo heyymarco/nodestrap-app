@@ -26,8 +26,7 @@ import type * as Indicators from './Indicator'
 
 export class PopupStylesBuilder extends IndicatorStylesBuilder {
     // states:
-    public /*override*/ themeDefault(theme: string|null = null): JssStyle { return {} } // no default theme
-    public /*override*/ themeActive(): JssStyle { return {} }  // no active theme
+    public /*override*/ themeActive(): JssStyle { return {} }    // no active theme
     public /*override*/ outlinedActive(): JssStyle { return {} } // no active outlined
     
     public /*override*/ indicationStatesOld(inherit = false): JssStyle { return {

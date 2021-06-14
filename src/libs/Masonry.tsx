@@ -12,6 +12,9 @@ import type {
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
+import {
+    ClassList,
+}                           from './nodestrap'
 import spacers              from './spacers'     // configurable spaces defs
 import {
     default  as Element,
@@ -20,7 +23,6 @@ import {
 }                           from './Element'
 import type * as Elements   from './Element'
 import type {
-    ClassList,
     OrientationStyle,
     VariantOrientation,
 }                           from './Element'

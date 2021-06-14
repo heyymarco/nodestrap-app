@@ -8,11 +8,11 @@ import type {
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
+import {
+    ClassList,
+}                           from './nodestrap'
 import * as border          from './borders'     // configurable borders & border radiuses defs
 import spacers              from './spacers'     // configurable spaces defs
-import type {
-    ClassList,
-}                           from './Element'
 import {
     default  as Control,
     ControlStylesBuilder,

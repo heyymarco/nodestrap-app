@@ -17,14 +17,14 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 
 // nodestrap (modular web components):
 import {
+    ClassList,
+}                           from './nodestrap'
+import {
     default  as Element,
     cssProps as ecssProps,
     ElementStylesBuilder,
 }                           from './Element'
 import type * as Elements   from './Element'
-import type {
-    ClassList,
-}                           from './Element'
 import {
     usePropAccessibility,
     usePropEnabled,

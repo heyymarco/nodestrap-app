@@ -19,13 +19,13 @@ import {
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
+import {
+    ClassList,
+}                           from './nodestrap'
 import * as stripOuts       from './strip-outs'
 import {
     cssProps as ecssProps,
     cssDecls as ecssDecls,
-}                           from './Element'
-import type {
-    ClassList,
 }                           from './Element'
 import {
     styles as containerStyles,
