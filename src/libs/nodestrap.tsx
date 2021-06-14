@@ -53,7 +53,7 @@ export type ClassList  = ClassEntry[]
  * Supports many variants like theming, sizes, gradient, outlined, orientation, and more.
  * Supports many states like disabled, active, pressed, and more.
  */
-export class ComponentStyles {
+export class ElementStyles {
     //#region global css props
     /**
      * Includes the *general* prop names in the specified `cssProps`.  
@@ -467,7 +467,7 @@ export class ComponentStyles {
         return [[`linear-gradient(${color},${color})`, clip]];
     }
 }
-export const componentStyles = new ComponentStyles();
+export const componentStyles = new ElementStyles();
 
 
 
@@ -606,7 +606,7 @@ const htmlPropList = [
 ];
 const isHtmlProp = (propName: string) => propName.startsWith('on') || propName.startsWith('aria-') || htmlPropList.includes(propName)
 
-export interface ComponentProps<TElement extends HTMLElement = HTMLElement>
+export interface ElementProps<TElement extends HTMLElement = HTMLElement>
     extends
         React.DOMAttributes<TElement>,
         React.AriaAttributes
@@ -627,7 +627,7 @@ export interface ComponentProps<TElement extends HTMLElement = HTMLElement>
     variantClasses? : (string|null|undefined)[]
     stateClasses?   : (string|null|undefined)[]
 }
-export default function Component<TElement extends HTMLElement = HTMLElement>(props: ComponentProps<TElement>) {
+export default function Element<TElement extends HTMLElement = HTMLElement>(props: ElementProps<TElement>) {
     // html props:
     const htmlProps = useMemo(() => {
         const htmlProps = {
@@ -683,7 +683,7 @@ export default function Component<TElement extends HTMLElement = HTMLElement>(pr
         </Tag>
     );
 };
-export { Component }
+export { Element }
 
 
 

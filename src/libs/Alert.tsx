@@ -11,7 +11,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 
 // nodestrap (modular web components):
 import {
-    Component,
+    Element,
     isTypeOf,
 }                           from './nodestrap'
 import {
@@ -274,7 +274,7 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
         
         
         // nodestrap's component:
-        if (isTypeOf(icon, Component)) return (
+        if (isTypeOf(icon, Element)) return (
             <icon.type
                 // classes:
                 classes={[...(icon.props.classes ?? []),
@@ -329,7 +329,7 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
         
         
         // nodestrap's component:
-        if (isTypeOf(control, Component)) return (
+        if (isTypeOf(control, Element)) return (
             <control.type
                 // classes:
                 classes={[...(control.props.classes ?? []),

@@ -12,12 +12,12 @@ import CssConfig           from './CssConfig'  // Stores & retrieves configurati
 
 // nodestrap (modular web components):
 import {
-    Component,
+    Element,
     isTypeOf,
 }                           from './nodestrap'
 import * as stripOuts      from './strip-outs'
 import {
-    default  as Element,
+    default  as BasicComponent,
     BasicComponentStyles,
 }                          from './BasicComponent'
 import type * as Elements  from './BasicComponent'
@@ -457,7 +457,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
     // jsx:
     return (
-        <Element<TElement>
+        <BasicComponent<TElement>
             // other props:
             {...restProps}
 
@@ -465,7 +465,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
             // classes:
             mainClass={props.mainClass ?? crslStyles.main}
         >
-            { children && <Component<TElement>
+            { children && <Element<TElement>
                     // essentials:
                     tag={itemsTag2}
                     elmRef={(elm) => {
@@ -510,11 +510,11 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                         { child }
                     </CarouselItem>
                 ))}
-            </Component> }
+            </Element> }
 
             {
                 //#region has class prevBtn
-                isTypeOf(prevBtn, Component)
+                isTypeOf(prevBtn, Element)
                 &&
                 prevBtn.props.classes?.includes('prevBtn')
                 //#endregion has class prevBtn
@@ -560,7 +560,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
             {
                 //#region has class nextBtn
-                isTypeOf(nextBtn, Component)
+                isTypeOf(nextBtn, Element)
                 &&
                 nextBtn.props.classes?.includes('nextBtn')
                 //#endregion has class nextBtn
@@ -608,7 +608,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                 nav
                 ?
                 (
-                    isTypeOf(nav, Component)
+                    isTypeOf(nav, Element)
                     ?
                     <nav.type
                         // other props:
@@ -673,7 +673,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                     ))}
                 </Navscroll>
             }
-        </Element>
+        </BasicComponent>
     );
 }
 

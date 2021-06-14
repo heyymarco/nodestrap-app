@@ -3,8 +3,8 @@ import React                from 'react'        // base technology of our nodest
 
 // nodestrap (modular web components):
 import {
-    ComponentProps,
-    Component,
+    ElementProps,
+    Element,
 }                           from './nodestrap'
 
 
@@ -13,13 +13,13 @@ import {
 
 export interface Props<TElement extends HTMLElement = HTMLDivElement>
     extends
-        ComponentProps<TElement>
+        ElementProps<TElement>
 {
 }
 export default function CarouselItem<TElement extends HTMLElement = HTMLDivElement>(props: Props<TElement>) {
     // jsx:
     return (
-        <Component<TElement>
+        <Element<TElement>
             // other props:
             {...props}
 

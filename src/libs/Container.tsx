@@ -18,8 +18,8 @@ import type {
 
 // nodestrap (modular web components):
 import {
-    ComponentProps,
-    Component,
+    ElementProps,
+    Element,
 }                           from './nodestrap'
 import {
     BasicComponentStyles,
@@ -184,7 +184,7 @@ export const styles = new ContainerStylesBuilder();
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        ComponentProps<TElement>
+        ElementProps<TElement>
 {
     // children:
     children? : React.ReactNode
@@ -197,7 +197,7 @@ export default function Container<TElement extends HTMLElement = HTMLElement>(pr
 
     // jsx:
     return (
-        <Component<TElement>
+        <Element<TElement>
             // other props:
             {...props}
 

@@ -17,10 +17,10 @@ import {
     ClassEntry,
     ClassList,
 
-    ComponentStyles,
+    ElementStyles,
 
-    ComponentProps,
-    Component,
+    ElementProps,
+    Element,
 
     pascalCase,
 }                           from './nodestrap'
@@ -116,7 +116,7 @@ export const cssDecls = cssConfig.decls;
 
 // styles:
 
-export class BasicComponentStyles extends ComponentStyles {
+export class BasicComponentStyles extends ElementStyles {
     //#region scoped css props
     //#region foreground
     /**
@@ -676,7 +676,7 @@ export function useVariantOrientation(props: VariantOrientation) {
 
 export interface BasicComponentProps<TElement extends HTMLElement = HTMLElement>
     extends
-        ComponentProps<TElement>,
+        ElementProps<TElement>,
         
         VariantTheme,
         VariantSize,
@@ -700,7 +700,7 @@ export default function BasicComponent<TElement extends HTMLElement = HTMLElemen
 
     // jsx:
     return (
-        <Component<TElement>
+        <Element<TElement>
             // other props:
             {...props}
 

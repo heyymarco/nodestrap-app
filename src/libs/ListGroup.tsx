@@ -11,7 +11,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 // nodestrap (modular web components):
 import {
     ClassList,
-    Component,
+    Element,
     isTypeOf,
 }                           from './nodestrap'
 import * as stripOuts       from './strip-outs'
@@ -691,7 +691,7 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
             ]}
         >
             {children && (Array.isArray(children) ? children : [children]).map((child, index) => (
-                <Component
+                <Element
                     // essentials:
                     key={index}
                     tag={wrapTag}
@@ -733,7 +733,7 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
                             { child }
                         </ListgroupItem>
                     }
-                </Component>
+                </Element>
             ))}
         </Content>
     );

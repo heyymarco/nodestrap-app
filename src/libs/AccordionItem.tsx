@@ -15,7 +15,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 // nodestrap (modular web components):
 import {
     ClassList,
-    Component,
+    Element,
 }                           from './nodestrap'
 import {
     cssProps as ecssProps,
@@ -350,12 +350,12 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
         >
             { label }
         </ListgroupItem>
-        <Component
+        <Element
             // classes:
             mainClass='body'
         >
             { children }
-        </Component>
+        </Element>
     </>);
 }
 AccordionItem.prototype = ListgroupItem.prototype; // mark as ListgroupItem compatible
