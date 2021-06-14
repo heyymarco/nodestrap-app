@@ -16,7 +16,6 @@ import {
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
-import colors               from './colors'     // configurable colors & theming defs
 import {
     default  as Element,
     cssProps as ecssProps,
@@ -39,57 +38,14 @@ import type {
 
 // styles:
 
-export interface IIndicatorStylesBuilder {
-    // states:
-    indicationThemesIf(): JssStyle
-    indicationStates(inherit : boolean): JssStyle
-
-
-
-    // functions:
-    indicationPropsFn(): JssStyle
-    indicationAnimFn(): JssStyle
-
-
-
-    // styles:
-    indicationBasicStyle(): JssStyle
-}
-export class IndicatorStylesBuilder extends ElementStylesBuilder implements IIndicatorStylesBuilder {
+export class IndicatorStylesBuilder extends ElementStylesBuilder {
     //#region scoped css props
-    /**
-     * active unthemed foreground color.
-     */
-    protected readonly _foregIfAct          = 'foregIfAct'
-
-    /**
-     * active unthemed background color.
-     */
-    protected readonly _backgIfAct          = 'backgIfAct'
-
-    /**
-     * active unthemed border color.
-     */
-    protected readonly _borderIfAct         = 'borderIfAct'
-
-    /**
-     * active focused conditional unthemed box-shadow color.
-     */
-    protected readonly _boxShadowFocusIfAct = 'boxShadowFocusIfAct'
-
-    /**
-     * active unthemed foreground color - at outlined state.
-     */
-    protected readonly _outlinedForegIfAct  = 'outlinedForegIfAct'
-
-
-
     // anim props:
 
     public    readonly _filterEnableDisable = 'filterEnableDisable'
     protected readonly _animEnableDisable   = 'animEnableDisable'
 
-    public    readonly _filterHoverLeave    = 'filterHoverLeave' // will be used    in Control
+    public    readonly _filterHoverLeave    = 'filterHoverLeave' // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
  // protected readonly _animHoverLeave      = 'animHoverLeave'   // will be defined in Control
 
     public    readonly _filterActivePassive = 'filterActivePassive'
@@ -99,6 +55,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
 
 
     //#region mixins
+    //TODO: to be removed....
     protected stateEnabling(content: JssStyle): JssStyle { return {
         '&.enable': content,
     }}
@@ -130,6 +87,7 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
     
 
 
+    //TODO: to be removed....
     protected /*virtual*/ actionCtrl() { return false; }
     protected stateActivating(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
         [actionCtrl ? '&.active,&:active:not(.disable):not(.disabled):not(:disabled)' : '&.active']: content,
@@ -159,29 +117,6 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
     protected stateNotActivatingPassivating(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
         [actionCtrl ? '&:not(.active):not(:active):not(.passive), &:not(.active).disable:not(.passive), &:not(.active).disabled:not(.passive), &:not(.active):disabled:not(.passive)' : '&:not(.active):not(.passive)']: content,
     }}
-    
-
-
-    protected /*override*/ applyStateNoAnimStartup(): JssStyle {
-        return this.stateNotEnablingDisabling(
-            this.stateNotActivatingPassivating(
-                super.applyStateNoAnimStartup()
-            )
-        );
-    }
-    protected /*virtual*/ applyStateActive(): JssStyle { return {
-        // apply an *active* color theme:
-        [this.decl(this._foregIf)]          : this.ref(this._foregIfAct),
-        [this.decl(this._backgIf)]          : this.ref(this._backgIfAct),
-        [this.decl(this._borderIf)]         : this.ref(this._borderIfAct),
-        [this.decl(this._boxShadowFocusIf)] : this.ref(this._boxShadowFocusIfAct),
-        [this.decl(this._outlinedForegIf)]  : this.ref(this._outlinedForegIfAct),
-
-
-        
-        // *toggle off* the outlined props:
-        '&:not(._)': this.toggleOffOutlined(),
-    }}
     //#endregion mixins
 
 
@@ -203,6 +138,15 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
     // states:
     public /*override*/ stateX(): ClassList { return [
         ...super.stateX(), // copy states from base
+
+
+
+        ...this.indicationStates(),
+    ]}
+    public /*virtual*/ indicationStates(): ClassList { return [
+        [ null, {
+            [this.decl(this._filterHoverLeave)] : ecssProps.filterNone, // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
+        }],
 
 
 
@@ -229,108 +173,77 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
           '&:not(.press):disabled:not(.pressed):not(.release)'          , this.released()    ],
     ]}
     
-    public /*virtual*/ enabled(): JssStyle { return {} }
-    public /*virtual*/ enabling(): JssStyle { return {} }
-    public /*virtual*/ disabling(): JssStyle { return {} }
-    public /*virtual*/ disabled(): JssStyle { return {} }
+    public /*virtual*/ enabled()     : JssStyle { return {
+        [this.decl(this._filterEnableDisable)] : ecssProps.filterNone,
+        [this.decl(this._animEnableDisable)]   : ecssProps.animNone,
+    }}
+    public /*virtual*/ enabling()    : JssStyle { return {
+        [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
+        [this.decl(this._animEnableDisable)]   : cssProps.animEnable,
+    }}
+    public /*virtual*/ disabling()   : JssStyle { return {
+        [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
+        [this.decl(this._animEnableDisable)]   : cssProps.animDisable,
+    }}
+    public /*virtual*/ disabled()    : JssStyle { return {
+        [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
+        [this.decl(this._animEnableDisable)]   : ecssProps.animNone,
+    }}
 
-    public /*virtual*/ actived(): JssStyle { return {} }
-    public /*virtual*/ activating(): JssStyle { return {} }
-    public /*virtual*/ passivating(): JssStyle { return {} }
-    public /*virtual*/ passived(): JssStyle { return {} }
+    public /*virtual*/ actived()     : JssStyle { return {
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : ecssProps.animNone,
+
+        extend: [
+            this.themeActive(),
+            this.outlinedActive(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ activating()  : JssStyle { return {
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animActive,
+
+        extend: [
+            this.themeActive(),
+            this.outlinedActive(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ passivating() : JssStyle { return {
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animPassive,
+    }}
+    public /*virtual*/ passived()    : JssStyle { return {
+        [this.decl(this._filterActivePassive)] : ecssProps.filterNone,
+        [this.decl(this._animActivePassive)]   : ecssProps.animNone,
+    }}
+    public /*virtual*/ themeActive(theme = 'secondary'): JssStyle {
+        return this.themeIf(theme);
+    }
+    public /*virtual*/ outlinedActive(): JssStyle {
+        // *toggle off* the outlined props:
+        return this.toggleOffOutlined();
+    }
 
     public /*virtual*/ pressed(): JssStyle { return {} }
     public /*virtual*/ pressing(): JssStyle { return {} }
     public /*virtual*/ releasing(): JssStyle { return {} }
     public /*virtual*/ released(): JssStyle { return {} }
 
-    public /*virtual*/ indicationThemesIf(): JssStyle { return {
-        // define an *active* color theme:
-        [this.decl(this._foregIfAct)]          : colors.secondaryText,
-        [this.decl(this._backgIfAct)]          : this.solidBackg(colors.secondary),
-        [this.decl(this._borderIfAct)]         : colors.secondaryCont,
-        [this.decl(this._boxShadowFocusIfAct)] : colors.secondaryTransp,
-        [this.decl(this._outlinedForegIfAct)]  : colors.secondary,
-    }}
-    public /*virtual*/ indicationStates(inherit = false): JssStyle { return {
-        extend: [
-            this.iif(!inherit, {
-                //#region all initial states are none
-                [this.decl(this._filterEnableDisable)] : ecssProps.filterNone,
-                [this.decl(this._animEnableDisable)]   : ecssProps.animNone,
-        
-                [this.decl(this._filterHoverLeave)]    : ecssProps.filterNone, // supports for Control
-        
-                [this.decl(this._filterActivePassive)] : ecssProps.filterNone,
-                [this.decl(this._animActivePassive)]   : ecssProps.animNone,
-                //#endregion all initial states are none
-            }),
-
-    
-    
-            //#region specific states
-            //#region enable, disable
-            this.stateEnablingDisable({ // [enabling, disabling, disabled]
-                [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
-            }),
-            this.stateEnabling({ // [enabling]
-                [this.decl(this._animEnableDisable)]   : cssProps.animEnable,
-            }),
-            this.stateDisable({ // [disabling, disabled]
-                [this.decl(this._animEnableDisable)]   : cssProps.animDisable,
-            }),
-            { // [disabled]
-                '&.disabled,&:disabled:not(.disable)'  : // if ctrl was fully disabled programatically, disable first animation
-                    this.applyStateNoAnimStartup(),
-            },
-            //#endregion enable, disable
-            
-            
-            
-            //#region active, passive
-            this.stateActivePassivating({ // [activating, actived, passivating]
-                [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-            }),
-            this.stateActive({ // [activating, actived]
-                [this.decl(this._animActivePassive)]   : cssProps.animActive,
-    
-                extend: [
-                    this.applyStateActive(),
-                ] as JssStyle,
-            }),
-            this.statePassivating({ // [passivating]
-                [this.decl(this._animActivePassive)]   : cssProps.animPassive,
-            }),
-            {
-                // [actived]
-                '&.actived': // if activated programmatically (not by user input), disable the animation
-                    this.applyStateNoAnimStartup(),
-            },
-            //#endregion active, passive
-            //#endregion specific states
-        ] as JssStyle,
-    }}
-
-    public /*override*/ themesIf(): JssStyle { return {
-        extend: [
-            super.themesIf(), // copy themes from base
-
-            this.indicationThemesIf(),
-        ] as JssStyle,
-    }}
-    public /*override*/ states(inherit = false): JssStyle { return {
-        extend: [
-            super.states(inherit), // copy states from base
-    
-            this.indicationStates(inherit),
-        ] as JssStyle,
-    }}
-
 
 
     // functions:
-    public /*virtual*/ indicationPropsFn(): JssStyle { return {} }
-    public /*virtual*/ indicationAnimFn(): JssStyle { return {
+    public /*override*/ animFn(): Cust.Ref[] { return [
+        ...super.animFn(),
+
+
+
+        ...this.indicationAnimFn(),
+    ]}
+    public /*virtual*/ indicationAnimFn(): Cust.Ref[] { return [
+        this.ref(this._animEnableDisable), // 2nd : ctrl must be enabled
+        this.ref(this._animActivePassive), // 1st : ctrl got pressed
+    ]}
+    public /*virtual*/ indicationAnimFnOld(): JssStyle { return {
         //#region re-arrange the animFn at different states
         '&.active,&.actived': // if activated programmatically (not by user input)
             this.stateNotDisabled({ // if ctrl was not fully disabled
@@ -351,39 +264,31 @@ export class IndicatorStylesBuilder extends ElementStylesBuilder implements IInd
         //#endregion re-arrange the animFn at different states
     }}
 
-    public /*override*/ propsFn(): JssStyle { return {
-        extend: [
-            super.propsFn(), // copy functional props from base
-
-            this.indicationPropsFn(),
-        ] as JssStyle,
-    }}
-    public /*override*/ animFn(): JssStyle {
-        return this.indicationAnimFn();
-    }
     public /*override*/ filterFn(): Cust.Ref[] { return [
         ...super.filterFn(),
 
 
 
+        ...this.indicationFilterFn(),
+    ]}
+    public /*virtual*/ indicationFilterFn(): Cust.Ref[] { return [
         this.ref(this._filterEnableDisable),
         this.ref(this._filterActivePassive),
-        this.ref(this._filterHoverLeave), // will be used in Control
+        this.ref(this._filterHoverLeave), // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
     ]}
 
 
 
     // styles:
-    public /*virtual*/ indicationBasicStyle(): JssStyle { return {
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
-
-            this.indicationBasicStyle(),
         ] as JssStyle,
+        
+        
+        
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
 export const styles = new IndicatorStylesBuilder();

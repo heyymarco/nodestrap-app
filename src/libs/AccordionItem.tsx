@@ -50,7 +50,7 @@ export class AccordionItemStylesBuilder extends PopupStylesBuilder {
 
     
     // states:
-    public /*override*/ indicationStates(inherit = false): JssStyle { return {
+    public /*override*/ indicationStatesOld(inherit = false): JssStyle { return {
         /*
         watch [enable, disable] state on current element but forward the action to sibling element (body)
         watch [active, passive] state on current element but forward the action to sibling element (body)
@@ -105,7 +105,8 @@ export class AccordionItemStylesBuilder extends PopupStylesBuilder {
                 },
 
                 extend: [
-                    this.applyStateActive(),
+                    //TODO: update....
+                    this.themeActive(),
                 ] as JssStyle,
             }),
             this.statePassivating({ // [passivating]
@@ -139,21 +140,16 @@ export class AccordionItemStylesBuilder extends PopupStylesBuilder {
         },
     }}
 
-    public /*override*/ themesIf(): JssStyle {
-        // skip Element's conditional themes
-        // jump to indication's conditional themes
-        return this.indicationThemesIf();
-    }
     public /*override*/ states(inherit = false): JssStyle {
         // skip Element's states
         // jump to indication's states
-        return this.indicationStates(inherit);
+        return this.indicationStatesOld(inherit);
     }
 
 
 
     // functions:
-    public /*override*/ indicationAnimFn(): JssStyle { return {
+    public /*override*/ indicationAnimFnOld(): JssStyle { return {
         // define an *animations* func for the AccordionItem's body:
         [bodyElm]: {
             [this.decl(this._animFn)]: [
@@ -169,23 +165,24 @@ export class AccordionItemStylesBuilder extends PopupStylesBuilder {
         // jump to indication's propsFn
 
         extend: [
-            this.indicationPropsFn(),
+            //TODO: update...
+            // this.indicationPropsFn(),
         ] as JssStyle,
 
 
 
-        ...this.animFn(),
+        ...this.animFnOld(),
     }}
-    public /*override*/ animFn(): JssStyle {
+    public /*override*/ animFnOld(): JssStyle {
         // skip Element's animFn
         // jump to indication's animFn
-        return this.indicationAnimFn();
+        return this.indicationAnimFnOld();
     }
 
 
 
     // styles:
-    public /*override*/ indicationBasicStyle(): JssStyle { return {
+    protected /*virtual*/ bodyBasicStyle(): JssStyle { return {
         // apply fn props:
         anim : this.ref(this._animFn),
 
@@ -195,13 +192,8 @@ export class AccordionItemStylesBuilder extends PopupStylesBuilder {
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'body')), // apply *general* cssProps starting with body***
     }}
     public /*override*/ basicStyle(): JssStyle { return {
-        // skip Element's basicStyle
-        // jump to indication's basicStyle
-
-
-
         // children:
-        [bodyElm]: this.indicationBasicStyle(),
+        [bodyElm]: this.bodyBasicStyle(),
 
 
 

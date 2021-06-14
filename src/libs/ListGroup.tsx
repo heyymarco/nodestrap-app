@@ -190,7 +190,9 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
 
     // states:
     public /*implement*/ controlThemesIf(): JssStyle {
-        return actionControlStyles.controlThemesIf(); // copy themes from ActionControl
+        //TODO: update
+        return {};
+        // return actionControlStyles.controlThemesIf(); // copy themes from ActionControl
     }
     public /*implement*/ controlStates(inherit = false): JssStyle {
         return actionControlStyles.controlStates(inherit); // copy states from ActionControl
@@ -228,7 +230,7 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
             this.controlPropsFn(),
         ] as JssStyle,
     }}
-    public /*override*/ animFn(): JssStyle {
+    public /*override*/ animFnOld(): JssStyle {
         return this.controlAnimFn();
     }
 

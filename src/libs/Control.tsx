@@ -16,13 +16,11 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 
 // nodestrap (modular web components):
 import * as stripOuts       from './strip-outs'
-import colors               from './colors'     // configurable colors & theming defs
 import {
     cssProps as ecssProps,
 }                           from './Element'
 import {
     default as Indicator,
-    IIndicatorStylesBuilder,
     IndicatorStylesBuilder,
 }                           from './Indicator'
 import type * as Indicators from './Indicator'
@@ -34,9 +32,8 @@ import {
 
 // styles:
 
-export interface IControlStylesBuilder extends IIndicatorStylesBuilder {
+export interface IControlStylesBuilder {
     // states:
-    controlThemesIf(): JssStyle
     controlStates(inherit : boolean): JssStyle
 
 
@@ -156,21 +153,15 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // states:
-    public /*virtual*/ controlThemesIf(): JssStyle { return {
-        // define a *default* color theme:
-        [this.decl(this._foregIf)]             : colors.secondaryText,
-        [this.decl(this._backgIf)]             : this.solidBackg(colors.secondary),
-        [this.decl(this._borderIf)]            : colors.secondaryCont,
-        [this.decl(this._boxShadowFocusIf)]    : colors.secondaryTransp,
-        [this.decl(this._outlinedForegIf)]     : colors.secondary,
+    public /*override*/ themeDefault(theme: string|null = 'secondary'): JssStyle {
+        // change default parameter from null to 'secondary'
+        return super.themeDefault(theme);
+    }
+    public /*override*/ themeActive(theme = 'primary'): JssStyle {
+        // change default parameter from 'secondary' to 'primary'
+        return super.themeActive(theme);
+    }
 
-        // define an *active* color theme:
-        [this.decl(this._foregIfAct)]          : colors.primaryText,
-        [this.decl(this._backgIfAct)]          : this.solidBackg(colors.primary),
-        [this.decl(this._borderIfAct)]         : colors.primaryCont,
-        [this.decl(this._boxShadowFocusIfAct)] : colors.primaryTransp,
-        [this.decl(this._outlinedForegIfAct)]  : colors.primary,
-    }}
     public /*virtual*/ controlStates(inherit = false): JssStyle { return {
         extend: [
             this.iif(!inherit, {
@@ -212,7 +203,8 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
                     [this.decl(this._animHoverLeave)]     : cssProps.animHover,
     
                     extend: [
-                        this.applyStateActive(),
+                        //TODO: update....
+                        this.themeActive(),
                     ] as JssStyle,
                 }),
                 this.stateFocus({
@@ -220,7 +212,8 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
                     [this.decl(this._animFocusBlur)]      : cssProps.animFocus,
     
                     extend: [
-                        this.applyStateActive(),
+                        //TODO: update....
+                        this.themeActive(),
                     ] as JssStyle,
                 }),
             ] as JssStyle}),
@@ -229,13 +222,6 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
         ] as JssStyle,
     }}
 
-    public /*override*/ themesIf(): JssStyle { return {
-        extend: [
-            super.themesIf(), // copy themes from base
-
-            this.controlThemesIf(),
-        ] as JssStyle,
-    }}
     public /*override*/ states(inherit = false): JssStyle { return {
         extend: [
             super.states(inherit), // copy states from base
@@ -280,7 +266,7 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
             this.controlPropsFn(),
         ] as JssStyle,
     }}
-    public /*override*/ animFn(): JssStyle {
+    public /*override*/ animFnOld(): JssStyle {
         return this.controlAnimFn();
     }
     public /*override*/ boxShadowFn(): Cust.Ref[] { return [

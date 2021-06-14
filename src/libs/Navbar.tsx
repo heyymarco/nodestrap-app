@@ -533,7 +533,8 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
                     // after watching => use func props:
                     this.propsFn(),           // for themes
-                    this.indicationPropsFn(), // overwrite animFn only for indication
+                    //TODO: update...
+                    // this.indicationPropsFn(), // overwrite animFn only for indication
 
                     // all the required stuff has been loaded,
                     // now load the basicStyle:

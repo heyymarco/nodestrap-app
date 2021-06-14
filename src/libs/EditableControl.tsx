@@ -65,14 +65,14 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
     protected readonly _borderIfVal         = 'borderIfVal'
 
     /**
-     * valid-state foreground color - at outlined state.
-     */
-    protected readonly _outlinedForegIfVal  = 'outlinedForegIfVal'
-
-    /**
      * valid-state focused box-shadow color.
      */
     protected readonly _boxShadowFocusIfVal = 'boxShadowFocusIfVal'
+
+    /**
+     * valid-state foreground color - at outlined state.
+     */
+    protected readonly _outlinedForegIfVal  = 'outlinedForegIfVal'
  
  
     /**
@@ -91,14 +91,14 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
     protected readonly _borderIfInv         = 'borderIfInv'
 
     /**
-     * invalid-state foreground color - at outlined state.
-     */
-    protected readonly _outlinedForegIfInv  = 'outlinedForegIfInv'
-
-    /**
      * invalid-state focused box-shadow color.
      */
     protected readonly _boxShadowFocusIfInv = 'boxShadowFocusIfInv'
+
+    /**
+     * invalid-state foreground color - at outlined state.
+     */
+    protected readonly _outlinedForegIfInv  = 'outlinedForegIfInv'
 
 
 
@@ -175,6 +175,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
 
 
     protected /*virtual*/ applyStateValid(): JssStyle { return {
+        //TODO: update....
         // apply a *valid* color theme:
         [this.decl(this._foregIfIf)]          : this.ref(this._foregIfVal),
         [this.decl(this._backgIfIf)]          : this.ref(this._backgIfVal),
@@ -183,6 +184,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
         [this.decl(this._outlinedForegIfIf)]  : this.ref(this._outlinedForegIfVal),
     }}
     protected /*virtual*/ applyStateInvalid(): JssStyle { return {
+        //TODO: update....
         // apply an *invalid* color theme:
         [this.decl(this._foregIfIf)]          : this.ref(this._foregIfInv),
         [this.decl(this._backgIfIf)]          : this.ref(this._backgIfInv),
@@ -210,19 +212,21 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
 
     // states:
     public /*virtual*/ validationThemesIf(): JssStyle { return {
+        //TODO: update....
         // define a *valid* color theme:
         [this.decl(this._foregIfVal)]           : colors.successText,
         [this.decl(this._backgIfVal)]           : this.solidBackg(colors.success),
         [this.decl(this._borderIfVal)]          : colors.successCont,
-        [this.decl(this._outlinedForegIfVal)]   : colors.success,
         [this.decl(this._boxShadowFocusIfVal)]  : colors.successTransp,
+        [this.decl(this._outlinedForegIfVal)]   : colors.success,
 
+        //TODO: update....
         // define an *invalid* color theme:
         [this.decl(this._foregIfInv)]           : colors.dangerText,
         [this.decl(this._backgIfInv)]           : this.solidBackg(colors.danger),
         [this.decl(this._borderIfInv)]          : colors.dangerCont,
-        [this.decl(this._outlinedForegIfInv)]   : colors.danger,
         [this.decl(this._boxShadowFocusIfInv)]  : colors.dangerTransp,
+        [this.decl(this._outlinedForegIfInv)]   : colors.danger,
     }}
     public /*virtual*/ validationStates(inherit = false): JssStyle { return {
         extend: [
@@ -239,6 +243,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
             this.stateValidating({
                 [this.decl(this._animValUnval)] : cssProps.animValid,
             }),
+            //TODO: update....
             this.stateValid(this.applyStateValid()),
             this.stateUnvalidating({
                 [this.decl(this._animValUnval)] : cssProps.animUnvalid,
@@ -247,6 +252,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
             this.stateInvalidating({
                 [this.decl(this._animInvUninv)] : cssProps.animInvalid,
             }),
+            //TODO: update....
             this.stateInvalid(this.applyStateInvalid()),
             this.stateUninvalidating({
                 [this.decl(this._animInvUninv)] : cssProps.animUninvalid,
@@ -305,7 +311,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
             this.validationPropsFn(),
         ] as JssStyle,
     }}
-    public /*override*/ animFn(): JssStyle { return {
+    public /*override*/ animFnOld(): JssStyle { return {
         //#region re-arrange the animFn at different states
         '&.active,&.actived': // if activated programmatically (not by user input)
             this.stateNotDisabled({ // if ctrl was not fully disabled

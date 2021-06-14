@@ -1,0 +1,128 @@
+.main-0-2-2 {
+    border: var(--elm-border);
+    filter: var(--elm-filter) var(--ns-filterEnableDisable) var(--ns-filterActivePassive) var(--ns-filterHoverLeave);
+    opacity: var(--elm-opacity);
+    font-size: var(--elm-fontSize);
+    box-shadow: var(--elm-boxShadow);
+    font-style: var(--elm-fontStyle);
+    transition: var(--elm-transition);
+    --ns-animFn: var(--elm-anim), var(--ns-animEnableDisable), var(--ns-animActivePassive);
+    font-family: var(--elm-fontFamily);
+    font-weight: var(--elm-fontWeight);
+    line-height: var(--elm-lineHeight);
+    --ns-backgFn: var(--ns-outlinedBackgTg, var(--ns-backgLy));
+    --ns-backgIf: var(--ns-backgNone);
+    --ns-backgLy: var(--ns-backgGradTg, var(--ns-backgNone)), var(--ns-backgIfIf, var(--ns-backgTh, var(--ns-backgIf))), var(--elm-backg);
+    --ns-foregFn: var(--ns-outlinedForegTg, var(--ns-foregIfIf, var(--ns-foregTh, var(--ns-foregIf))));
+    --ns-foregIf: var(--elm-foreg);
+    border-color: var(--ns-borderFn);
+    --ns-borderFn: var(--ns-outlinedForegTg, var(--ns-borderIfIf, var(--ns-borderTh, var(--ns-borderIf))));
+    --ns-borderIf: var(--elm-borderColor);
+    border-radius: var(--elm-borderRadius);
+    padding-block: var(--elm-paddingBlock);
+    --ns-backgNone: linear-gradient(transparent, transparent) border-box;
+    padding-inline: var(--elm-paddingInline);
+    --ns-backgIfAct: linear-gradient(var(--col-secondary), var(--col-secondary)) border-box;
+    --ns-foregIfAct: var(--col-secondaryText);
+    text-decoration: var(--elm-textDecoration);
+    --ns-borderIfAct: var(--col-secondaryCont);
+    --ns-outlinedBackgFn: var(--ns-backgGradTg, var(--ns-backgNone));
+    --ns-outlinedForegFn: var(--ns-outlinedForegIfIf, var(--ns-outlinedForegTh, var(--ns-outlinedForegIf)));
+    --ns-outlinedForegIf: var(--elm-foreg);
+    --ns-boxShadowFocusFn: var(--elm-boxShadowFocus) var(--ns-boxShadowFocusIfIf, var(--ns-boxShadowFocusTh, var(--ns-boxShadowFocusIf)));
+    --ns-boxShadowFocusIf: var(--col-secondaryTransp);
+    --ns-filterHoverLeave: var(--elm-filterNone);
+    --ns-outlinedForegIfAct: var(--col-secondary);
+    --ns-boxShadowFocusIfAct: var(--col-secondaryTransp);
+    animation: var(--ns-animFn);
+    background: var(--ns-backgFn);
+    color: var(--ns-foregFn);
+}
+
+.main-0-2-2 {
+    --ns-backgGradTg: unset;
+    --ns-outlinedBackgTg: unset;
+    --ns-outlinedForegTg: unset;
+}
+
+
+
+// enabled
+.main-0-2-2:not(.enable):not(.disable):not(.disabled):not(:disabled) {
+    --ns-filterEnableDisable : var(--elm-filterNone);
+    --ns-animEnableDisable   : var(--elm-animNone);
+}
+// enabling
+.main-0-2-2.enable {
+    --ns-filterEnableDisable : var(--indi-filterDisable);
+    --ns-animEnableDisable   : var(--indi-animEnable);
+}
+// disabling
+.main-0-2-2.disable {
+    --ns-filterEnableDisable : var(--indi-filterDisable);
+    --ns-animEnableDisable   : var(--indi-animDisable);
+}
+// disabled
+.main-0-2-2.disabled,
+.main-0-2-2:disabled {
+    --ns-filterEnableDisable : var(--indi-filterDisable);
+    --ns-animEnableDisable   : var(--elm-animNone);
+}
+
+
+
+// actived
+.main-0-2-2.actived,
+.main-0-2-2:checked:not(.active) {
+    --ns-filterActivePassive : var(--indi-filterActive);
+    --ns-animActivePassive   : var(--elm-animNone);
+
+    // applyStateActive
+    --ns-foregIf          : var(--ns-foregIfAct);
+    --ns-backgIf          : var(--ns-backgIfAct);
+    --ns-borderIf         : var(--ns-borderIfAct);
+    --ns-boxShadowFocusIf : var(--ns-boxShadowFocusIfAct);
+    --ns-outlinedForegIf  : var(--ns-outlinedForegIfAct);
+}
+// activating
+.main-0-2-2.active {
+    --ns-filterActivePassive : var(--indi-filterActive);
+    --ns-animActivePassive   : var(--indi-animActive);
+
+    // applyStateActive
+    --ns-foregIf          : var(--ns-foregIfAct);
+    --ns-backgIf          : var(--ns-backgIfAct);
+    --ns-borderIf         : var(--ns-borderIfAct);
+    --ns-boxShadowFocusIf : var(--ns-boxShadowFocusIfAct);
+    --ns-outlinedForegIf  : var(--ns-outlinedForegIfAct);
+}
+// passivating
+.main-0-2-2.passive {
+    --ns-filterActivePassive : var(--indi-filterActive);
+    --ns-animActivePassive   : var(--indi-animPassive);
+}
+// passived
+.main-0-2-2:not(.active):not(.actived):not(:checked):not(.passive) {
+    --ns-filterActivePassive : var(--elm-filterNone);
+    --ns-animActivePassive   : var(--elm-animNone);
+}
+
+
+
+.main-0-2-2.active:not(.disabled):not(:disabled),
+.main-0-2-2.active:not(.disabled):disabled.disable,
+.main-0-2-2.actived:not(.disabled):not(:disabled),
+.main-0-2-2.actived:not(.disabled):disabled.disable {
+    --ns-animFn: var(--elm-anim), var(--ns-animActivePassive), var(--ns-animEnableDisable);
+}
+
+.main-0-2-2.active:not(._) {
+    --ns-outlinedBackgTg: initial;
+    --ns-outlinedForegTg: initial;
+}
+
+.main-0-2-2.actived:not(._),
+.main-0-2-2:checked:not(.active):not(._) {
+    --ns-outlinedBackgTg: initial;
+    --ns-outlinedForegTg: initial;
+}

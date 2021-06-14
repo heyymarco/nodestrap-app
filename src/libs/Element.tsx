@@ -397,93 +397,7 @@ export class StylesBuilder {
      * Creates css rule definitions for all variants by overriding some *scoped css props*.
      * @returns A `ClassList` represents the css rule definitions for all variants.
      */
-    public /*virtual*/ variants(): ClassList { return [
-        ...this.themes(),
-        ...this.sizes(),
-        [ 'gradient', this.gradient() ],
-        [ 'outlined', this.outlined() ],
-    ]}
-
-    /**
-     * Gets the all available theme options.
-     * @returns A `string[]` represents the all available theme options.
-     */
-    public /*virtual*/ themeOptions(): string[] {
-        return Object.keys(color.themes);
-    }
-    /**
-     * Creates color definitions *for each* `themeOptions()`.
-     * @returns A `ClassList` represents the color definitions *for each* `themeOptions()`.
-     */
-    public /*virtual*/ themes(): ClassList {
-        return this.themeOptions().map((theme) => {
-            const Theme     = pascalCase(theme);
-            const themeProp = `th${Theme}`;
-
-            return [
-                themeProp,
-                this.theme(
-                    theme, // camel  case
-                    Theme, // pascal case
-                )
-            ] as ClassEntry;
-        });
-    }
-    /**
-     * Creates a color definition for the specified `theme`.
-     * @param theme The current theme name written in camel case.
-     * @param Theme The current theme name written in pascal case.
-     * @param themeProp The prop name of the current `theme`.
-     * @param themeColor The backg color of the current `theme`.
-     * @returns A `JssStyle` represents the color definition for the current `theme`.
-     */
-    public /*virtual*/ theme(theme: string, Theme: string): JssStyle { return {} }
-
-    /**
-     * Gets the all available size options.
-     * @returns A `string[]` represents the all available size options.
-     */
-    public /*virtual*/ sizeOptions(): string[] {
-        return ['sm', 'lg'];
-    }
-    /**
-     * Creates sizing definitions *for each* `sizeOptions()`.
-     * @returns A `ClassList` represents the sizing definitions *for each* `sizeOptions()`.
-     */
-    public /*virtual*/ sizes(): ClassList {
-        return this.sizeOptions().map((size) => {
-            const Size     = pascalCase(size);
-            const sizeProp = `sz${Size}`;
-
-            return [
-                sizeProp,
-                this.size(
-                    size, // camel  case
-                    Size, // pascal case
-                )
-            ] as ClassEntry;
-        });
-    }
-    /**
-     * Creates a sizing definition for the specified `size`.
-     * @param size The current size name written in camel case.
-     * @param Size The current size name written in pascal case.
-     * @param sizeProp The prop name of the current `size`.
-     * @returns A `JssStyle` represents the sizing definition for the current `size`.
-     */
-    public /*virtual*/ size(size: string, Size: string): JssStyle { return {} }
-
-    /**
-     * Creates a gradient definition for if the gradient feature is enabled.
-     * @returns A `JssStyle` represents the gradient definition.
-     */
-    public /*virtual*/ gradient(): JssStyle { return {} }
-
-    /**
-     * Creates an outlined definition for if the outlined feature is enabled.
-     * @returns A `JssStyle` represents the outlined definition.
-     */
-    public /*virtual*/ outlined(): JssStyle { return {} }
+    public /*virtual*/ variants(): ClassList { return [] }
 
 
 
@@ -529,7 +443,7 @@ export class StylesBuilder {
 
     // functions:
     /**
-     * Creates a functional prop definitions in which the values *depends on* the themes and/or the states using *fallback* strategy.
+     * Creates a functional prop definitions in which the values *depends on* the variants and/or the states using *fallback* strategy.
      * @returns A `JssStyle` represents the functional prop definitions.
      */
     public /*virtual*/ propsFn(): JssStyle { return {} }
@@ -809,30 +723,6 @@ export class ElementStylesBuilder extends StylesBuilder {
     protected /*virtual*/ applyStateNoAnimStartup(): JssStyle { return {
         animationDuration: [['0ms'], '!important'],
     }}
-
-
-    
-    protected /*virtual*/ toggleOnGradient(): JssStyle { return {
-        // *toggle on* the background gradient prop:
-        [this.decl(this._backgGradTg)]     : cssProps.backgGrad,
-    }}
-    protected /*virtual*/ toggleOffGradient(inherit = false): JssStyle { return {
-        // *toggle off* the background gradient prop:
-        [this.decl(this._backgGradTg)]     : inherit ? 'unset' : 'initial',
-    }}
-
-
-
-    protected /*virtual*/ toggleOnOutlined(): JssStyle { return {
-        // *toggle on* the outlined props:
-        [this.decl(this._outlinedForegTg)] : this.ref(this._outlinedForegFn),
-        [this.decl(this._outlinedBackgTg)] : this.ref(this._outlinedBackgFn),
-    }}
-    protected /*virtual*/ toggleOffOutlined(inherit = false): JssStyle { return {
-        // *toggle off* the outlined props:
-        [this.decl(this._outlinedForegTg)] : inherit ? 'unset' : 'initial',
-        [this.decl(this._outlinedBackgTg)] : inherit ? 'unset' : 'initial',
-    }}
     //#endregion mixins
 
 
@@ -854,39 +744,173 @@ export class ElementStylesBuilder extends StylesBuilder {
         // but still be able to *toggle on* by parent (inherit)
         [ null, this.toggleOffOutlined(/*inherit =*/true) ],
         //#endregion all initial states are none
+
+
+
+        ...this.themes(),
+        ...this.sizes(),
+        [ 'gradient', this.gradient() ],
+        [ 'outlined', this.outlined() ],
     ]}
-    public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
-        // customize the *themed* props:
-    
+
+    /**
+     * Gets the all available theme options.
+     * @returns A `string[]` represents the all available theme options.
+     */
+    public /*virtual*/ themeOptions(): string[] {
+        return Object.keys(color.themes);
+    }
+    /**
+     * Creates color definitions *for each* `themeOptions()`.
+     * @returns A `ClassList` represents the color definitions *for each* `themeOptions()`.
+     */
+    public /*virtual*/ themes(): ClassList {
+        return this.themeOptions().map((theme) => {
+            const Theme     = pascalCase(theme);
+            const themeProp = `th${Theme}`;
+
+            return [
+                themeProp,
+                this.theme(
+                    theme, // camel  case
+                    Theme, // pascal case
+                )
+            ] as ClassEntry;
+        });
+    }
+    /**
+     * Creates a color definition for the specified `theme`.
+     * @param theme The current theme name written in camel case.
+     * @param Theme The current theme name written in pascal case.
+     * @returns A `JssStyle` represents the color definition for the current `theme`.
+     */
+    public /*virtual*/ theme(theme: string, Theme: string): JssStyle { return {
         [this.decl(this._foregTh)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
         [this.decl(this._backgTh)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
         [this.decl(this._borderTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
         [this.decl(this._boxShadowFocusTh)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
         [this.decl(this._outlinedForegTh)]  : (colors as DictionaryOf<typeof colors>)[theme],
     }}
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+
+    /**
+     * Gets the all available size options.
+     * @returns A `string[]` represents the all available size options.
+     */
+    public /*virtual*/ sizeOptions(): string[] {
+        return ['sm', 'lg'];
+    }
+    /**
+     * Creates sizing definitions *for each* `sizeOptions()`.
+     * @returns A `ClassList` represents the sizing definitions *for each* `sizeOptions()`.
+     */
+    public /*virtual*/ sizes(): ClassList {
+        return this.sizeOptions().map((size) => {
+            const Size     = pascalCase(size);
+            const sizeProp = `sz${Size}`;
+
+            return [
+                sizeProp,
+                this.size(
+                    size, // camel  case
+                    Size, // pascal case
+                )
+            ] as ClassEntry;
+        });
+    }
+    /**
+     * Creates a sizing definition for the specified `size`.
+     * @param size The current size name written in camel case.
+     * @param Size The current size name written in pascal case.
+     * @returns A `JssStyle` represents the sizing definition for the current `size`.
+     */
+    public /*virtual*/ size(size: string, Size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
     }}
-    public /*override*/ gradient(): JssStyle {
+
+    /**
+     * Creates a gradient definition for if the gradient feature is enabled.
+     * @returns A `JssStyle` represents the gradient definition.
+     */
+    public /*virtual*/ gradient(): JssStyle {
         // *toggle on* the background gradient prop:
         return this.toggleOnGradient();
     }
-    public /*override*/ outlined(): JssStyle {
+    public /*virtual*/ toggleOnGradient(): JssStyle { return {
+        // *toggle on* the background gradient prop:
+        [this.decl(this._backgGradTg)]     : cssProps.backgGrad,
+    }}
+    public /*virtual*/ toggleOffGradient(inherit = false): JssStyle { return {
+        // *toggle off* the background gradient prop:
+        [this.decl(this._backgGradTg)]     : inherit ? 'unset' : 'initial',
+    }}
+
+    /**
+     * Creates an outlined definition for if the outlined feature is enabled.
+     * @returns A `JssStyle` represents the outlined definition.
+     */
+    public /*virtual*/ outlined(): JssStyle {
         // *toggle on* the outlined props:
         return this.toggleOnOutlined();
     }
-
+    public /*virtual*/ toggleOnOutlined(): JssStyle { return {
+        // *toggle on* the outlined props:
+        [this.decl(this._outlinedForegTg)] : this.ref(this._outlinedForegFn),
+        [this.decl(this._outlinedBackgTg)] : this.ref(this._outlinedBackgFn),
+    }}
+    public /*virtual*/ toggleOffOutlined(inherit = false): JssStyle { return {
+        // *toggle off* the outlined props:
+        [this.decl(this._outlinedForegTg)] : inherit ? 'unset' : 'initial',
+        [this.decl(this._outlinedBackgTg)] : inherit ? 'unset' : 'initial',
+    }}
 
 
     // states:
-    public /*override*/ themesIf(): JssStyle { return {
-        // define a *default* color theme:
-        [this.decl(this._foregIf)]          : cssProps.foreg,
-        [this.decl(this._backgIf)]          : this.ref(this._backgNone),
-        [this.decl(this._borderIf)]         : cssProps.borderColor,
-        [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
-        [this.decl(this._outlinedForegIf)]  : cssProps.foreg,
+    public /*override*/ watchStates(inherit = false): JssStyle { return {
+        extend: [
+            this.iif(!inherit,
+                this.themeDefault() // reset theme to default
+            ),
+
+
+
+            super.watchStates(inherit), // copy state rules from base
+        ] as JssStyle,
+    }}
+    public /*virtual*/ themeDefault(theme: string|null = null): JssStyle {
+        if (theme) return this.themeIf(theme);
+        
+        return {
+            [this.decl(this._foregIf)]          : cssProps.foreg,
+            [this.decl(this._backgIf)]          : this.ref(this._backgNone),
+            [this.decl(this._borderIf)]         : cssProps.borderColor,
+            [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
+            [this.decl(this._outlinedForegIf)]  : cssProps.foreg,
+        };
+    }
+    /**
+     * Creates a conditional color definition for the specified `theme`.
+     * @param theme The theme name written in camel case.
+     * @returns A `JssStyle` represents the conditional color definition for the specified `theme`.
+     */
+    public /*final*/ themeIf(theme: string): JssStyle { return {
+        [this.decl(this._foregIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
+        [this.decl(this._backgIf)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
+        [this.decl(this._borderIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
+        [this.decl(this._boxShadowFocusIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
+        [this.decl(this._outlinedForegIf)]  : (colors as DictionaryOf<typeof colors>)[theme],
+    }}
+    /**
+     * Creates an important conditional color definition for the specified `theme`.
+     * @param theme The theme name written in camel case.
+     * @returns A `JssStyle` represents the important conditional color definition for the specified `theme`.
+     */
+    public /*final*/ themeIfIf(theme: string): JssStyle { return {
+        [this.decl(this._foregIfIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
+        [this.decl(this._backgIfIf)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
+        [this.decl(this._borderIfIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
+        [this.decl(this._boxShadowFocusIfIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
+        [this.decl(this._outlinedForegIfIf)]  : (colors as DictionaryOf<typeof colors>)[theme],
     }}
 
 
@@ -970,20 +994,28 @@ export class ElementStylesBuilder extends StylesBuilder {
     
     
     
-        ...this.animFn(),
+        // TODO: remove
+        ...this.animFnOld(),
     }}
 
     /**
-     * Creates a composite animation definition in which the animations *depends on* the themes and/or the states.
+     * Creates a composite animation definition in which the animations *depends on* the variants and/or the states.
      * @returns A `JssStyle` represents the composite animation definition.
      */
-    public /*virtual*/ animFn(): JssStyle { return {
+    public /*virtual*/ animFnOld(): JssStyle { return {
         // define an *animations* func:
         [this.decl(this._animFn)] : cssProps.anim,
     }}
+    /**
+     * Creates a composite animation definition in which the animations *depends on* the variants and/or the states.
+     * @returns A `Cust.Ref[]` represents the composite animation definition.
+     */
+    public /*virtual*/ animFn(): Cust.Ref[] { return [
+        cssProps.anim,
+    ]}
 
     /**
-     * Creates a composite filter definition in which the filters *depends on* the themes and/or the states.
+     * Creates a composite filter definition in which the filters *depends on* the variants and/or the states.
      * @returns A `Cust.Ref[]` represents the composite filter definition.
      */
     public /*virtual*/ filterFn(): Cust.Ref[] { return [
@@ -991,7 +1023,7 @@ export class ElementStylesBuilder extends StylesBuilder {
     ]}
 
     /**
-     * Creates a composite boxShadow definition in which the boxShadows *depends on* the themes and/or the states.
+     * Creates a composite boxShadow definition in which the boxShadows *depends on* the variants and/or the states.
      * @returns A `Cust.Ref[]` represents the composite boxShadow definition.
      */
     public /*virtual*/ boxShadowFn(): Cust.Ref[] { return [
@@ -1011,7 +1043,11 @@ export class ElementStylesBuilder extends StylesBuilder {
         foreg       : this.ref(this._foregFn),
         backg       : this.ref(this._backgFn),
         borderColor : this.ref(this._borderFn),
-        anim        : this.ref(this._animFn),
+        
+        // apply special fn props:
+        anim        : this.animFn(),                      // single array (including from the returning function) => makes the JSS treat as comma separated values
+        filter      : [this.filterFn()],                  // double array (including from the returning function) => makes the JSS treat as space separated values
+        boxShadow   : [[this.boxShadowFn()]] as JssStyle, // triple array (including from the returning function) => bug fix in JSS => makes the JSS treat as comma separated values
     }}
 }
 export const styles = new ElementStylesBuilder();

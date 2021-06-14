@@ -129,7 +129,7 @@ export class FormStylesBuilder extends ElementStylesBuilder implements IContentS
             this.contentPropsFn(),
         ] as JssStyle,
     }}
-    public /*override*/ animFn(): JssStyle {
+    public /*override*/ animFnOld(): JssStyle {
         return this.validationAnimFn();
     }
 

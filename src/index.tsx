@@ -17,10 +17,11 @@ import AccordionApp from './apps/AccordionApp';
 import PopupApp from './apps/PopupApp';
 import AlertApp from './apps/AlertApp';
 import IconApp from './apps/IconApp';
+import IndicatorApp from './apps/IndicatorApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <IndicatorApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

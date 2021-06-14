@@ -6,6 +6,9 @@ import type {
     JssStyle,
 }                           from 'jss'          // ts defs support for jss
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
+import type {
+    DictionaryOf,
+}                           from './CssConfig'   // ts defs support for jss
 
 // nodestrap (modular web components):
 import colors               from './colors'     // configurable colors & theming defs
@@ -81,6 +84,29 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
     // states:
+    public /*override*/ themeDefault(theme: string|null = 'secondary'): JssStyle { return {
+        extend: [
+            super.themeDefault(theme), // copy default theme from base
+        ] as JssStyle,
+
+
+
+        // overwrite some default's theme color with *softer* colors:
+        [this.decl(this._foregIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
+        [this.decl(this._backgIf)] : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]),
+    }}
+    public /*override*/ themeActive(theme = 'primary'): JssStyle { return {
+        extend: [
+            super.themeActive(theme), // copy active theme from base
+        ] as JssStyle,
+
+
+
+        // overwrite some active's theme color with *softer* colors:
+        [this.decl(this._foregIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
+        [this.decl(this._backgIf)] : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]),
+    }}
+
     public /*override*/ validationThemesIf(): JssStyle { return {
         extend: [
             super.validationThemesIf(), // copy validationThemesIf from base
@@ -88,15 +114,14 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
 
-        //#region overwrite base's themes with *softer* colors
+        // overwrite some valid's theme color with *softer* colors:
         // define a *valid* color theme:
         [this.decl(this._foregIfVal)] : colors.successCont,
         [this.decl(this._backgIfVal)] : this.solidBackg(colors.successThin),
 
-        // define an *invalid* color theme:
+        // overwrite some invalid's theme color with *softer* colors:
         [this.decl(this._foregIfInv)] : colors.dangerCont,
         [this.decl(this._backgIfInv)] : this.solidBackg(colors.dangerThin),
-        //#endregion overwrite base's themes with *softer* colors
     }}
     public /*override*/ validationStates(inherit = false): JssStyle { return {
         extend: [
@@ -123,23 +148,9 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         ] as JssStyle,
     }}
 
-    public /*implement*/ contentThemesIf(): JssStyle { return {
-        extend: [
-            contentStyles.contentThemesIf(), // copy themes from Content
-        ] as JssStyle,
-
-
-
-        //#region overwrite base's themes with *softer* colors
-        // define a *default* color theme:
-        [this.decl(this._foregIf)]    : colors.secondaryCont,
-        [this.decl(this._backgIf)]    : this.solidBackg(colors.secondaryThin),
-
-        // define an *active* color theme:
-        [this.decl(this._foregIfAct)] : colors.primaryCont,
-        [this.decl(this._backgIfAct)] : this.solidBackg(colors.primaryThin),
-        //#endregion overwrite base's themes with *softer* colors
-    }}
+    public /*implement*/ contentThemesIf(): JssStyle {
+        return contentStyles.contentThemesIf(); // copy themes from Content
+    }
     public /*implement*/ contentStates(inherit = false): JssStyle {
         return contentStyles.contentStates(inherit); // copy states from Content
     }

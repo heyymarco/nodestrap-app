@@ -8,7 +8,6 @@ import type {
 import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
-import colors               from './colors'     // configurable colors & theming defs
 import * as border          from './borders'     // configurable borders & border radiuses defs
 import spacers              from './spacers'     // configurable spaces defs
 import type {
@@ -110,12 +109,8 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
 
 
 
-        // re-define a *default* color theme:
-        [this.decl(this._foregIf)]          : colors.primaryText,
-        [this.decl(this._backgIf)]          : this.solidBackg(colors.primary),
-        [this.decl(this._borderIf)]         : colors.primaryCont,
-        [this.decl(this._boxShadowFocusIf)] : colors.primaryTransp,
-        [this.decl(this._outlinedForegIf)]  : colors.primary,
+        // re-define a default theme:
+        ...this.themeDefault('primary'),
         //#endregion link styles
 
 

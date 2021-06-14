@@ -25,17 +25,14 @@ import type * as Indicators from './Indicator'
 // styles:
 
 export class PopupStylesBuilder extends IndicatorStylesBuilder {
-    //#region mixins
-    protected /*override*/ applyStateActive(): JssStyle { return {} } // no changing themes & toggleOffOutlined
-    //#endregion mixins
-
-
-    
     // states:
-    public /*override*/ indicationThemesIf(): JssStyle { return {} } // no active color theme
-    public /*override*/ indicationStates(inherit = false): JssStyle { return {
+    public /*override*/ themeDefault(theme: string|null = null): JssStyle { return {} } // no default theme
+    public /*override*/ themeActive(): JssStyle { return {} }  // no active theme
+    public /*override*/ outlinedActive(): JssStyle { return {} } // no active outlined
+    
+    public /*override*/ indicationStatesOld(inherit = false): JssStyle { return {
         extend: [
-            super.indicationStates(inherit), // copy indicationStates from base
+            // super.indicationStatesOld(inherit), // copy indicationStates from base
 
 
 

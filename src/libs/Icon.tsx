@@ -222,7 +222,7 @@ export class IconStylesBuilder extends ElementStylesBuilder {
      // [this.decl(this._outlinedForegFn)]  : null,
         [this.decl(this._outlinedBackgFn)]  : null,
     }}
-    public /*override*/ animFn(): JssStyle { return {} } // remove animations
+    public /*override*/ animFnOld(): JssStyle { return {} } // remove animations
 
 
 

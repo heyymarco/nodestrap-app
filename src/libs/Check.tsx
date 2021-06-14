@@ -286,7 +286,8 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
                 },
 
                 extend: [
-                    this.applyStateActive(),
+                    //TODO: update....
+                    this.themeActive(),
                 ] as JssStyle,
             }),
             this.stateClearing({ // [clearing] => label [passivating]
