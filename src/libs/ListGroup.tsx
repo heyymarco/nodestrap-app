@@ -11,15 +11,15 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 // nodestrap (modular web components):
 import {
     ClassList,
+    GenericElement,
+    isTypeOf,
 }                           from './nodestrap'
 import * as stripOuts       from './strip-outs'
 import spacers              from './spacers'    // configurable spaces defs
 import * as border          from './borders'    // configurable borders & border radiuses defs
 import {
-    GenericElement,
     cssProps as ecssProps,
     useVariantOrientation,
-    isTypeOf,
 }                           from './Element'
 import type {
     OrientationStyle,

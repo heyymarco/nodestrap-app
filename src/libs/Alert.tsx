@@ -13,7 +13,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 import {
     GenericElement,
     isTypeOf,
-}                           from './Element'
+}                           from './nodestrap'
 import {
     default  as Popup,
     PopupStylesBuilder,

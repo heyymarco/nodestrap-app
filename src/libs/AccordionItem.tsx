@@ -15,10 +15,10 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 // nodestrap (modular web components):
 import {
     ClassList,
+    GenericElement,
 }                           from './nodestrap'
 import {
     cssProps as ecssProps,
-    GenericElement,
 }                           from './Element'
 import {
     cssProps as icssProps,

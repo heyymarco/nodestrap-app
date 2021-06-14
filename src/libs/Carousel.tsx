@@ -11,12 +11,14 @@ import type {
 import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 
 // nodestrap (modular web components):
+import {
+    GenericElement,
+    isTypeOf,
+}                           from './nodestrap'
 import * as stripOuts      from './strip-outs'
 import {
     default  as Element,
-    GenericElement,
     ElementStylesBuilder,
-    isTypeOf,
 }                          from './Element'
 import type * as Elements  from './Element'
 import {

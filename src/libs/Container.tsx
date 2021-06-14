@@ -18,10 +18,12 @@ import type {
 
 // nodestrap (modular web components):
 import {
+    GenericProps,
     GenericElement,
+}                           from './nodestrap'
+import {
     ElementStylesBuilder,
 }                           from './Element'
-import type * as Elements   from './Element'
 import
     breakpoints,
     * as breakpoint         from './breakpoints'
@@ -182,7 +184,7 @@ export const styles = new ContainerStylesBuilder();
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Elements.GenericProps<TElement>
+        GenericProps<TElement>
 {
     // children:
     children? : React.ReactNode
