@@ -99,9 +99,9 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
 
     
-    protected /*override*/ applyStateNoAnimStartup(): JssStyle {
+    protected /*override*/ applyStateNoAnimStartupOld(): JssStyle {
         return this.stateNotCheckingClearing(
-            super.applyStateNoAnimStartup()
+            super.applyStateNoAnimStartupOld()
         );
     }
     protected /*virtual*/ applyStateCheck(): JssStyle { return {
@@ -257,7 +257,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
                 [this.decl(this._animCheckClear)]      : cssProps.animClear,
             }),
             this.stateNotCheckingClearing( // [not-checking, not-clearing]
-                this.applyStateNoAnimStartup()
+                this.applyStateNoAnimStartupOld()
             ),
             //#endregion check, clear
             //#endregion specific states
@@ -300,7 +300,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
                 '&.checked,&:checked:not(.check)': { // if ctrl was fully checked, disable the animation
                     /* IF */[chkElm]: this.stateNotFocusingBlurring({ // but still transfering the focus state to the "sibling" element(s):
                         /* THEN [labelElm] */'&~*':
-                            super.applyStateNoAnimStartup(),
+                            super.applyStateNoAnimStartupOld(),
                     }),
                 },
             },
@@ -309,17 +309,17 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         ] as JssStyle,
     }}
 
-    public /*override*/ themesIf(): JssStyle { return {
+    public /*override*/ themesIfOld(): JssStyle { return {
         extend: [
-            super.themesIf(), // copy themes from base
+            super.themesIfOld(), // copy themes from base
 
             this.checkThemesIf(),
             this.labelThemesIf(),
         ] as JssStyle,
     }}
-    public /*override*/ states(inherit = false): JssStyle { return {
+    public /*override*/ statesOld(inherit = false): JssStyle { return {
         extend: [
-            super.states(inherit), // copy states from base
+            super.statesOld(inherit), // copy states from base
 
             this.checkStates(inherit),
             this.labelStates(inherit),
@@ -341,9 +341,9 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
     protected /*virtual*/ labelPropsFn(): JssStyle { return {} }
 
-    public /*override*/ propsFn(): JssStyle { return {
+    public /*override*/ propsFnOld(): JssStyle { return {
         extend: [
-            super.propsFn(), // copy functional props from base
+            super.propsFnOld(), // copy functional props from base
 
             this.checkPropsFn(),
             this.labelPropsFn(),
@@ -394,7 +394,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         // children:
         [iconElm]: {
             extend: [
-                iconStyles.createStyle( // apply icon
+                iconStyles.useIcon( // apply icon
                     /*img   :*/ cssProps.img,
                     /*foreg :*/ this.ref(this._foregFn)
                 ),

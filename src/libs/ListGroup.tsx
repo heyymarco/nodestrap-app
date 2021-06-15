@@ -182,9 +182,9 @@ const listItemStyles = new ListItemStylesBuilder();
 
 class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements IControlStylesBuilder {
     //#region mixins
-    protected /*override*/ applyStateNoAnimStartup(): JssStyle {
+    protected /*override*/ applyStateNoAnimStartupOld(): JssStyle {
         // @ts-ignore
-        return actionControlStyles.applyStateNoAnimStartup(); // copy no-anim-startup from ActionControl
+        return actionControlStyles.applyStateNoAnimStartupOld(); // copy no-anim-startup from ActionControl
     }
     //#endregion mixins
 
@@ -200,16 +200,16 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
         return actionControlStyles.controlStates(inherit); // copy states from ActionControl
     }
     
-    public /*override*/ themesIf(): JssStyle { return {
+    public /*override*/ themesIfOld(): JssStyle { return {
         extend: [
-            super.themesIf(), // copy themes from base
+            super.themesIfOld(), // copy themes from base
 
             this.controlThemesIf(),
         ] as JssStyle,
     }}
-    public /*override*/ states(inherit = false): JssStyle { return {
+    public /*override*/ statesOld(inherit = false): JssStyle { return {
         extend: [
-            super.states(inherit), // copy states from base
+            super.statesOld(inherit), // copy states from base
             
             this.controlStates(/*inherit =*/false), // do not inherit: Listgroup doesn't have [hover, leave, focus, blur]
         ] as JssStyle,
@@ -225,9 +225,9 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
         return actionControlStyles.controlAnimFn(); // copy functional anim from ActionControl
     }
 
-    public /*override*/ propsFn(): JssStyle { return {
+    public /*override*/ propsFnOld(): JssStyle { return {
         extend: [
-            super.propsFn(), // copy functional props from base
+            super.propsFnOld(), // copy functional props from base
 
             this.controlPropsFn(),
         ] as JssStyle,
@@ -550,25 +550,25 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
                             '&:not(.actionCtrl)': {
                                 extend: [
                                     // watch variant classes:
-                                    listItemStyles.watchVariants(),
+                                    listItemStyles.useVariants(),
             
                                     // watch state classes/pseudo-classes:
-                                    listItemStyles.watchStates(),
+                                    listItemStyles.useStates(),
             
                                     // after watching => use func props:
-                                    listItemStyles.propsFn(),
+                                    listItemStyles.propsFnOld(),
                                 ] as JssStyle,
                             },
                             '&.actionCtrl': {
                                 extend: [
                                     // watch variant classes:
-                                    listItemActionCtrlStyles.watchVariants(),
+                                    listItemActionCtrlStyles.useVariants(),
             
                                     // watch state classes/pseudo-classes:
-                                    listItemActionCtrlStyles.watchStates(),
+                                    listItemActionCtrlStyles.useStates(),
             
                                     // after watching => use func props:
-                                    listItemActionCtrlStyles.propsFn(),
+                                    listItemActionCtrlStyles.propsFnOld(),
                                 ] as JssStyle,
                             },
                         },

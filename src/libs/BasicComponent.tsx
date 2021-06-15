@@ -5,25 +5,26 @@ import {
 
 // nodestrap (modular web components):
 import {
-    CssConfig,
-
+    // general types:
     JssStyle,
-
     PropEx,
     Cust,
-
     DictionaryOf,
-
     ClassEntry,
     ClassList,
+    PropList,
 
+    
+    // components:
+    CssConfig,
     ElementStyles,
-
     ElementProps,
     Element,
 
+    
+    // utils:
     pascalCase,
-}                           from './nodestrap'
+}                           from './nodestrap'   // nodestrap's core
 import
     colors,
     * as color              from './colors'      // configurable colors & theming defs
@@ -38,31 +39,27 @@ import typos                from './typos/index' // configurable typography (tex
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     const keyframesNone   : PropEx.Keyframes = { };
 
+    
+    
     return {
         //#region typos
         fontSize          : typos.fontSizeNm,
         fontSizeSm        : [['calc((', typos.fontSizeSm, '+', typos.fontSizeNm, ')/2)']],
         fontSizeLg        : typos.fontSizeMd,
-        fontFamily        : inherit,
-        fontWeight        : inherit,
-        fontStyle         : inherit,
-        textDecoration    : inherit,
-        lineHeight        : inherit,
+        fontFamily        : 'inherit',
+        fontWeight        : 'inherit',
+        fontStyle         : 'inherit',
+        textDecoration    : 'inherit',
+        lineHeight        : 'inherit',
         //#endregion typos
 
+        
+        
         //#region foreg, backg, borders
         foreg             : 'currentColor',
+        
         backg             : 'transparent',
         backgGrad         : [['linear-gradient(180deg, rgba(255,255,255, 0.2), rgba(0,0,0, 0.2))', 'border-box']],
         
@@ -73,6 +70,8 @@ const cssConfig = new CssConfig(() => {
         borderRadiusLg    : border.radiuses.lg,
         //#endregion foreg, backg, borders
 
+        
+        
         //#region spacings
         paddingInline     : [['calc((', spacers.sm, '+', spacers.md, ')/2)']],
         paddingBlock      : [['calc((', spacers.xs, '+', spacers.sm, ')/2)']],
@@ -82,11 +81,14 @@ const cssConfig = new CssConfig(() => {
         paddingBlockLg    : spacers.sm,
         //#endregion spacings
 
+        
+        
+        // appearances:
         opacity           : 1,
 
 
-        // anim props:
-
+        
+        //#region animations
         transition        : [
             ['color'      , '300ms', 'ease-out'],
             ['background' , '300ms', 'ease-out'],
@@ -97,18 +99,19 @@ const cssConfig = new CssConfig(() => {
             ['opacity'    , '300ms', 'ease-out'],
         ],
 
+        filterNone        : 'brightness(100%)',
+        filter            : 'brightness(100%)',
+
         boxShadowNone     : [[0, 0, 'transparent']],
         boxShadow         : [[0, 0, 'transparent']],
         boxShadowFocus    : [[0, 0, 0, '0.25rem' ]], // supports for Control children's theming
-        
-        filterNone        : 'brightness(100%)',
-        filter            : 'brightness(100%)',
 
         '@keyframes none' : keyframesNone,
         animNone          : [[keyframesNone]],
         anim              : [[keyframesNone]],
+        //#endregion animations
     };
-}, /*prefix: */'elm');
+}, /*prefix: */'com');
 export const cssProps = cssConfig.refs;
 export const cssDecls = cssConfig.decls;
 
@@ -283,34 +286,22 @@ export class BasicComponentStyles extends ElementStyles {
      */
     public    readonly _animFn             = 'animFn'
     //#endregion scoped css props
-
-
-
-    //#region mixins
-    protected /*virtual*/ applyStateNoAnimStartup(): JssStyle { return {
-        animationDuration: [['0ms'], '!important'],
-    }}
-    //#endregion mixins
-
-
-
+    
+    
+    
     // variants:
     public /*override*/ variants(): ClassList { return [
         ...super.variants(), // copy variants from base
 
 
 
-        //#region all initial states are none
         // *toggle off* the background gradient prop:
         // but still be able to *toggle on* by parent (inherit)
         [ null, this.toggleOffGradient(/*inherit =*/true) ],
 
-
-
         // *toggle off* the outlined props:
         // but still be able to *toggle on* by parent (inherit)
         [ null, this.toggleOffOutlined(/*inherit =*/true) ],
-        //#endregion all initial states are none
 
 
 
@@ -433,15 +424,15 @@ export class BasicComponentStyles extends ElementStyles {
 
 
     // states:
-    public /*override*/ watchStates(inherit = false): JssStyle { return {
+    public /*override*/ useStates(inherit = false): JssStyle { return {
         extend: [
+            super.useStates(inherit), // copy state rules from base
+
+
+
             this.iif(!inherit,
                 this.themeDefault() // reset theme to default
             ),
-
-
-
-            super.watchStates(inherit), // copy state rules from base
         ] as JssStyle,
     }}
     public /*virtual*/ themeDefault(theme: string|null = null): JssStyle {
@@ -483,7 +474,7 @@ export class BasicComponentStyles extends ElementStyles {
 
 
     // functions:
-    public /*override*/ propsFn(): JssStyle { return {
+    public /*override*/ propsFn(): PropList { return {
         // define a *none* background:
         [this.decl(this._backgNone)] : this.solidBackg('transparent'),
 
@@ -558,28 +549,7 @@ export class BasicComponentStyles extends ElementStyles {
             this._backgGradTg,
             this._backgNone,
         ),
-    
-    
-    
-        // TODO: remove
-        ...this.animFnOld(),
     }}
-
-    /**
-     * Creates a composite animation definition in which the animations *depends on* the variants and/or the states.
-     * @returns A `JssStyle` represents the composite animation definition.
-     */
-    public /*virtual*/ animFnOld(): JssStyle { return {
-        // define an *animations* func:
-        [this.decl(this._animFn)] : cssProps.anim,
-    }}
-    /**
-     * Creates a composite animation definition in which the animations *depends on* the variants and/or the states.
-     * @returns A `Cust.Ref[]` represents the composite animation definition.
-     */
-    public /*virtual*/ animFn(): Cust.Ref[] { return [
-        cssProps.anim,
-    ]}
 
     /**
      * Creates a composite filter definition in which the filters *depends on* the variants and/or the states.
@@ -597,6 +567,14 @@ export class BasicComponentStyles extends ElementStyles {
         cssProps.boxShadow,
     ]}
 
+    /**
+     * Creates a composite animation definition in which the animations *depends on* the variants and/or the states.
+     * @returns A `Cust.Ref[]` represents the composite animation definition.
+     */
+    public /*virtual*/ animFn(): Cust.Ref[] { return [
+        cssProps.anim,
+    ]}
+
 
 
     // styles:
@@ -611,10 +589,26 @@ export class BasicComponentStyles extends ElementStyles {
         backg       : this.ref(this._backgFn),
         borderColor : this.ref(this._borderFn),
         
-        // apply special fn props:
-        anim        : this.animFn(),                      // single array (including from the returning function) => makes the JSS treat as comma separated values
+        // apply animation fn props:
         filter      : [this.filterFn()],                  // double array (including from the returning function) => makes the JSS treat as space separated values
         boxShadow   : [[this.boxShadowFn()]] as JssStyle, // triple array (including from the returning function) => bug fix in JSS => makes the JSS treat as comma separated values
+        anim        : this.animFn(),                      // single array (including from the returning function) => makes the JSS treat as comma separated values
+    }}
+
+
+
+    // old:
+    // TODO: remove...
+    /**
+     * Creates a composite animation definition in which the animations *depends on* the variants and/or the states.
+     * @returns A `JssStyle` represents the composite animation definition.
+     */
+    public /*virtual*/ animFnOld(): JssStyle { return {
+        // define an *animations* func:
+        [this.decl(this._animFn)] : cssProps.anim,
+    }}
+    protected /*virtual*/ applyStateNoAnimStartupOld(): JssStyle { return {
+        animationDuration: [['0ms'], '!important'],
     }}
 }
 export const basicComponentStyles = new BasicComponentStyles();

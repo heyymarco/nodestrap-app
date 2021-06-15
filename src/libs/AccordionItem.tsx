@@ -91,7 +91,7 @@ export class AccordionItemStylesBuilder extends PopupStylesBuilder {
             }),
             { // [disabled]
                 '&.disabled,&:disabled:not(.disable)': { // if ctrl was fully disabled programatically, disable first animation
-                    [bodyElm]: this.applyStateNoAnimStartup(),
+                    [bodyElm]: this.applyStateNoAnimStartupOld(),
                 },
             },
             //#endregion enable, disable => body enable, disable
@@ -122,7 +122,7 @@ export class AccordionItemStylesBuilder extends PopupStylesBuilder {
             {
                 // [actived]
                 '&.actived': { // if activated programmatically (not by user input), disable the animation
-                    [bodyElm]: this.applyStateNoAnimStartup(),
+                    [bodyElm]: this.applyStateNoAnimStartupOld(),
                 },
             },
             //#endregion active, passive => body active, passive
@@ -140,7 +140,7 @@ export class AccordionItemStylesBuilder extends PopupStylesBuilder {
         },
     }}
 
-    public /*override*/ states(inherit = false): JssStyle {
+    public /*override*/ statesOld(inherit = false): JssStyle {
         // skip Element's states
         // jump to indication's states
         return this.indicationStatesOld(inherit);
@@ -160,7 +160,7 @@ export class AccordionItemStylesBuilder extends PopupStylesBuilder {
         },
     }}
 
-    public /*override*/ propsFn(): JssStyle { return {
+    public /*override*/ propsFnOld(): JssStyle { return {
         // skip Element's propsFn but preserves animFn
         // jump to indication's propsFn
 

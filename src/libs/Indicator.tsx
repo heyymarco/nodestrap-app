@@ -133,8 +133,8 @@ export class IndicatorStylesBuilder extends BasicComponentStyles {
 
 
     // states:
-    public /*override*/ stateX(): ClassList { return [
-        ...super.stateX(), // copy states from base
+    public /*override*/ states(): ClassList { return [
+        ...super.states(), // copy states from base
 
 
 
@@ -229,6 +229,19 @@ export class IndicatorStylesBuilder extends BasicComponentStyles {
 
 
     // functions:
+    public /*override*/ filterFn(): Cust.Ref[] { return [
+        ...super.filterFn(),
+
+
+
+        ...this.indicationFilterFn(),
+    ]}
+    public /*virtual*/ indicationFilterFn(): Cust.Ref[] { return [
+        this.ref(this._filterEnableDisable),
+        this.ref(this._filterActivePassive),
+        this.ref(this._filterHoverLeave), // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
+    ]}
+
     public /*override*/ animFn(): Cust.Ref[] { return [
         ...super.animFn(),
 
@@ -240,6 +253,24 @@ export class IndicatorStylesBuilder extends BasicComponentStyles {
         this.ref(this._animEnableDisable), // 2nd : ctrl must be enabled
         this.ref(this._animActivePassive), // 1st : ctrl got pressed
     ]}
+
+
+
+    // styles:
+    public /*override*/ basicStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(), // copy basicStyle from base
+        ] as JssStyle,
+        
+        
+        
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+
+
+
+    // old:
     public /*virtual*/ indicationAnimFnOld(): JssStyle { return {
         //#region re-arrange the animFn at different states
         '&.active,&.actived': // if activated programmatically (not by user input)
@@ -259,33 +290,6 @@ export class IndicatorStylesBuilder extends BasicComponentStyles {
             this.ref(this._animActivePassive), // 1st : ctrl got pressed
         ],
         //#endregion re-arrange the animFn at different states
-    }}
-
-    public /*override*/ filterFn(): Cust.Ref[] { return [
-        ...super.filterFn(),
-
-
-
-        ...this.indicationFilterFn(),
-    ]}
-    public /*virtual*/ indicationFilterFn(): Cust.Ref[] { return [
-        this.ref(this._filterEnableDisable),
-        this.ref(this._filterActivePassive),
-        this.ref(this._filterHoverLeave), // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
-    ]}
-
-
-
-    // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
-        extend: [
-            super.basicStyle(), // copy basicStyle from base
-        ] as JssStyle,
-        
-        
-        
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
 export const styles = new IndicatorStylesBuilder();

@@ -153,14 +153,14 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
             {
                 // [actived]
                 '&.actived': // if activated programmatically (not by user input), disable the animation
-                    this.applyStateNoAnimStartup(),
+                    this.applyStateNoAnimStartupOld(),
             },
             //#endregion active, passive
             //#endregion specific states
         ] as JssStyle,
     }}
 
-    public /*override*/ states(inherit = false): JssStyle {
+    public /*override*/ statesOld(inherit = false): JssStyle {
         // skip Element's states
         // jump to indication's states
         return this.indicationStatesOld(inherit);
@@ -182,7 +182,7 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
         ],
     }}
 
-    public /*override*/ propsFn(): JssStyle { return {
+    public /*override*/ propsFnOld(): JssStyle { return {
         // skip Element's propsFn but preserves animFn
         // jump to indication's propsFn
 

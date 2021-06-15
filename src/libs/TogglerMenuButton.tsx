@@ -96,7 +96,7 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
             }),
             this.stateNotCheckingClearing({ // if ctrl was fully checked/unchecked, disable the animation
                 [btnElm]: {
-                    '&>svg>*': super.applyStateNoAnimStartup(),
+                    '&>svg>*': super.applyStateNoAnimStartupOld(),
                 },
             }),
             //#endregion check, clear
@@ -104,16 +104,16 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
         ] as JssStyle,
     }}
 
-    public /*override*/ themesIf(): JssStyle { return {
+    public /*override*/ themesIfOld(): JssStyle { return {
         extend: [
-            super.themesIf(), // copy themes from base
+            super.themesIfOld(), // copy themes from base
 
             this.togglerThemesIf(),
         ] as JssStyle,
     }}
-    public /*override*/ states(inherit = false): JssStyle { return {
+    public /*override*/ statesOld(inherit = false): JssStyle { return {
         extend: [
-            super.states(inherit), // copy states from base
+            super.statesOld(inherit), // copy states from base
 
             this.togglerStates(inherit),
         ] as JssStyle,
@@ -140,9 +140,9 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
         ],
     }}
 
-    public /*override*/ propsFn(): JssStyle { return {
+    public /*override*/ propsFnOld(): JssStyle { return {
         extend: [
-            super.propsFn(), // copy functional props from base
+            super.propsFnOld(), // copy functional props from base
 
             this.togglerPropsFn(),
         ] as JssStyle,

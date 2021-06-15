@@ -127,10 +127,10 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
     
 
 
-    protected /*override*/ applyStateNoAnimStartup(): JssStyle {
+    protected /*override*/ applyStateNoAnimStartupOld(): JssStyle {
         return this.stateNotHoverLeaving(
             this.stateNotFocusingBlurring(
-                super.applyStateNoAnimStartup()
+                super.applyStateNoAnimStartupOld()
             )
         );
     }
@@ -222,9 +222,9 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
         ] as JssStyle,
     }}
 
-    public /*override*/ states(inherit = false): JssStyle { return {
+    public /*override*/ statesOld(inherit = false): JssStyle { return {
         extend: [
-            super.states(inherit), // copy states from base
+            super.statesOld(inherit), // copy states from base
             
             this.controlStates(inherit),
         ] as JssStyle,
@@ -259,9 +259,9 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
         //#endregion re-arrange the animFn at different states
     }}
 
-    public /*override*/ propsFn(): JssStyle { return {
+    public /*override*/ propsFnOld(): JssStyle { return {
         extend: [
-            super.propsFn(), // copy functional props from base
+            super.propsFnOld(), // copy functional props from base
 
             this.controlPropsFn(),
         ] as JssStyle,

@@ -181,9 +181,9 @@ export class IconStylesBuilder extends BasicComponentStyles {
 
 
     // states:
-    public /*override*/ themesIf(): JssStyle { return {
+    public /*override*/ themesIfOld(): JssStyle { return {
         extend: [
-            super.themesIf(), // copy themes from base
+            super.themesIfOld(), // copy themes from base
         ] as JssStyle,
 
 
@@ -200,9 +200,9 @@ export class IconStylesBuilder extends BasicComponentStyles {
 
 
     // functions:
-    public /*override*/ propsFn(): JssStyle { return {
+    public /*override*/ propsFnOld(): JssStyle { return {
         extend: [
-            super.propsFn(), // copy functional props from base
+            super.propsFnOld(), // copy functional props from base
         ] as JssStyle,
 
 
@@ -265,7 +265,7 @@ export class IconStylesBuilder extends BasicComponentStyles {
 
         foreg         : null, // delete from cssProps; in img-icon: foreg => backgColor ; in font-icon: foreg => foreg => color (font-color)
     }}
-    public /*virtual*/ createStyle(img: Cust.Ref, foreg?: Cust.Ref): JssStyle { return {
+    public /*virtual*/ useIcon(img: Cust.Ref, foreg?: Cust.Ref): JssStyle { return {
         extend: [
             this.basicStyle(),
             this.image(),

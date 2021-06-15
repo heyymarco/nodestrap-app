@@ -8,6 +8,7 @@ import {
 // jss   (builds css  using javascript):
 import type {
     JssStyle,
+    JssValue,
     Styles,
     Classes,
 }                           from 'jss'           // ts defs support for jss
@@ -19,18 +20,29 @@ import {
 import
     jssPluginNormalizeShorthands
                             from './jss-plugin-normalize-shorthands'
-import {
+import type {
     Prop,
     PropEx,
     Cust,
 }                           from './Css'         // ts defs support for jss
-import CssConfig            from './CssConfig'   // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 import type {
     Dictionary,
     DictionaryOf,
 }                           from './CssConfig'   // ts defs support for jss
+import CssConfig            from './CssConfig'   // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
 import { pascalCase }       from 'pascal-case'   // pascal-case support for jss
 import { camelCase }        from 'camel-case'    // camel-case  support for jss
+
+
+
+// general types:
+
+export type { JssStyle, Styles, Classes }
+export type { Prop, PropEx, Cust }
+export type { Dictionary, DictionaryOf }
+export type ClassEntry = [string|null, JssStyle]
+export type ClassList  = ClassEntry[]
+export type PropList   = { [name: string]: JssValue }
 
 
 
@@ -42,12 +54,6 @@ export { CssConfig }
 
 // styles:
 
-export type { JssStyle, Styles, Classes }
-export type { Prop, PropEx, Cust }
-export type { Dictionary, DictionaryOf }
-export type ClassEntry = [string|null, JssStyle]
-export type ClassList  = ClassEntry[]
-
 /**
  * A css builder for styling Nodestrap's components.
  * Supports many variants like theming, sizes, gradient, outlined, orientation, and more.
@@ -58,10 +64,10 @@ export class ElementStyles {
     /**
      * Includes the *general* prop names in the specified `cssProps`.  
      * @param cssProps The collection of the prop name to be filtered.  
-     * @returns A `JssStyle` which is the copy of the `cssProps` that only having *general* prop names.
+     * @returns A `PropList` which is the copy of the `cssProps` that only having *general* prop names.
      */
-    protected filterGeneralProps<TCssProps>(cssProps: TCssProps): JssStyle {
-        const cssPropsCopy: Dictionary<any> = {};
+    protected filterGeneralProps<TCssProps>(cssProps: TCssProps): PropList {
+        const propList: PropList = {};
         for (const [name, prop] of Object.entries(cssProps)) {
             // excludes the entry if the name matching with following:
 
@@ -112,94 +118,94 @@ export class ElementStyles {
 
             
             // if not match => include it:
-            cssPropsCopy[name] = prop;
+            propList[name] = prop;
         }
-        return cssPropsCopy as JssStyle;
+        return propList;
     }
 
     /**
      * Includes the prop names in the specified `cssProps` starting with specified `prefix`.
      * @param cssProps The collection of the prop name to be filtered.  
      * @param prefix The prefix name of the prop names to be *included*.  
-     * @returns A `JssStyle` which is the copy of the `cssProps` that only having matching prefix names.  
+     * @returns A `PropList` which is the copy of the `cssProps` that only having matching prefix names.  
      * The retuning prop names has been normalized (renamed), so it doesn't starting with `prefix`.
      */
-    protected filterPrefixProps<TCssProps>(cssProps: TCssProps, prefix: string): JssStyle {
-        const cssPropsCopy: Dictionary<any> = {};
+    protected filterPrefixProps<TCssProps>(cssProps: TCssProps, prefix: string): PropList {
+        const propList: PropList = {};
         for (const [name, prop] of Object.entries(cssProps)) {
             // excludes the entry if the name not starting with specified prefix:
             if (!name.startsWith(prefix)) continue; // exclude
             if (name.length <= prefix.length) continue; // at least 1 char left;
 
             // if match => remove the prefix => normalize the case => then include it:
-            cssPropsCopy[camelCase(name.substr(prefix.length))] = prop;
+            propList[camelCase(name.substr(prefix.length))] = prop;
         }
-        return cssPropsCopy as JssStyle;
+        return propList;
     }
 
     /**
      * Includes the prop names in the specified `cssProps` ending with specified `suffix`.
      * @param cssProps The collection of the prop name to be filtered.  
      * @param suffix The suffix name of the prop names to be *included*.  
-     * @returns A `JssStyle` which is the copy of the `cssProps` that only having matching suffix names.  
+     * @returns A `PropList` which is the copy of the `cssProps` that only having matching suffix names.  
      * The retuning prop names has been normalized (renamed), so it doesn't ending with `suffix`.
      */
-    protected filterSuffixProps<TCssProps>(cssProps: TCssProps, suffix: string): JssStyle {
+    protected filterSuffixProps<TCssProps>(cssProps: TCssProps, suffix: string): PropList {
         suffix = pascalCase(suffix);
-        const cssPropsCopy: Dictionary<any> = {};
+        const propList: PropList = {};
         for (const [name, prop] of Object.entries(cssProps)) {
             // excludes the entry if the name not ending with specified suffix:
             if (!name.endsWith(suffix)) continue; // exclude
             if (name.length <= suffix.length) continue; // at least 1 char left;
 
             // if match => remove the suffix => then include it:
-            cssPropsCopy[name.substr(0, name.length - suffix.length)] = prop;
+            propList[name.substr(0, name.length - suffix.length)] = prop;
         }
-        return cssPropsCopy as JssStyle;
+        return propList;
     }
 
     /**
      * Backups the value of the specified `cssProps`.
      * @param cssProps The props to be backed up.  
      * @param backupSuff The suffix name of the backup props.
-     * @returns A `JssStyle` which is the copy of the `cssProps` that the prop names renamed with the specified `backupSuff`.
+     * @returns A `PropList` which is the copy of the `cssProps` that the prop names renamed with the specified `backupSuff`.
      */
-    protected backupProps<TCssProps>(cssProps: TCssProps, backupSuff: string = 'Bak'): JssStyle {
-        const cssPropsCopy: Dictionary<any> = {};
+    protected backupProps<TCssProps>(cssProps: TCssProps, backupSuff: string = 'Bak'): PropList {
+        const propList: PropList = {};
         for (const [name] of Object.entries(cssProps)) {
-            cssPropsCopy[`${name}${backupSuff}`] = `var(${name})`;
+            propList[`${name}${backupSuff}`] = `var(${name})`;
         }
-        return cssPropsCopy as JssStyle;
+        return propList;
     }
 
     /**
      * Restores the value of the specified `cssProps`.
      * @param cssProps The props to be restored.  
      * @param backupSuff The suffix name of the backup props.
-     * @returns A `JssStyle` which is the copy of the `cssProps` that the prop values pointed to the backed up values.
+     * @returns A `PropList` which is the copy of the `cssProps` that the prop values pointed to the backed up values.
      */
-    protected restoreProps<TCssProps>(cssProps: TCssProps, backupSuff: string = 'Bak'): JssStyle {
-        const cssPropsCopy: Dictionary<any> = {};
+    protected restoreProps<TCssProps>(cssProps: TCssProps, backupSuff: string = 'Bak'): PropList {
+        const propList: PropList = {};
         for (const [name] of Object.entries(cssProps)) {
-            cssPropsCopy[name] = `var(${name}${backupSuff})`;
+            propList[name] = `var(${name}${backupSuff})`;
         }
-        return cssPropsCopy as JssStyle;
+        return propList;
     }
 
     /**
      * Overwrites prop declarations from the specified `cssProps` into the specified `cssDecls`.  
      * @param cssDecls The collection of the prop name to be overwritten. 
      * @param cssProps The collection of the prop name to overwrite.  
-     * @returns A `JssStyle` which is the copy of the `cssProps` that overwrites the specified `cssDecls`.
+     * @returns A `PropList` which is the copy of the `cssProps` that overwrites the specified `cssDecls`.
      */
-    protected overwriteProps<TCssDecls extends { [key in keyof TCssProps]: string }, TCssProps>(cssDecls: TCssDecls, cssProps: TCssProps): JssStyle {
-        const cssPropsCopy: Dictionary<any> = {};
+    protected overwriteProps<TCssDecls extends { [key in keyof TCssProps]: string }, TCssProps>(cssDecls: TCssDecls, cssProps: TCssProps): PropList {
+        const propList: PropList = {};
         for (const [name, prop] of Object.entries(cssProps)) {
             const varDecl = (cssDecls as unknown as DictionaryOf<typeof cssDecls>)[name];
             if (!varDecl) continue;
-            cssPropsCopy[varDecl] = prop;
+            propList[varDecl] = prop;
         }
-        return cssPropsCopy as JssStyle;
+        return propList;
     }
 
     /**
@@ -207,10 +213,10 @@ export class ElementStyles {
      * @param cssDeclss The list of the parent's collection prop name to be overwritten.  
      * The order must be from the most specific parent to the least specific one.  
      * @param cssProps The collection of the prop name to overwrite.  
-     * @returns A `JssStyle` which is the copy of the `cssProps` that overwrites the specified `cssDeclss`.
+     * @returns A `PropList` which is the copy of the `cssProps` that overwrites the specified `cssDeclss`.
      */
-    protected overwriteParentProps<TCssProps>(cssProps: TCssProps, ...cssDeclss: { [key in keyof unknown]: string }[]): JssStyle {
-        const cssPropsCopy: Dictionary<any> = {};
+    protected overwriteParentProps<TCssProps>(cssProps: TCssProps, ...cssDeclss: { [key in keyof unknown]: string }[]): PropList {
+        const propList: PropList = {};
         for (const [name, prop] of Object.entries(cssProps)) {
             const varDecl = ((): string => {
                 for (const cssDecls of cssDeclss) {
@@ -220,9 +226,9 @@ export class ElementStyles {
                 return name; // not found => use the original decl name
             })();
             if (!varDecl) continue;
-            cssPropsCopy[varDecl] = prop;
+            propList[varDecl] = prop;
         }
-        return cssPropsCopy as JssStyle;
+        return propList;
     }
     //#endregion global css props
 
@@ -248,6 +254,8 @@ export class ElementStyles {
         this._useStylesCache = null;    // clear the cache
     }
 
+    
+    
     /**
      * Gets the declaration name of the specified `propName`.
      * @param propName The name of prop to retrieve.
@@ -297,17 +305,11 @@ export class ElementStyles {
 
     // variants:
     /**
-     * Watches & applies any variant related classes.
+     * Watches & applies `variant classes` on current element.
      * @returns A `JssStyle` represents the implementation of the variants.
      */
-    public /*virtual*/ watchVariants(): JssStyle { return {
+    public /*virtual*/ useVariants(): JssStyle { return {
         extend: [
-            // this.iif(!inherit,
-            //     // variants always inherit
-            // ),
-
-            
-            
             // variant rules:
             ...this.variants().map(([variant, style]) => ({ [variant ? (variant.includes('&') ? variant : `&.${variant}`) : '&'] : style })),
         ] as JssStyle,
@@ -322,50 +324,42 @@ export class ElementStyles {
 
     // states:
     /**
-     * Watches & applies any state related classes.
+     * Watches & applies `state classes` on current element.
      * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
      * @returns A `JssStyle` represents the implementation of the states.
      */
-    public /*virtual*/ watchStates(inherit = false): JssStyle { return {
+    public /*virtual*/ useStates(inherit = false): JssStyle { return {
         extend: [
-            this.iif(!inherit,
-                this.themesIf()   // conditional themes
-            ),
-            this.states(inherit), // state rules
-            
-            // TODO: state rules (experimental)
             // state rules:
-            ...this.stateX().map(([state, style]) => ({ [state ? (state.includes('&') ? state : `&.${state}`) : '&'] : style })),
+            ...this.states().map(([state, style]) => ({ [state ? (state.includes('&') ? state : `&.${state}`) : '&'] : style })),
         ] as JssStyle,
     }}
-
-    /**
-     * Creates css rule definitions for every *specific* state by overriding some *scoped css props* and applied some `themesIf`.
-     * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
-     * @returns A `JssStyle` represents the css rule definitions for every *specific* state.
-     */
-    public /*virtual*/ states(inherit = false): JssStyle   { return {} }
 
     /**
      * Creates css rule definitions for all states by overriding some *scoped css props* and applied some `themesIf`.
      * @returns A `ClassList` represents the css rule definitions for all states.
      */
-    public /*virtual*/ stateX(): ClassList { return [] }
-
-    /**
-     * Creates conditional color definitions for every *specific* condition (state).
-     * @returns A `JssStyle` represents the conditional color definitions for every *specific* condition (state).
-     */
-    public /*virtual*/ themesIf(): JssStyle { return {} }
+    public /*virtual*/ states(): ClassList { return [] }
 
 
 
     // functions:
     /**
-     * Creates a functional prop definitions in which the values *depends on* the variants and/or the states using *fallback* strategy.
-     * @returns A `JssStyle` represents the functional prop definitions.
+     * Uses `propsFn` on current element.
+     * @returns A `JssStyle` represents the implementation of the `propsFn`.
      */
-    public /*virtual*/ propsFn(): JssStyle { return {} }
+    public /*virtual*/ usePropsFn(): JssStyle {
+        const style: Dictionary<any> = {};
+        for (const [name, prop] of Object.entries(this.propsFn())) {
+            style[name] = prop;
+        }
+        return style as JssStyle;
+    }
+    /**
+     * Creates a functional prop definitions in which the values *depends on* the variants and/or the states using *fallback* strategy.
+     * @returns A `PropList` represents the functional prop definitions.
+     */
+    public /*virtual*/ propsFn(): PropList { return {} }
 
 
 
@@ -385,13 +379,13 @@ export class ElementStyles {
             main: {
                 extend: [
                     // watch variant classes:
-                    this.watchVariants(),
+                    this.useVariants(),
         
                     // watch state classes/pseudo-classes:
-                    this.watchStates(),
+                    this.useStates(),
                     
                     // after watching => use func props:
-                    this.propsFn(),
+                    this.usePropsFn(),
 
                     // all the required stuff has been loaded,
                     // now load the basicStyle:
@@ -438,9 +432,9 @@ export class ElementStyles {
     /**
      * Escapes some sets of character in svg data, so it will be valid to be written in css.
      * @param svgData The raw svg data to be escaped.
-     * @returns An escaped svg data.
+     * @returns A `string` represents an escaped svg data.
      */
-    public escapeSvg(svgData: string) {
+    public escapeSvg(svgData: string): string {
         const escapedChars: Dictionary<string> = {
             '<': '%3c',
             '>': '%3e',
@@ -461,13 +455,19 @@ export class ElementStyles {
     /**
      * Creates a single layer solid background based on specified `color`.
      * @param color The color of the solid background to create.
-     * @returns An object represents a solid background in css.
+     * @returns A `JssValue` represents a solid background.
      */
-    public solidBackg(color: Cust.Ref, clip : Prop.BackgroundClip = 'border-box') {
+    public solidBackg(color: Cust.Ref, clip : Prop.BackgroundClip = 'border-box'): JssValue {
         return [[`linear-gradient(${color},${color})`, clip]];
     }
+
+
+
+    // old:
+    public /*virtual*/ statesOld(inherit = false): JssStyle   { return {} }
+    public /*virtual*/ themesIfOld(): JssStyle { return {} }
+    public /*virtual*/ propsFnOld(): JssStyle { return {} }
 }
-export const componentStyles = new ElementStyles();
 
 
 

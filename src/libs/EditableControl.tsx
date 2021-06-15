@@ -261,18 +261,18 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
         ] as JssStyle,
     }}
 
-    public /*override*/ themesIf(): JssStyle { return {
+    public /*override*/ themesIfOld(): JssStyle { return {
         extend: [
-            super.themesIf(),          // copy themes from base
+            super.themesIfOld(),          // copy themes from base
 
 
 
             this.validationThemesIf(), // copy themes from validation
         ] as JssStyle,
     }}
-    public /*override*/ states(inherit = false): JssStyle { return {
+    public /*override*/ statesOld(inherit = false): JssStyle { return {
         extend: [
-            super.states(inherit),          // copy states from base
+            super.statesOld(inherit),          // copy states from base
 
 
 
@@ -304,9 +304,9 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
         //#endregion re-arrange the animFn at different states
     }}
 
-    public /*override*/ propsFn(): JssStyle { return {
+    public /*override*/ propsFnOld(): JssStyle { return {
         extend: [
-            super.propsFn(), // copy functional props from base
+            super.propsFnOld(), // copy functional props from base
 
             this.validationPropsFn(),
         ] as JssStyle,

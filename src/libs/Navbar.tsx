@@ -105,12 +105,12 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
     // states:
     protected /*virtual*/ navbarThemesIf(): JssStyle { return {
         extend: [
-            indicatorStyles.themesIf(),
+            indicatorStyles.themesIfOld(),
         ] as JssStyle,
     }}
     protected /*virtual*/ navbarStates(inherit = false): JssStyle { return {
         extend: [
-            indicatorStyles.states(inherit),
+            indicatorStyles.statesOld(inherit),
 
 
 
@@ -226,7 +226,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     {
                         // [actived]
                         '&.actived': { // if activated programmatically (not by user input), disable the animation
-                            [menusElm] : this.applyStateNoAnimStartup(),
+                            [menusElm] : this.applyStateNoAnimStartupOld(),
                         }
                     },
                     //#endregion compact && (active, passive)
@@ -259,16 +259,16 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         ] as JssStyle,
     }}
 
-    public /*override*/ themesIf(): JssStyle { return {
+    public /*override*/ themesIfOld(): JssStyle { return {
         extend: [
             // super.themesIf(),        // skip using Control's theming => uses Control's base's theming
             
-            indicatorStyles.themesIf(), // copy themes from Indicator (Control's base)
+            indicatorStyles.themesIfOld(), // copy themes from Indicator (Control's base)
         ] as JssStyle,
     }}
-    public /*override*/ states(inherit = false): JssStyle { return {
+    public /*override*/ statesOld(inherit = false): JssStyle { return {
         extend: [
-            super.states(inherit), // copy states from base
+            super.statesOld(inherit), // copy states from base
     
             
             
@@ -297,9 +297,9 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         ],
     }}
 
-    public /*override*/ propsFn(): JssStyle { return {
+    public /*override*/ propsFnOld(): JssStyle { return {
         extend: [
-            super.propsFn(), // copy functional props from base
+            super.propsFnOld(), // copy functional props from base
 
             this.navbarPropsFn(),
         ] as JssStyle,
@@ -490,7 +490,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
             main: {
                 extend: [
                     // watch variant classes:
-                    this.watchVariants(),
+                    this.useVariants(),
                     {
                         // TODO: fix the outlined behavior
                         
@@ -534,7 +534,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     this.navbarWatchStates(),
 
                     // after watching => use func props:
-                    this.propsFn(),           // for themes
+                    this.propsFnOld(),           // for themes
                     //TODO: update...
                     // this.indicationPropsFn(), // overwrite animFn only for indication
 
@@ -546,14 +546,14 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
                 // children:
-                [menusElm] : this.propsFn(), // use func props so we can disable the gradient
+                [menusElm] : this.propsFnOld(), // use func props so we can disable the gradient
                 [menuElm]  : {
                     extend: [
                         // watch variant classes:
-                        this.watchVariants(), // always inherit
+                        this.useVariants(), // always inherit
     
                         // watch state classes/pseudo-classes:
-                        this.watchStates(),
+                        this.useStates(),
 
                         // force inherit for enable/disable states:
                         {
@@ -562,7 +562,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                         },
 
                         // after watching => use func props:
-                        this.propsFn(),
+                        this.propsFnOld(),
                     ] as JssStyle,
                 } as JssStyle,
             },

@@ -71,9 +71,9 @@ export class ActionControlStylesBuilder extends ControlStylesBuilder {
 
 
 
-    protected /*override*/ applyStateNoAnimStartup(): JssStyle {
+    protected /*override*/ applyStateNoAnimStartupOld(): JssStyle {
         return this.stateNotPressingReleasing(
-            super.applyStateNoAnimStartup(),
+            super.applyStateNoAnimStartupOld(),
         );
     }
     //#endregion mixins
@@ -109,7 +109,7 @@ export class ActionControlStylesBuilder extends ControlStylesBuilder {
             {
                 // [pressed]
                 '&.pressed': // if activated programmatically (not by user input), disable the animation
-                    this.applyStateNoAnimStartup(),
+                    this.applyStateNoAnimStartupOld(),
             },
             //#endregion press, release
             //#endregion specific states
