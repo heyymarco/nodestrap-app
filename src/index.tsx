@@ -14,16 +14,21 @@ import CarouselApp from './apps/CarouselApp';
 import NavscrollApp from './apps/NavscrollApp';
 import MasonryApp from './apps/MasonryApp';
 import AccordionApp from './apps/AccordionApp';
-import PopupApp from './apps/PopupApp';
 import AlertApp from './apps/AlertApp';
 import IconApp from './apps/IconApp';
-import IndicatorApp from './apps/IndicatorApp';
+
+import BasicComponentApp    from './apps/BasicComponentApp';
+import IndicatorApp         from './apps/IndicatorApp';
+import ContentApp         from './apps/ContentApp';
+import PopupApp             from './apps/PopupApp';
+
+
 
 ReactDOM.render(
-  <React.StrictMode>
-    <IndicatorApp />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <ContentApp />
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

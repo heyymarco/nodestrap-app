@@ -21,7 +21,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 // nodestrap (modular web components):
 import {
     ClassList,
-}                           from './nodestrap'
+}                           from './nodestrap'  // nodestrap's core
 import * as stripOuts       from './strip-outs'
 import {
     cssProps as ecssProps,
@@ -37,7 +37,7 @@ import {
 import {
     default  as Popup,
     cssProps as pcssProps,
-    PopupStylesBuilder,
+    PopupStyles,
 }                           from './Popup'
 import {
     cssDecls as ccssDecls,
@@ -58,7 +58,7 @@ import typos                from './typos/index' // configurable typography (tex
 const cardElm        = '&>*';
 const cardItemsElm   = '&>*';
 
-export class ModalStylesBuilder extends PopupStylesBuilder {
+export class ModalStylesBuilder extends PopupStyles {
     //#region scoped css props
     /**
      * forwards functional animations to target element.
@@ -88,9 +88,9 @@ export class ModalStylesBuilder extends PopupStylesBuilder {
         [ 'scrollable', this.scrollable() ],
     ]}
     public /*override*/ themes(): ClassList { return [] } // disabled
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
     public /*override*/ gradient(): JssStyle { return {} } // disabled
     public /*override*/ outlined(): JssStyle { return {} } // disabled

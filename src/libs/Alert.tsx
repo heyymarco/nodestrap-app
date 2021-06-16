@@ -3,27 +3,29 @@ import {
     default as React,
 }                           from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-
 // nodestrap (modular web components):
 import {
+    // general types:
+    JssStyle,
+    PropList,
+
+
+    // components:
+    CssConfig,
     Element,
+
+
+    // utils:
     isTypeOf,
-}                           from './nodestrap'
+}                           from './nodestrap'  // nodestrap's core
 import {
-    default  as Popup,
-    PopupStylesBuilder,
+    PopupStyles,
+    PopupProps,
+    Popup,
 }                           from './Popup'
-import type * as Popups     from './Popup'
 import {
-    styles as contentStyles,
-}                           from './Content'
-import type {
-    IContentStylesBuilder,
+    IContentStyles,
+    contentStyles,
 }                           from './Content'
 import Icon                 from './Icon'
 import CloseButton          from './CloseButton'
@@ -37,107 +39,58 @@ const iconElm    = '&>.icon';
 const bodyElm    = '&>.body';
 const controlElm = '&>.control';
 
-export class AlertStylesBuilder extends PopupStylesBuilder implements IContentStylesBuilder {
+export class AlertStylesBuilder extends PopupStyles implements IContentStyles {
     // variants:
-    public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
+    public /*override*/ theme(theme: string): JssStyle { return {
         extend: [
-            super.theme(theme, Theme), // copy themes from base
+            super.theme(theme), // copy themes from base
             
-            this.contentTheme(theme, Theme),
+            this.contentTheme(theme),
         ] as JssStyle,
     }}
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         extend: [
-            super.size(size, Size), // copy sizes from base
+            super.size(size), // copy sizes from base
 
-            this.contentSize(size, Size),
+            this.contentSize(size),
         ] as JssStyle,
 
 
 
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
-    public /*implement*/ contentTheme(theme: string, Theme: string): JssStyle {
-        return contentStyles.contentTheme(theme, Theme); // copy themes from Content
+    public /*implement*/ contentTheme(theme: string): JssStyle {
+        return contentStyles.contentTheme(theme); // copy themes from Content
     }
-    public /*implement*/ contentSize(size: string, Size: string): JssStyle {
-        return contentStyles.contentSize(size, Size); // copy sizes from Content
+    public /*implement*/ contentSize(size: string): JssStyle {
+        return contentStyles.contentSize(size); // copy sizes from Content
     }
 
 
 
     // states:
-    public /*implement*/ contentThemesIf(): JssStyle { return {} } // not implemented
-    public /*implement*/ contentStates(inherit = false): JssStyle { return {} } // not implemented
-
-    public /*override*/ themesIfOld(): JssStyle { return {
-        extend: [
-            super.themesIfOld(), // copy themes from base
-
-            this.contentThemesIf(),
-        ] as JssStyle,
-    }}
-    public /*override*/ statesOld(inherit = false): JssStyle { return {
-        extend: [
-            super.statesOld(inherit), // copy states from base
-
-            this.contentStates(inherit),
-        ] as JssStyle,
-    }}
+    public /*implement*/ contentActived()     : JssStyle { return {} } // not implemented
+    public /*implement*/ contentActivating()  : JssStyle { return {} } // not implemented
+    public /*implement*/ contentPassivating() : JssStyle { return {} } // not implemented
+    public /*implement*/ contentPassived()    : JssStyle { return {} } // not implemented
 
 
 
     // functions:
-    public /*implement*/ contentPropsFn(): JssStyle {
+    public /*override*/ propsFn(): PropList { return {
+        ...super.propsFn(), // copy functional props from base
+        
+        ...this.contentPropsFn(),
+    }}
+    public /*implement*/ contentPropsFn(): PropList {
         return contentStyles.contentPropsFn(); // copy functional props from Content
     }
-    public /*override*/ propsFnOld(): JssStyle { return {
-        extend: [
-            super.propsFnOld(), // copy functional props from base
-
-            this.contentPropsFn(),
-        ] as JssStyle,
-    }}
 
 
 
     // styles:
-    public /*implement*/ contentBasicStyle(): JssStyle {
-        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
-    }
-    protected /*virtual*/ iconBasicStyle(): JssStyle { return {
-        // layout:
-        gridArea    : '1 / -3', // the first row / the third column starting from the last
-        justifySelf : 'center', // align horizontally to center
-        alignSelf   : 'start',  // align vertically   to top
-
-
-        
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'icon')), // apply *general* cssProps starting with icon***
-    }}
-    protected /*virtual*/ bodyBasicStyle(): JssStyle { return {
-        // layout:
-        gridArea : 'body',
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'body')), // apply *general* cssProps starting with body***
-    }}
-    protected /*virtual*/ controlBasicStyle(): JssStyle { return {
-        // layout:
-        gridArea    : '1 / 2',  // the first row / the second column
-        justifySelf : 'center', // align horizontally to center
-        alignSelf   : 'start',  // align vertically   to top
-
-
-        
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'control')), // apply *general* cssProps starting with control***
-    }}
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
@@ -178,6 +131,40 @@ export class AlertStylesBuilder extends PopupStylesBuilder implements IContentSt
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
+    public /*implement*/ contentBasicStyle(): JssStyle {
+        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
+    }
+    protected /*virtual*/ iconBasicStyle(): JssStyle { return {
+        // layout:
+        gridArea    : '1 / -3', // the first row / the third column starting from the last
+        justifySelf : 'center', // align horizontally to center
+        alignSelf   : 'start',  // align vertically   to top
+
+
+        
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'icon')), // apply *general* cssProps starting with icon***
+    }}
+    protected /*virtual*/ bodyBasicStyle(): JssStyle { return {
+        // layout:
+        gridArea : 'body',
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'body')), // apply *general* cssProps starting with body***
+    }}
+    protected /*virtual*/ controlBasicStyle(): JssStyle { return {
+        // layout:
+        gridArea    : '1 / 2',  // the first row / the second column
+        justifySelf : 'center', // align horizontally to center
+        alignSelf   : 'start',  // align vertically   to top
+
+
+        
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'control')), // apply *general* cssProps starting with control***
+    }}
 }
 export const styles = new AlertStylesBuilder();
 
@@ -211,7 +198,7 @@ export const cssDecls = cssConfig.decls;
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Popups.Props<TElement>
+        PopupProps<TElement>
 {
     // actions:
     onClose?  : () => void

@@ -16,7 +16,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 import {
     ClassList,
     Element,
-}                           from './nodestrap'
+}                           from './nodestrap'  // nodestrap's core
 import {
     cssProps as ecssProps,
 }                           from './BasicComponent'
@@ -26,7 +26,7 @@ import {
 }                           from './Indicator'
 import type * as Indicators from './Indicator'
 import {
-    PopupStylesBuilder,
+    PopupStyles,
 }                           from './Popup'
 import ListgroupItem        from './ListgroupItem'
 import type * as ListgroupItems from './ListgroupItem'
@@ -37,12 +37,12 @@ import type * as ListgroupItems from './ListgroupItem'
 
 const bodyElm = '&~.body.body'; // double the .body for winning to Listgroup's *:not(.actionCtrl)
 
-export class AccordionItemStylesBuilder extends PopupStylesBuilder {
+export class AccordionItemStylesBuilder extends PopupStyles {
     // variants:
     public /*override*/ themes(): ClassList { return [] } // disabled
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
     public /*override*/ gradient(): JssStyle { return {} } // disabled
     public /*override*/ outlined(): JssStyle { return {} } // disabled

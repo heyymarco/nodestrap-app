@@ -43,7 +43,7 @@ Context.displayName  = 'Accessibility';
 
 
 // hooks:
-export function usePropAccessibility<TDefaultEnabled = boolean, TDefaultActive = boolean>(props: Props, defaultEnabled: boolean|TDefaultEnabled = true, defaultActive: boolean|TDefaultActive = false): Accessibility|TAccessibility<TDefaultEnabled, TDefaultActive> {
+export function usePropAccessibility<TDefaultEnabled = boolean, TDefaultActive = boolean>(props: AccessibilityProps, defaultEnabled: boolean|TDefaultEnabled = true, defaultActive: boolean|TDefaultActive = false): Accessibility|TAccessibility<TDefaultEnabled, TDefaultActive> {
     // contexts:
     const accessContext = useContext(Context);
 
@@ -75,7 +75,7 @@ export function usePropAccessibility<TDefaultEnabled = boolean, TDefaultActive =
     };
 }
 
-export function usePropEnabled<TDefaultEnabled = boolean>(props: Props, defaultEnabled: boolean|TDefaultEnabled = true): boolean|TDefaultEnabled {
+export function usePropEnabled<TDefaultEnabled = boolean>(props: AccessibilityProps, defaultEnabled: boolean|TDefaultEnabled = true): boolean|TDefaultEnabled {
     // contexts:
     const accessContext = useContext(Context);
 
@@ -94,7 +94,7 @@ export function usePropEnabled<TDefaultEnabled = boolean>(props: Props, defaultE
     );
 }
 
-export function usePropActive<TDefaultActive = boolean>(props: Props, defaultActive: boolean|TDefaultActive = false): boolean|TDefaultActive {
+export function usePropActive<TDefaultActive = boolean>(props: AccessibilityProps, defaultActive: boolean|TDefaultActive = false): boolean|TDefaultActive {
     // contexts:
     const accessContext = useContext(Context);
 
@@ -117,7 +117,7 @@ export function usePropActive<TDefaultActive = boolean>(props: Props, defaultAct
 
 // react components:
 
-export interface Props
+export interface AccessibilityProps
 {
     /**
      * `undefined` : same as `true`.  
@@ -154,7 +154,7 @@ export interface Props
     // children:
     children?       : React.ReactNode
 }
-export default function AccessibilityProvider(props: Props) {
+export default function AccessibilityProvider(props: AccessibilityProps) {
     return (
         <Context.Provider value={{
             enabled  : props.enabled ?? true,

@@ -21,7 +21,7 @@ import {
 }                           from './BasicComponent'
 import {
     default as Indicator,
-    IndicatorStylesBuilder,
+    IndicatorStyles,
 }                           from './Indicator'
 import type * as Indicators from './Indicator'
 import {
@@ -47,7 +47,7 @@ export interface IControlStylesBuilder {
     // styles:
     controlBasicStyle(): JssStyle
 }
-export class ControlStylesBuilder extends IndicatorStylesBuilder implements IControlStylesBuilder {
+export class ControlStylesBuilder extends IndicatorStyles implements IControlStylesBuilder {
     //#region scoped css props
     // anim props:
 
@@ -139,15 +139,15 @@ export class ControlStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // variants:
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         extend: [
-            super.size(size, Size), // copy sizes from base
+            super.size(size), // copy sizes from base
         ] as JssStyle,
 
 
 
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
 
@@ -549,7 +549,7 @@ export function useStateHoverLeave<TElement extends HTMLElement = HTMLElement>(p
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Indicators.Props<TElement>
+        Indicators.IndicatorProps<TElement>
 {
     // accessibility:
     focus?    : boolean

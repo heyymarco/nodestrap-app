@@ -5,7 +5,7 @@ import React                from 'react'        // base technology of our nodest
 import {
     ElementProps,
     Element,
-}                           from './nodestrap'
+}                           from './nodestrap'  // nodestrap's core
 
 
 

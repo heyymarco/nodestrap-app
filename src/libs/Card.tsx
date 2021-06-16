@@ -15,7 +15,7 @@ import {
 }                           from './BasicComponent'
 import {
     default  as Content,
-    ContentStylesBuilder,
+    ContentStyles,
     cssProps as ccssProps,
 }                           from './Content'
 import type * as Contents   from './Content'
@@ -25,17 +25,17 @@ import Button               from './Button'
 
 // styles:
 
-export class CardStylesBuilder extends ContentStylesBuilder {
+export class CardStylesBuilder extends ContentStyles {
     // variants:
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         extend: [
-            super.size(size, Size), // copy sizes from base
+            super.size(size), // copy sizes from base
         ] as JssStyle,
 
 
 
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
 
@@ -339,7 +339,7 @@ export const cssDecls = cssConfig.decls;
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Contents.Props<TElement>
+        Contents.ContentProps<TElement>
 {
     // children:
     header? : React.ReactNode

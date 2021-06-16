@@ -10,7 +10,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 // nodestrap (modular web components):
 import {
     ClassList,
-}                           from './nodestrap'
+}                           from './nodestrap'  // nodestrap's core
 import * as border          from './borders'     // configurable borders & border radiuses defs
 import spacers              from './spacers'     // configurable spaces defs
 import {
@@ -33,15 +33,15 @@ export class ButtonStylesBuilder extends ControlStylesBuilder {
         [ 'link' , this.link()  ],
         [ 'ghost', this.ghost() ],
     ]}
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         extend: [
-            super.size(size, Size), // copy sizes from base
+            super.size(size), // copy sizes from base
         ] as JssStyle,
 
 
 
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
     protected /*virtual*/ staticOutlinedStyle(): JssStyle { return {
         '&:not(.outlined)' : {

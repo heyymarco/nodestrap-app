@@ -5,39 +5,39 @@ import {
     useEffect,
 }                           from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-
 // nodestrap (modular web components):
 import {
+    // general types:
+    JssStyle,
+    PropList,
+
+    
+    // components:
+    CssConfig,
+}                           from './nodestrap'   // nodestrap's core
+import {
     ClassList,
-}                           from './nodestrap'
+}                           from './nodestrap'  // nodestrap's core
 import spacers              from './spacers'     // configurable spaces defs
 import {
-    default  as Element,
-    BasicComponentStyles,
-    useVariantOrientation,
-}                           from './BasicComponent'
-import type * as Elements   from './BasicComponent'
-import type {
     OrientationStyle,
     VariantOrientation,
+    useVariantOrientation,
+
+    BasicComponentStyles,
+    BasicComponentProps,
+    BasicComponent,
 }                           from './BasicComponent'
 import {
-    styles as contentStyles,
-}                           from './Content'
-import type {
-    IContentStylesBuilder,
+    IContentStyles,
+    contentStyles,
 }                           from './Content'
 
 
 
 // styles:
 
-export class MasonryStylesBuilder extends BasicComponentStyles implements IContentStylesBuilder {
+export class MasonryStylesBuilder extends BasicComponentStyles implements IContentStyles {
     // variants:
     public /*override*/ variants(): ClassList { return [
         ...super.variants(), // copy variants from base
@@ -47,25 +47,33 @@ export class MasonryStylesBuilder extends BasicComponentStyles implements IConte
         [ '&:not(.inline)', this.block()  ], // block  style as default
         [ '&.inline'      , this.inline() ], // inline style as optional
     ]}
-    public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
+    public /*override*/ theme(theme: string): JssStyle { return {
         extend: [
-            super.theme(theme, Theme), // copy themes from base
+            super.theme(theme), // copy themes from base
             
-            this.contentTheme(theme, Theme),
+            this.contentTheme(theme),
         ] as JssStyle,
     }}
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         extend: [
-            super.size(size, Size), // copy sizes from base
+            super.size(size), // copy sizes from base
 
-            this.contentSize(size, Size),
+            this.contentSize(size),
         ] as JssStyle,
 
 
 
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
+
+    public /*implement*/ contentTheme(theme: string): JssStyle {
+        return contentStyles.contentTheme(theme); // copy themes from Content
+    }
+    public /*implement*/ contentSize(size: string): JssStyle {
+        return contentStyles.contentSize(size); // copy sizes from Content
+    }
+
     public /*virtual*/ block(): JssStyle { return {
         // layout:
         display             : 'grid',
@@ -137,58 +145,50 @@ export class MasonryStylesBuilder extends BasicComponentStyles implements IConte
         columnGap : [[0], '!important'], // strip out the `columnGap` because it will conflict with masonry's direction
     }}
 
-    public /*implement*/ contentTheme(theme: string, Theme: string): JssStyle {
-        return contentStyles.contentTheme(theme, Theme); // copy themes from Content
-    }
-    public /*implement*/ contentSize(size: string, Size: string): JssStyle {
-        return contentStyles.contentSize(size, Size); // copy sizes from Content
-    }
-
 
 
     // states:
-    public /*implement*/ contentThemesIf(): JssStyle {
-        return contentStyles.contentThemesIf(); // copy themes from Content
+    public /*override*/ actived()     : JssStyle {
+        return this.contentActived();
     }
-    public /*implement*/ contentStates(inherit = false): JssStyle {
-        return contentStyles.contentStates(inherit); // copy states from Content
+    public /*override*/ activating()  : JssStyle {
+        return this.contentActivating();
+    }
+    public /*override*/ passivating() : JssStyle {
+        return this.contentPassivating();
+    }
+    public /*override*/ passived()    : JssStyle {
+        return this.contentPassived();
     }
 
-    public /*override*/ themesIfOld(): JssStyle { return {
-        extend: [
-            super.themesIfOld(), // copy themes from base
-
-            this.contentThemesIf(),
-        ] as JssStyle,
-    }}
-    public /*override*/ statesOld(inherit = false): JssStyle { return {
-        extend: [
-            super.statesOld(inherit), // copy states from base
-
-            this.contentStates(inherit),
-        ] as JssStyle,
-    }}
+    public /*implement*/ contentActived()     : JssStyle {
+        return contentStyles.contentActived();
+    }
+    public /*implement*/ contentActivating()  : JssStyle {
+        return contentStyles.contentActivating();
+    }
+    public /*implement*/ contentPassivating() : JssStyle {
+        return contentStyles.contentPassivating();
+    }
+    public /*implement*/ contentPassived()    : JssStyle {
+        return contentStyles.contentPassived();
+    }
 
 
 
     // functions:
-    public /*implement*/ contentPropsFn(): JssStyle {
+    public /*override*/ propsFn(): PropList { return {
+        ...super.propsFn(), // copy functional props from base
+        
+        ...this.contentPropsFn(),
+    }}
+    public /*implement*/ contentPropsFn(): PropList {
         return contentStyles.contentPropsFn(); // copy functional props from Content
     }
-    public /*override*/ propsFnOld(): JssStyle { return {
-        extend: [
-            super.propsFnOld(), // copy functional props from base
-
-            this.contentPropsFn(),
-        ] as JssStyle,
-    }}
 
 
 
     // styles:
-    public /*implement*/ contentBasicStyle(): JssStyle {
-        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
-    }
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
@@ -196,6 +196,9 @@ export class MasonryStylesBuilder extends BasicComponentStyles implements IConte
             this.contentBasicStyle(),
         ] as JssStyle,
     }}
+    public /*implement*/ contentBasicStyle(): JssStyle {
+        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
+    }
 }
 export const styles = new MasonryStylesBuilder();
 
@@ -239,7 +242,7 @@ export const cssDecls = cssConfig.decls;
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Elements.BasicComponentProps<TElement>,
+        BasicComponentProps<TElement>,
         VariantOrientation
 {
     // children:
@@ -458,7 +461,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
     // jsx:
     return (
-        <Element<TElement>
+        <BasicComponent<TElement>
             // other props:
             {...props}
 
@@ -490,7 +493,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
             ]}
         >
             { props.children }
-        </Element>
+        </BasicComponent>
     );
 }
 

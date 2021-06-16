@@ -4,78 +4,105 @@ import
     useState,
 }                          from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                          from 'jss'          // ts defs support for jss
-import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-
 // nodestrap (modular web components):
 import {
-    default  as Element,
-    BasicComponentStyles,
-}                          from './BasicComponent'
-import type * as Elements  from './BasicComponent'
+    // general types:
+    JssStyle,
+    PropList,
+
+    
+    // components:
+    CssConfig,
+}                           from './nodestrap'   // nodestrap's core
 import {
-    styles as contentStyles,
-}                          from './Content'
-import type {
-    IContentStylesBuilder,
-}                          from './Content'
+    BasicComponentStyles,
+    BasicComponentProps,
+    BasicComponent,
+}                           from './BasicComponent'
+import {
+    IContentStyles,
+    contentStyles,
+}                           from './Content'
 import {
     useStateValidInvalid,
-}                          from './EditableControl'
+}                           from './EditableControl'
 import type {
     IValidationStylesBuilder,
-}                          from './EditableControl'
+}                           from './EditableControl'
 import {
     styles as editableTextControlStyles,
-}                          from './EditableTextControl'
+}                           from './EditableTextControl'
 import {
     usePropValidation,
     ValidationProvider,
-}                          from './validations'
-import type * as Val       from './validations'
+}                           from './validations'
+import type * as Val        from './validations'
 import type {
     Props as ValidationProps,
-}                          from './validations'
+}                           from './validations'
 
 
 
 // styles:
 
-export class FormStylesBuilder extends BasicComponentStyles implements IContentStylesBuilder, IValidationStylesBuilder {
+export class FormStylesBuilder extends BasicComponentStyles implements IContentStyles, IValidationStylesBuilder {
     // variants:
-    public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
+    public /*override*/ theme(theme: string): JssStyle { return {
         extend: [
-            super.theme(theme, Theme), // copy themes from base
+            super.theme(theme), // copy themes from base
 
-            this.contentTheme(theme, Theme),
+            this.contentTheme(theme),
         ] as JssStyle,
     }}
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         extend: [
-            super.size(size, Size), // copy sizes from base
+            super.size(size), // copy sizes from base
 
-            this.contentSize(size, Size),
+            this.contentSize(size),
         ] as JssStyle,
 
 
 
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
-    public /*implement*/ contentTheme(theme: string, Theme: string): JssStyle {
-        return editableTextControlStyles.contentTheme(theme, Theme); // copy themes from EditableTextControl
+    public /*implement*/ contentTheme(theme: string): JssStyle {
+        return editableTextControlStyles.contentTheme(theme); // copy themes from EditableTextControl
     }
-    public /*implement*/ contentSize(size: string, Size: string): JssStyle {
-        return contentStyles.contentSize(size, Size); // copy sizes from Content
+    public /*implement*/ contentSize(size: string): JssStyle {
+        return contentStyles.contentSize(size); // copy sizes from Content
     }
 
 
 
     // states:
+    public /*override*/ actived()     : JssStyle {
+        return this.contentActived();
+    }
+    public /*override*/ activating()  : JssStyle {
+        return this.contentActivating();
+    }
+    public /*override*/ passivating() : JssStyle {
+        return this.contentPassivating();
+    }
+    public /*override*/ passived()    : JssStyle {
+        return this.contentPassived();
+    }
+
+    public /*implement*/ contentActived()     : JssStyle {
+        return editableTextControlStyles.contentActived();
+    }
+    public /*implement*/ contentActivating()  : JssStyle {
+        return editableTextControlStyles.contentActivating();
+    }
+    public /*implement*/ contentPassivating() : JssStyle {
+        return editableTextControlStyles.contentPassivating();
+    }
+    public /*implement*/ contentPassived()    : JssStyle {
+        return editableTextControlStyles.contentPassived();
+    }
+
     public /*implement*/ validationThemesIf(): JssStyle {
         return editableTextControlStyles.validationThemesIf(); // copy themes from EditableTextControl
     }
@@ -83,19 +110,11 @@ export class FormStylesBuilder extends BasicComponentStyles implements IContentS
         return editableTextControlStyles.validationStates(inherit); // copy states from EditableTextControl
     }
 
-    public /*implement*/ contentThemesIf(): JssStyle {
-        return editableTextControlStyles.contentThemesIf(); // copy themes from EditableTextControl
-    }
-    public /*implement*/ contentStates(inherit = false): JssStyle {
-        return editableTextControlStyles.contentStates(inherit); // copy states from EditableTextControl
-    }
-
     public /*override*/ themesIfOld(): JssStyle { return {
         extend: [
             super.themesIfOld(), // copy themes from base
 
             this.validationThemesIf(),
-            this.contentThemesIf(),
         ] as JssStyle,
     }}
     public /*override*/ statesOld(inherit = false): JssStyle { return {
@@ -103,13 +122,21 @@ export class FormStylesBuilder extends BasicComponentStyles implements IContentS
             super.statesOld(inherit), // copy states from base
 
             this.validationStates(inherit),
-            this.contentStates(inherit),
         ] as JssStyle,
     }}
 
 
 
     // functions:
+    public /*override*/ propsFn(): PropList { return {
+        ...super.propsFn(), // copy functional props from base
+        
+        ...this.contentPropsFn(),
+    }}
+    public /*implement*/ contentPropsFn(): PropList {
+        return editableTextControlStyles.contentPropsFn(); // copy functional props from Content
+    }
+
     public /*implement*/ validationPropsFn(): JssStyle {
         return editableTextControlStyles.validationPropsFn(); // copy functional props from EditableTextControl
     }
@@ -117,16 +144,11 @@ export class FormStylesBuilder extends BasicComponentStyles implements IContentS
         return editableTextControlStyles.validationAnimFn(); // copy functional anim from EditableTextControl
     }
 
-    public /*implement*/ contentPropsFn(): JssStyle {
-        return editableTextControlStyles.contentPropsFn(); // copy functional props from EditableTextControl
-    }
-
     public /*override*/ propsFnOld(): JssStyle { return {
         extend: [
             super.propsFnOld(), // copy functional props from base
 
             this.validationPropsFn(),
-            this.contentPropsFn(),
         ] as JssStyle,
     }}
     public /*override*/ animFnOld(): JssStyle {
@@ -136,10 +158,6 @@ export class FormStylesBuilder extends BasicComponentStyles implements IContentS
 
 
     // styles:
-    public /*implement*/ contentBasicStyle(): JssStyle {
-        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
-    }
-
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
@@ -152,6 +170,9 @@ export class FormStylesBuilder extends BasicComponentStyles implements IContentS
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
+    public /*implement*/ contentBasicStyle(): JssStyle {
+        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
+    }
 }
 export const styles = new FormStylesBuilder();
 
@@ -245,7 +266,7 @@ export function useFormValidator(customValidator?: CustomValidatorHandler) {
 
 export interface Props
     extends
-        Elements.BasicComponentProps<HTMLFormElement>,
+        BasicComponentProps<HTMLFormElement>,
         ValidationProps,
         React.FormHTMLAttributes<HTMLFormElement>
 {
@@ -275,7 +296,7 @@ export default function Form(props: Props) {
 
     // jsx:
     return (
-        <Element<HTMLFormElement>
+        <BasicComponent<HTMLFormElement>
             // other props:
             {...props}
 
@@ -333,6 +354,6 @@ export default function Form(props: Props) {
             { props.children && <ValidationProvider {...propValidation}>
                 { props.children }
             </ValidationProvider> }
-        </Element>
+        </BasicComponent>
     );
 }

@@ -13,7 +13,7 @@ import {
     ClassList,
     Element,
     isTypeOf,
-}                           from './nodestrap'
+}                           from './nodestrap'  // nodestrap's core
 import * as stripOuts       from './strip-outs'
 import spacers              from './spacers'    // configurable spaces defs
 import * as border          from './borders'    // configurable borders & border radiuses defs
@@ -27,7 +27,7 @@ import type {
 }                           from './BasicComponent'
 import {
     default  as Content,
-    ContentStylesBuilder,
+    ContentStyles,
 }                           from './Content'
 import type * as Contents   from './Content'
 import type {
@@ -46,17 +46,17 @@ import type * as ListgroupItems from './ListgroupItem'
 const wrapperElm  = '&>li, &>*';
 const listItemElm = '&>*';
 
-class ListItemStylesBuilder extends ContentStylesBuilder {
+class ListItemStylesBuilder extends ContentStyles {
     // variants:
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         extend: [
-            super.size(size, Size), // copy sizes from base
+            super.size(size), // copy sizes from base
         ] as JssStyle,
 
 
 
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
 
@@ -254,7 +254,7 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
 }
 const listItemActionCtrlStyles = new ListItemActionCtrlStylesBuilder();
 
-export class ListgroupStylesBuilder extends ContentStylesBuilder {
+export class ListgroupStylesBuilder extends ContentStyles {
     // variants:
     public /*override*/ variants(): ClassList { return [
         ...super.variants(), // copy variants from base
@@ -264,15 +264,15 @@ export class ListgroupStylesBuilder extends ContentStylesBuilder {
         [ 'inline', this.inline() ],
         [ 'bullet', this.bullet() ],
     ]}
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         extend: [
-            super.size(size, Size), // copy sizes from base
+            super.size(size), // copy sizes from base
         ] as JssStyle,
 
 
 
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
     public /*virtual*/ inline(): JssStyle { return {
         // layout:
@@ -633,7 +633,7 @@ export function useVariantList(props: VariantList) {
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Contents.Props<TElement>,
+        Contents.ContentProps<TElement>,
         VariantOrientation,
         VariantList
 {

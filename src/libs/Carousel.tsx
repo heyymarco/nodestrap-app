@@ -1,40 +1,42 @@
 // react (builds html using javascript):
-import
-    React, {
+import {
+    default as React,
     useRef,
-}                          from 'react'        // base technology of our nodestrap components
-
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                          from 'jss'          // ts defs support for jss
-import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
+}                           from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
 import {
+    // general types:
+    JssStyle,
+    PropList,
+
+    
+    // components:
+    CssConfig,
     Element,
+
+
+    // utils:
     isTypeOf,
-}                           from './nodestrap'
-import * as stripOuts      from './strip-outs'
+}                           from './nodestrap'   // nodestrap's core
+import * as stripOuts       from './strip-outs'
 import {
-    default  as BasicComponent,
     BasicComponentStyles,
-}                          from './BasicComponent'
-import type * as Elements  from './BasicComponent'
+    BasicComponentProps,
+    BasicComponent,
+}                           from './BasicComponent'
 import {
-    styles as contentStyles,
-}                          from './Content'
-import type {
-    IContentStylesBuilder,
-}                          from './Content'
-import CarouselItem        from './CarouselItem'
-import Button              from './ButtonIcon'
-import type * as Buttons   from './ButtonIcon'
+    IContentStyles,
+    contentStyles,
+}                           from './Content'
+import CarouselItem         from './CarouselItem'
+import Button               from './ButtonIcon'
+import type * as Buttons    from './ButtonIcon'
 import {
     default as Navscroll,
     NavscrollItem,
     Dimension,
-}                          from './Navscroll'
+}                           from './Navscroll'
 import type * as Navscrolls from './Navscroll'
 
 
@@ -47,77 +49,133 @@ const navElm     = '&>.nav';
 const prevBtnElm = '&>.prevBtn';
 const nextBtnElm = '&>.nextBtn';
 
-export class CarouselStylesBuilder extends BasicComponentStyles implements IContentStylesBuilder {
+export class CarouselStylesBuilder extends BasicComponentStyles implements IContentStyles {
     // variants:
-    public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
+    public /*override*/ theme(theme: string): JssStyle { return {
         extend: [
-            super.theme(theme, Theme), // copy themes from base
+            super.theme(theme), // copy themes from base
             
-            this.contentTheme(theme, Theme),
+            this.contentTheme(theme),
         ] as JssStyle,
     }}
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         extend: [
-            super.size(size, Size), // copy sizes from base
+            super.size(size), // copy sizes from base
 
-            this.contentSize(size, Size),
+            this.contentSize(size),
         ] as JssStyle,
 
 
 
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
-    public /*implement*/ contentTheme(theme: string, Theme: string): JssStyle {
-        return contentStyles.contentTheme(theme, Theme); // copy themes from Content
+    public /*implement*/ contentTheme(theme: string): JssStyle {
+        return contentStyles.contentTheme(theme); // copy themes from Content
     }
-    public /*implement*/ contentSize(size: string, Size: string): JssStyle {
-        return contentStyles.contentSize(size, Size); // copy sizes from Content
+    public /*implement*/ contentSize(size: string): JssStyle {
+        return contentStyles.contentSize(size); // copy sizes from Content
     }
 
 
 
     // states:
-    public /*implement*/ contentThemesIf(): JssStyle {
-        return contentStyles.contentThemesIf(); // copy themes from Content
+    public /*override*/ actived()     : JssStyle {
+        return this.contentActived();
     }
-    public /*implement*/ contentStates(inherit = false): JssStyle {
-        return contentStyles.contentStates(inherit); // copy states from Content
+    public /*override*/ activating()  : JssStyle {
+        return this.contentActivating();
+    }
+    public /*override*/ passivating() : JssStyle {
+        return this.contentPassivating();
+    }
+    public /*override*/ passived()    : JssStyle {
+        return this.contentPassived();
     }
 
-    public /*override*/ themesIfOld(): JssStyle { return {
-        extend: [
-            super.themesIfOld(), // copy themes from base
-
-            this.contentThemesIf(),
-        ] as JssStyle,
-    }}
-    public /*override*/ statesOld(inherit = false): JssStyle { return {
-        extend: [
-            super.statesOld(inherit), // copy states from base
-
-            this.contentStates(inherit),
-        ] as JssStyle,
-    }}
+    public /*implement*/ contentActived()     : JssStyle {
+        return contentStyles.contentActived();
+    }
+    public /*implement*/ contentActivating()  : JssStyle {
+        return contentStyles.contentActivating();
+    }
+    public /*implement*/ contentPassivating() : JssStyle {
+        return contentStyles.contentPassivating();
+    }
+    public /*implement*/ contentPassived()    : JssStyle {
+        return contentStyles.contentPassived();
+    }
 
 
 
     // functions:
-    public /*implement*/ contentPropsFn(): JssStyle {
+    public /*override*/ propsFn(): PropList { return {
+        ...super.propsFn(), // copy functional props from base
+        
+        ...this.contentPropsFn(),
+    }}
+    public /*implement*/ contentPropsFn(): PropList {
         return contentStyles.contentPropsFn(); // copy functional props from Content
     }
-    public /*override*/ propsFnOld(): JssStyle { return {
-        extend: [
-            super.propsFnOld(), // copy functional props from base
-
-            this.contentPropsFn(),
-        ] as JssStyle,
-    }}
 
 
 
     // styles:
+    public /*override*/ basicStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(), // copy basicStyle from base
+
+            this.contentBasicStyle(),
+        ] as JssStyle,
+
+
+
+        // layout:
+        display             : 'grid',
+
+        // explicit areas:
+        gridTemplateRows    : [[
+            '1fr',
+            'min-content',
+        ]],
+        gridTemplateColumns : [['15%', 'auto', '15%']],
+        gridTemplateAreas   : [[
+            '"prevBtn main nextBtn"',
+            '"prevBtn nav  nextBtn"',
+        ]],
+
+        // child alignments:
+        justifyItems        : 'stretch', // each section fill the entire area's width
+        alignItems          : 'stretch', // each section fill the entire area's height
+
+
+
+        // borders:
+        overflow            : 'hidden', // clip the children at the rounded corners
+
+
+
+        // children:
+        //#region children
+        [itemsElm]   : this.carouselItemsBasicStyle(),
+        [itemElm]    : this.carouselItemBasicStyle(),
+
+        [[
+            prevBtnElm,
+            nextBtnElm,
+        ].join(',')] : this.navBtnBasicStyle(),
+        [prevBtnElm] : this.prevBtnBasicStyle(),
+        [nextBtnElm] : this.nextBtnBasicStyle(),
+
+        [navElm]     : this.navBasicStyle(),
+        //#endregion children
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
     public /*implement*/ contentBasicStyle(): JssStyle {
         return contentStyles.contentBasicStyle(); // copy basicStyle from Content
     }
@@ -260,61 +318,6 @@ export class CarouselStylesBuilder extends BasicComponentStyles implements ICont
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'nav')), // apply *general* cssProps starting with nav***
     }}
-
-    public /*override*/ basicStyle(): JssStyle { return {
-        extend: [
-            super.basicStyle(), // copy basicStyle from base
-
-            this.contentBasicStyle(),
-        ] as JssStyle,
-
-
-
-        // layout:
-        display             : 'grid',
-
-        // explicit areas:
-        gridTemplateRows    : [[
-            '1fr',
-            'min-content',
-        ]],
-        gridTemplateColumns : [['15%', 'auto', '15%']],
-        gridTemplateAreas   : [[
-            '"prevBtn main nextBtn"',
-            '"prevBtn nav  nextBtn"',
-        ]],
-
-        // child alignments:
-        justifyItems        : 'stretch', // each section fill the entire area's width
-        alignItems          : 'stretch', // each section fill the entire area's height
-
-
-
-        // borders:
-        overflow            : 'hidden', // clip the children at the rounded corners
-
-
-
-        // children:
-        //#region children
-        [itemsElm]   : this.carouselItemsBasicStyle(),
-        [itemElm]    : this.carouselItemBasicStyle(),
-
-        [[
-            prevBtnElm,
-            nextBtnElm,
-        ].join(',')] : this.navBtnBasicStyle(),
-        [prevBtnElm] : this.prevBtnBasicStyle(),
-        [nextBtnElm] : this.nextBtnBasicStyle(),
-
-        [navElm]     : this.navBasicStyle(),
-        //#endregion children
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
 }
 export const styles = new CarouselStylesBuilder();
 
@@ -352,7 +355,7 @@ export const cssDecls = cssConfig.decls;
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Elements.BasicComponentProps<TElement>
+        BasicComponentProps<TElement>
 {
     // essentials:
     itemsTag? : keyof JSX.IntrinsicElements

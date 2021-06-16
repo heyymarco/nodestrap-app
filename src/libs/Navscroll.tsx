@@ -8,7 +8,7 @@ import
 // nodestrap (modular web components):
 import {
     isTypeOf,
-}                           from './nodestrap'
+}                           from './nodestrap'  // nodestrap's core
 import {
     default  as Listgroup,
     ListgroupItem,

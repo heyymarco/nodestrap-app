@@ -7,35 +7,34 @@ import {
 
 // nodestrap (modular web components):
 import {
-    CssConfig,
-
+    // general types:
     JssStyle,
-
     PropEx,
     Cust,
-
     ClassList,
-}                           from './nodestrap'
+
+
+    // components:
+    CssConfig,
+}                           from './nodestrap'  // nodestrap's core
 import {
-    default  as Element,
-    cssProps as ecssProps,
     BasicComponentStyles,
+    cssProps as bcssProps,
+    BasicComponentProps,
+    BasicComponent,
 }                           from './BasicComponent'
-import type * as Elements   from './BasicComponent'
 import {
     usePropAccessibility,
     usePropEnabled,
+    AccessibilityProps,
     AccessibilityProvider,
-}                           from './accessibilities'
-import type {
-    Props as AccessibilityProps,
 }                           from './accessibilities'
 
 
 
 // styles:
 
-export class IndicatorStylesBuilder extends BasicComponentStyles {
+export class IndicatorStyles extends BasicComponentStyles {
     //#region scoped css props
     // anim props:
 
@@ -119,15 +118,15 @@ export class IndicatorStylesBuilder extends BasicComponentStyles {
 
 
     // variants:
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         extend: [
-            super.size(size, Size), // copy sizes from base
+            super.size(size), // copy sizes from base
         ] as JssStyle,
 
 
 
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
 
@@ -142,7 +141,7 @@ export class IndicatorStylesBuilder extends BasicComponentStyles {
     ]}
     public /*virtual*/ indicationStates(): ClassList { return [
         [ null, {
-            [this.decl(this._filterHoverLeave)] : ecssProps.filterNone, // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
+            [this.decl(this._filterHoverLeave)] : bcssProps.filterNone, // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
         }],
 
 
@@ -171,8 +170,8 @@ export class IndicatorStylesBuilder extends BasicComponentStyles {
     ]}
     
     public /*virtual*/ enabled()     : JssStyle { return {
-        [this.decl(this._filterEnableDisable)] : ecssProps.filterNone,
-        [this.decl(this._animEnableDisable)]   : ecssProps.animNone,
+        [this.decl(this._filterEnableDisable)] : bcssProps.filterNone,
+        [this.decl(this._animEnableDisable)]   : bcssProps.animNone,
     }}
     public /*virtual*/ enabling()    : JssStyle { return {
         [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
@@ -184,12 +183,12 @@ export class IndicatorStylesBuilder extends BasicComponentStyles {
     }}
     public /*virtual*/ disabled()    : JssStyle { return {
         [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
-        [this.decl(this._animEnableDisable)]   : ecssProps.animNone,
+        [this.decl(this._animEnableDisable)]   : bcssProps.animNone,
     }}
 
     public /*virtual*/ actived()     : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-        [this.decl(this._animActivePassive)]   : ecssProps.animNone,
+        [this.decl(this._animActivePassive)]   : bcssProps.animNone,
 
         extend: [
             this.themeActive(),
@@ -210,8 +209,8 @@ export class IndicatorStylesBuilder extends BasicComponentStyles {
         [this.decl(this._animActivePassive)]   : cssProps.animPassive,
     }}
     public /*virtual*/ passived()    : JssStyle { return {
-        [this.decl(this._filterActivePassive)] : ecssProps.filterNone,
-        [this.decl(this._animActivePassive)]   : ecssProps.animNone,
+        [this.decl(this._filterActivePassive)] : bcssProps.filterNone,
+        [this.decl(this._animActivePassive)]   : bcssProps.animNone,
     }}
     public /*virtual*/ themeActive(theme = 'secondary'): JssStyle {
         return this.themeIf(theme);
@@ -277,7 +276,7 @@ export class IndicatorStylesBuilder extends BasicComponentStyles {
             this.stateNotDisabled({ // if ctrl was not fully disabled
                 // define an *animations* func:
                 [this.decl(this._animFn)]: [
-                    ecssProps.anim,
+                    bcssProps.anim,
                     this.ref(this._animActivePassive), // 2nd : ctrl already pressed, move to the least priority
                     this.ref(this._animEnableDisable), // 1st : ctrl enable/disable => rarely used => low probability
                 ],
@@ -285,42 +284,33 @@ export class IndicatorStylesBuilder extends BasicComponentStyles {
 
         // define an *animations* func:
         [this.decl(this._animFn)]: [
-            ecssProps.anim,
+            bcssProps.anim,
             this.ref(this._animEnableDisable), // 2nd : ctrl must be enabled
             this.ref(this._animActivePassive), // 1st : ctrl got pressed
         ],
         //#endregion re-arrange the animFn at different states
     }}
 }
-export const styles = new IndicatorStylesBuilder();
+export const indicatorStyles = new IndicatorStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     const keyframesDisable   : PropEx.Keyframes = {
         from: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterEnableDisable)),
+                ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterEnableDisable)),
 
              // styles.ref(styles._filterEnableDisable), // missing the last => let's the browser interpolated it
             ]],
         },
         to: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterEnableDisable)),
+                ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterEnableDisable)),
 
-                styles.ref(styles._filterEnableDisable), // existing the last => let's the browser interpolated it
+                indicatorStyles.ref(indicatorStyles._filterEnableDisable), // existing the last => let's the browser interpolated it
             ]],
         },
     };
@@ -329,19 +319,21 @@ const cssConfig = new CssConfig(() => {
         to   : keyframesDisable.from,
     };
 
+    
+    
     const keyframesActive    : PropEx.Keyframes = {
         from: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterActivePassive)),
+                ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterActivePassive)),
 
              // styles.ref(styles._filterActivePassive), // missing the last => let's the browser interpolated it
             ]],
         },
         to: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterActivePassive)),
+                ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterActivePassive)),
 
-                styles.ref(styles._filterActivePassive), // existing the last => let's the browser interpolated it
+                indicatorStyles.ref(indicatorStyles._filterActivePassive), // existing the last => let's the browser interpolated it
             ]],
         },
     };
@@ -350,9 +342,10 @@ const cssConfig = new CssConfig(() => {
         to   : keyframesActive.from,
     };
 
+    
+    
     return {
-        // anim props:
-
+        //#region animations
         filterDisable        : [['grayscale(50%)',  'opacity(50%)'  ]],
         filterActive         : [['brightness(65%)', 'contrast(150%)']],
 
@@ -364,6 +357,7 @@ const cssConfig = new CssConfig(() => {
         animDisable          : [['300ms', 'ease-out', 'both', keyframesDisable]],
         animActive           : [['150ms', 'ease-out', 'both', keyframesActive ]],
         animPassive          : [['300ms', 'ease-out', 'both', keyframesPassive]],
+        //#endregion animations
     };
 }, /*prefix: */'indi');
 export const cssProps = cssConfig.refs;
@@ -596,15 +590,16 @@ export interface TogglerActiveProps
     onActiveChange? : (active: boolean) => void
 }
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface IndicatorProps<TElement extends HTMLElement = HTMLElement>
     extends
-        Elements.BasicComponentProps<TElement>,
+        BasicComponentProps<TElement>,
+
         IndicationProps
 {
 }
-export default function Indicator<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function Indicator<TElement extends HTMLElement = HTMLElement>(props: IndicatorProps<TElement>) {
     // styles:
-    const indiStyles   = styles.useStyles();
+    const styles       = indicatorStyles.useStyles();
 
 
 
@@ -632,13 +627,13 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
 
     // jsx:
     return (
-        <Element<TElement>
+        <BasicComponent<TElement>
             // other props:
             {...props}
 
 
             // classes:
-            mainClass={props.mainClass ?? indiStyles.main}
+            mainClass={props.mainClass ?? styles.main}
             stateClasses={[...(props.stateClasses ?? []),
                 (stateEnbDis.class ?? ((stateEnbDis.disabled && !isHtmlCtrl) ? 'disabled' : null)),
                 stateActPass.class,
@@ -668,6 +663,7 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
             { props.children && <AccessibilityProvider {...propAccess}>
                 { props.children }
             </AccessibilityProvider> }
-        </Element>
+        </BasicComponent>
     );
 }
+export { Indicator }

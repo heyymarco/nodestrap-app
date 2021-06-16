@@ -1,16 +1,17 @@
 // react (builds html using javascript):
 import React                from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-import type {
-    DictionaryOf,
-}                           from './CssConfig'   // ts defs support for jss
-
 // nodestrap (modular web components):
+import {
+    // general types:
+    JssStyle,
+    DictionaryOf,
+    PropList,
+
+    
+    // components:
+    CssConfig,
+}                           from './nodestrap'   // nodestrap's core
 import colors               from './colors'     // configurable colors & theming defs
 import {
     default  as EditableControl,
@@ -18,10 +19,8 @@ import {
 }                           from './EditableControl'
 import type * as EditableControls   from './EditableControl'
 import {
-    styles as contentStyles,
-}                           from './Content'
-import type {
-    IContentStylesBuilder,
+    IContentStyles,
+    contentStyles,
 }                           from './Content'
 import {
     styles as iconStyles,
@@ -33,7 +32,7 @@ import {
 
 const iconElm = '&::after';
 
-export class EditableTextControlStylesBuilder extends EditableControlStylesBuilder implements IContentStylesBuilder {
+export class EditableTextControlStylesBuilder extends EditableControlStylesBuilder implements IContentStyles {
     //#region scoped css props
     /**
      * Icon for indicating valid/invalid state.
@@ -50,31 +49,31 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
     // variants:
-    public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
+    public /*override*/ theme(theme: string): JssStyle { return {
         extend: [
-            super.theme(theme, Theme), // copy themes from base
+            super.theme(theme), // copy themes from base
             
-            this.contentTheme(theme, Theme),
+            this.contentTheme(theme),
         ] as JssStyle,
     }}
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         extend: [
-            super.size(size, Size), // copy sizes from base
+            super.size(size), // copy sizes from base
 
-            this.contentSize(size, Size),
+            this.contentSize(size),
         ] as JssStyle,
 
 
 
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
-    public /*implement*/ contentTheme(theme: string, Theme: string): JssStyle {
-        return contentStyles.contentTheme(theme, Theme); // copy themes from Content
+    public /*implement*/ contentTheme(theme: string): JssStyle {
+        return contentStyles.contentTheme(theme); // copy themes from Content
     }
-    public /*implement*/ contentSize(size: string, Size: string): JssStyle {
-        const contentSize = contentStyles.contentSize(size, Size); // copy sizes from Content
+    public /*implement*/ contentSize(size: string): JssStyle {
+        const contentSize = contentStyles.contentSize(size); // copy sizes from Content
         delete contentSize.paddingInline;
         delete contentSize.paddingBlock;
 
@@ -84,6 +83,32 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
     // states:
+    public /*override*/ actived()     : JssStyle {
+        return this.contentActived();
+    }
+    public /*override*/ activating()  : JssStyle {
+        return this.contentActivating();
+    }
+    public /*override*/ passivating() : JssStyle {
+        return this.contentPassivating();
+    }
+    public /*override*/ passived()    : JssStyle {
+        return this.contentPassived();
+    }
+
+    public /*implement*/ contentActived()     : JssStyle {
+        return contentStyles.contentActived();
+    }
+    public /*implement*/ contentActivating()  : JssStyle {
+        return contentStyles.contentActivating();
+    }
+    public /*implement*/ contentPassivating() : JssStyle {
+        return contentStyles.contentPassivating();
+    }
+    public /*implement*/ contentPassived()    : JssStyle {
+        return contentStyles.contentPassived();
+    }
+
     public /*override*/ themeDefault(theme: string|null = 'secondary'): JssStyle { return {
         extend: [
             super.themeDefault(theme), // copy default theme from base
@@ -148,52 +173,21 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         ] as JssStyle,
     }}
 
-    public /*implement*/ contentThemesIf(): JssStyle {
-        return contentStyles.contentThemesIf(); // copy themes from Content
-    }
-    public /*implement*/ contentStates(inherit = false): JssStyle {
-        return contentStyles.contentStates(inherit); // copy states from Content
-    }
-
-    public /*override*/ themesIfOld(): JssStyle { return {
-        extend: [
-            super.themesIfOld(), // copy themes from base
-
-            this.contentThemesIf(),
-        ] as JssStyle,
-    }}
-    public /*override*/ statesOld(inherit = false): JssStyle { return {
-        extend: [
-            super.statesOld(inherit), // copy states from base
-
-            this.contentStates(inherit),
-        ] as JssStyle,
-    }}
-
 
 
     // functions:
-    public /*implement*/ contentPropsFn(): JssStyle {
+    public /*override*/ propsFn(): PropList { return {
+        ...super.propsFn(), // copy functional props from base
+        
+        ...this.contentPropsFn(),
+    }}
+    public /*implement*/ contentPropsFn(): PropList {
         return contentStyles.contentPropsFn(); // copy functional props from Content
     }
-    public /*override*/ propsFnOld(): JssStyle { return {
-        extend: [
-            super.propsFnOld(), // copy functional props from base
-
-            this.contentPropsFn(),
-        ] as JssStyle,
-    }}
 
 
 
     // styles:
-    public /*implement*/ contentBasicStyle(): JssStyle {
-        const contentBasicStyle = contentStyles.contentBasicStyle(); // copy basicStyle from Content
-        delete contentBasicStyle.paddingInline;
-        delete contentBasicStyle.paddingBlock;
-
-        return contentBasicStyle;
-    }
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
@@ -239,6 +233,13 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
+    public /*implement*/ contentBasicStyle(): JssStyle {
+        const contentBasicStyle = contentStyles.contentBasicStyle(); // copy basicStyle from Content
+        delete contentBasicStyle.paddingInline;
+        delete contentBasicStyle.paddingBlock;
+
+        return contentBasicStyle;
+    }
 }
 export const styles = new EditableTextControlStylesBuilder();
 

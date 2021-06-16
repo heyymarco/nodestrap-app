@@ -1,76 +1,83 @@
 // react (builds html using javascript):
-import React               from 'react'       // base technology of our nodestrap components
-
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                          from 'jss'          // ts defs support for jss
 import {
-    PropEx,
-}                          from './Css'        // ts defs support for jss
-import CssConfig           from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
+    default as React,
+}                           from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
 import {
-    cssProps as ecssProps,
+    // general types:
+    JssStyle,
+    PropEx,
+
+
+    // components:
+    CssConfig,
+}                           from './nodestrap'  // nodestrap's core
+import {
+    cssProps as bcssProps,
 }                           from './BasicComponent'
 import {
-    default as Indicator,
-    IndicatorStylesBuilder,
+    IndicatorStyles,
+    IndicatorProps,
+    Indicator,
 }                           from './Indicator'
-import type * as Indicators from './Indicator'
 
 
 
 // styles:
 
-export class PopupStylesBuilder extends IndicatorStylesBuilder {
+export class PopupStyles extends IndicatorStyles {
     // states:
-    public /*override*/ themeActive(): JssStyle { return {} }    // no active theme
-    public /*override*/ outlinedActive(): JssStyle { return {} } // no active outlined
-    
-    public /*override*/ indicationStatesOld(inherit = false): JssStyle { return {
+    public /*override*/ actived()     : JssStyle { return {
         extend: [
-            // super.indicationStatesOld(inherit), // copy indicationStates from base
-
-
-
-            //#region specific states
-            //#region active, passive
-            this.stateActivePassivating({ // [activating, actived, passivating]
-                [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-            }),
-            this.stateActive({ // [activating, actived]
-                [this.decl(this._animActivePassive)]   : cssProps.animActive,
-            }),
-            this.statePassivating({ // [passivating]
-                [this.decl(this._animActivePassive)]   : cssProps.animPassive,
-            }),
-            this.stateNotActivePassivating({ // hides the Popup if not [activating, actived, passivating]
-                display: 'none',
-            }),
-            //#endregion active, passive
-            //#endregion specific states
+            super.actived(),
         ] as JssStyle,
+
+
+
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
     }}
+    public /*override*/ activating()  : JssStyle { return {
+        extend: [
+            super.activating(),
+        ] as JssStyle,
+
+
+
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animActive,
+    }}
+    public /*override*/ passivating() : JssStyle { return {
+        extend: [
+            super.passivating(),
+        ] as JssStyle,
+
+
+
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animPassive,
+    }}
+    public /*override*/ passived()    : JssStyle { return {
+        extend: [
+            super.passived(),
+        ] as JssStyle,
+
+
+
+        display: 'none', // hide the popup
+    }}
+
+    public /*override*/ themeActive(theme = 'secondary'): JssStyle { return {} } // no active theme
+    public /*override*/ outlinedActive(): JssStyle { return {} }                 // no active outlined
 }
-export const styles = new PopupStylesBuilder();
+export const popupStyles = new PopupStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
-    const keyframesActive  : PropEx.Keyframes = {
+    const keyframesActive    : PropEx.Keyframes = {
         from: {
             opacity   : 0,
             transform : 'scale(0)',
@@ -83,22 +90,23 @@ const cssConfig = new CssConfig(() => {
             transform : 'scale(1)',
         },
     };
-    const keyframesPassive : PropEx.Keyframes = {
+    const keyframesPassive   : PropEx.Keyframes = {
         from  : keyframesActive.to,
         '30%' : keyframesActive['70%'],
         to    : keyframesActive.from,
     };
 
 
+    
     return {
-        // anim props:
-
-        filterActive         : ecssProps.filterNone,
+        //#endregion animations
+        filterActive         : bcssProps.filterNone,
 
         '@keyframes active'  : keyframesActive,
         '@keyframes passive' : keyframesPassive,
         animActive           : [['300ms', 'ease-out', 'both', keyframesActive ]],
         animPassive          : [['500ms', 'ease-out', 'both', keyframesPassive]],
+        //#endregion animations
     };
 }, /*prefix: */'pop');
 export const cssProps = cssConfig.refs;
@@ -108,14 +116,14 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface PopupProps<TElement extends HTMLElement = HTMLElement>
     extends
-        Indicators.Props<TElement>
+        IndicatorProps<TElement>
 {
 }
-export default function Popup<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function Popup<TElement extends HTMLElement = HTMLElement>(props: PopupProps<TElement>) {
     // styles:
-    const popStyles = styles.useStyles();
+    const styles = popupStyles.useStyles();
 
 
 
@@ -127,7 +135,8 @@ export default function Popup<TElement extends HTMLElement = HTMLElement>(props:
 
 
             // classes:
-            mainClass={props.mainClass ?? popStyles.main}
+            mainClass={props.mainClass ?? styles.main}
         />
     );
 }
+export { Popup }

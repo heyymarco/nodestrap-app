@@ -16,7 +16,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 // nodestrap (modular web components):
 import {
     ClassList,
-}                           from './nodestrap'
+}                           from './nodestrap'  // nodestrap's core
 import fontMaterial         from './Icon-font-material'
 import {
     default  as Element,
@@ -48,9 +48,9 @@ export class IconStylesBuilder extends BasicComponentStyles {
         [ 'font', this.font()  ],
         [ 'img' , this.image() ],
     ]}
-    public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
+    public /*override*/ theme(theme: string): JssStyle { return {
         extend: [
-            super.theme(theme, Theme), // copy themes from base
+            super.theme(theme), // copy themes from base
         ] as JssStyle,
 
 
@@ -66,9 +66,9 @@ export class IconStylesBuilder extends BasicComponentStyles {
     public /*override*/ sizeOptions(): string[] {
         return ['sm', 'nm', 'md', 'lg', '1em'];
     }
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
     public /*override*/ outlined(): JssStyle { return {} } // remove outlined style
     public /*virtual*/ font(): JssStyle { return {

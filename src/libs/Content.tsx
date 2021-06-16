@@ -1,56 +1,57 @@
 // react (builds html using javascript):
 import React                from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-import {
-    PropEx,
-}                           from './Css'        // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-import type {
-    DictionaryOf,
-}                           from './CssConfig'  // ts defs support for jss
-
 // nodestrap (modular web components):
+import {
+    // general types:
+    JssStyle,
+    PropEx,
+    DictionaryOf,
+    PropList,
+
+    
+    // components:
+    CssConfig,
+}                           from './nodestrap'  // nodestrap's core
 import colors               from './colors'     // configurable colors & theming defs
 import spacers              from './spacers'    // configurable spaces defs
 import {
-    cssProps as ecssProps,
+    cssProps as bcssProps,
 }                           from './BasicComponent'
 import {
-    default  as Indicator,
-    IndicatorStylesBuilder,
+    IndicatorStyles,
+    IndicatorProps,
+    Indicator,
 }                           from './Indicator'
-import type * as Indicators from './Indicator'
 
 
 
 // styles:
 
-export interface IContentStylesBuilder {
+export interface IContentStyles {
     // variants:
-    contentTheme(theme: string, Theme: string): JssStyle
-    contentSize(size: string, Size: string): JssStyle
+    contentTheme(theme: string): JssStyle
+    contentSize(size: string): JssStyle
 
 
 
     // states:
-    contentThemesIf(): JssStyle
-    contentStates(inherit : boolean): JssStyle
+    contentActived()     : JssStyle
+    contentActivating()  : JssStyle
+    contentPassivating() : JssStyle
+    contentPassived()    : JssStyle
 
 
 
     // functions:
-    contentPropsFn(): JssStyle
+    contentPropsFn(): PropList
 
 
 
     // styles:
     contentBasicStyle(): JssStyle
 }
-export class ContentStylesBuilder extends IndicatorStylesBuilder implements IContentStylesBuilder {
+export class ContentStyles extends IndicatorStyles implements IContentStyles {
     //#region scoped css props
     //#region passive - foreground
     /**
@@ -87,74 +88,73 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
 
 
     // variants:
-    public /*override*/ theme(theme: string, Theme: string): JssStyle { return {
+    public /*override*/ theme(theme: string): JssStyle { return {
         extend: [
-            super.theme(theme, Theme), // copy themes from base
+            super.theme(theme), // copy themes from base
 
-            this.contentTheme(theme, Theme),
+            this.contentTheme(theme),
         ] as JssStyle,
     }}
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         extend: [
-            super.size(size, Size), // copy sizes from base
+            super.size(size), // copy sizes from base
 
-            this.contentSize(size, Size),
+            this.contentSize(size),
         ] as JssStyle,
     }}
-
-    public /*virtual*/ contentTheme(theme: string, Theme: string): JssStyle { return {
-        // customize the *themed* props:
     
+    public /*virtual*/ contentTheme(theme: string): JssStyle { return {
         // overwrite some theme color with *softer* colors:
         [this.decl(this._passiveForegTh)]  :                 (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],  // light on dark backg | dark on light backg with slightly color from background
         [this.decl(this._passiveBackgTh)]  : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]), // thin opacity with slightly color from background
     }}
-    public /*virtual*/ contentSize(size: string, Size: string): JssStyle { return {
+    public /*virtual*/ contentSize(size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
 
 
     // states:
-    public /*virtual*/ contentThemesIf(): JssStyle { return {} }
-    public /*virtual*/ contentStates(inherit = false): JssStyle { return {
-        extend: [
-            //#region specific states
-            //#region active, passive
-            this.stateActivePassivating({ // [activating, actived, passivating]
-                [this.decl(this._filterActivePassive)] : undefined as unknown as null, // delete from Indicator
-            }),
-            this.stateActive({ // [activating, actived]
-                [this.decl(this._animActivePassive)]   : cssProps.animActive,   // override Indicator's anim active
-            }),
-            this.statePassivating({ // [passivating]
-                [this.decl(this._animActivePassive)]   : cssProps.animPassive,  // override Indicator's anim passive
-            }),
-            //#endregion active, passive
-            //#endregion specific states
-        ] as JssStyle,
+    public /*override*/ actived()     : JssStyle {
+        return this.contentActived();
+    }
+    public /*override*/ activating()  : JssStyle {
+        return this.contentActivating();
+    }
+    public /*override*/ passivating() : JssStyle {
+        return this.contentPassivating();
+    }
+    public /*override*/ passived()    : JssStyle {
+        return this.contentPassived();
+    }
+
+    public /*virtual*/ contentActived()     : JssStyle { return {
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : bcssProps.animNone,
     }}
-
-    public /*override*/ themesIfOld(): JssStyle { return {
-        extend: [
-            super.themesIfOld(), // copy themes from base
-
-            this.contentThemesIf(),
-        ] as JssStyle,
+    public /*virtual*/ contentActivating()  : JssStyle { return {
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animActive,
     }}
-    public /*override*/ statesOld(inherit = false): JssStyle { return {
-        extend: [
-            super.statesOld(inherit), // copy states from base
-
-            this.contentStates(inherit),
-        ] as JssStyle,
+    public /*virtual*/ contentPassivating() : JssStyle { return {
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animPassive,
+    }}
+    public /*virtual*/ contentPassived()    : JssStyle { return {
+        [this.decl(this._filterActivePassive)] : bcssProps.filterNone,
+        [this.decl(this._animActivePassive)]   : bcssProps.animNone,
     }}
 
 
 
     // functions:
-    public /*virtual*/ contentPropsFn(): JssStyle { return {
+    public /*override*/ propsFn(): PropList { return {
+        ...super.propsFn(), // copy functional props from base
+        
+        ...this.contentPropsFn(),
+    }}
+    public /*virtual*/ contentPropsFn(): PropList { return {
         // define a passive *foreground* color func:
         [this.decl(this._passiveForegFn)] : this.ref(
             this._outlinedForegTg, // toggle outlined
@@ -180,7 +180,7 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
             ),
 
             // bottom layer:
-            ecssProps.backg,
+            bcssProps.backg,
         ],
         // define a passive *backgrounds* func:
         [this.decl(this._passiveBackgFn)] : this.ref(
@@ -189,17 +189,17 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
             this._passiveBackgLy,
         ),
     }}
-    public /*override*/ propsFnOld(): JssStyle { return {
-        extend: [
-            super.propsFnOld(), // copy functional props from base
-
-            this.contentPropsFn(),
-        ] as JssStyle,
-    }}
 
 
 
     // styles:
+    public /*override*/ basicStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(), // copy basicStyle from base
+
+            this.contentBasicStyle(),
+        ] as JssStyle,
+    }}
     public /*virtual*/ contentBasicStyle(): JssStyle { return {
         // apply fn props:
         foreg : this.ref(this._passiveForegFn),
@@ -210,38 +210,22 @@ export class ContentStylesBuilder extends IndicatorStylesBuilder implements ICon
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    public /*override*/ basicStyle(): JssStyle { return {
-        extend: [
-            super.basicStyle(), // copy basicStyle from base
-
-            this.contentBasicStyle(),
-        ] as JssStyle,
-    }}
 }
-export const styles = new ContentStylesBuilder();
+export const contentStyles = new ContentStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     const keyframesActive    : PropEx.Keyframes = {
         from: {
-            foreg: styles.ref(styles._passiveForegFn),
-            backg: styles.ref(styles._passiveBackgFn),
+            foreg: contentStyles.ref(contentStyles._passiveForegFn),
+            backg: contentStyles.ref(contentStyles._passiveBackgFn),
         },
         to: {
-            foreg: styles.ref(styles._foregFn),
-            backg: styles.ref(styles._backgFn),
+            foreg: contentStyles.ref(contentStyles._foregFn),
+            backg: contentStyles.ref(contentStyles._backgFn),
         },
     };
     const keyframesPassive   : PropEx.Keyframes = {
@@ -249,6 +233,8 @@ const cssConfig = new CssConfig(() => {
         to   : keyframesActive.from,
     };
 
+    
+    
     return {
         //#region spacings
         paddingInline        : spacers.default, // override to Element
@@ -260,12 +246,15 @@ const cssConfig = new CssConfig(() => {
         //#endregion spacings
 
 
-        // anim props:
+        
+        //#region animations
+        filterActive         : bcssProps.filterNone,
 
-        '@keyframes active'  : keyframesActive,      // override to Indicator
-        '@keyframes passive' : keyframesPassive,     // override to Indicator
+        '@keyframes active'  : keyframesActive,  // override to Indicator
+        '@keyframes passive' : keyframesPassive, // override to Indicator
         animActive           : [['150ms', 'ease-out', 'both', keyframesActive ]], // override to Indicator
         animPassive          : [['300ms', 'ease-out', 'both', keyframesPassive]], // override to Indicator
+        //#endregion animations
     };
 }, /*prefix: */'ct');
 export const cssProps = cssConfig.refs;
@@ -275,16 +264,16 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface ContentProps<TElement extends HTMLElement = HTMLElement>
     extends
-        Indicators.Props<TElement>
+        IndicatorProps<TElement>
 {
     // children:
     children? : React.ReactNode
 }
-export default function Content<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function Content<TElement extends HTMLElement = HTMLElement>(props: ContentProps<TElement>) {
     // styles:
-    const ctStyles = styles.useStyles();
+    const styles = contentStyles.useStyles();
 
     
     
@@ -296,7 +285,8 @@ export default function Content<TElement extends HTMLElement = HTMLElement>(prop
 
 
             // classes:
-            mainClass={props.mainClass ?? ctStyles.main}
+            mainClass={props.mainClass ?? styles.main}
         />
     );
 }
+export { Content }

@@ -20,7 +20,7 @@ import CssConfig            from './CssConfig'  // Stores & retrieves configurat
 import {
     Element,
     isTypeOf,
-}                           from './nodestrap'
+}                           from './nodestrap'  // nodestrap's core
 import {
     cssProps as ecssProps,
 }                           from './BasicComponent'
@@ -29,7 +29,7 @@ import {
 }                           from './Container'
 import {
     default  as Indicator,
-    styles as indicatorStyles,
+    indicatorStyles as indicatorStyles,
     useTogglerActive,
 }                           from './Indicator'
 import type * as Indicators from './Indicator'
@@ -89,15 +89,15 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
 
 
     // variants:
-    public /*override*/ size(size: string, Size: string): JssStyle { return {
+    public /*override*/ size(size: string): JssStyle { return {
         extend: [
-            super.size(size, Size), // copy sizes from base
+            super.size(size), // copy sizes from base
         ] as JssStyle,
 
 
 
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
 
@@ -769,7 +769,7 @@ export function useStateCompact<TElement extends HTMLElement = HTMLElement>(prop
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Indicators.Props<TElement>,
+        Indicators.IndicatorProps<TElement>,
         Indicators.TogglerActiveProps,
         Compactable
 {

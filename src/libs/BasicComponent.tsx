@@ -16,8 +16,8 @@ import {
 
     
     // components:
-    CssConfig,
     ElementStyles,
+    CssConfig,
     ElementProps,
     Element,
 
@@ -33,87 +33,6 @@ import
     * as border             from './borders'     // configurable borders & border radiuses defs
 import spacers              from './spacers'     // configurable spaces defs
 import typos                from './typos/index' // configurable typography (texting) defs
-
-
-
-// configs:
-
-const cssConfig = new CssConfig(() => {
-    const keyframesNone   : PropEx.Keyframes = { };
-
-    
-    
-    return {
-        //#region typos
-        fontSize          : typos.fontSizeNm,
-        fontSizeSm        : [['calc((', typos.fontSizeSm, '+', typos.fontSizeNm, ')/2)']],
-        fontSizeLg        : typos.fontSizeMd,
-        fontFamily        : 'inherit',
-        fontWeight        : 'inherit',
-        fontStyle         : 'inherit',
-        textDecoration    : 'inherit',
-        lineHeight        : 'inherit',
-        //#endregion typos
-
-        
-        
-        //#region foreg, backg, borders
-        foreg             : 'currentColor',
-        
-        backg             : 'transparent',
-        backgGrad         : [['linear-gradient(180deg, rgba(255,255,255, 0.2), rgba(0,0,0, 0.2))', 'border-box']],
-        
-        border            : borders.default,
-        borderColor       : borders.color,
-        borderRadius      : border.radiuses.md,
-        borderRadiusSm    : border.radiuses.sm,
-        borderRadiusLg    : border.radiuses.lg,
-        //#endregion foreg, backg, borders
-
-        
-        
-        //#region spacings
-        paddingInline     : [['calc((', spacers.sm, '+', spacers.md, ')/2)']],
-        paddingBlock      : [['calc((', spacers.xs, '+', spacers.sm, ')/2)']],
-        paddingInlineSm   : spacers.sm,
-        paddingBlockSm    : spacers.xs,
-        paddingInlineLg   : spacers.md,
-        paddingBlockLg    : spacers.sm,
-        //#endregion spacings
-
-        
-        
-        // appearances:
-        opacity           : 1,
-
-
-        
-        //#region animations
-        transition        : [
-            ['color'      , '300ms', 'ease-out'],
-            ['background' , '300ms', 'ease-out'],
-            ['border'     , '300ms', 'ease-out'],
-            ['inline-size', '300ms', 'ease-out'],
-            ['block-size' , '300ms', 'ease-out'],
-            ['font-size'  , '300ms', 'ease-out'],
-            ['opacity'    , '300ms', 'ease-out'],
-        ],
-
-        filterNone        : 'brightness(100%)',
-        filter            : 'brightness(100%)',
-
-        boxShadowNone     : [[0, 0, 'transparent']],
-        boxShadow         : [[0, 0, 'transparent']],
-        boxShadowFocus    : [[0, 0, 0, '0.25rem' ]], // supports for Control children's theming
-
-        '@keyframes none' : keyframesNone,
-        animNone          : [[keyframesNone]],
-        anim              : [[keyframesNone]],
-        //#endregion animations
-    };
-}, /*prefix: */'com');
-export const cssProps = cssConfig.refs;
-export const cssDecls = cssConfig.decls;
 
 
 
@@ -329,20 +248,16 @@ export class BasicComponentStyles extends ElementStyles {
 
             return [
                 themeProp,
-                this.theme(
-                    theme, // camel  case
-                    Theme, // pascal case
-                )
+                this.theme(theme)
             ] as ClassEntry;
         });
     }
     /**
      * Creates a color definition for the specified `theme`.
      * @param theme The current theme name written in camel case.
-     * @param Theme The current theme name written in pascal case.
      * @returns A `JssStyle` represents the color definition for the current `theme`.
      */
-    public /*virtual*/ theme(theme: string, Theme: string): JssStyle { return {
+    public /*virtual*/ theme(theme: string): JssStyle { return {
         [this.decl(this._foregTh)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
         [this.decl(this._backgTh)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
         [this.decl(this._borderTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
@@ -368,22 +283,18 @@ export class BasicComponentStyles extends ElementStyles {
 
             return [
                 sizeProp,
-                this.size(
-                    size, // camel  case
-                    Size, // pascal case
-                )
+                this.size(size)
             ] as ClassEntry;
         });
     }
     /**
      * Creates a sizing definition for the specified `size`.
      * @param size The current size name written in camel case.
-     * @param Size The current size name written in pascal case.
      * @returns A `JssStyle` represents the sizing definition for the current `size`.
      */
-    public /*virtual*/ size(size: string, Size: string): JssStyle { return {
+    public /*virtual*/ size(size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, Size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
     /**
@@ -615,6 +526,87 @@ export const basicComponentStyles = new BasicComponentStyles();
 
 
 
+// configs:
+
+const cssConfig = new CssConfig(() => {
+    const keyframesNone   : PropEx.Keyframes = { };
+
+    
+    
+    return {
+        //#region typos
+        fontSize          : typos.fontSizeNm,
+        fontSizeSm        : [['calc((', typos.fontSizeSm, '+', typos.fontSizeNm, ')/2)']],
+        fontSizeLg        : typos.fontSizeMd,
+        fontFamily        : 'inherit',
+        fontWeight        : 'inherit',
+        fontStyle         : 'inherit',
+        textDecoration    : 'inherit',
+        lineHeight        : 'inherit',
+        //#endregion typos
+
+        
+        
+        //#region foreg, backg, borders
+        foreg             : 'currentColor',
+        
+        backg             : 'transparent',
+        backgGrad         : [['linear-gradient(180deg, rgba(255,255,255, 0.2), rgba(0,0,0, 0.2))', 'border-box']],
+        
+        border            : borders.default,
+        borderColor       : borders.color,
+        borderRadius      : border.radiuses.md,
+        borderRadiusSm    : border.radiuses.sm,
+        borderRadiusLg    : border.radiuses.lg,
+        //#endregion foreg, backg, borders
+
+        
+        
+        //#region spacings
+        paddingInline     : [['calc((', spacers.sm, '+', spacers.md, ')/2)']],
+        paddingBlock      : [['calc((', spacers.xs, '+', spacers.sm, ')/2)']],
+        paddingInlineSm   : spacers.sm,
+        paddingBlockSm    : spacers.xs,
+        paddingInlineLg   : spacers.md,
+        paddingBlockLg    : spacers.sm,
+        //#endregion spacings
+
+        
+        
+        // appearances:
+        opacity           : 1,
+
+
+        
+        //#region animations
+        transition        : [
+            ['color'      , '300ms', 'ease-out'],
+            ['background' , '300ms', 'ease-out'],
+            ['border'     , '300ms', 'ease-out'],
+            ['inline-size', '300ms', 'ease-out'],
+            ['block-size' , '300ms', 'ease-out'],
+            ['font-size'  , '300ms', 'ease-out'],
+            ['opacity'    , '300ms', 'ease-out'],
+        ],
+
+        filterNone        : 'brightness(100%)',
+        filter            : 'brightness(100%)',
+
+        boxShadowNone     : [[0, 0, 'transparent']],
+        boxShadow         : [[0, 0, 'transparent']],
+        boxShadowFocus    : [[0, 0, 0, '0.25rem' ]], // supports for Control children's theming
+
+        '@keyframes none' : keyframesNone,
+        animNone          : [[keyframesNone]],
+        anim              : [[keyframesNone]],
+        //#endregion animations
+    };
+}, /*prefix: */'com');
+export const cssProps = cssConfig.refs;
+export const cssDecls = cssConfig.decls;
+
+
+
 // hooks:
 
 export interface VariantTheme {
@@ -709,4 +701,5 @@ export default function BasicComponent<TElement extends HTMLElement = HTMLElemen
             ]}
         />
     );
-};
+}
+export { BasicComponent }

@@ -46,12 +46,6 @@ export type PropList   = { [name: string]: JssValue }
 
 
 
-// configs:
-
-export { CssConfig }
-
-
-
 // styles:
 
 /**
@@ -468,6 +462,12 @@ export class ElementStyles {
     public /*virtual*/ themesIfOld(): JssStyle { return {} }
     public /*virtual*/ propsFnOld(): JssStyle { return {} }
 }
+
+
+
+// configs:
+
+export { CssConfig }
 
 
 
