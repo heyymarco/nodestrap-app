@@ -9,15 +9,13 @@ import {
 import {
     // general types:
     JssStyle,
+    ClassList,
     PropList,
 
     
     // components:
     CssConfig,
 }                           from './nodestrap'   // nodestrap's core
-import {
-    ClassList,
-}                           from './nodestrap'  // nodestrap's core
 import spacers              from './spacers'     // configurable spaces defs
 import {
     OrientationStyle,
@@ -148,6 +146,13 @@ export class MasonryStylesBuilder extends BasicComponentStyles implements IConte
 
 
     // states:
+    public /*override*/ states()      : ClassList { return [
+        ...super.states(), // copy states from base
+
+
+
+        ...this.contentStates(),
+    ]}
     public /*override*/ actived()     : JssStyle {
         return this.contentActived();
     }
@@ -161,6 +166,9 @@ export class MasonryStylesBuilder extends BasicComponentStyles implements IConte
         return this.contentPassived();
     }
 
+    public /*implement*/ contentStates()      : ClassList {
+        return contentStyles.contentStates();
+    }
     public /*implement*/ contentActived()     : JssStyle {
         return contentStyles.contentActived();
     }

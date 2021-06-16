@@ -8,6 +8,7 @@ import
 import {
     // general types:
     JssStyle,
+    ClassList,
     PropList,
 
     
@@ -77,6 +78,13 @@ export class FormStylesBuilder extends BasicComponentStyles implements IContentS
 
 
     // states:
+    public /*override*/ states()      : ClassList { return [
+        ...super.states(), // copy states from base
+
+
+
+        ...this.contentStates(),
+    ]}
     public /*override*/ actived()     : JssStyle {
         return this.contentActived();
     }
@@ -90,6 +98,9 @@ export class FormStylesBuilder extends BasicComponentStyles implements IContentS
         return this.contentPassived();
     }
 
+    public /*implement*/ contentStates()      : ClassList {
+        return editableTextControlStyles.contentStates();
+    }
     public /*implement*/ contentActived()     : JssStyle {
         return editableTextControlStyles.contentActived();
     }

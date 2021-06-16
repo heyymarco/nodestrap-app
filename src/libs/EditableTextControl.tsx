@@ -6,6 +6,7 @@ import {
     // general types:
     JssStyle,
     DictionaryOf,
+    ClassList,
     PropList,
 
     
@@ -83,6 +84,13 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
     // states:
+    public /*override*/ states()      : ClassList { return [
+        ...super.states(), // copy states from base
+
+
+
+        ...this.contentStates(),
+    ]}
     public /*override*/ actived()     : JssStyle {
         return this.contentActived();
     }
@@ -96,6 +104,9 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         return this.contentPassived();
     }
 
+    public /*implement*/ contentStates()      : ClassList {
+        return contentStyles.contentStates();
+    }
     public /*implement*/ contentActived()     : JssStyle {
         return contentStyles.contentActived();
     }

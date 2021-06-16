@@ -7,6 +7,7 @@ import {
 import {
     // general types:
     JssStyle,
+    ClassList,
     PropList,
 
 
@@ -71,10 +72,11 @@ export class AlertStylesBuilder extends PopupStyles implements IContentStyles {
 
 
     // states:
-    public /*implement*/ contentActived()     : JssStyle { return {} } // not implemented
-    public /*implement*/ contentActivating()  : JssStyle { return {} } // not implemented
-    public /*implement*/ contentPassivating() : JssStyle { return {} } // not implemented
-    public /*implement*/ contentPassived()    : JssStyle { return {} } // not implemented
+    public /*implement*/ contentStates()      : ClassList { return [] } // not implemented
+    public /*implement*/ contentActived()     : JssStyle  { return {} } // not implemented
+    public /*implement*/ contentActivating()  : JssStyle  { return {} } // not implemented
+    public /*implement*/ contentPassivating() : JssStyle  { return {} } // not implemented
+    public /*implement*/ contentPassived()    : JssStyle  { return {} } // not implemented
 
 
 
@@ -122,7 +124,7 @@ export class AlertStylesBuilder extends PopupStyles implements IContentStyles {
 
 
         // children:
-        [iconElm] : this.iconBasicStyle(),
+        [iconElm]    : this.iconBasicStyle(),
         [bodyElm]    : this.bodyBasicStyle(),
         [controlElm] : this.controlBasicStyle(),
 

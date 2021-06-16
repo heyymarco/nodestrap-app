@@ -8,6 +8,7 @@ import {
 import {
     // general types:
     JssStyle,
+    ClassList,
     PropList,
 
     
@@ -81,6 +82,13 @@ export class CarouselStylesBuilder extends BasicComponentStyles implements ICont
 
 
     // states:
+    public /*override*/ states()      : ClassList { return [
+        ...super.states(), // copy states from base
+
+
+
+        ...this.contentStates(),
+    ]}
     public /*override*/ actived()     : JssStyle {
         return this.contentActived();
     }
@@ -94,6 +102,9 @@ export class CarouselStylesBuilder extends BasicComponentStyles implements ICont
         return this.contentPassived();
     }
 
+    public /*implement*/ contentStates()      : ClassList {
+        return contentStyles.contentStates();
+    }
     public /*implement*/ contentActived()     : JssStyle {
         return contentStyles.contentActived();
     }
