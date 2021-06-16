@@ -152,7 +152,7 @@ export class AccordionItemStylesBuilder extends PopupStyles {
     public /*override*/ indicationAnimFnOld(): JssStyle { return {
         // define an *animations* func for the AccordionItem's body:
         [bodyElm]: {
-            [this.decl(this._animFn)]: [
+            [this.decl(this._animFnOld)]: [
                 ecssProps.anim,
                 this.ref(this._animEnableDisable), // 2nd : if AccordionItem's header is disable(d) => the AccordionItem's body is disable(d) too
                 this.ref(this._animActivePassive), // 1st : if AccordionItem's header is active(d)  => the AccordionItem's body is visible
@@ -184,7 +184,7 @@ export class AccordionItemStylesBuilder extends PopupStyles {
     // styles:
     protected /*virtual*/ bodyBasicStyle(): JssStyle { return {
         // apply fn props:
-        anim : this.ref(this._animFn),
+        anim : this.ref(this._animFnOld),
 
 
 

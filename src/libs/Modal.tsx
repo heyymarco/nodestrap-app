@@ -171,7 +171,7 @@ export class ModalStylesBuilder extends PopupStyles {
     // functions:
     public /*override*/ indicationAnimFnOld(): JssStyle { return {
         // define an *animations* func for the Modal's content:
-        [this.decl(this._animFn)]: [
+        [this.decl(this._animFnOld)]: [
             ecssProps.anim,
             this.ref(this._animActivePassive), // if Modal is active(d)  => the Modal's content is visible
         ],
@@ -240,7 +240,7 @@ export class ModalStylesBuilder extends PopupStyles {
 
         // apply fn props:
         anim                        : this.ref(this._overlayAnimFn),
-        [this.decl(this._animFnFw)] : this.ref(this._animFn),
+        [this.decl(this._animFnFw)] : this.ref(this._animFnOld),
 
 
 

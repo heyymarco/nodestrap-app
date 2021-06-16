@@ -200,10 +200,22 @@ export class BasicComponentStyles extends ElementStyles {
 
 
 
+    //#region animations
     /**
-     * functional animations.
+     * none filter.
      */
-    public    readonly _animFn             = 'animFn'
+    public readonly _filterNone            = 'filterNone'
+
+    /**
+     * none box shadow.
+     */
+    public readonly _boxShadowNone         = 'boxShadowNone'
+
+    /**
+     * none animation.
+     */
+    public readonly _animNone              = 'animNone'
+    //#endregion animations
     //#endregion scoped css props
     
     
@@ -387,7 +399,16 @@ export class BasicComponentStyles extends ElementStyles {
     // functions:
     public /*override*/ propsFn(): PropList { return {
         // define a *none* background:
-        [this.decl(this._backgNone)] : this.solidBackg('transparent'),
+        [this.decl(this._backgNone)]     : this.solidBackg('transparent'),
+
+        // define a *none* filter:
+        [this.decl(this._filterNone)]    : 'brightness(100%)',
+
+        // define a *none* box shadow:
+        [this.decl(this._boxShadowNone)] : [[0, 0, 'transparent']],
+
+        // define a *none* animation:
+        [this.decl(this._animNone)]      : 'none',
 
 
 
@@ -515,12 +536,11 @@ export class BasicComponentStyles extends ElementStyles {
      * @returns A `JssStyle` represents the composite animation definition.
      */
     public /*virtual*/ animFnOld(): JssStyle { return {
-        // define an *animations* func:
-        [this.decl(this._animFn)] : cssProps.anim,
     }}
     protected /*virtual*/ applyStateNoAnimStartupOld(): JssStyle { return {
         animationDuration: [['0ms'], '!important'],
     }}
+    public    readonly _animFnOld             = 'animFn'
 }
 export const basicComponentStyles = new BasicComponentStyles();
 
@@ -589,14 +609,17 @@ const cssConfig = new CssConfig(() => {
             ['opacity'    , '300ms', 'ease-out'],
         ],
 
+        // TODO: remove none...
         filterNone        : 'brightness(100%)',
         filter            : 'brightness(100%)',
 
+        // TODO: remove none...
         boxShadowNone     : [[0, 0, 'transparent']],
         boxShadow         : [[0, 0, 'transparent']],
         boxShadowFocus    : [[0, 0, 0, '0.25rem' ]], // supports for Control children's theming
 
         '@keyframes none' : keyframesNone,
+        // TODO: remove none...
         animNone          : [[keyframesNone]],
         anim              : [[keyframesNone]],
         //#endregion animations

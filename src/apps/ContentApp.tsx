@@ -5,13 +5,19 @@ import
 
 
 import {
+    JssStyle,
+}                          from 'jss'
+import {
     jss as jssDefault,
 }                          from 'react-jss'         // base technology of our nodestrap components
 import './App.css';
 
-import Container from '../libs/Container';
-import Indicator from '../libs/Indicator';
-import Content from '../libs/Content';
+import Container 	from '../libs/Container';
+import Indicator 	from '../libs/Indicator';
+import {
+	ContentStyles,
+	Content,
+} 					from '../libs/Content';
 
 
 
@@ -46,6 +52,15 @@ jssDefault.setup({plugins:[
 
 
 
+class InheritContentStyles extends ContentStyles {
+	public /*override*/ useStates(inherit = true): JssStyle {
+		return super.useStates(inherit);
+	}
+}
+const inheritContentStyles = new InheritContentStyles();
+
+
+
 function App() {
     const themes = [undefined,'primary','secondary','success','info','warning','danger','light','dark'];
     const [theme, 	   setTheme     ] = useState<string|undefined>('primary');
@@ -58,6 +73,11 @@ function App() {
 
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
+
+	const [childEnabled,    setChildEnabled   ] = useState(true);
+	const [childActive,      setChildActive   ] = useState(false);
+
+	const styles = inheritContentStyles.useStyles();
 
 
 
@@ -85,22 +105,47 @@ function App() {
 							theme={theme} size={size} enableGradient={enableGrad}
 							outlined={outlined}
 
-							enabled={enabled} inheritActive={false}
+							inheritEnabled={false}
+							enabled={childEnabled}
+							
+							inheritActive={false}
+							active={childActive}
 
 							style={{display: 'inline-block'}}
 						>
-							child independent content
+							independent
 						</Content>
 
 						<Content
 							theme={theme} size={size} enableGradient={enableGrad}
 							outlined={outlined}
 
-							enabled={enabled} inheritActive={true}
+							inheritEnabled={true}
+							enabled={childEnabled}
+							
+							inheritActive={true}
+							active={childActive}
 
 							style={{display: 'inline-block'}}
 						>
-							child independent content
+							inherit by prop
+						</Content>
+
+						<Content
+							mainClass={styles.main}
+
+							theme={theme} size={size} enableGradient={enableGrad}
+							outlined={outlined}
+
+							inheritEnabled={false}
+							enabled={childEnabled}
+							
+							inheritActive={false}
+							active={childActive}
+
+							style={{display: 'inline-block'}}
+						>
+							inherit by css
 						</Content>
 					</div>
                 </Content>
@@ -169,6 +214,24 @@ function App() {
 							onChange={(e) => setActive(e.target.checked)}
 						/>
 						active
+					</label>
+				</p>
+				<p>
+					<label>
+						<input type='checkbox'
+							checked={childEnabled}
+							onChange={(e) => setChildEnabled(e.target.checked)}
+						/>
+						child enabled
+					</label>
+				</p>
+				<p>
+					<label>
+						<input type='checkbox'
+							checked={childActive}
+							onChange={(e) => setChildActive(e.target.checked)}
+						/>
+						child active
 					</label>
 				</p>
             </Container>

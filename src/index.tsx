@@ -26,7 +26,7 @@ import PopupApp             from './apps/PopupApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <ContentApp />
+        <IndicatorApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

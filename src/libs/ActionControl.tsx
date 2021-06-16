@@ -124,7 +124,7 @@ export class ActionControlStylesBuilder extends ControlStylesBuilder {
         '&.press,&.pressed': // if activated programmatically (not by user input)
             this.stateNotDisabled({ // if ctrl was not fully disabled
                 // define an *animations* func:
-                [this.decl(this._animFn)]: [
+                [this.decl(this._animFnOld)]: [
                     ecssProps.anim,
                     this.ref(this._animPressRelease),  // 5th : ctrl already pressed, move to the least priority
                     this.ref(this._animHoverLeave),    // 4th : cursor leaved   => low probability because holding press
@@ -135,7 +135,7 @@ export class ActionControlStylesBuilder extends ControlStylesBuilder {
             }),
 
         // define an *animations* func:
-        [this.decl(this._animFn)]: [
+        [this.decl(this._animFnOld)]: [
             ecssProps.anim,
             this.ref(this._animEnableDisable), // 5th : ctrl must be enabled
             this.ref(this._animActivePassive), // 4th : rarely happened => low probability

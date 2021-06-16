@@ -5,22 +5,18 @@ import
 
 
 import {
+    JssStyle,
+}                          from 'jss'
+import {
     jss as jssDefault,
 }                          from 'react-jss'         // base technology of our nodestrap components
 import './App.css';
 
-import Container from '../libs/Container';
-import Indicator from '../libs/Indicator';
-
-// import type {
-//     JssStyle,
-// }                           from 'jss'          // ts defs support for jss
-// import {
-//     Cust,
-// }                           from '../libs/Css'        // ts defs support for jss
-// import type {
-//     ClassList,
-// }                           from '../libs/Element'
+import Container 	from '../libs/Container';
+import {
+	IndicatorStyles,
+	Indicator,
+} 					from '../libs/Indicator';
 
 
 
@@ -55,6 +51,15 @@ jssDefault.setup({plugins:[
 
 
 
+class InheritIndicatorStyles extends IndicatorStyles {
+	public /*override*/ useStates(inherit = true): JssStyle {
+		return super.useStates(inherit);
+	}
+}
+const inheritIndicatorStyles = new InheritIndicatorStyles();
+
+
+
 function App() {
     const themes = [undefined,'primary','secondary','success','info','warning','danger','light','dark'];
     const [theme, 	   setTheme     ] = useState<string|undefined>('primary');
@@ -68,6 +73,11 @@ function App() {
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
 
+	const [childEnabled,    setChildEnabled   ] = useState(true);
+	const [childActive,      setChildActive   ] = useState(false);
+
+	const styles = inheritIndicatorStyles.useStyles();
+
 
 
     return (
@@ -79,7 +89,56 @@ function App() {
 
 					enabled={enabled} active={active}
 				>
-                    indicator
+                    content
+
+					<div style={{display: 'inline-block', background: 'white', border: 'solid 1px black', padding: '10px', margin: '15px'}}>
+						<Indicator
+							theme={theme} size={size} enableGradient={enableGrad}
+							outlined={outlined}
+
+							inheritEnabled={false}
+							enabled={childEnabled}
+							
+							inheritActive={false}
+							active={childActive}
+
+							style={{display: 'inline-block'}}
+						>
+							independent
+						</Indicator>
+
+						<Indicator
+							theme={theme} size={size} enableGradient={enableGrad}
+							outlined={outlined}
+
+							inheritEnabled={true}
+							enabled={childEnabled}
+							
+							inheritActive={true}
+							active={childActive}
+
+							style={{display: 'inline-block'}}
+						>
+							inherit by prop
+						</Indicator>
+
+						<Indicator
+							mainClass={styles.main}
+
+							theme={theme} size={size} enableGradient={enableGrad}
+							outlined={outlined}
+
+							inheritEnabled={false}
+							enabled={childEnabled}
+							
+							inheritActive={false}
+							active={childActive}
+
+							style={{display: 'inline-block'}}
+						>
+							inherit by css
+						</Indicator>
+					</div>
                 </Indicator>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
@@ -146,6 +205,24 @@ function App() {
 							onChange={(e) => setActive(e.target.checked)}
 						/>
 						active
+					</label>
+				</p>
+				<p>
+					<label>
+						<input type='checkbox'
+							checked={childEnabled}
+							onChange={(e) => setChildEnabled(e.target.checked)}
+						/>
+						child enabled
+					</label>
+				</p>
+				<p>
+					<label>
+						<input type='checkbox'
+							checked={childActive}
+							onChange={(e) => setChildActive(e.target.checked)}
+						/>
+						child active
 					</label>
 				</p>
             </Container>

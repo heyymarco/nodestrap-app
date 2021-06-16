@@ -168,14 +168,15 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
 
             
             
-            // reset toggles to initial/inherit state:
-            [this.decl(this._passiveForegTg)] : inherit ? 'unset' : 'initial', // toggle *off*
-            [this.decl(this._passiveBackgTg)] : inherit ? 'unset' : 'initial', // toggle *off*
+            // reset filters/anims/toggles to initial/inherit state:
+            [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
+            [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
+            [this.decl(this._passiveForegTg)]      : inherit ? 'unset' : 'initial', // toggle *off*
+            [this.decl(this._passiveBackgTg)]      : inherit ? 'unset' : 'initial', // toggle *off*
         }],
     ]}
     public /*virtual*/ contentActived()     : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-        [this.decl(this._animActivePassive)]   : bcssProps.animNone,
     }}
     public /*virtual*/ contentActivating()  : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
@@ -192,11 +193,6 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
         [this.decl(this._passiveBackgTg)]      : this.ref(this._passiveBackgFn), // toggle *on*
     }}
     public /*virtual*/ contentPassived()    : JssStyle { return {
-        [this.decl(this._filterActivePassive)] : bcssProps.filterNone,
-        [this.decl(this._animActivePassive)]   : bcssProps.animNone,
-
-        
-        
         // _passiveForegFn & _passiveBackgFn => requires usePropsFn() => use it at contentStates()
         [this.decl(this._passiveForegTg)]      : this.ref(this._passiveForegFn), // toggle *on*
         [this.decl(this._passiveBackgTg)]      : this.ref(this._passiveBackgFn), // toggle *on*

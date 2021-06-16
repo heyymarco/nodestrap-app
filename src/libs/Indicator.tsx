@@ -19,7 +19,6 @@ import {
 }                           from './nodestrap'  // nodestrap's core
 import {
     BasicComponentStyles,
-    cssProps as bcssProps,
     BasicComponentProps,
     BasicComponent,
 }                           from './BasicComponent'
@@ -36,8 +35,7 @@ import {
 
 export class IndicatorStyles extends BasicComponentStyles {
     //#region scoped css props
-    // anim props:
-
+    //#region animations
     public    readonly _filterEnableDisable = 'filterEnableDisable'
     protected readonly _animEnableDisable   = 'animEnableDisable'
 
@@ -46,6 +44,7 @@ export class IndicatorStyles extends BasicComponentStyles {
 
     public    readonly _filterActivePassive = 'filterActivePassive'
     protected readonly _animActivePassive   = 'animActivePassive'
+    //#endregion animations
     //#endregion scoped css props
 
 
@@ -137,11 +136,16 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
 
-        ...this.indicationStates(),
+        ...this.indicationStates(inherit),
     ]}
-    public /*virtual*/ indicationStates(): ClassList { return [
+    public /*virtual*/ indicationStates(inherit: boolean): ClassList { return [
         [ null, {
-            [this.decl(this._filterHoverLeave)] : bcssProps.filterNone, // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
+            // reset filters/anims to initial/inherit state:
+            [this.decl(this._filterEnableDisable)] : inherit ? 'unset' : 'initial',
+            [this.decl(this._animEnableDisable)]   : inherit ? 'unset' : 'initial',
+            [this.decl(this._filterHoverLeave)]    : inherit ? 'unset' : 'initial', // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
+            [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
+            [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
         }],
 
 
@@ -170,8 +174,7 @@ export class IndicatorStyles extends BasicComponentStyles {
     ]}
     
     public /*virtual*/ enabled()     : JssStyle { return {
-        [this.decl(this._filterEnableDisable)] : bcssProps.filterNone,
-        [this.decl(this._animEnableDisable)]   : bcssProps.animNone,
+        /* --nothing-- */
     }}
     public /*virtual*/ enabling()    : JssStyle { return {
         [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
@@ -183,12 +186,10 @@ export class IndicatorStyles extends BasicComponentStyles {
     }}
     public /*virtual*/ disabled()    : JssStyle { return {
         [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
-        [this.decl(this._animEnableDisable)]   : bcssProps.animNone,
     }}
 
     public /*virtual*/ actived()     : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-        [this.decl(this._animActivePassive)]   : bcssProps.animNone,
 
         extend: [
             this.themeActive(),
@@ -209,15 +210,13 @@ export class IndicatorStyles extends BasicComponentStyles {
         [this.decl(this._animActivePassive)]   : cssProps.animPassive,
     }}
     public /*virtual*/ passived()    : JssStyle { return {
-        [this.decl(this._filterActivePassive)] : bcssProps.filterNone,
-        [this.decl(this._animActivePassive)]   : bcssProps.animNone,
+        /* --nothing-- */
     }}
     public /*virtual*/ themeActive(theme = 'secondary'): JssStyle {
         return this.themeIf(theme);
     }
     public /*virtual*/ outlinedActive(): JssStyle {
-        // *toggle off* the outlined props:
-        return this.toggleOffOutlined();
+        return this.toggleOffOutlined(); // *toggle off* the outlined
     }
 
     public /*virtual*/ pressed(): JssStyle { return {} }
@@ -236,9 +235,9 @@ export class IndicatorStyles extends BasicComponentStyles {
         ...this.indicationFilterFn(),
     ]}
     public /*virtual*/ indicationFilterFn(): Cust.Ref[] { return [
-        this.ref(this._filterEnableDisable),
-        this.ref(this._filterActivePassive),
-        this.ref(this._filterHoverLeave), // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
+        this.ref(this._filterEnableDisable, this._filterNone),
+        this.ref(this._filterActivePassive, this._filterNone),
+        this.ref(this._filterHoverLeave,    this._filterNone), // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
     ]}
 
     public /*override*/ animFn(): Cust.Ref[] { return [
@@ -249,8 +248,8 @@ export class IndicatorStyles extends BasicComponentStyles {
         ...this.indicationAnimFn(),
     ]}
     public /*virtual*/ indicationAnimFn(): Cust.Ref[] { return [
-        this.ref(this._animEnableDisable), // 2nd : ctrl must be enabled
-        this.ref(this._animActivePassive), // 1st : ctrl got pressed
+        this.ref(this._animEnableDisable, this._animNone), // 2nd : ctrl must be enabled
+        this.ref(this._animActivePassive, this._animNone), // 1st : ctrl got pressed
     ]}
 
 
@@ -271,24 +270,6 @@ export class IndicatorStyles extends BasicComponentStyles {
 
     // old:
     public /*virtual*/ indicationAnimFnOld(): JssStyle { return {
-        //#region re-arrange the animFn at different states
-        '&.active,&.actived': // if activated programmatically (not by user input)
-            this.stateNotDisabled({ // if ctrl was not fully disabled
-                // define an *animations* func:
-                [this.decl(this._animFn)]: [
-                    bcssProps.anim,
-                    this.ref(this._animActivePassive), // 2nd : ctrl already pressed, move to the least priority
-                    this.ref(this._animEnableDisable), // 1st : ctrl enable/disable => rarely used => low probability
-                ],
-            }),
-
-        // define an *animations* func:
-        [this.decl(this._animFn)]: [
-            bcssProps.anim,
-            this.ref(this._animEnableDisable), // 2nd : ctrl must be enabled
-            this.ref(this._animActivePassive), // 1st : ctrl got pressed
-        ],
-        //#endregion re-arrange the animFn at different states
     }}
 }
 export const indicatorStyles = new IndicatorStyles();
@@ -301,16 +282,16 @@ const cssConfig = new CssConfig(() => {
     const keyframesDisable   : PropEx.Keyframes = {
         from: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterEnableDisable)),
+                ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterEnableDisable, indicatorStyles._filterNone)),
 
-             // styles.ref(styles._filterEnableDisable), // missing the last => let's the browser interpolated it
+             // indicatorStyles.ref(indicatorStyles._filterEnableDisable, indicatorStyles._filterNone), // missing the last => let's the browser interpolated it
             ]],
         },
         to: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterEnableDisable)),
+                ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterEnableDisable, indicatorStyles._filterNone)),
 
-                indicatorStyles.ref(indicatorStyles._filterEnableDisable), // existing the last => let's the browser interpolated it
+                indicatorStyles.ref(indicatorStyles._filterEnableDisable, indicatorStyles._filterNone), // existing the last => let's the browser interpolated it
             ]],
         },
     };
@@ -324,16 +305,16 @@ const cssConfig = new CssConfig(() => {
     const keyframesActive    : PropEx.Keyframes = {
         from: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterActivePassive)),
+                ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterActivePassive, indicatorStyles._filterNone)),
 
-             // styles.ref(styles._filterActivePassive), // missing the last => let's the browser interpolated it
+             // indicatorStyles.ref(indicatorStyles._filterActivePassive, indicatorStyles._filterNone), // missing the last => let's the browser interpolated it
             ]],
         },
         to: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterActivePassive)),
+                ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterActivePassive, indicatorStyles._filterNone)),
 
-                indicatorStyles.ref(indicatorStyles._filterActivePassive), // existing the last => let's the browser interpolated it
+                indicatorStyles.ref(indicatorStyles._filterActivePassive, indicatorStyles._filterNone), // existing the last => let's the browser interpolated it
             ]],
         },
     };

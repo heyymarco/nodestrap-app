@@ -288,7 +288,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
         //#region re-arrange the animFn at different states
         ...this.stateValid({
             // define an *animations* func:
-            [this.decl(this._animFn)]: [
+            [this.decl(this._animFnOld)]: [
                 ecssProps.anim,
                 this.ref(this._animValUnval), // 2nd : ctrl already validated, move to the least priority
                 this.ref(this._animInvUninv), // 1st : rarely triggered => low probability
@@ -296,7 +296,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
         }),
 
         // define an *animations* func:
-        [this.decl(this._animFn)]: [
+        [this.decl(this._animFnOld)]: [
             ecssProps.anim,
             this.ref(this._animInvUninv),
             this.ref(this._animValUnval),
@@ -317,7 +317,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
             this.stateNotDisabled({ // if ctrl was not fully disabled
                 ...this.stateValid({
                     // define an *animations* func:
-                    [this.decl(this._animFn)]: [
+                    [this.decl(this._animFnOld)]: [
                         ecssProps.anim,
                         this.ref(this._animActivePassive), // 6th : ctrl already pressed, move to the least priority
                         this.ref(this._animValUnval),      // 5th : ctrl already validated, move to the least priority
@@ -328,7 +328,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
                     ],
                 }),
                 // define an *animations* func:
-                [this.decl(this._animFn)]: [
+                [this.decl(this._animFnOld)]: [
                     ecssProps.anim,
                     this.ref(this._animActivePassive), // 6th : ctrl already pressed, move to the least priority
                     this.ref(this._animInvUninv),      // 5th : rarely triggered => low probability
@@ -341,7 +341,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
 
         ...this.stateValid({
             // define an *animations* func:
-            [this.decl(this._animFn)]: [
+            [this.decl(this._animFnOld)]: [
                 ecssProps.anim,
                 this.ref(this._animValUnval),      // 6th : ctrl already validated, move to the least priority
                 this.ref(this._animInvUninv),      // 5th : rarely triggered => low probability
@@ -352,7 +352,7 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
             ],
         }),
         // define an *animations* func:
-        [this.decl(this._animFn)]: [
+        [this.decl(this._animFnOld)]: [
             ecssProps.anim,
             this.ref(this._animInvUninv),      // 6th : rarely triggered => low probability
             this.ref(this._animValUnval),      // 5th : rarely triggered => low probability

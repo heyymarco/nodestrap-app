@@ -239,7 +239,7 @@ export class ControlStylesBuilder extends IndicatorStyles implements IControlSty
         '&.active,&.actived': // if activated programmatically (not by user input)
             this.stateNotDisabled({ // if ctrl was not fully disabled
                 // define an *animations* func:
-                [this.decl(this._animFn)]: [
+                [this.decl(this._animFnOld)]: [
                     ecssProps.anim,
                     this.ref(this._animActivePassive), // 4th : ctrl already pressed, move to the least priority
                     this.ref(this._animHoverLeave),    // 3rd : cursor leaved   => low probability because holding press
@@ -249,7 +249,7 @@ export class ControlStylesBuilder extends IndicatorStyles implements IControlSty
             }),
 
         // define an *animations* func:
-        [this.decl(this._animFn)]: [
+        [this.decl(this._animFnOld)]: [
             ecssProps.anim,
             this.ref(this._animEnableDisable), // 4th : ctrl must be enabled
             this.ref(this._animHoverLeave),    // 3rd : cursor hovered over ctrl
@@ -274,7 +274,7 @@ export class ControlStylesBuilder extends IndicatorStyles implements IControlSty
 
 
 
-        this.ref(this._boxShadowFocusBlur),
+        this.ref(this._boxShadowFocusBlur, this._boxShadowNone),
     ]}
 
 
@@ -313,16 +313,16 @@ const cssConfig = new CssConfig(() => {
     const keyframesHover   : PropEx.Keyframes = {
         from: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterHoverLeave)),
+                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterHoverLeave, styles._filterNone)),
 
-             // styles.ref(styles._filterHoverLeave), // missing the last => let's the browser interpolated it
+             // styles.ref(styles._filterHoverLeave, styles._filterNone), // missing the last => let's the browser interpolated it
             ]],
         },
         to: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterHoverLeave)),
+                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterHoverLeave, styles._filterNone)),
 
-                styles.ref(styles._filterHoverLeave), // existing the last => let's the browser interpolated it
+                styles.ref(styles._filterHoverLeave, styles._filterNone), // existing the last => let's the browser interpolated it
             ]],
         },
     };
@@ -334,16 +334,16 @@ const cssConfig = new CssConfig(() => {
     const keyframesFocus   : PropEx.Keyframes = {
         from: {
             boxShadow: [[[ // triple array => makes the JSS treat as comma separated values
-                ...styles.boxShadowFn().filter((b) => b !== styles.ref(styles._boxShadowFocusBlur)),
+                ...styles.boxShadowFn().filter((b) => b !== styles.ref(styles._boxShadowFocusBlur, styles._boxShadowNone)),
 
-             // styles.ref(styles._boxShadowFocusBlur), // missing the last => let's the browser interpolated it
+             // styles.ref(styles._boxShadowFocusBlur, styles._boxShadowNone), // missing the last => let's the browser interpolated it
             ]]],
         } as JssStyle,
         to: {
             boxShadow: [[[ // triple array => makes the JSS treat as comma separated values
-                ...styles.boxShadowFn().filter((b) => b !== styles.ref(styles._boxShadowFocusBlur)),
+                ...styles.boxShadowFn().filter((b) => b !== styles.ref(styles._boxShadowFocusBlur, styles._boxShadowNone)),
 
-                styles.ref(styles._boxShadowFocusBlur), // existing the last => let's the browser interpolated it
+                styles.ref(styles._boxShadowFocusBlur, styles._boxShadowNone), // existing the last => let's the browser interpolated it
             ]]],
         } as JssStyle,
     };
