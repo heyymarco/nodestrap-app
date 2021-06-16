@@ -29,7 +29,7 @@ import {
 }                           from './Container'
 import {
     default  as Indicator,
-    indicatorStyles as indicatorStyles,
+    indicatorStyles,
     useTogglerActive,
 }                           from './Indicator'
 import type * as Indicators from './Indicator'

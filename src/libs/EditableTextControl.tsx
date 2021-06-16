@@ -84,12 +84,12 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
 
 
     // states:
-    public /*override*/ states()      : ClassList { return [
-        ...super.states(), // copy states from base
+    public /*override*/ states(inherit: boolean): ClassList { return [
+        ...super.states(inherit), // copy states from base
 
 
 
-        ...this.contentStates(),
+        ...this.contentStates(inherit),
     ]}
     public /*override*/ actived()     : JssStyle {
         return this.contentActived();
@@ -104,8 +104,8 @@ export class EditableTextControlStylesBuilder extends EditableControlStylesBuild
         return this.contentPassived();
     }
 
-    public /*implement*/ contentStates()      : ClassList {
-        return contentStyles.contentStates();
+    public /*implement*/ contentStates(inherit: boolean): ClassList {
+        return contentStyles.contentStates(inherit);
     }
     public /*implement*/ contentActived()     : JssStyle {
         return contentStyles.contentActived();

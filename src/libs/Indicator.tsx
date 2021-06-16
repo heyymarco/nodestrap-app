@@ -132,8 +132,8 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
     // states:
-    public /*override*/ states(): ClassList { return [
-        ...super.states(), // copy states from base
+    public /*override*/ states(inherit: boolean): ClassList { return [
+        ...super.states(inherit), // copy states from base
 
 
 

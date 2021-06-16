@@ -325,15 +325,16 @@ export class ElementStyles {
     public /*virtual*/ useStates(inherit = false): JssStyle { return {
         extend: [
             // state rules:
-            ...this.states().map(([state, style]) => ({ [state ? (state.includes('&') ? state : `&.${state}`) : '&'] : style })),
+            ...this.states(inherit).map(([state, style]) => ({ [state ? (state.includes('&') ? state : `&.${state}`) : '&'] : style })),
         ] as JssStyle,
     }}
 
     /**
      * Creates css rule definitions for all states by overriding some *scoped css props* and applied some `themesIf`.
+     * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
      * @returns A `ClassList` represents the css rule definitions for all states.
      */
-    public /*virtual*/ states(): ClassList { return [] }
+    public /*virtual*/ states(inherit: boolean): ClassList { return [] }
 
 
 

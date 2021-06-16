@@ -31,13 +31,13 @@ import {
 
 export interface IContentStyles {
     // variants:
-    contentTheme(theme: string): JssStyle
-    contentSize(size: string): JssStyle
+    contentTheme(theme: string) : JssStyle
+    contentSize(size: string)   : JssStyle
 
 
 
     // states:
-    contentStates()      : ClassList
+    contentStates(inherit: boolean): ClassList
     contentActived()     : JssStyle
     contentActivating()  : JssStyle
     contentPassivating() : JssStyle
@@ -128,12 +128,12 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
 
 
     // states:
-    public /*override*/ states()      : ClassList { return [
-        ...super.states(), // copy states from base
+    public /*override*/ states(inherit: boolean): ClassList { return [
+        ...super.states(inherit), // copy states from base
 
 
 
-        ...this.contentStates(),
+        ...this.contentStates(inherit),
     ]}
     public /*override*/ actived()     : JssStyle {
         return this.contentActived();
@@ -148,28 +148,34 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
         return this.contentPassived();
     }
 
-    public /*virtual*/ contentStates()      : ClassList { return [
-        // requires usePropsFn() to be able _passiveForegFn to work in contentPassivating() & contentPassived()
-        // the code below causing useStates() implicitly includes usePropsFn()
-        [ null, this.usePropsFn() ],
+    public /*virtual*/ contentStates(inherit: boolean): ClassList { return [
+        [ null, {
+            // requires usePropsFn() for _passiveForegFn & _passiveBackgFn to be able to work in contentPassivating() & contentPassived()
+            // the code below causing useStates() implicitly includes usePropsFn()
+            ...this.usePropsFn(),
+
+            
+            
+            // reset toggles to initial/inherit state:
+            [this.decl(this._passiveForegTg)] : inherit ? 'unset' : 'initial', // toggle *off*
+            [this.decl(this._passiveBackgTg)] : inherit ? 'unset' : 'initial', // toggle *off*
+        }],
     ]}
     public /*virtual*/ contentActived()     : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
         [this.decl(this._animActivePassive)]   : bcssProps.animNone,
-
-        [this.decl(this._passiveForegTg)]      : 'initial', // toggle *off*, no inherit toggle *on*
     }}
     public /*virtual*/ contentActivating()  : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
         [this.decl(this._animActivePassive)]   : cssProps.animActive,
-
-        [this.decl(this._passiveForegTg)]      : 'initial', // toggle *off*, no inherit toggle *on*
     }}
     public /*virtual*/ contentPassivating() : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
         [this.decl(this._animActivePassive)]   : cssProps.animPassive,
 
-        // [_passiveForegFn, _passiveBackgFn] => requires usePropsFn() => use it at contentStates()
+        
+        
+        // _passiveForegFn & _passiveBackgFn => requires usePropsFn() => use it at contentStates()
         [this.decl(this._passiveForegTg)]      : this.ref(this._passiveForegFn), // toggle *on*
         [this.decl(this._passiveBackgTg)]      : this.ref(this._passiveBackgFn), // toggle *on*
     }}
@@ -177,7 +183,9 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
         [this.decl(this._filterActivePassive)] : bcssProps.filterNone,
         [this.decl(this._animActivePassive)]   : bcssProps.animNone,
 
-        // [_passiveForegFn, _passiveBackgFn] => requires usePropsFn() => use it at contentStates()
+        
+        
+        // _passiveForegFn & _passiveBackgFn => requires usePropsFn() => use it at contentStates()
         [this.decl(this._passiveForegTg)]      : this.ref(this._passiveForegFn), // toggle *on*
         [this.decl(this._passiveBackgTg)]      : this.ref(this._passiveBackgFn), // toggle *on*
     }}
