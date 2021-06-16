@@ -79,6 +79,30 @@ function App() {
 					enabled={enabled} active={active}
 				>
                     content
+
+					<div style={{display: 'inline-block', background: 'white', border: 'solid 1px black', padding: '10px', margin: '15px'}}>
+						<Content
+							theme={theme} size={size} enableGradient={enableGrad}
+							outlined={outlined}
+
+							enabled={enabled} inheritActive={false}
+
+							style={{display: 'inline-block'}}
+						>
+							child independent content
+						</Content>
+
+						<Content
+							theme={theme} size={size} enableGradient={enableGrad}
+							outlined={outlined}
+
+							enabled={enabled} inheritActive={true}
+
+							style={{display: 'inline-block'}}
+						>
+							child independent content
+						</Content>
+					</div>
                 </Content>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
