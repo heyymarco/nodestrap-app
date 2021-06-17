@@ -180,8 +180,8 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
         [this.decl(this._foregIfIf)]          : this.ref(this._foregIfVal),
         [this.decl(this._backgIfIf)]          : this.ref(this._backgIfVal),
         [this.decl(this._borderIfIf)]         : this.ref(this._borderIfVal),
-        [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfVal),
         [this.decl(this._outlinedForegIfIf)]  : this.ref(this._outlinedForegIfVal),
+        [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfVal),
     }}
     protected /*virtual*/ applyStateInvalid(): JssStyle { return {
         //TODO: update....
@@ -189,8 +189,8 @@ export class EditableControlStylesBuilder extends ControlStylesBuilder implement
         [this.decl(this._foregIfIf)]          : this.ref(this._foregIfInv),
         [this.decl(this._backgIfIf)]          : this.ref(this._backgIfInv),
         [this.decl(this._borderIfIf)]         : this.ref(this._borderIfInv),
-        [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfInv),
         [this.decl(this._outlinedForegIfIf)]  : this.ref(this._outlinedForegIfInv),
+        [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfInv),
     }}
     //#endregion mixins
 

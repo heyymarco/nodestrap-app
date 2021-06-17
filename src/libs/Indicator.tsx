@@ -35,6 +35,18 @@ import {
 
 export class IndicatorStyles extends BasicComponentStyles {
     //#region scoped css props
+    /**
+     * toggles *on* foreground color - at active state.
+     */
+    protected readonly _activeForegTg       = 'activeForegTg'
+
+    /**
+     * toggles *on* backgrounds - at active state.
+     */
+    protected readonly _activeBackgTg       = 'activeBackgTg'
+
+
+
     //#region animations
     public    readonly _filterEnableDisable = 'filterEnableDisable'
     protected readonly _animEnableDisable   = 'animEnableDisable'
@@ -140,12 +152,21 @@ export class IndicatorStyles extends BasicComponentStyles {
     ]}
     public /*virtual*/ indicationStates(inherit: boolean): ClassList { return [
         [ null, {
+            // requires usePropsFn() for _foregFn & _backgFn to be able to work in actived() & activating()
+            // the code below causing useStates() implicitly includes usePropsFn()
+            ...this.usePropsFn(),
+
+
+
             // reset filters/anims to initial/inherit state:
             [this.decl(this._filterEnableDisable)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animEnableDisable)]   : inherit ? 'unset' : 'initial',
             [this.decl(this._filterHoverLeave)]    : inherit ? 'unset' : 'initial', // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
             [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
+
+            [this.decl(this._activeForegTg)]       : inherit ? 'unset' : 'initial',
+            [this.decl(this._activeBackgTg)]       : inherit ? 'unset' : 'initial',
         }],
 
 
@@ -191,18 +212,32 @@ export class IndicatorStyles extends BasicComponentStyles {
     public /*virtual*/ actived()     : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
 
+        
+        
+        // _foregFn & _backgFn => requires usePropsFn() => use it at indicationStates()
+        [this.decl(this._activeForegTg)]       : this.ref(this._foregFn),
+        [this.decl(this._activeBackgTg)]       : this.ref(this._backgFn),
+
+        
+        
         extend: [
             this.themeActive(),
-            this.outlinedActive(),
         ] as JssStyle,
     }}
     public /*virtual*/ activating()  : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
         [this.decl(this._animActivePassive)]   : cssProps.animActive,
 
+        
+        
+        // _foregFn & _backgFn => requires usePropsFn() => use it at indicationStates()
+        [this.decl(this._activeForegTg)]       : this.ref(this._foregFn),
+        [this.decl(this._activeBackgTg)]       : this.ref(this._backgFn),
+
+        
+        
         extend: [
             this.themeActive(),
-            this.outlinedActive(),
         ] as JssStyle,
     }}
     public /*virtual*/ passivating() : JssStyle { return {
@@ -214,9 +249,6 @@ export class IndicatorStyles extends BasicComponentStyles {
     }}
     public /*virtual*/ themeActive(theme = 'secondary'): JssStyle {
         return this.themeIf(theme);
-    }
-    public /*virtual*/ outlinedActive(): JssStyle {
-        return this.toggleOffOutlined(); // *toggle off* the outlined
     }
 
     public /*virtual*/ pressed(): JssStyle { return {} }

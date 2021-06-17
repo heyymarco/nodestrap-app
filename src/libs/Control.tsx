@@ -266,9 +266,6 @@ export class ControlStylesBuilder extends IndicatorStyles implements IControlSty
             this.controlPropsFn(),
         ] as JssStyle,
     }}
-    public /*override*/ animFnOld(): JssStyle {
-        return this.controlAnimFn();
-    }
     public /*override*/ boxShadowFn(): Cust.Ref[] { return [
         ...super.boxShadowFn(),
 
@@ -276,6 +273,9 @@ export class ControlStylesBuilder extends IndicatorStyles implements IControlSty
 
         this.ref(this._boxShadowFocusBlur, this._boxShadowNone),
     ]}
+    public /*override*/ animFnOld(): JssStyle {
+        return this.controlAnimFn();
+    }
 
 
 

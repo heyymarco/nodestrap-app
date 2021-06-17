@@ -89,7 +89,7 @@ function App() {
 
 					enabled={enabled} active={active}
 				>
-                    content
+                    indicator
 
 					<div style={{display: 'inline-block', background: 'white', border: 'solid 1px black', padding: '10px', margin: '15px'}}>
 						<Indicator

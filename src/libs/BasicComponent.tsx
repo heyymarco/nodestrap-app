@@ -62,8 +62,6 @@ export class BasicComponentStyles extends ElementStyles {
     public    readonly _foregFn            = 'foregFn'
     //#endregion foreground
 
-    
-
     //#region background
     /**
      * none background.
@@ -91,17 +89,10 @@ export class BasicComponentStyles extends ElementStyles {
     public    readonly _backgFn            = 'backgFn'
 
     /**
-     * layered backgrounds.
-     */
-    public    readonly _backgLy            = 'backgLy'
-
-    /**
      * toggles background gradient.
      */
     protected readonly _backgGradTg        = 'backgGradTg'
     //#endregion background
-
-
 
     //#region border
     /**
@@ -124,6 +115,47 @@ export class BasicComponentStyles extends ElementStyles {
      */
     public    readonly _borderFn           = 'borderFn'
     //#endregion border
+
+
+
+    //#region outlined - foreground
+    /**
+     * themed foreground color - at outlined state.
+     */
+    protected readonly _outlinedForegTh    = 'outlinedForegTh'
+
+    /**
+     * conditional foreground color - at outlined state.
+     */
+    protected readonly _outlinedForegIfIf  = 'outlinedForegIfIf'
+
+    /**
+     * conditional unthemed foreground color - at outlined state.
+     */
+    protected readonly _outlinedForegIf    = 'outlinedForegIf'
+
+    /**
+     * functional foreground color - at outlined state.
+     */
+    public    readonly _outlinedForegFn    = 'outlinedForegFn'
+
+    /**
+     * toggles *on* foreground color - at outlined state.
+     */
+    protected readonly _outlinedForegTg    = 'outlinedForegTg'
+    //#endregion outlined - foreground
+
+    //#region outlined - background
+    /**
+     * functional backgrounds - at outlined state.
+     */
+    public    readonly _outlinedBackgFn    = 'outlinedBackgFn'
+
+    /**
+     * toggles *on* backgrounds - at outlined state.
+     */
+    protected readonly _outlinedBackgTg    = 'outlinedBackgTg'
+    //#endregion outlined - background
 
 
 
@@ -157,59 +189,40 @@ export class BasicComponentStyles extends ElementStyles {
 
 
 
-    //#region outlined - foreground
+    //#region finals
     /**
-     * themed foreground color - at outlined state.
+     * final functional foreground color.
      */
-    protected readonly _outlinedForegTh    = 'outlinedForegTh'
-
-    /**
-     * conditional foreground color - at outlined state.
-     */
-    protected readonly _outlinedForegIfIf  = 'outlinedForegIfIf'
+    public    readonly _foreg              = 'foreg'
 
     /**
-     * conditional unthemed foreground color - at outlined state.
+     * final functional backgrounds.
      */
-    protected readonly _outlinedForegIf    = 'outlinedForegIf'
+    public    readonly _backg              = 'backg'
 
     /**
-     * functional foreground color - at outlined state.
+     * functional border color.
      */
-    public    readonly _outlinedForegFn    = 'outlinedForegFn'
+    public    readonly _border             = 'border'
 
     /**
-     * toggles *on* foreground color - at outlined state.
+     * functional box-shadow.
      */
-    protected readonly _outlinedForegTg    = 'outlinedForegTg'
-    //#endregion outlined - foreground
-
-
-
-    //#region outlined - background
-    /**
-     * functional backgrounds - at outlined state.
-     */
-    public    readonly _outlinedBackgFn    = 'outlinedBackgFn'
-
-    /**
-     * toggles *on* backgrounds - at outlined state.
-     */
-    protected readonly _outlinedBackgTg    = 'outlinedBackgTg'
-    //#endregion outlined - background
+    public    readonly _boxShadow          = 'boxShadow'
+    //#endregion finals
 
 
 
     //#region animations
     /**
-     * none filter.
-     */
-    public readonly _filterNone            = 'filterNone'
-
-    /**
      * none box shadow.
      */
     public readonly _boxShadowNone         = 'boxShadowNone'
+
+    /**
+     * none filter.
+     */
+    public readonly _filterNone            = 'filterNone'
 
     /**
      * none animation.
@@ -226,13 +239,19 @@ export class BasicComponentStyles extends ElementStyles {
 
 
 
-        // *toggle off* the background gradient prop:
-        // but still be able to *toggle on* by parent (inherit)
-        [ null, this.toggleOffGradient(/*inherit =*/true) ],
+        [ null, {
+            extend: [
+                // *toggle off* the background gradient prop:
+                // but still be able to *toggle on* by parent (inherit)
+                this.toggleOffGradient(/*inherit =*/true),
 
-        // *toggle off* the outlined props:
-        // but still be able to *toggle on* by parent (inherit)
-        [ null, this.toggleOffOutlined(/*inherit =*/true) ],
+                
+                
+                // *toggle off* the outlined props:
+                // but still be able to *toggle on* by parent (inherit)
+                this.toggleOffOutlined(/*inherit =*/true),
+            ] as JssStyle,
+        }],
 
 
 
@@ -273,8 +292,8 @@ export class BasicComponentStyles extends ElementStyles {
         [this.decl(this._foregTh)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
         [this.decl(this._backgTh)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
         [this.decl(this._borderTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
-        [this.decl(this._boxShadowFocusTh)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
         [this.decl(this._outlinedForegTh)]  : (colors as DictionaryOf<typeof colors>)[theme],
+        [this.decl(this._boxShadowFocusTh)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
     }}
 
     /**
@@ -365,8 +384,8 @@ export class BasicComponentStyles extends ElementStyles {
             [this.decl(this._foregIf)]          : cssProps.foreg,
             [this.decl(this._backgIf)]          : this.ref(this._backgNone),
             [this.decl(this._borderIf)]         : cssProps.borderColor,
-            [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
             [this.decl(this._outlinedForegIf)]  : cssProps.foreg,
+            [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
         };
     }
     /**
@@ -378,8 +397,8 @@ export class BasicComponentStyles extends ElementStyles {
         [this.decl(this._foregIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
         [this.decl(this._backgIf)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
         [this.decl(this._borderIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
-        [this.decl(this._boxShadowFocusIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
         [this.decl(this._outlinedForegIf)]  : (colors as DictionaryOf<typeof colors>)[theme],
+        [this.decl(this._boxShadowFocusIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
     }}
     /**
      * Creates an important conditional color definition for the specified `theme`.
@@ -390,39 +409,39 @@ export class BasicComponentStyles extends ElementStyles {
         [this.decl(this._foregIfIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
         [this.decl(this._backgIfIf)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
         [this.decl(this._borderIfIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
-        [this.decl(this._boxShadowFocusIfIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
         [this.decl(this._outlinedForegIfIf)]  : (colors as DictionaryOf<typeof colors>)[theme],
+        [this.decl(this._boxShadowFocusIfIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
     }}
 
 
 
     // functions:
     public /*override*/ propsFn(): PropList { return {
+        //#region nones
         // define a *none* background:
         [this.decl(this._backgNone)]     : this.solidBackg('transparent'),
-
-        // define a *none* filter:
-        [this.decl(this._filterNone)]    : 'brightness(100%)',
 
         // define a *none* box shadow:
         [this.decl(this._boxShadowNone)] : [[0, 0, 'transparent']],
 
+        // define a *none* filter:
+        [this.decl(this._filterNone)]    : 'brightness(100%)',
+
         // define a *none* animation:
         [this.decl(this._animNone)]      : 'none',
+        //#endregion nones
 
 
 
         // define a *foreground* color func:
         [this.decl(this._foregFn)] : this.ref(
-            this._outlinedForegTg, // toggle outlined
-
             this._foregIfIf, // first  priority
             this._foregTh,   // second priority
             this._foregIf,   // third  priority
         ),
     
-        // define a *backgrounds* layers:
-        [this.decl(this._backgLy)] : [
+        // define a *backgrounds* func:
+        [this.decl(this._backgFn)] : [
             // top layer:
             this.ref(
                 this._backgGradTg,
@@ -439,36 +458,16 @@ export class BasicComponentStyles extends ElementStyles {
             // bottom layer:
             cssProps.backg,
         ],
-        // define a *backgrounds* func:
-        [this.decl(this._backgFn)] : this.ref(
-            this._outlinedBackgTg, // toggle outlined
-
-            this._backgLy,
-        ),
 
         // define a *border* color func:
         [this.decl(this._borderFn)] : this.ref(
-            this._outlinedForegTg, // toggle outlined
-            
             this._borderIfIf, // first  priority
             this._borderTh,   // second priority
             this._borderIf,   // third  priority
         ),
-
-        // define a *focused box-shadow color* func:
-        [this.decl(this._boxShadowFocusFn)]: [[
-            cssProps.boxShadowFocus,      // box-shadow pos, width, spread, etc
-
-            // box-shadow color:
-            this.ref(
-                this._boxShadowFocusIfIf, // first  priority
-                this._boxShadowFocusTh,   // second priority
-                this._boxShadowFocusIf    // third  priority
-            )
-        ]],
     
-    
-    
+        
+        
         // define a *foreground* color func - at *outlined* state:
         [this.decl(this._outlinedForegFn)] : this.ref(
             this._outlinedForegIfIf, // first  priority
@@ -481,15 +480,46 @@ export class BasicComponentStyles extends ElementStyles {
             this._backgGradTg,
             this._backgNone,
         ),
-    }}
 
-    /**
-     * Creates a composite filter definition in which the filters *depends on* the variants and/or the states.
-     * @returns A `Cust.Ref[]` represents the composite filter definition.
-     */
-    public /*virtual*/ filterFn(): Cust.Ref[] { return [
-        cssProps.filter,
-    ]}
+        
+
+        // define a *focused box-shadow color* func:
+        [this.decl(this._boxShadowFocusFn)]: [[
+            cssProps.boxShadowFocus,      // box-shadow pos, width, spread, etc
+
+            // box-shadow color:
+            this.ref(
+                this._boxShadowFocusIfIf, // first  priority
+                this._boxShadowFocusTh,   // second priority
+                this._boxShadowFocusIf    // third  priority
+            )
+        ]],
+
+
+
+        //#region finals
+        // define a final *foreground* color func:
+        [this.decl(this._foreg)] : this.ref(
+            this._outlinedForegTg, // toggle outlined
+            this._foregFn,
+        ),
+
+        // define a final *backgrounds* func:
+        [this.decl(this._backg)] : this.ref(
+            this._outlinedBackgTg, // toggle outlined
+            this._backgFn,
+        ),
+
+        // define a *border* color func:
+        [this.decl(this._border)] : this.ref(
+            this._outlinedForegTg, // toggle outlined
+            this._borderFn
+        ),
+
+        // define a *box-shadow* func:
+        [this.decl(this._boxShadow)] : this.boxShadowFn(),
+        //#endregion finals
+    }}
 
     /**
      * Creates a composite boxShadow definition in which the boxShadows *depends on* the variants and/or the states.
@@ -497,6 +527,14 @@ export class BasicComponentStyles extends ElementStyles {
      */
     public /*virtual*/ boxShadowFn(): Cust.Ref[] { return [
         cssProps.boxShadow,
+    ]}
+
+    /**
+     * Creates a composite filter definition in which the filters *depends on* the variants and/or the states.
+     * @returns A `Cust.Ref[]` represents the composite filter definition.
+     */
+    public /*virtual*/ filterFn(): Cust.Ref[] { return [
+        cssProps.filter,
     ]}
 
     /**
@@ -517,13 +555,13 @@ export class BasicComponentStyles extends ElementStyles {
     
     
         // apply fn props:
-        foreg       : this.ref(this._foregFn),
-        backg       : this.ref(this._backgFn),
-        borderColor : this.ref(this._borderFn),
+        foreg       : this.ref(this._foreg),
+        backg       : this.ref(this._backg),
+        borderColor : this.ref(this._border),
         
         // apply animation fn props:
+        boxShadow   : this.ref(this._boxShadow),
         filter      : [this.filterFn()],                  // double array (including from the returning function) => makes the JSS treat as space separated values
-        boxShadow   : [[this.boxShadowFn()]] as JssStyle, // triple array (including from the returning function) => bug fix in JSS => makes the JSS treat as comma separated values
         anim        : this.animFn(),                      // single array (including from the returning function) => makes the JSS treat as comma separated values
     }}
 
@@ -610,13 +648,13 @@ const cssConfig = new CssConfig(() => {
         ],
 
         // TODO: remove none...
-        filterNone        : 'brightness(100%)',
-        filter            : 'brightness(100%)',
-
-        // TODO: remove none...
         boxShadowNone     : [[0, 0, 'transparent']],
         boxShadow         : [[0, 0, 'transparent']],
         boxShadowFocus    : [[0, 0, 0, '0.25rem' ]], // supports for Control children's theming
+
+        // TODO: remove none...
+        filterNone        : 'brightness(100%)',
+        filter            : 'brightness(100%)',
 
         '@keyframes none' : keyframesNone,
         // TODO: remove none...

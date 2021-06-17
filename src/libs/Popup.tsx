@@ -68,7 +68,6 @@ export class PopupStyles extends IndicatorStyles {
     }}
 
     public /*override*/ themeActive(theme = 'secondary'): JssStyle { return {} } // no active theme
-    public /*override*/ outlinedActive(): JssStyle { return {} }                 // no active outlined
 }
 export const popupStyles = new PopupStyles();
 

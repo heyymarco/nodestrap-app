@@ -60,8 +60,8 @@ export class IconStylesBuilder extends BasicComponentStyles {
         [this.decl(this._foregTh)]          : null,
         [this.decl(this._backgTh)]          : null,
         [this.decl(this._borderTh)]         : null,
-        [this.decl(this._boxShadowFocusTh)] : null,
      // [this.decl(this._outlinedForegTh)]  : null,
+        [this.decl(this._boxShadowFocusTh)] : null,
     }}
     public /*override*/ sizeOptions(): string[] {
         return ['sm', 'nm', 'md', 'lg', '1em'];
@@ -193,8 +193,8 @@ export class IconStylesBuilder extends BasicComponentStyles {
         [this.decl(this._foregIf)]          : null,
         [this.decl(this._backgIf)]          : null,
         [this.decl(this._borderIf)]         : null,
-        [this.decl(this._boxShadowFocusIf)] : null,
      // [this.decl(this._outlinedForegIf)]  : null,
+        [this.decl(this._boxShadowFocusIf)] : null,
     }}
 
 
@@ -214,13 +214,14 @@ export class IconStylesBuilder extends BasicComponentStyles {
         // to be able to inherit theme from parent, we use _outlinedForegTh** as the variable name
         // other unecessary variables are deleted
         [this.decl(this._backgNone)]        : null,
+        // TODO: add another none
         [this.decl(this._foregFn)]          : null,
-        [this.decl(this._backgLy)]          : null,
+        // [this.decl(this._backgLy)]          : null,
         [this.decl(this._backgFn)]          : null,
         [this.decl(this._borderFn)]         : null,
-        [this.decl(this._boxShadowFocusFn)] : null,
      // [this.decl(this._outlinedForegFn)]  : null,
         [this.decl(this._outlinedBackgFn)]  : null,
+        [this.decl(this._boxShadowFocusFn)] : null,
     }}
     public /*override*/ animFnOld(): JssStyle { return {} } // remove animations
 
