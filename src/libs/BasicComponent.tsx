@@ -91,7 +91,7 @@ export class BasicComponentStyles extends ElementStyles {
     /**
      * toggles background gradient.
      */
-    protected readonly _backgGradTg        = 'backgGradTg'
+    public    readonly _backgGradTg        = 'backgGradTg'
     //#endregion background
 
     //#region border
@@ -142,7 +142,7 @@ export class BasicComponentStyles extends ElementStyles {
     /**
      * toggles *on* foreground color - at outlined state.
      */
-    protected readonly _outlinedForegTg    = 'outlinedForegTg'
+    public    readonly _outlinedForegTg    = 'outlinedForegTg'
     //#endregion outlined - foreground
 
     //#region outlined - background
@@ -154,7 +154,7 @@ export class BasicComponentStyles extends ElementStyles {
     /**
      * toggles *on* backgrounds - at outlined state.
      */
-    protected readonly _outlinedBackgTg    = 'outlinedBackgTg'
+    public    readonly _outlinedBackgTg    = 'outlinedBackgTg'
     //#endregion outlined - background
 
 

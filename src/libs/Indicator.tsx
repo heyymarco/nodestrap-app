@@ -39,12 +39,17 @@ export class IndicatorStyles extends BasicComponentStyles {
     /**
      * toggles *on* foreground color - at active state.
      */
-    protected readonly _activeForegTg       = 'activeForegTg'
+    public    readonly _activeForegTg       = 'activeForegTg'
 
     /**
      * toggles *on* backgrounds - at active state.
      */
-    protected readonly _activeBackgTg       = 'activeBackgTg'
+    public    readonly _activeBackgTg       = 'activeBackgTg'
+
+    /**
+     * toggles *on* border color - at active state.
+     */
+    public    readonly _activeBorderTg      = 'activeBorderTg'
 
 
 
@@ -159,6 +164,7 @@ export class IndicatorStyles extends BasicComponentStyles {
             //#region reset toggles/filters/anims to initial/inherit state
             [this.decl(this._activeForegTg)]       : inherit ? 'unset' : 'initial',
             [this.decl(this._activeBackgTg)]       : inherit ? 'unset' : 'initial',
+            [this.decl(this._activeBorderTg)]      : inherit ? 'unset' : 'initial',
 
             
             
@@ -214,6 +220,7 @@ export class IndicatorStyles extends BasicComponentStyles {
         // _foregFn & _backgFn => requires usePropsFn() => use it at states()
         [this.decl(this._activeForegTg)]       : this.ref(this._foregFn),
         [this.decl(this._activeBackgTg)]       : this.ref(this._backgFn),
+        [this.decl(this._activeBorderTg)]      : this.ref(this._borderFn),
 
 
 
@@ -229,6 +236,7 @@ export class IndicatorStyles extends BasicComponentStyles {
         // _foregFn & _backgFn => requires usePropsFn() => use it at states()
         [this.decl(this._activeForegTg)]       : this.ref(this._foregFn),
         [this.decl(this._activeBackgTg)]       : this.ref(this._backgFn),
+        [this.decl(this._activeBorderTg)]      : this.ref(this._borderFn),
 
 
 
@@ -282,7 +290,7 @@ export class IndicatorStyles extends BasicComponentStyles {
 
         // define a final *border* color func:
         [this.decl(this._border)]    : this.ref(
-            this._activeForegTg,   // toggle active
+            this._activeBorderTg,  // toggle active
             this._outlinedForegTg, // toggle outlined
             this._borderFn
         ),

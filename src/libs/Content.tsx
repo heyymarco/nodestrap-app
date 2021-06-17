@@ -21,6 +21,7 @@ import {
 }                           from './BasicComponent'
 import {
     IndicatorStyles,
+    cssDecls as icssDecls,
     IndicatorProps,
     Indicator,
 }                           from './Indicator'
@@ -38,10 +39,6 @@ export interface IContentStyles {
 
     // states:
     contentStates(inherit: boolean): ClassList
-    contentActived()     : JssStyle
-    contentActivating()  : JssStyle
-    contentPassivating() : JssStyle
-    contentPassived()    : JssStyle
 
 
 
@@ -54,8 +51,8 @@ export interface IContentStyles {
     contentBasicStyle(): JssStyle
 }
 export class ContentStyles extends IndicatorStyles implements IContentStyles {
-    //#region scoped css props
-    //#region passive/normal - foreground
+    //#region props
+    //#region passive - foreground
     /**
      * passive themed foreground color.
      */
@@ -65,22 +62,11 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
      * passive functional foreground color.
      */
     public    readonly _passiveForegFn = 'passiveForegFn'
-
-    /**
-     * toggles *on* passive foreground color.
-     */
-    public    readonly _passiveForegTg = 'passiveForegTg'
-
-    
-    /**
-     * normal functional foreground color.
-     */
-    public    readonly _normalForegFn  = 'normalForegFn'
-    //#endregion passive/normal - foreground
+    //#endregion passive - foreground
 
 
 
-    //#region passive/normal - background
+    //#region passive - background
     /**
      * passive themed background.
      */
@@ -90,24 +76,8 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
      * passive functional backgrounds.
      */
     public    readonly _passiveBackgFn = 'passiveBackgFn'
-
-    /**
-     * passive layered backgrounds.
-     */
-    public    readonly _passiveBackgLy = 'passiveBackgLy'
-
-    /**
-     * toggles *on* passive backgrounds.
-     */
-    public    readonly _passiveBackgTg = 'passiveBackgTg'
-
-    
-    /**
-     * normal functional backgrounds.
-     */
-    public    readonly _normalBackgFn  = 'normalBackgFn'
-    //#endregion passive/normal - background
-    //#endregion scoped css props
+    //#endregion passive - background
+    //#endregion props
 
 
 
@@ -128,7 +98,7 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
     }}
     
     public /*virtual*/ contentTheme(theme: string): JssStyle { return {
-        // overwrite some theme color with *softer* colors:
+        // *softer* colors of foreground & background:
         [this.decl(this._passiveForegTh)]  :                 (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],  // light on dark backg | dark on light backg with slightly color from background
         [this.decl(this._passiveBackgTh)]  : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]), // thin opacity with slightly color from background
     }}
@@ -143,61 +113,13 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
     public /*override*/ states(inherit: boolean): ClassList { return [
         ...super.states(inherit), // copy states from base
 
-
-
         ...this.contentStates(inherit),
     ]}
-    public /*override*/ actived()     : JssStyle {
-        return this.contentActived();
-    }
-    public /*override*/ activating()  : JssStyle {
-        return this.contentActivating();
-    }
-    public /*override*/ passivating() : JssStyle {
-        return this.contentPassivating();
-    }
-    public /*override*/ passived()    : JssStyle {
-        return this.contentPassived();
-    }
-
     public /*virtual*/ contentStates(inherit: boolean): ClassList { return [
         [ null, {
-            // requires usePropsFn() for using _passiveForegFn & _passiveBackgFn in the contentPassivating() & contentPassived()
-            // the code below causing useStates() implicitly includes usePropsFn()
-            ...this.usePropsFn(),
-
-            
-            
-            //#region reset toggles/filters/anims to initial/inherit state
-            [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
-            [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
-            [this.decl(this._passiveForegTg)]      : inherit ? 'unset' : 'initial', // toggle *off*
-            [this.decl(this._passiveBackgTg)]      : inherit ? 'unset' : 'initial', // toggle *off*
-            //#endregion reset toggles/filters/anims to initial/inherit state
+            [icssDecls.filterActive] : cssProps.filterActive,
         }],
     ]}
-    public /*virtual*/ contentActived()     : JssStyle { return {
-        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-    }}
-    public /*virtual*/ contentActivating()  : JssStyle { return {
-        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-        [this.decl(this._animActivePassive)]   : cssProps.animActive,
-    }}
-    public /*virtual*/ contentPassivating() : JssStyle { return {
-        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-        [this.decl(this._animActivePassive)]   : cssProps.animPassive,
-
-        
-        
-        // _passiveForegFn & _passiveBackgFn => requires usePropsFn() => use it at contentStates()
-        [this.decl(this._passiveForegTg)]      : this.ref(this._passiveForegFn), // toggle *on*
-        [this.decl(this._passiveBackgTg)]      : this.ref(this._passiveBackgFn), // toggle *on*
-    }}
-    public /*virtual*/ contentPassived()    : JssStyle { return {
-        // _passiveForegFn & _passiveBackgFn => requires usePropsFn() => use it at contentStates()
-        [this.decl(this._passiveForegTg)]      : this.ref(this._passiveForegFn), // toggle *on*
-        [this.decl(this._passiveBackgTg)]      : this.ref(this._passiveBackgFn), // toggle *on*
-    }}
 
 
 
@@ -210,15 +132,13 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
     public /*virtual*/ contentPropsFn(): PropList { return {
         // define a passive *foreground* color func:
         [this.decl(this._passiveForegFn)] : this.ref(
-            this._outlinedForegTg, // toggle outlined
-
             this._foregIfIf,       // first  priority
             this._passiveForegTh,  // second priority
             this._foregIf,         // third  priority
         ),
 
-        // define a passive *backgrounds* layers:
-        [this.decl(this._passiveBackgLy)] : [
+        // define a passive *backgrounds* func:
+        [this.decl(this._passiveBackgFn)] : [
             // top layer:
             this.ref(
                 this._backgGradTg,
@@ -235,45 +155,24 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
             // bottom layer:
             bcssProps.backg,
         ],
-        // define a passive *backgrounds* func:
-        [this.decl(this._passiveBackgFn)] : this.ref(
-            this._outlinedBackgTg, // toggle outlined
-
-            this._passiveBackgLy,
-        ),
 
 
 
-        // define a normal *foreground* color func:
-        [this.decl(this._normalForegFn)] : this.ref(
+        //#region finals
+        // define a final *foreground* color func:
+        [this.decl(this._foreg)]     : this.ref(
+            this._activeForegTg,   // toggle active
             this._outlinedForegTg, // toggle outlined
-
-            this._foregIfIf, // first  priority
-            this._foregTh,   // second priority
-            this._foregIf,   // third  priority
+            this._passiveForegFn,
         ),
 
-        // define a *foreground* color func:
-        [this.decl(this._foregFn)] : this.ref(
-            this._passiveForegTg,  // toggle passive
-
-            this._normalForegFn,
-        ),
-
-
-        // define a normal *backgrounds* func:
-        [this.decl(this._normalBackgFn)] : this.ref(
+        // define a final *backgrounds* func:
+        [this.decl(this._backg)]     : this.ref(
+            this._activeBackgTg,   // toggle active
             this._outlinedBackgTg, // toggle outlined
-
-            // this._backgLy,
+            this._passiveBackgFn,
         ),
-
-        // define a *backgrounds* func:
-        [this.decl(this._backgFn)] : this.ref(
-            this._passiveBackgTg,  // toggle passive
-
-            this._normalBackgFn,
-        ),
+        //#endregion finals
     }}
 
 
@@ -300,12 +199,14 @@ export const contentStyles = new ContentStyles();
 const cssConfig = new CssConfig(() => {
     const keyframesActive    : PropEx.Keyframes = {
         from: {
-            foreg: contentStyles.ref(contentStyles._passiveForegFn),
-            backg: contentStyles.ref(contentStyles._passiveBackgFn),
+            foreg       : contentStyles.ref(contentStyles._outlinedForegTg, contentStyles._passiveForegFn),
+            backg       : contentStyles.ref(contentStyles._outlinedBackgTg, contentStyles._passiveBackgFn),
+            borderColor : contentStyles.ref(contentStyles._outlinedForegTg, contentStyles._borderFn),
         },
         to: {
-            foreg: contentStyles.ref(contentStyles._normalForegFn),
-            backg: contentStyles.ref(contentStyles._normalBackgFn),
+            foreg       : contentStyles.ref(contentStyles._foreg),
+            backg       : contentStyles.ref(contentStyles._backg),
+            borderColor : contentStyles.ref(contentStyles._border),
         },
     };
     const keyframesPassive   : PropEx.Keyframes = {

@@ -81,37 +81,10 @@ export class FormStylesBuilder extends BasicComponentStyles implements IContentS
     public /*override*/ states(inherit: boolean): ClassList { return [
         ...super.states(inherit), // copy states from base
 
-
-
         ...this.contentStates(inherit),
     ]}
-    public /*override*/ actived()     : JssStyle {
-        return this.contentActived();
-    }
-    public /*override*/ activating()  : JssStyle {
-        return this.contentActivating();
-    }
-    public /*override*/ passivating() : JssStyle {
-        return this.contentPassivating();
-    }
-    public /*override*/ passived()    : JssStyle {
-        return this.contentPassived();
-    }
-
     public /*implement*/ contentStates(inherit: boolean): ClassList {
-        return editableTextControlStyles.contentStates(inherit);
-    }
-    public /*implement*/ contentActived()     : JssStyle {
-        return editableTextControlStyles.contentActived();
-    }
-    public /*implement*/ contentActivating()  : JssStyle {
-        return editableTextControlStyles.contentActivating();
-    }
-    public /*implement*/ contentPassivating() : JssStyle {
-        return editableTextControlStyles.contentPassivating();
-    }
-    public /*implement*/ contentPassived()    : JssStyle {
-        return editableTextControlStyles.contentPassived();
+        return editableTextControlStyles.contentStates(inherit); // copy states from EditableTextControl
     }
 
     public /*implement*/ validationThemesIf(): JssStyle {
