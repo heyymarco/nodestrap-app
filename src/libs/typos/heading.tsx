@@ -101,7 +101,7 @@ export function createStyle<TCssProps extends typeof cssProps>(cssProps: TCssPro
         // customize:
         ...cssProps,
         
-        //#region delete unecessary props
+        //#region delete unnecessary props
         fontSize1  : undefined as unknown as null,
         fontSize2  : undefined as unknown as null,
         fontSize3  : undefined as unknown as null,
@@ -109,7 +109,7 @@ export function createStyle<TCssProps extends typeof cssProps>(cssProps: TCssPro
         fontSize5  : undefined as unknown as null,
         fontSize6  : undefined as unknown as null,
         subOpacity : undefined as unknown as null,
-        //#endregion delete unecessary props
+        //#endregion delete unnecessary props
     },
     //#endregion global styles for the [h1,h2,...,h6]
 

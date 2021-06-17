@@ -19,14 +19,14 @@ import IconApp from './apps/IconApp';
 
 import BasicComponentApp    from './apps/BasicComponentApp';
 import IndicatorApp         from './apps/IndicatorApp';
-import ContentApp         from './apps/ContentApp';
+import ContentApp           from './apps/ContentApp';
 import PopupApp             from './apps/PopupApp';
 
 
 
 ReactDOM.render(
     <React.StrictMode>
-        <ContentApp />
+        <PopupApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

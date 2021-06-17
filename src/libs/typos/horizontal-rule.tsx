@@ -66,8 +66,8 @@ base.declareCss({
         // customize:
         ...cssProps,
 
-        //#region delete unecessary props
+        //#region delete unnecessary props
         width : undefined as unknown as null, // delete from cssProps. width means blockSize (the height of the <hr>)
-        //#endregion delete unecessary props
+        //#endregion delete unnecessary props
     },
 });

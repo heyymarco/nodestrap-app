@@ -155,24 +155,20 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
         [ null, {
-            // requires usePropsFn() for using _foregFn & _backgFn in the actived() & activating()
+            // requires usePropsFn() for using _foregFn & _backgFn in the actived() & activating() => toggleOnActive()
             // the code below causing useStates() implicitly includes usePropsFn()
             ...this.usePropsFn(),
 
 
 
             //#region reset toggles/filters/anims to initial/inherit state
-            [this.decl(this._activeForegTg)]       : inherit ? 'unset' : 'initial',
-            [this.decl(this._activeBackgTg)]       : inherit ? 'unset' : 'initial',
-            [this.decl(this._activeBorderTg)]      : inherit ? 'unset' : 'initial',
-
-            
-            
             [this.decl(this._filterEnableDisable)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animEnableDisable)]   : inherit ? 'unset' : 'initial',
             [this.decl(this._filterHoverLeave)]    : inherit ? 'unset' : 'initial', // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
             [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
+
+            ...this.toggleOffActive(inherit),
             //#endregion reset toggles/filters/anims to initial/inherit state
         }],
 
@@ -217,14 +213,9 @@ export class IndicatorStyles extends BasicComponentStyles {
     }}
 
     public /*virtual*/ actived()     : JssStyle { return {
-        // _foregFn & _backgFn => requires usePropsFn() => use it at states()
-        [this.decl(this._activeForegTg)]       : this.ref(this._foregFn),
-        [this.decl(this._activeBackgTg)]       : this.ref(this._backgFn),
-        [this.decl(this._activeBorderTg)]      : this.ref(this._borderFn),
-
-
-
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+
+        ...this.toggleOnActive(),
 
         
         
@@ -233,15 +224,10 @@ export class IndicatorStyles extends BasicComponentStyles {
         ] as JssStyle,
     }}
     public /*virtual*/ activating()  : JssStyle { return {
-        // _foregFn & _backgFn => requires usePropsFn() => use it at states()
-        [this.decl(this._activeForegTg)]       : this.ref(this._foregFn),
-        [this.decl(this._activeBackgTg)]       : this.ref(this._backgFn),
-        [this.decl(this._activeBorderTg)]      : this.ref(this._borderFn),
-
-
-
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
         [this.decl(this._animActivePassive)]   : cssProps.animActive,
+
+        ...this.toggleOnActive(),
 
         
         
@@ -255,6 +241,17 @@ export class IndicatorStyles extends BasicComponentStyles {
     }}
     public /*virtual*/ passived()    : JssStyle { return {
         /* --nothing-- */
+    }}
+    public /*virtual*/ toggleOnActive(): PropList { return {
+        // _foregFn & _backgFn => requires usePropsFn() => use it at states()
+        [this.decl(this._activeForegTg)]  : this.ref(this._foregFn),
+        [this.decl(this._activeBackgTg)]  : this.ref(this._backgFn),
+        [this.decl(this._activeBorderTg)] : this.ref(this._borderFn),
+    }}
+    public /*virtual*/ toggleOffActive(inherit = false): PropList { return {
+        [this.decl(this._activeForegTg)]  : inherit ? 'unset' : 'initial',
+        [this.decl(this._activeBackgTg)]  : inherit ? 'unset' : 'initial',
+        [this.decl(this._activeBorderTg)] : inherit ? 'unset' : 'initial',
     }}
     public /*virtual*/ themeActive(theme = 'secondary'): JssStyle {
         return this.themeIf(theme);
@@ -271,8 +268,9 @@ export class IndicatorStyles extends BasicComponentStyles {
     public /*override*/ propsFn(): PropList { return {
         ...super.propsFn(), // copy functional props from base
         
-        
-        
+        ...this.activePropsFn(),
+    }}
+    public /*virtual*/ activePropsFn(): PropList { return {
         //#region finals
         // define a final *foreground* color func:
         [this.decl(this._foreg)]     : this.ref(

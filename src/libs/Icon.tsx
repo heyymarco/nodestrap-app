@@ -56,7 +56,7 @@ export class IconStylesBuilder extends BasicComponentStyles {
 
 
         // to be able to inherit theme from parent, we use _outlinedForegTh** as the variable name
-        // other unecessary variables are deleted
+        // other unnecessary variables are deleted
         [this.decl(this._foregTh)]          : null,
         [this.decl(this._backgTh)]          : null,
         [this.decl(this._borderTh)]         : null,
@@ -189,7 +189,7 @@ export class IconStylesBuilder extends BasicComponentStyles {
 
 
         // to be able to inherit theme from parent, we use _outlinedForegTh** as the variable name
-        // other unecessary variables are deleted
+        // other unnecessary variables are deleted
         [this.decl(this._foregIf)]          : null,
         [this.decl(this._backgIf)]          : null,
         [this.decl(this._borderIf)]         : null,
@@ -212,7 +212,7 @@ export class IconStylesBuilder extends BasicComponentStyles {
 
 
         // to be able to inherit theme from parent, we use _outlinedForegTh** as the variable name
-        // other unecessary variables are deleted
+        // other unnecessary variables are deleted
         [this.decl(this._backgNone)]        : null,
         // TODO: add another none
         [this.decl(this._foregFn)]          : null,

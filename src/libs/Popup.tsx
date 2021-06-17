@@ -8,6 +8,8 @@ import {
     // general types:
     JssStyle,
     PropEx,
+    ClassList,
+    PropList,
 
 
     // components:
@@ -18,6 +20,7 @@ import {
 }                           from './BasicComponent'
 import {
     IndicatorStyles,
+    cssDecls as icssDecls,
     IndicatorProps,
     Indicator,
 }                           from './Indicator'
@@ -28,35 +31,18 @@ import {
 
 export class PopupStyles extends IndicatorStyles {
     // states:
-    public /*override*/ actived()     : JssStyle { return {
-        extend: [
-            super.actived(),
-        ] as JssStyle,
+    public /*override*/ states(inherit: boolean): ClassList { return [
+        ...super.states(inherit), // copy states from base
 
 
 
-        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-    }}
-    public /*override*/ activating()  : JssStyle { return {
-        extend: [
-            super.activating(),
-        ] as JssStyle,
+        [ null, {
+            [icssDecls.filterActive] : cssProps.filterActive,
+            [icssDecls.animActive]   : cssProps.animActive,
+            [icssDecls.animPassive]  : cssProps.animPassive,
+        }],
+    ]}
 
-
-
-        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-        [this.decl(this._animActivePassive)]   : cssProps.animActive,
-    }}
-    public /*override*/ passivating() : JssStyle { return {
-        extend: [
-            super.passivating(),
-        ] as JssStyle,
-
-
-
-        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-        [this.decl(this._animActivePassive)]   : cssProps.animPassive,
-    }}
     public /*override*/ passived()    : JssStyle { return {
         extend: [
             super.passived(),
@@ -66,8 +52,14 @@ export class PopupStyles extends IndicatorStyles {
 
         display: 'none', // hide the popup
     }}
+    public /*override*/ toggleOnActive()                 : PropList { return {} } // no active colors
+    public /*override*/ toggleOffActive(inherit = false) : PropList { return {} } // no active colors
+    public /*override*/ themeActive(theme = 'secondary') : JssStyle { return {} } // no active theme
 
-    public /*override*/ themeActive(theme = 'secondary'): JssStyle { return {} } // no active theme
+
+
+    // functions:
+    public /*override*/ activePropsFn(): PropList { return {} } // no active colors
 }
 export const popupStyles = new PopupStyles();
 
