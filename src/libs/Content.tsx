@@ -162,18 +162,18 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
 
     public /*virtual*/ contentStates(inherit: boolean): ClassList { return [
         [ null, {
-            // requires usePropsFn() for _passiveForegFn & _passiveBackgFn to be able to work in contentPassivating() & contentPassived()
+            // requires usePropsFn() for using _passiveForegFn & _passiveBackgFn in the contentPassivating() & contentPassived()
             // the code below causing useStates() implicitly includes usePropsFn()
             ...this.usePropsFn(),
 
             
             
-            //#region reset filters/anims/toggles to initial/inherit state
+            //#region reset toggles/filters/anims to initial/inherit state
             [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
             [this.decl(this._passiveForegTg)]      : inherit ? 'unset' : 'initial', // toggle *off*
             [this.decl(this._passiveBackgTg)]      : inherit ? 'unset' : 'initial', // toggle *off*
-            //#endregion reset filters/anims/toggles to initial/inherit state
+            //#endregion reset toggles/filters/anims to initial/inherit state
         }],
     ]}
     public /*virtual*/ contentActived()     : JssStyle { return {

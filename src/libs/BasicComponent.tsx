@@ -39,7 +39,7 @@ import typos                from './typos/index' // configurable typography (tex
 // styles:
 
 export class BasicComponentStyles extends ElementStyles {
-    //#region scoped css props
+    //#region props
     //#region foreground
     /**
      * themed foreground color.
@@ -239,7 +239,7 @@ export class BasicComponentStyles extends ElementStyles {
      */
     public readonly _animNone              = 'animNone'
     //#endregion animations
-    //#endregion scoped css props
+    //#endregion props
     
     
     
@@ -250,13 +250,13 @@ export class BasicComponentStyles extends ElementStyles {
 
 
         [ null, {
-            // requires usePropsFn() for _outlinedForegFn & _outlinedBackgFn to be able to work in outlined() => toggleOnOutlined()
+            // requires usePropsFn() for using _outlinedForegFn & _outlinedBackgFn in the outlined() => toggleOnOutlined()
             // the code below causing useVariants() implicitly includes usePropsFn()
             ...this.usePropsFn(),
 
 
 
-            //#region reset filters/anims/toggles to initial/inherit state
+            //#region reset toggles/filters/anims to initial/inherit state
             // *toggle off* the background gradient prop:
             // but still be able to *toggle on* by parent (inherit)
             ...this.toggleOffGradient(/*inherit =*/true),
@@ -266,7 +266,7 @@ export class BasicComponentStyles extends ElementStyles {
             // *toggle off* the outlined props:
             // but still be able to *toggle on* by parent (inherit)
             ...this.toggleOffOutlined(/*inherit =*/true),
-            //#endregion reset filters/anims/toggles to initial/inherit state
+            //#endregion reset toggles/filters/anims to initial/inherit state
         }],
 
 
@@ -526,19 +526,19 @@ export class BasicComponentStyles extends ElementStyles {
             this._backgFn,
         ),
 
-        // define a *border* color func:
+        // define a final *border* color func:
         [this.decl(this._border)]    : this.ref(
             this._outlinedForegTg, // toggle outlined
             this._borderFn
         ),
 
-        // define a *box-shadow* func:
+        // define a final *box-shadow* func:
         [this.decl(this._boxShadow)] : this.boxShadowFn(), // single array (including from the returning function) => makes the JSS treat as comma separated values
 
-        // define a *filter* func:
+        // define a final *filter* func:
         [this.decl(this._filter)]    : [this.filterFn()],  // double array (including from the returning function) => makes the JSS treat as space separated values
 
-        // define a *animation* func:
+        // define a final *animation* func:
         [this.decl(this._anim)]      : this.animFn(),      // single array (including from the returning function) => makes the JSS treat as comma separated values
         //#endregion finals
     }}

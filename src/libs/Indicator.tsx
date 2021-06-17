@@ -12,6 +12,7 @@ import {
     PropEx,
     Cust,
     ClassList,
+    PropList,
 
 
     // components:
@@ -34,7 +35,7 @@ import {
 // styles:
 
 export class IndicatorStyles extends BasicComponentStyles {
-    //#region scoped css props
+    //#region props
     /**
      * toggles *on* foreground color - at active state.
      */
@@ -57,7 +58,7 @@ export class IndicatorStyles extends BasicComponentStyles {
     public    readonly _filterActivePassive = 'filterActivePassive'
     protected readonly _animActivePassive   = 'animActivePassive'
     //#endregion animations
-    //#endregion scoped css props
+    //#endregion props
 
 
 
@@ -148,26 +149,25 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
 
-        ...this.indicationStates(inherit),
-    ]}
-    public /*virtual*/ indicationStates(inherit: boolean): ClassList { return [
         [ null, {
-            // requires usePropsFn() for _foregFn & _backgFn to be able to work in actived() & activating()
+            // requires usePropsFn() for using _foregFn & _backgFn in the actived() & activating()
             // the code below causing useStates() implicitly includes usePropsFn()
             ...this.usePropsFn(),
 
 
 
-            //#region reset filters/anims/toggles to initial/inherit state
+            //#region reset toggles/filters/anims to initial/inherit state
+            [this.decl(this._activeForegTg)]       : inherit ? 'unset' : 'initial',
+            [this.decl(this._activeBackgTg)]       : inherit ? 'unset' : 'initial',
+
+            
+            
             [this.decl(this._filterEnableDisable)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animEnableDisable)]   : inherit ? 'unset' : 'initial',
             [this.decl(this._filterHoverLeave)]    : inherit ? 'unset' : 'initial', // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
             [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
-
-            [this.decl(this._activeForegTg)]       : inherit ? 'unset' : 'initial',
-            [this.decl(this._activeBackgTg)]       : inherit ? 'unset' : 'initial',
-            //#endregion reset filters/anims/toggles to initial/inherit state
+            //#endregion reset toggles/filters/anims to initial/inherit state
         }],
 
 
@@ -211,13 +211,13 @@ export class IndicatorStyles extends BasicComponentStyles {
     }}
 
     public /*virtual*/ actived()     : JssStyle { return {
-        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-
-        
-        
-        // _foregFn & _backgFn => requires usePropsFn() => use it at indicationStates()
+        // _foregFn & _backgFn => requires usePropsFn() => use it at states()
         [this.decl(this._activeForegTg)]       : this.ref(this._foregFn),
         [this.decl(this._activeBackgTg)]       : this.ref(this._backgFn),
+
+
+
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
 
         
         
@@ -226,14 +226,14 @@ export class IndicatorStyles extends BasicComponentStyles {
         ] as JssStyle,
     }}
     public /*virtual*/ activating()  : JssStyle { return {
-        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-        [this.decl(this._animActivePassive)]   : cssProps.animActive,
-
-        
-        
-        // _foregFn & _backgFn => requires usePropsFn() => use it at indicationStates()
+        // _foregFn & _backgFn => requires usePropsFn() => use it at states()
         [this.decl(this._activeForegTg)]       : this.ref(this._foregFn),
         [this.decl(this._activeBackgTg)]       : this.ref(this._backgFn),
+
+
+
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animActive,
 
         
         
@@ -260,27 +260,48 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
     // functions:
+    public /*override*/ propsFn(): PropList { return {
+        ...super.propsFn(), // copy functional props from base
+        
+        
+        
+        //#region finals
+        // define a final *foreground* color func:
+        [this.decl(this._foreg)]     : this.ref(
+            this._activeForegTg,   // toggle active
+            this._outlinedForegTg, // toggle outlined
+            this._foregFn,
+        ),
+
+        // define a final *backgrounds* func:
+        [this.decl(this._backg)]     : this.ref(
+            this._activeBackgTg,   // toggle active
+            this._outlinedBackgTg, // toggle outlined
+            this._backgFn,
+        ),
+
+        // define a final *border* color func:
+        [this.decl(this._border)]    : this.ref(
+            this._activeForegTg,   // toggle active
+            this._outlinedForegTg, // toggle outlined
+            this._borderFn
+        ),
+        //#endregion finals
+    }}
     public /*override*/ filterFn(): Cust.Ref[] { return [
         ...super.filterFn(),
 
 
 
-        ...this.indicationFilterFn(),
-    ]}
-    public /*virtual*/ indicationFilterFn(): Cust.Ref[] { return [
         this.ref(this._filterEnableDisable, this._filterNone),
         this.ref(this._filterActivePassive, this._filterNone),
         this.ref(this._filterHoverLeave,    this._filterNone), // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
     ]}
-
     public /*override*/ animFn(): Cust.Ref[] { return [
         ...super.animFn(),
 
 
 
-        ...this.indicationAnimFn(),
-    ]}
-    public /*virtual*/ indicationAnimFn(): Cust.Ref[] { return [
         this.ref(this._animEnableDisable, this._animNone), // 2nd : ctrl must be enabled
         this.ref(this._animActivePassive, this._animNone), // 1st : ctrl got pressed
     ]}

@@ -54,7 +54,7 @@ export type PropList   = { [name: string]: JssValue }
  * Supports many states like disabled, active, pressed, and more.
  */
 export class ElementStyles {
-    //#region global css props
+    //#region global props
     /**
      * Includes the *general* prop names in the specified `cssProps`.  
      * @param cssProps The collection of the prop name to be filtered.  
@@ -224,11 +224,11 @@ export class ElementStyles {
         }
         return propList;
     }
-    //#endregion global css props
+    //#endregion global props
 
 
     
-    //#region scoped css props
+    //#region props
     /**
      * Holds the prefix name of the generated css props.  
      * Useful to avoid name collision if working with another css frameworks.
@@ -285,7 +285,7 @@ export class ElementStyles {
 
         return `var(${prefix}${propName}${fallbackRecursive(...fallbacks)})`;
     }
-    //#endregion scoped css props
+    //#endregion props
 
 
 
@@ -309,7 +309,7 @@ export class ElementStyles {
         ] as JssStyle,
     }}
     /**
-     * Creates css rule definitions for all variants by overriding some *scoped css props*.
+     * Creates css rule definitions for all variants by manipulating some props.
      * @returns A `ClassList` represents the css rule definitions for all variants.
      */
     public /*virtual*/ variants(): ClassList { return [] }
@@ -330,7 +330,7 @@ export class ElementStyles {
     }}
 
     /**
-     * Creates css rule definitions for all states by overriding some *scoped css props* and applied some `themesIf`.
+     * Creates css rule definitions for all states by manipulating some props.
      * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
      * @returns A `ClassList` represents the css rule definitions for all states.
      */
