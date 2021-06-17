@@ -191,24 +191,34 @@ export class BasicComponentStyles extends ElementStyles {
 
     //#region finals
     /**
-     * final functional foreground color.
+     * final foreground color.
      */
     public    readonly _foreg              = 'foreg'
 
     /**
-     * final functional backgrounds.
+     * final backgrounds.
      */
     public    readonly _backg              = 'backg'
 
     /**
-     * functional border color.
+     * final border color.
      */
     public    readonly _border             = 'border'
 
     /**
-     * functional box-shadow.
+     * final box-shadow.
      */
     public    readonly _boxShadow          = 'boxShadow'
+
+    /**
+     * final filter.
+     */
+    public    readonly _filter             = 'filter'
+
+    /**
+     * final animation.
+     */
+    public    readonly _anim               = 'anim'
     //#endregion finals
 
 
@@ -240,17 +250,23 @@ export class BasicComponentStyles extends ElementStyles {
 
 
         [ null, {
-            extend: [
-                // *toggle off* the background gradient prop:
-                // but still be able to *toggle on* by parent (inherit)
-                this.toggleOffGradient(/*inherit =*/true),
+            // requires usePropsFn() for _outlinedForegFn & _outlinedBackgFn to be able to work in outlined() => toggleOnOutlined()
+            // the code below causing useVariants() implicitly includes usePropsFn()
+            ...this.usePropsFn(),
 
-                
-                
-                // *toggle off* the outlined props:
-                // but still be able to *toggle on* by parent (inherit)
-                this.toggleOffOutlined(/*inherit =*/true),
-            ] as JssStyle,
+
+
+            //#region reset filters/anims/toggles to initial/inherit state
+            // *toggle off* the background gradient prop:
+            // but still be able to *toggle on* by parent (inherit)
+            ...this.toggleOffGradient(/*inherit =*/true),
+
+
+
+            // *toggle off* the outlined props:
+            // but still be able to *toggle on* by parent (inherit)
+            ...this.toggleOffOutlined(/*inherit =*/true),
+            //#endregion reset filters/anims/toggles to initial/inherit state
         }],
 
 
@@ -336,11 +352,11 @@ export class BasicComponentStyles extends ElementStyles {
         // *toggle on* the background gradient prop:
         return this.toggleOnGradient();
     }
-    public /*virtual*/ toggleOnGradient(): JssStyle { return {
+    public /*virtual*/ toggleOnGradient(): PropList { return {
         // *toggle on* the background gradient prop:
         [this.decl(this._backgGradTg)]     : cssProps.backgGrad,
     }}
-    public /*virtual*/ toggleOffGradient(inherit = false): JssStyle { return {
+    public /*virtual*/ toggleOffGradient(inherit = false): PropList { return {
         // *toggle off* the background gradient prop:
         [this.decl(this._backgGradTg)]     : inherit ? 'unset' : 'initial',
     }}
@@ -353,12 +369,12 @@ export class BasicComponentStyles extends ElementStyles {
         // *toggle on* the outlined props:
         return this.toggleOnOutlined();
     }
-    public /*virtual*/ toggleOnOutlined(): JssStyle { return {
+    public /*virtual*/ toggleOnOutlined(): PropList { return {
         // *toggle on* the outlined props:
         [this.decl(this._outlinedForegTg)] : this.ref(this._outlinedForegFn),
         [this.decl(this._outlinedBackgTg)] : this.ref(this._outlinedBackgFn),
     }}
-    public /*virtual*/ toggleOffOutlined(inherit = false): JssStyle { return {
+    public /*virtual*/ toggleOffOutlined(inherit = false): PropList { return {
         // *toggle off* the outlined props:
         [this.decl(this._outlinedForegTg)] : inherit ? 'unset' : 'initial',
         [this.decl(this._outlinedBackgTg)] : inherit ? 'unset' : 'initial',
@@ -499,25 +515,31 @@ export class BasicComponentStyles extends ElementStyles {
 
         //#region finals
         // define a final *foreground* color func:
-        [this.decl(this._foreg)] : this.ref(
+        [this.decl(this._foreg)]     : this.ref(
             this._outlinedForegTg, // toggle outlined
             this._foregFn,
         ),
 
         // define a final *backgrounds* func:
-        [this.decl(this._backg)] : this.ref(
+        [this.decl(this._backg)]     : this.ref(
             this._outlinedBackgTg, // toggle outlined
             this._backgFn,
         ),
 
         // define a *border* color func:
-        [this.decl(this._border)] : this.ref(
+        [this.decl(this._border)]    : this.ref(
             this._outlinedForegTg, // toggle outlined
             this._borderFn
         ),
 
         // define a *box-shadow* func:
-        [this.decl(this._boxShadow)] : this.boxShadowFn(),
+        [this.decl(this._boxShadow)] : this.boxShadowFn(), // single array (including from the returning function) => makes the JSS treat as comma separated values
+
+        // define a *filter* func:
+        [this.decl(this._filter)]    : [this.filterFn()],  // double array (including from the returning function) => makes the JSS treat as space separated values
+
+        // define a *animation* func:
+        [this.decl(this._anim)]      : this.animFn(),      // single array (including from the returning function) => makes the JSS treat as comma separated values
         //#endregion finals
     }}
 
@@ -554,15 +576,13 @@ export class BasicComponentStyles extends ElementStyles {
     
     
     
-        // apply fn props:
+        // apply final props:
         foreg       : this.ref(this._foreg),
         backg       : this.ref(this._backg),
         borderColor : this.ref(this._border),
-        
-        // apply animation fn props:
         boxShadow   : this.ref(this._boxShadow),
-        filter      : [this.filterFn()],                  // double array (including from the returning function) => makes the JSS treat as space separated values
-        anim        : this.animFn(),                      // single array (including from the returning function) => makes the JSS treat as comma separated values
+        filter      : this.ref(this._filter),
+        anim        : this.ref(this._anim),
     }}
 
 

@@ -105,9 +105,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
         );
     }
     protected /*virtual*/ applyStateCheck(): JssStyle { return {
-        extend: [
-            this.toggleOffOutlined(), // *toggle off* the outlined
-        ] as JssStyle,
+        ...this.toggleOffOutlined(), // *toggle off* the outlined
     }}
     //#endregion mixins
 

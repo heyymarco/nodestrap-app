@@ -168,11 +168,12 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
 
             
             
-            // reset filters/anims/toggles to initial/inherit state:
+            //#region reset filters/anims/toggles to initial/inherit state
             [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
             [this.decl(this._passiveForegTg)]      : inherit ? 'unset' : 'initial', // toggle *off*
             [this.decl(this._passiveBackgTg)]      : inherit ? 'unset' : 'initial', // toggle *off*
+            //#endregion reset filters/anims/toggles to initial/inherit state
         }],
     ]}
     public /*virtual*/ contentActived()     : JssStyle { return {

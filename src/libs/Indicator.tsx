@@ -158,7 +158,7 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
 
-            // reset filters/anims to initial/inherit state:
+            //#region reset filters/anims/toggles to initial/inherit state
             [this.decl(this._filterEnableDisable)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animEnableDisable)]   : inherit ? 'unset' : 'initial',
             [this.decl(this._filterHoverLeave)]    : inherit ? 'unset' : 'initial', // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
@@ -167,6 +167,7 @@ export class IndicatorStyles extends BasicComponentStyles {
 
             [this.decl(this._activeForegTg)]       : inherit ? 'unset' : 'initial',
             [this.decl(this._activeBackgTg)]       : inherit ? 'unset' : 'initial',
+            //#endregion reset filters/anims/toggles to initial/inherit state
         }],
 
 
