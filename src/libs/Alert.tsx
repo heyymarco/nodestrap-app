@@ -19,6 +19,7 @@ import {
     // utils:
     isTypeOf,
 }                           from './nodestrap'  // nodestrap's core
+import spacers              from './spacers'    // configurable spaces defs
 import {
     PopupStyles,
     PopupProps,
@@ -30,7 +31,6 @@ import {
 }                           from './Content'
 import Icon                 from './Icon'
 import CloseButton          from './CloseButton'
-import spacers              from './spacers'     // configurable spaces defs
 
 
 
@@ -40,7 +40,7 @@ const iconElm    = '&>.icon';
 const bodyElm    = '&>.body';
 const controlElm = '&>.control';
 
-export class AlertStylesBuilder extends PopupStyles implements IContentStyles {
+export class AlertStyles extends PopupStyles implements IContentStyles {
     // variants:
     public /*override*/ theme(theme: string): JssStyle { return {
         extend: [
@@ -171,22 +171,13 @@ export class AlertStylesBuilder extends PopupStyles implements IContentStyles {
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'control')), // apply *general* cssProps starting with control***
     }}
 }
-export const styles = new AlertStylesBuilder();
+export const alertStyles = new AlertStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     return {
         //#region spacings
         gapX : spacers.default,
@@ -201,7 +192,7 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface AlertProps<TElement extends HTMLElement = HTMLElement>
     extends
         PopupProps<TElement>
 {
@@ -210,13 +201,13 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
 
 
     // children:
+    icon?     : React.ReactChild | boolean | null | string
     children? : React.ReactNode
-    icon?     : React.ReactChild | boolean | string
-    control?  : React.ReactChild | boolean
+    control?  : React.ReactChild | boolean | null
 }
-export default function Alert<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function Alert<TElement extends HTMLElement = HTMLElement>(props: AlertProps<TElement>) {
     // styles:
-    const alrtStyles = styles.useStyles();
+    const styles = alertStyles.useStyles();
 
 
 
@@ -357,7 +348,7 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
 
 
             // classes:
-            mainClass={props.mainClass ?? alrtStyles.main}
+            mainClass={props.mainClass ?? styles.main}
         >
             { iconFn }
 
@@ -367,3 +358,4 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
         </Popup>
     );
 }
+export { Alert }

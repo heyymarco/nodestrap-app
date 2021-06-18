@@ -14,19 +14,19 @@ import CarouselApp from './apps/CarouselApp';
 import NavscrollApp from './apps/NavscrollApp';
 import MasonryApp from './apps/MasonryApp';
 import AccordionApp from './apps/AccordionApp';
-import AlertApp from './apps/AlertApp';
 import IconApp from './apps/IconApp';
 
 import BasicComponentApp    from './apps/BasicComponentApp';
 import IndicatorApp         from './apps/IndicatorApp';
 import ContentApp           from './apps/ContentApp';
 import PopupApp             from './apps/PopupApp';
+import AlertApp             from './apps/AlertApp';
 
 
 
 ReactDOM.render(
     <React.StrictMode>
-        <PopupApp />
+        <AlertApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

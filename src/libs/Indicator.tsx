@@ -19,16 +19,16 @@ import {
     CssConfig,
 }                           from './nodestrap'  // nodestrap's core
 import {
-    BasicComponentStyles,
-    BasicComponentProps,
-    BasicComponent,
-}                           from './BasicComponent'
-import {
     usePropAccessibility,
     usePropEnabled,
     AccessibilityProps,
     AccessibilityProvider,
 }                           from './accessibilities'
+import {
+    BasicComponentStyles,
+    BasicComponentProps,
+    BasicComponent,
+}                           from './BasicComponent'
 
 
 
