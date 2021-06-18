@@ -1,8 +1,8 @@
 // react (builds html using javascript):
-import
-    React, {
+import {
+    default as React,
     useState,
-}                          from 'react'        // base technology of our nodestrap components
+}                           from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
 import {
@@ -16,37 +16,33 @@ import {
     CssConfig,
 }                           from './nodestrap'   // nodestrap's core
 import {
+    Result as ValResult,
+    usePropValidation,
+    ValidationProps,
+    ValidationProvider,
+}                           from './validations'
+import {
     BasicComponentStyles,
     BasicComponentProps,
     BasicComponent,
 }                           from './BasicComponent'
 import {
-    IContentStyles,
-    contentStyles,
-}                           from './Content'
-import {
     useStateValidInvalid,
-}                           from './EditableControl'
-import type {
-    IValidationStylesBuilder,
+    IValidationStylesBuilder as ValidationStyles,
 }                           from './EditableControl'
 import {
     styles as editableTextControlStyles,
 }                           from './EditableTextControl'
 import {
-    usePropValidation,
-    ValidationProvider,
-}                           from './validations'
-import type * as Val        from './validations'
-import type {
-    Props as ValidationProps,
-}                           from './validations'
+    IContentStyles,
+    contentStyles,
+}                           from './Content'
 
 
 
 // styles:
 
-export class FormStylesBuilder extends BasicComponentStyles implements IContentStyles, IValidationStylesBuilder {
+export class FormStyles extends BasicComponentStyles implements IContentStyles, ValidationStyles {
     // variants:
     public /*override*/ theme(theme: string): JssStyle { return {
         extend: [
@@ -118,7 +114,7 @@ export class FormStylesBuilder extends BasicComponentStyles implements IContentS
         ...this.contentPropsFn(),
     }}
     public /*implement*/ contentPropsFn(): PropList {
-        return editableTextControlStyles.contentPropsFn(); // copy functional props from Content
+        return editableTextControlStyles.contentPropsFn(); // copy functional props from EditableTextControl
     }
 
     public /*implement*/ validationPropsFn(): JssStyle {
@@ -158,7 +154,7 @@ export class FormStylesBuilder extends BasicComponentStyles implements IContentS
         return contentStyles.contentBasicStyle(); // copy basicStyle from Content
     }
 }
-export const styles = new FormStylesBuilder();
+export const formStyles = new FormStyles();
 
 
 
@@ -184,20 +180,20 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export type ValidatorHandler = () => Val.Result;
-export type CustomValidatorHandler = (isValid: Val.Result) => Val.Result;
+export type ValidatorHandler = () => ValResult;
+export type CustomValidatorHandler = (isValid: ValResult) => ValResult;
 export function useFormValidator(customValidator?: CustomValidatorHandler) {
     // states:
-    let [isValid, setIsValid] = useState<Val.Result>(null);
+    let [isValid, setIsValid] = useState<ValResult>(null);
 
 
     
     const handleVals = (target: HTMLFormElement, immediately = false) => {
-        const getIsValid = (): Val.Result => target.matches(':valid') ? true : (target.matches(':invalid') ? false : null);
+        const getIsValid = (): ValResult => target.matches(':valid') ? true : (target.matches(':invalid') ? false : null);
 
         
         
-        const update = (validPrev?: Val.Result) => {
+        const update = (validPrev?: ValResult) => {
             const validNow = getIsValid();
             if ((validPrev !== undefined) && (validPrev !== validNow)) return; // has been modified during waiting => abort further validating
             
@@ -237,7 +233,7 @@ export function useFormValidator(customValidator?: CustomValidatorHandler) {
          * `true`  = valid.  
          * `false` = invalid.
          */
-        validator    : ((): Val.Result => isValid) as ValidatorHandler,
+        validator    : ((): ValResult => isValid) as ValidatorHandler,
 
         handleInit   : handleInit,
         handleChange : handleChange,
@@ -248,11 +244,12 @@ export function useFormValidator(customValidator?: CustomValidatorHandler) {
 
 // react components:
 
-export interface Props
+export interface FormProps
     extends
         BasicComponentProps<HTMLFormElement>,
-        ValidationProps,
-        React.FormHTMLAttributes<HTMLFormElement>
+        React.FormHTMLAttributes<HTMLFormElement>,
+
+        ValidationProps
 {
     // validations:
     customValidator? : CustomValidatorHandler
@@ -261,9 +258,9 @@ export interface Props
     // children:
     children?        : React.ReactNode
 }
-export default function Form(props: Props) {
+export default function Form(props: FormProps) {
     // styles:
-    const formStyles     = styles.useStyles();
+    const styles         = formStyles.useStyles();
 
     
     
@@ -290,7 +287,7 @@ export default function Form(props: Props) {
 
 
             // classes:
-            mainClass={props.mainClass ?? formStyles.main}
+            mainClass={props.mainClass ?? styles.main}
             stateClasses={[...(props.stateClasses ?? []),
                 stateValInval.class,
             ]}
@@ -341,3 +338,4 @@ export default function Form(props: Props) {
         </BasicComponent>
     );
 }
+export { Form }

@@ -17,6 +17,7 @@ import {
     createUseStyles,
     JssContext,
 }                           from 'react-jss'     // base technology of our nodestrap components
+import jssPluginGlobal      from 'jss-plugin-global'
 import
     jssPluginNormalizeShorthands
                             from './jss-plugin-normalize-shorthands'
@@ -27,6 +28,7 @@ import type {
 }                           from './Css'         // ts defs support for jss
 import type {
     Dictionary,
+    ValueOf,
     DictionaryOf,
 }                           from './CssConfig'   // ts defs support for jss
 import CssConfig            from './CssConfig'   // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
@@ -39,7 +41,7 @@ import { camelCase }        from 'camel-case'    // camel-case  support for jss
 
 export type { JssStyle, Styles, Classes }
 export type { Prop, PropEx, Cust }
-export type { Dictionary, DictionaryOf }
+export type { Dictionary, ValueOf, DictionaryOf }
 export type ClassEntry = [string|null, JssStyle]
 export type ClassList  = ClassEntry[]
 export type PropList   = { [name: string]: JssValue }
@@ -366,10 +368,16 @@ export class ElementStyles {
     public /*virtual*/ basicStyle(): JssStyle { return {} }
 
     /**
+     * Creates a global style applied to a whole document.
+     * @returns A `JssStyle` represents a global style definition.
+     */
+    public /*virtual*/ globalStyle(): JssStyle { return {} }
+
+    /**
      * Creates one/more composite styles, with the themes & states applied.
      * @returns A `Styles` represents the composite style definitions.
      */
-    protected /*virtual*/ styles(): Styles<'main'> {
+    protected /*virtual*/ styles(): Styles<'main'|'@global'> {
         return {
             main: {
                 extend: [
@@ -387,6 +395,8 @@ export class ElementStyles {
                     this.basicStyle(),
                 ] as JssStyle,
             },
+
+            '@global': this.globalStyle(),
         };
     }
 
@@ -408,6 +418,7 @@ export class ElementStyles {
 
                     const jss = jssContext.jss ?? jssDefault;
                     jss.use(
+                        jssPluginGlobal(),
                         jssPluginNormalizeShorthands()
                     );
 

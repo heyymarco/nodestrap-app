@@ -1,9 +1,9 @@
 // react (builds html using javascript):
-import
-    React, {
+import {
+    default as React,
     createContext,
     useContext,
-}                          from 'react'             // base technology of our nodestrap components
+}                           from 'react'             // base technology of our nodestrap components
 
 
 
@@ -59,7 +59,7 @@ Context.displayName  = 'Validation';
 
 // hooks:
 
-export function usePropValidation(props: Props): Validation {
+export function usePropValidation(props: ValidationProps): Validation {
     // contexts:
     const valContext = useContext(Context);
 
@@ -105,7 +105,7 @@ export function usePropValidation(props: Props): Validation {
 
 // react components:
 
-export interface Props
+export interface ValidationProps
 {
     /**
      * `undefined` : same as `true`.  
@@ -134,7 +134,7 @@ export interface Props
     // children:
     children?          : React.ReactNode
 }
-export default function ValidationProvider(props: Props) {
+export default function ValidationProvider(props: ValidationProps) {
     return (
         <Context.Provider value={{
             enableValidation : props.enableValidation ?? true,

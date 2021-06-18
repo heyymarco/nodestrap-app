@@ -12,13 +12,13 @@ import {
     
     // components:
     CssConfig,
-}                           from './nodestrap'   // nodestrap's core
+}                           from './nodestrap'  // nodestrap's core
 import colors               from './colors'     // configurable colors & theming defs
 import {
-    default  as EditableControl,
-    EditableControlStylesBuilder,
+    EditableControlStylesBuilder as EditableControlStyles,
+    Props   as EditableControlProps,
+    default as EditableControl,
 }                           from './EditableControl'
-import type * as EditableControls   from './EditableControl'
 import {
     IContentStyles,
     contentStyles,
@@ -33,7 +33,7 @@ import {
 
 const iconElm = '&::after';
 
-export class EditableTextControlStylesBuilder extends EditableControlStylesBuilder implements IContentStyles {
+export class EditableTextControlStylesBuilder extends EditableControlStyles implements IContentStyles {
     //#region scoped css props
     /**
      * Icon for indicating valid/invalid state.
@@ -263,7 +263,7 @@ type EditableTextControlElement = HTMLInputElement|HTMLSelectElement|HTMLTextAre
 
 export interface Props<TElement extends EditableTextControlElement = EditableTextControlElement>
     extends
-        EditableControls.Props<TElement>
+        EditableControlProps<TElement>
 {
     // validations:
     minLength? : number

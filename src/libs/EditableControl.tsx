@@ -29,7 +29,7 @@ import {
 }                           from './validations'
 import type * as Val        from './validations'
 import type {
-    Props as ValidationProps,
+    ValidationProps,
 }                           from './validations'
 
 

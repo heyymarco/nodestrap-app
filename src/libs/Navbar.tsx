@@ -485,7 +485,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected /*override*/ styles(): Styles<'main'> {
+    protected /*override*/ styles(): Styles<'main'|'@global'> {
         return {
             main: {
                 extend: [
@@ -564,6 +564,7 @@ export class NavbarStylesBuilder extends ControlStylesBuilder {
                     ] as JssStyle,
                 } as JssStyle,
             },
+            '@global': this.globalStyle(),
         };
     }
 }

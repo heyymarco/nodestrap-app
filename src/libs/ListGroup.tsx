@@ -508,7 +508,7 @@ export class ListgroupStylesBuilder extends ContentStyles {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected /*override*/ styles(): Styles<'main'> {
+    protected /*override*/ styles(): Styles<'main'|'@global'> {
         const styles = super.styles();
         styles.main = {
             extend: [

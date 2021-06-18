@@ -21,12 +21,13 @@ import PopupApp             from './apps/PopupApp';
 import AlertApp             from './apps/AlertApp';
 import ContentApp           from './apps/ContentApp';
 import MasonryApp           from './apps/MasonryApp';
+import ContainerApp         from './apps/ContainerApp';
 
 
 
 ReactDOM.render(
     <React.StrictMode>
-        <MasonryApp />
+        <ContainerApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

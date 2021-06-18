@@ -28,7 +28,7 @@ import {
     cssDecls as ecssDecls,
 }                           from './BasicComponent'
 import {
-    styles as containerStyles,
+    containerStyles,
 }                           from './Container'
 import {
     cssDecls as icssDecls,
@@ -358,7 +358,7 @@ export class ModalStylesBuilder extends PopupStyles {
             marginInlineStart: 'auto',
         },
     }}
-    protected /*override*/ styles(): Styles<'main'|'body'|'actionBar'> { return {
+    protected /*override*/ styles(): Styles<'main'|'@global'|'body'|'actionBar'> { return {
         ...super.styles(),
 
         
