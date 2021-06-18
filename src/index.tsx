@@ -12,21 +12,21 @@ import FormApp from './apps/FormApp';
 import NavbarApp from './apps/NavbarApp';
 import CarouselApp from './apps/CarouselApp';
 import NavscrollApp from './apps/NavscrollApp';
-import MasonryApp from './apps/MasonryApp';
 import AccordionApp from './apps/AccordionApp';
 import IconApp from './apps/IconApp';
 
 import BasicComponentApp    from './apps/BasicComponentApp';
 import IndicatorApp         from './apps/IndicatorApp';
-import ContentApp           from './apps/ContentApp';
 import PopupApp             from './apps/PopupApp';
 import AlertApp             from './apps/AlertApp';
+import ContentApp           from './apps/ContentApp';
+import MasonryApp           from './apps/MasonryApp';
 
 
 
 ReactDOM.render(
     <React.StrictMode>
-        <AlertApp />
+        <MasonryApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

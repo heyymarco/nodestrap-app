@@ -35,7 +35,7 @@ import {
 
 // styles:
 
-export class MasonryStylesBuilder extends BasicComponentStyles implements IContentStyles {
+export class MasonryStyles extends BasicComponentStyles implements IContentStyles {
     // variants:
     public /*override*/ variants(): ClassList { return [
         ...super.variants(), // copy variants from base
@@ -105,7 +105,7 @@ export class MasonryStylesBuilder extends BasicComponentStyles implements IConte
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
 
-        rowGap    : [[0], '!important'], // strip out the `rowGap` because it will conflict with masonry's direction
+        rowGap    : [[0], '!important'], // strip out the `rowGap` because it conflicts with masonry's direction
     }}
     public /*virtual*/ inline(): JssStyle { return {
         // layout:
@@ -140,7 +140,7 @@ export class MasonryStylesBuilder extends BasicComponentStyles implements IConte
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
 
-        columnGap : [[0], '!important'], // strip out the `columnGap` because it will conflict with masonry's direction
+        columnGap : [[0], '!important'], // strip out the `columnGap` because it conflicts with masonry's direction
     }}
 
 
@@ -181,30 +181,26 @@ export class MasonryStylesBuilder extends BasicComponentStyles implements IConte
         return contentStyles.contentBasicStyle(); // copy basicStyle from Content
     }
 }
-export const styles = new MasonryStylesBuilder();
+export const masonryStyles = new MasonryStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     return {
+        //#region spacings
         columnGap            : spacers.sm,
         columnGapSm          : spacers.xs,
         columnGapLg          : spacers.md,
         rowGap               : spacers.sm,
         rowGapSm             : spacers.xs,
         rowGapLg             : spacers.md,
+        //#endregion spacings
 
+
+        
+        //#region sizes
         itemsRaiseSize       : '3px',
         itemsRaiseSizeSm     : '2px',
         itemsRaiseSizeLg     : '4px',
@@ -212,6 +208,7 @@ const cssConfig = new CssConfig(() => {
         itemsMinColumnSize   : '200px', // 5 * 40
         itemsMinColumnSizeSm : '120px', // 3 * 40
         itemsMinColumnSizeLg : '320px', // 8 * 40
+        //#endregion sizes
     };
 }, /*prefix: */'msry');
 export const cssProps = cssConfig.refs;
@@ -221,7 +218,7 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface MasonryProps<TElement extends HTMLElement = HTMLElement>
     extends
         BasicComponentProps<TElement>,
         VariantOrientation
@@ -229,9 +226,9 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     // children:
     children? : React.ReactNode
 }
-export default function Masonry<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function Masonry<TElement extends HTMLElement = HTMLElement>(props: MasonryProps<TElement>) {
     // styles:
-    const masonryStyles   = styles.useStyles();
+    const styles          = masonryStyles.useStyles();
 
     
     
@@ -468,7 +465,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
 
             // classes:
-            mainClass={props.mainClass ?? masonryStyles.main}
+            mainClass={props.mainClass ?? styles.main}
             variantClasses={[...(props.variantClasses ?? []),
                 variOrientation.class,
             ]}
@@ -477,5 +474,6 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
         </BasicComponent>
     );
 }
+export { Masonry }
 
 export type { OrientationStyle, VariantOrientation }

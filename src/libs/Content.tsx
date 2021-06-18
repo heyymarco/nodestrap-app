@@ -132,9 +132,9 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
     public /*virtual*/ contentPropsFn(): PropList { return {
         // define a passive *foreground* color func:
         [this.decl(this._passiveForegFn)] : this.ref(
-            this._foregIfIf,       // first  priority
-            this._passiveForegTh,  // second priority
-            this._foregIf,         // third  priority
+            this._foregIfIf,      // first  priority
+            this._passiveForegTh, // second priority
+            this._foregIf,        // third  priority
         ),
 
         // define a passive *backgrounds* func:
