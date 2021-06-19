@@ -15,7 +15,7 @@ import * as border          from './borders'     // configurable borders & borde
 import spacers              from './spacers'     // configurable spaces defs
 import {
     default  as Control,
-    ControlStylesBuilder,
+    ControlStyles,
 }                           from './Control'
 import type * as Controls   from './Control'
 
@@ -23,7 +23,7 @@ import type * as Controls   from './Control'
 
 // styles:
 
-export class ButtonStylesBuilder extends ControlStylesBuilder {
+export class ButtonStylesBuilder extends ControlStyles {
     // variants:
     public /*override*/ variants(): ClassList { return [
         ...super.variants(), // copy variants from base
@@ -276,7 +276,7 @@ export type BtnType = 'button'|'submit'|'reset'
 
 export interface Props
     extends
-        Controls.Props<HTMLButtonElement>,
+        Controls.ControlProps<HTMLButtonElement>,
         VariantButton
 {
     // actions:

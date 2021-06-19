@@ -21,7 +21,7 @@ import {
 }                           from './BasicComponent'
 import {
     default  as Control,
-    ControlStylesBuilder,
+    ControlStyles,
 }                           from './Control'
 import type * as Controls   from './Control'
 import {
@@ -47,7 +47,7 @@ export interface IValidationStylesBuilder {
     validationPropsFn(): JssStyle
     validationAnimFn(): JssStyle
 }
-export class EditableControlStylesBuilder extends ControlStylesBuilder implements IValidationStylesBuilder {
+export class EditableControlStylesBuilder extends ControlStyles implements IValidationStylesBuilder {
     //#region scoped css props
     /**
      * valid-state foreground color.
@@ -650,7 +650,7 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
 
 export interface Props<TElement extends EditableControlElement = EditableControlElement>
     extends
-        Controls.Props<TElement>,
+        Controls.ControlProps<TElement>,
         ValidationProps
 {
     // accessibility:

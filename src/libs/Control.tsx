@@ -4,35 +4,37 @@ import {
     useState,
 }                           from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
+// nodestrap (modular web components):
 import {
+    // general types:
+    JssStyle,
     PropEx,
     Cust,
-}                           from './Css'        // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
+    ClassList,
+    PropList,
 
-// nodestrap (modular web components):
-import * as stripOuts       from './strip-outs'
-import {
-    cssProps as ecssProps,
-}                           from './BasicComponent'
-import {
-    default as Indicator,
-    IndicatorStyles,
-}                           from './Indicator'
-import type * as Indicators from './Indicator'
+    
+    // components:
+    CssConfig,
+}                           from './nodestrap'   // nodestrap's core
 import {
     usePropEnabled,
 }                           from './accessibilities'
+import * as stripOuts       from './strip-outs'
+import {
+    cssProps as bcssProps,
+}                           from './BasicComponent'
+import {
+    IndicatorStyles,
+    IndicatorProps,
+    Indicator,
+}                           from './Indicator'
 
 
 
 // styles:
 
-export interface IControlStylesBuilder {
+export interface IControlStylesBuilderOld {
     // states:
     controlStates(inherit : boolean): JssStyle
 
@@ -47,16 +49,16 @@ export interface IControlStylesBuilder {
     // styles:
     controlBasicStyle(): JssStyle
 }
-export class ControlStylesBuilder extends IndicatorStyles implements IControlStylesBuilder {
-    //#region scoped css props
-    // anim props:
-
+export class ControlStyles extends IndicatorStyles {
+    //#region props
+    //#region animations
  // public    readonly _filterHoverLeave   = 'filterHoverLeave' // already defined in Indicator
-    protected readonly _animHoverLeave      = 'animHoverLeave'
+    protected readonly _animHoverLeave     = 'animHoverLeave'
     
-    public    readonly _boxShadowFocusBlur  = 'boxShadowFocusBlur'
-    protected readonly _animFocusBlur       = 'animFocusBlur'
-    //#endregion scoped css props
+    public    readonly _boxShadowFocusBlur = 'boxShadowFocusBlur'
+    protected readonly _animFocusBlur      = 'animFocusBlur'
+    //#endregion animations
+    //#endregion props
 
 
 
@@ -153,6 +155,59 @@ export class ControlStylesBuilder extends IndicatorStyles implements IControlSty
 
 
     // states:
+    public /*override*/ states(inherit: boolean): ClassList { return [
+        ...super.states(inherit), // copy states from base
+
+
+
+        [ null, {
+            // requires usePropsFn() for using _foregFn & _backgFn in the [hovered(), hovering(), focused(), focusing()] => toggleOnActive()
+            // the code below causing useStates() implicitly includes usePropsFn()
+            ...this.usePropsFn(),
+
+
+
+            //#region reset toggles/filters/anims to initial/inherit state
+            [this.decl(this._filterHoverLeave)]   : inherit ? 'unset' : 'initial',
+            [this.decl(this._animHoverLeave)]     : inherit ? 'unset' : 'initial',
+            [this.decl(this._boxShadowFocusBlur)] : inherit ? 'unset' : 'initial',
+            [this.decl(this._animFocusBlur)]      : inherit ? 'unset' : 'initial',
+
+            ...this.toggleOffActive(inherit),
+            //#endregion reset toggles/filters/anims to initial/inherit state
+        }],
+
+
+
+        [ '&.hovered'                                                                             , this.arrived()  ],
+        [ '&:hover:not(.disable):not(.disabled):not(:disabled),' +
+          '&.focus,&:focus:not(.disable):not(.disabled):not(:disabled),&.focused'                 , this.arriving() ],
+        [ '&:not(.focus):not(:focus):not(.focused).leave,&:not(:hover).blur', this.leaving()  ],
+        [ '&:not(:hover):not(.focus):not(:focus):not(.leave):not(.blur)'                          , this.left()     ],
+
+
+
+        [ '&.focused'                                                   , this.focused()     ],
+    ]}
+
+    public /*virtual*/ arrived()  : JssStyle { return {
+    }}
+    public /*virtual*/ arriving() : JssStyle { return {
+    }}
+    public /*virtual*/ leaving()  : JssStyle { return {
+    }}
+    public /*virtual*/ left()     : JssStyle { return {
+    }}
+
+    public /*virtual*/ focused()  : JssStyle { return {
+    }}
+    public /*virtual*/ focusing() : JssStyle { return {
+    }}
+    public /*virtual*/ blurring() : JssStyle { return {
+    }}
+    public /*virtual*/ blurred()  : JssStyle { return {
+    }}
+
     public /*override*/ themeDefault(theme: string|null = 'secondary'): JssStyle {
         // change default parameter from null to 'secondary'
         return super.themeDefault(theme);
@@ -167,10 +222,10 @@ export class ControlStylesBuilder extends IndicatorStyles implements IControlSty
             this.iif(!inherit, {
                 //#region all initial states are none
              // [this.decl(this._filterHoverLeave)]    : ecssProps.filterNone, // was supported from Indicator
-                [this.decl(this._animHoverLeave)]      : ecssProps.animNone,
+                [this.decl(this._animHoverLeave)]      : bcssProps.animNone,
         
-                [this.decl(this._boxShadowFocusBlur)]  : ecssProps.boxShadowNone,
-                [this.decl(this._animFocusBlur)]       : ecssProps.animNone,
+                [this.decl(this._boxShadowFocusBlur)]  : bcssProps.boxShadowNone,
+                [this.decl(this._animFocusBlur)]       : bcssProps.animNone,
                 //#endregion all initial states are none
             }),
     
@@ -240,7 +295,7 @@ export class ControlStylesBuilder extends IndicatorStyles implements IControlSty
             this.stateNotDisabled({ // if ctrl was not fully disabled
                 // define an *animations* func:
                 [this.decl(this._animFnOld)]: [
-                    ecssProps.anim,
+                    bcssProps.anim,
                     this.ref(this._animActivePassive), // 4th : ctrl already pressed, move to the least priority
                     this.ref(this._animHoverLeave),    // 3rd : cursor leaved   => low probability because holding press
                     this.ref(this._animFocusBlur),     // 2nd : ctrl lost focus => low probability because holding press
@@ -250,7 +305,7 @@ export class ControlStylesBuilder extends IndicatorStyles implements IControlSty
 
         // define an *animations* func:
         [this.decl(this._animFnOld)]: [
-            ecssProps.anim,
+            bcssProps.anim,
             this.ref(this._animEnableDisable), // 4th : ctrl must be enabled
             this.ref(this._animHoverLeave),    // 3rd : cursor hovered over ctrl
             this.ref(this._animFocusBlur),     // 2nd : ctrl got focused (can interrupt hover/leave)
@@ -294,35 +349,26 @@ export class ControlStylesBuilder extends IndicatorStyles implements IControlSty
         ] as JssStyle,
     }}
 }
-export const styles = new ControlStylesBuilder();
+export const controlStyles = new ControlStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     const keyframesHover   : PropEx.Keyframes = {
         from: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterHoverLeave, styles._filterNone)),
+                ...controlStyles.filterFn().filter((f) => f !== controlStyles.ref(controlStyles._filterHoverLeave, controlStyles._filterNone)),
 
              // styles.ref(styles._filterHoverLeave, styles._filterNone), // missing the last => let's the browser interpolated it
             ]],
         },
         to: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...styles.filterFn().filter((f) => f !== styles.ref(styles._filterHoverLeave, styles._filterNone)),
+                ...controlStyles.filterFn().filter((f) => f !== controlStyles.ref(controlStyles._filterHoverLeave, controlStyles._filterNone)),
 
-                styles.ref(styles._filterHoverLeave, styles._filterNone), // existing the last => let's the browser interpolated it
+                controlStyles.ref(controlStyles._filterHoverLeave, controlStyles._filterNone), // existing the last => let's the browser interpolated it
             ]],
         },
     };
@@ -331,19 +377,21 @@ const cssConfig = new CssConfig(() => {
         to   : keyframesHover.from,
     };
 
+    
+    
     const keyframesFocus   : PropEx.Keyframes = {
         from: {
             boxShadow: [[[ // triple array => makes the JSS treat as comma separated values
-                ...styles.boxShadowFn().filter((b) => b !== styles.ref(styles._boxShadowFocusBlur, styles._boxShadowNone)),
+                ...controlStyles.boxShadowFn().filter((b) => b !== controlStyles.ref(controlStyles._boxShadowFocusBlur, controlStyles._boxShadowNone)),
 
              // styles.ref(styles._boxShadowFocusBlur, styles._boxShadowNone), // missing the last => let's the browser interpolated it
             ]]],
         } as JssStyle,
         to: {
             boxShadow: [[[ // triple array => makes the JSS treat as comma separated values
-                ...styles.boxShadowFn().filter((b) => b !== styles.ref(styles._boxShadowFocusBlur, styles._boxShadowNone)),
+                ...controlStyles.boxShadowFn().filter((b) => b !== controlStyles.ref(controlStyles._boxShadowFocusBlur, controlStyles._boxShadowNone)),
 
-                styles.ref(styles._boxShadowFocusBlur, styles._boxShadowNone), // existing the last => let's the browser interpolated it
+                controlStyles.ref(controlStyles._boxShadowFocusBlur, controlStyles._boxShadowNone), // existing the last => let's the browser interpolated it
             ]]],
         } as JssStyle,
     };
@@ -352,14 +400,15 @@ const cssConfig = new CssConfig(() => {
         to   : keyframesFocus.from,
     };
 
+    
+    
     return {
         cursor             : 'pointer',
         cursorDisable      : 'not-allowed',
     
     
 
-        // anim props:
-
+        //#region animations
         filterHover        : [['brightness(85%)', 'drop-shadow(0 0 0.01px rgba(0,0,0,0.4))']],
 
         '@keyframes hover' : keyframesHover,
@@ -370,6 +419,7 @@ const cssConfig = new CssConfig(() => {
         animLeave          : [['300ms', 'ease-out', 'both', keyframesLeave]],
         animFocus          : [['150ms', 'ease-out', 'both', keyframesFocus]],
         animBlur           : [['300ms', 'ease-out', 'both', keyframesBlur ]],
+        //#endregion animations
     };
 }, /*prefix: */'ctrl');
 export const cssProps = cssConfig.refs;
@@ -379,7 +429,7 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(props: ControlProps<TElement>) {
     // fn props:
     const propEnabled = usePropEnabled(props);
 
@@ -449,7 +499,7 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
     };
 }
 
-export function useStateHoverLeave<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>, stateFocusBlur: { focus: boolean, blurring: boolean }) {
+export function useStateHoverLeave<TElement extends HTMLElement = HTMLElement>(props: ControlProps<TElement>, stateFocusBlur: { focus: boolean, blurring: boolean }) {
     // fn props:
     const propEnabled = usePropEnabled(props);
 
@@ -547,17 +597,17 @@ export function useStateHoverLeave<TElement extends HTMLElement = HTMLElement>(p
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface ControlProps<TElement extends HTMLElement = HTMLElement>
     extends
-        Indicators.IndicatorProps<TElement>
+        IndicatorProps<TElement>
 {
     // accessibility:
     focus?    : boolean
     tabIndex? : number
 }
-export default function Control<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function Control<TElement extends HTMLElement = HTMLElement>(props: ControlProps<TElement>) {
     // styles:
-    const ctrlStyles      = styles.useStyles();
+    const styles          = controlStyles.useStyles();
 
     
     
@@ -584,7 +634,7 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
 
 
             // classes:
-            mainClass={props.mainClass ?? ctrlStyles.main}
+            mainClass={props.mainClass ?? styles.main}
             stateClasses={[...(props.stateClasses ?? []),
                 
                 // if [tabIndex] is negative => treats Control as *wrapper* element, so there's no :focus (pseudo) => replace with .focus (synthetic)
@@ -618,3 +668,4 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
         />
     );
 }
+export { Control }

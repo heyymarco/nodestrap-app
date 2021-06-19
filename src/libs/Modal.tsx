@@ -482,7 +482,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
     // states:
     const stateActPass = useStateActivePassive(props);
-    const isActive     = !!stateActPass.class;
+    const isActive     = stateActPass.active || (!!stateActPass.class);
 
 
 

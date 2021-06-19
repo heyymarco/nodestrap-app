@@ -2,7 +2,6 @@
 import {
     default as React,
     useState,
-    useEffect,
 }                           from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
@@ -21,6 +20,7 @@ import {
 import {
     usePropAccessibility,
     usePropEnabled,
+    usePropActive,
     AccessibilityProps,
     AccessibilityProvider,
 }                           from './accessibilities'
@@ -174,27 +174,49 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
 
-        [ '&:not(.enable):not(.disable):not(.disabled):not(:disabled)'  , this.enabled()     ],
-        [ '&.enable'                                                    , this.enabling()    ],
-        [ '&.disable'                                                   , this.disabling()   ],
-        [ '&.disabled,&:disabled'                                       , this.disabled()    ],
+        // if all below are not set => enabled
+        [ '&:not(.enable):not(.disable):not(:disabled):not(.disabled)'        , this.enabled()     ],
+
+        // .enable will be added after loosing disable and will be removed after enabling-animation done
+        [ '&.enable'                                                          , this.enabling()    ],
+
+        // .disable = styled disable, :disabled = real disable
+        [ '&.disable,&:disabled:not(.disabled)'                               , this.disabling()   ],
+
+        // .disabled will be added after disabling-animation done
+        [ '&.disabled'                                                        , this.disabled()    ],
 
         
-        
-        [ '&.actived,&:checked:not(.active)'                            , this.actived()     ],
-        [ '&.active'                                                    , this.activating()  ],
-        [ '&.passive'                                                   , this.passivating() ],
-        [ '&:not(.active):not(.actived):not(:checked):not(.passive)'    , this.passived()    ],
+
+        // .actived will be added after activating-animation done
+        [ '&.actived'                                                         , this.actived()     ],
+
+        // .active = programatically active, :checked = user active
+        [ '&.active,&:checked:not(.actived)'                                  , this.activating()  ],
+
+        // .passive will be added after loosing active and will be removed after deactivating-animation done
+        [ '&.passive'                                                         , this.passivating() ],
+
+        // if all above are not set => passived
+        [ '&:not(.actived):not(.active):not(:checked):not(.passive)'          , this.passived()    ],
 
 
 
-        [ '&.pressed'                                                   , this.pressed()     ],
-        [ '&.press,&:active:not(.disable):not(.disabled):not(:disabled)', this.pressing()    ],
-        [ '&.release'                                                   , this.releasing()   ],
-        [ '&:not(.press):not(:active):not(.pressed):not(.release),' +
-          '&:not(.press).disable:not(.pressed):not(.release),'      +
-          '&:not(.press).disabled:not(.pressed):not(.release),'     +
-          '&:not(.press):disabled:not(.pressed):not(.release)'          , this.released()    ],
+        // .pressed will be added after pressing-animation done
+        [ '&.pressed'                                                         , this.pressed()     ],
+
+        // .press = programatically press, :active = user press
+        [ '&.press,' +
+          '&:active:not(.pressed):not(.disabled):not(:disabled):not(.disable)', this.pressing()    ],
+
+        // .release will be added after loosing press and will be removed after releasing-animation done
+        [ '&.release'                                                         , this.releasing()   ],
+
+        // if all above are not set => released
+        [ '&:not(.pressed):not(.press):not(:active):not(.release),' +
+          '&:not(.pressed):not(.press).disabled:not(.release),'     +
+          '&:not(.pressed):not(.press):disabled:not(.release)'      +
+          '&:not(.pressed):not(.press).disable:not(.release),'                , this.released()    ],
     ]}
     
     public /*virtual*/ enabled()     : JssStyle { return {
@@ -441,14 +463,21 @@ export function useStateEnableDisable(props: IndicationProps) {
     return {
         enabled  : enabled,
         disabled : !enabled,
+
         class    : ((): string|null => {
+            // enabling:
             if (animating === true)  return 'enable';
-            if (animating === false) return 'disable';
 
-         // if (!enabled) return 'disabled'; // use pseudo :disabled
+            // disabling:
+            if (animating === false) return null; // use pseudo :disabled
 
+            // fully disabled:
+            if (!enabled) return 'disabled';
+
+            // fully enabled:
             return null;
         })(),
+
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
             if (/((?<![a-z])(enable|disable)|(?<=[a-z])(Enable|Disable))(?![a-z])/.test(e.animationName)) {
@@ -458,16 +487,9 @@ export function useStateEnableDisable(props: IndicationProps) {
     };
 }
 
-export function useStateActivePassive(props: IndicationProps, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }, mouses: string[]|null = ['click'], keys: string[]|null = ['space']) {
+export function useStateActivePassive(props: IndicationProps, activeDn?: boolean, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }) {
     // fn props:
-    const propAccess  = usePropAccessibility<boolean, null>(props, undefined, null);
-    const propEnabled = propAccess.enabled;
-    const propActive  = propAccess.active;
-    const propClickable: boolean =  // control is clickable if [is actionCtrl] and [is enabled]
-        (props.actionCtrl ?? false) // if [actionCtrl] was not specified => the default value is [actionCtrl=false] (readonly)
-        &&
-        propEnabled
-        ;
+    const propActive = usePropActive(props, null);
 
 
 
@@ -475,49 +497,20 @@ export function useStateActivePassive(props: IndicationProps, classes = { active
     const [actived,   setActived  ] = useState<boolean>(propActive ?? false); // true => active, false => passive
     const [animating, setAnimating] = useState<boolean|null>(null);           // null => no-animation, true => activating-animation, false => deactivating-animation
 
-    const [activeDn,  setActiveDn ] = useState<boolean>(false);               // uncontrollable (dynamic) state: true => user activate, false => user deactivate
-
     
 
     /*
      * state is active/passive based on [controllable active] (if set) and fallback to [uncontrollable active]
      */
-    const activeFn: boolean = propActive /*controllable*/ ?? (propClickable && activeDn /*uncontrollable*/);
+    const activeFn: boolean = propActive /*controllable*/ ?? activeDn /*uncontrollable*/ ?? false;
 
     if (actived !== activeFn) { // change detected => apply the change & start animating
         setActived(activeFn);   // remember the last change
         setAnimating(activeFn); // start activating-animation/deactivating-animation
     }
 
-
-
-    useEffect(() => {
-        if (!propClickable)      return; // control is not clickable => no response required
-        if (propActive !== null) return; // controllable [active] is set => no uncontrollable required
-
-
-
-        const handlePassivating = () => {
-            setActiveDn(false);
-        }
-        window.addEventListener('mouseup', handlePassivating);
-        window.addEventListener('keyup',   handlePassivating);
-        return () => {
-            window.removeEventListener('mouseup', handlePassivating);
-            window.removeEventListener('keyup',   handlePassivating);
-        }
-    }, [propClickable, propActive]);
-
     
 
-    const handleActivating = () => {
-        if (!propClickable)      return; // control is not clickable => no response required
-        if (propActive !== null) return; // controllable [active] is set => no uncontrollable required
-
-
-
-        setActiveDn(true);
-    }
     const handleIdle = () => {
         // clean up finished animation
 
@@ -527,37 +520,22 @@ export function useStateActivePassive(props: IndicationProps, classes = { active
         /**
          * partially/fully active
         */
-        active   : actived,
+        active : actived,
 
-        /**
-         * partially/fully passive
-         */
-        passive  : !actived,
+        class  : ((): string|null => {
+            // activating:
+            if (animating === true)  return null; // use pseudo :checked
 
-        /**
-         * fully active
-        */
-        actived  : actived  && (animating === true),
-
-        /**
-         * fully passive
-         */
-        passived : !actived && (animating === false),
-
-        class    : ((): string|null => {
-            if (animating === true)  return (propActive ? classes.active : null); // activating by prop => use .active, otherwise use pseudo :active
+            // passivating:
             if (animating === false) return classes.passive;
 
+            // fully actived:
             if (actived) return classes.actived;
 
+            // fully passived:
             return null;
         })(),
-        handleMouseDown    : ((e) => { // for Control
-            if (!mouses || mouses.includes(e.type.toLowerCase())) handleActivating();
-        }) as React.MouseEventHandler<HTMLElement>,
-        handleKeyDown      : ((e) => { // for Control
-            if (!keys || keys.includes(e.code.toLowerCase()) || keys.includes(e.key.toLowerCase())) handleActivating();
-        }) as React.KeyboardEventHandler<HTMLElement>,
+
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
             if (/((?<![a-z])(active|passive)|(?<=[a-z])(Active|Passive))(?![a-z])/.test(e.animationName)) {
@@ -660,8 +638,8 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
         'option',
         'textarea',
     ];
-    const isHtmlCtrl   = props.tag && htmlCtrls.includes(props.tag);
-    const isActionCtrl = props.actionCtrl ?? false;
+    const isCtrl       = props.tag && htmlCtrls.includes(props.tag);
+    const isCheck      = (props.tag === 'input') && ((props as any).type === 'checkbox');
     const propAccess   = usePropAccessibility(props);
 
 
@@ -676,21 +654,26 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
             // classes:
             mainClass={props.mainClass ?? styles.main}
             stateClasses={[...(props.stateClasses ?? []),
-                (stateEnbDis.class ?? ((stateEnbDis.disabled && !isHtmlCtrl) ? 'disabled' : null)),
-                stateActPass.class,
+                (stateEnbDis.class ?? ((stateEnbDis.disabled && !isCtrl) ? 'disable' : null)),
+                (stateActPass.class ?? ((stateActPass.active && !isCheck) ? 'active' : null)),
             ]}
 
 
-            // Indicator props:
-            {...(isHtmlCtrl ? {
+            // Control::disabled:
+            {...((stateEnbDis.disabled && isCtrl) ? {
                 // accessibility:
-                disabled: stateEnbDis.disabled,
+                disabled: true,
+            } : {})}
+            
+            
+            // Check::checked:
+            {...((stateActPass.active && isCheck) ? {
+                // accessibility:
+                checked: true,
             } : {})}
         
 
             // events:
-            onMouseDown={(e) => { if (isActionCtrl) stateActPass.handleMouseDown(e); props.onMouseDown?.(e); }}
-            onKeyDown=  {(e) => { if (isActionCtrl) stateActPass.handleKeyDown(e);   props.onKeyDown?.(e);   }}
             onAnimationEnd={(e) => {
                 // states:
                 stateEnbDis.handleAnimationEnd(e);

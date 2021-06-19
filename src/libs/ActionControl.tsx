@@ -1,6 +1,8 @@
 // react (builds html using javascript):
 import {
     default as React,
+    useEffect,
+    useState,
 }                           from 'react'        // base technology of our nodestrap components
 
 // jss   (builds css  using javascript):
@@ -9,6 +11,9 @@ import type {
 }                           from 'jss'          // ts defs support for jss
 
 // nodestrap (modular web components):
+import {
+    usePropAccessibility,
+}                           from './accessibilities'
 import {
     cssProps as ecssProps,
 }                           from './BasicComponent'
@@ -19,7 +24,7 @@ import {
 }                           from './Indicator'
 import {
     default  as Control,
-    ControlStylesBuilder,
+    ControlStyles,
 }                           from './Control'
 import type * as Controls   from './Control'
 
@@ -27,7 +32,7 @@ import type * as Controls   from './Control'
 
 // styles:
 
-export class ActionControlStylesBuilder extends ControlStylesBuilder {
+export class ActionControlStylesBuilder extends ControlStyles {
     //#region scoped css props
     protected readonly _animPressRelease   = 'animPressRelease'
     //#endregion scoped css props
@@ -152,8 +157,18 @@ export const styles = new ActionControlStylesBuilder();
 
 // hooks:
 
-export function useStatePressRelease(props: IndicationProps, classes = { active: 'press' as (string|null), actived: 'pressed' as (string|null), passive: 'release' as (string|null) }) {
-    return useStateActivePassive({
+export function useStatePressRelease(props: IndicationProps, classes = { active: 'press' as (string|null), actived: 'pressed' as (string|null), passive: 'release' as (string|null) }, mouses: string[]|null = ['click'], keys: string[]|null = ['space']) {
+    // fn props:
+    const propAccess  = usePropAccessibility<boolean, null>(props, undefined, null);
+    const propEnabled = propAccess.enabled;
+    const propActive  = propAccess.active;
+
+
+
+    // states:
+    const [activeDn, setActiveDn] = useState<boolean>(false); // uncontrollable (dynamic) state: true => user press, false => user release
+
+    const stateActPass = useStateActivePassive({
         // other props:
         ...props,
 
@@ -165,7 +180,49 @@ export function useStatePressRelease(props: IndicationProps, classes = { active:
 
         // behaviors:
         actionCtrl    : true,      // always use actionCtrl implementation
-    }, classes);
+    }, activeDn, classes);
+
+
+
+    
+    useEffect(() => {
+        if (!propEnabled)        return; // control is disabled => no response required
+        if (propActive !== null) return; // controllable [active] is set => no uncontrollable required
+
+
+
+        const handlePassivating = () => {
+            setActiveDn(false);
+        }
+        window.addEventListener('mouseup', handlePassivating);
+        window.addEventListener('keyup',   handlePassivating);
+        return () => {
+            window.removeEventListener('mouseup', handlePassivating);
+            window.removeEventListener('keyup',   handlePassivating);
+        }
+    }, [propEnabled, propActive]);
+
+
+
+    const handleActivating = () => {
+        if (!propEnabled)        return; // control is disabled => no response required
+        if (propActive !== null) return; // controllable [active] is set => no uncontrollable required
+
+
+
+        setActiveDn(true);
+    }
+    return {
+        ...stateActPass,
+
+        
+        handleMouseDown : ((e) => { // for ActionControl
+            if (!mouses || mouses.includes(e.type.toLowerCase())) handleActivating();
+        }) as React.MouseEventHandler<HTMLElement>,
+        handleKeyDown   : ((e) => { // for ActionControl
+            if (!keys || keys.includes(e.code.toLowerCase()) || keys.includes(e.key.toLowerCase())) handleActivating();
+        }) as React.KeyboardEventHandler<HTMLElement>,
+    };
 }
 
 
@@ -174,7 +231,7 @@ export function useStatePressRelease(props: IndicationProps, classes = { active:
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Controls.Props<TElement>
+        Controls.ControlProps<TElement>
 {
 }
 export default function ActionControl<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {

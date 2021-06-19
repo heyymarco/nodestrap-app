@@ -34,7 +34,7 @@ import {
 }                           from './Indicator'
 import type * as Indicators from './Indicator'
 import {
-    ControlStylesBuilder,
+    ControlStyles,
 }                           from './Control'
 import NavbarMenu           from './NavbarMenu'
 import Check                from './Check'
@@ -54,7 +54,7 @@ const menuElm       = '&>.menus>*';
 // Navbar is not a Control, but an Indicator wrapping of NavbarMenu (Control)
 // We use ControlStylesBuilder for serving styling of NavbarMenu (Control)
 
-export class NavbarStylesBuilder extends ControlStylesBuilder {
+export class NavbarStylesBuilder extends ControlStyles {
     //#region scoped css props
     /**
      * functional animations for the navbar's menus.

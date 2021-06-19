@@ -11,7 +11,7 @@ import type * as Controls   from './Control'
 
 export interface Props<TElement extends HTMLElement = HTMLAnchorElement>
     extends
-        Controls.Props<TElement>
+        Controls.ControlProps<TElement>
 {
 }
 export default function NavbarMenu<TElement extends HTMLElement = HTMLAnchorElement>(props: Props<TElement>) {

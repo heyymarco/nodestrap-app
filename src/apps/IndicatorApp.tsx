@@ -140,6 +140,32 @@ function App() {
 						</Indicator>
 					</div>
                 </Indicator>
+
+				<Indicator
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+				>
+					generic indicator
+				</Indicator>
+				<Indicator
+					tag='button'
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+				>
+					control indicator
+				</Indicator>
+				<Indicator
+					tag='input'
+					{...{ type: 'checkbox' }}
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+				/>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:

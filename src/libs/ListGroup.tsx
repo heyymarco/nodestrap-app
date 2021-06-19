@@ -31,7 +31,7 @@ import {
 }                           from './Content'
 import type * as Contents   from './Content'
 import type {
-    IControlStylesBuilder,
+    IControlStylesBuilderOld,
 }                           from './Control'
 import {
     styles as actionControlStyles,
@@ -180,7 +180,7 @@ class ListItemStylesBuilder extends ContentStyles {
 }
 const listItemStyles = new ListItemStylesBuilder();
 
-class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements IControlStylesBuilder {
+class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements IControlStylesBuilderOld {
     //#region mixins
     protected /*override*/ applyStateNoAnimStartupOld(): JssStyle {
         // @ts-ignore
