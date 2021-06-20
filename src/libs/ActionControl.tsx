@@ -124,7 +124,7 @@ export class ActionControlStylesBuilder extends ControlStyles {
 
 
     // functions:
-    public /*override*/ controlAnimFn(): JssStyle { return {
+    public /*override*/ controlAnimFnOld(): JssStyle { return {
         //#region re-arrange the animFn at different states
         '&.press,&.pressed': // if activated programmatically (not by user input)
             this.stateNotDisabled({ // if ctrl was not fully disabled

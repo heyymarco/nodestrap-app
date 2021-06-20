@@ -219,10 +219,10 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
 
     // functions:
     public /*implement*/ controlPropsFn(): JssStyle {
-        return actionControlStyles.controlPropsFn(); // copy functional props from ActionControl
+        return actionControlStyles.controlPropsFnOld(); // copy functional props from ActionControl
     }
     public /*implement*/ controlAnimFn(): JssStyle {
-        return actionControlStyles.controlAnimFn(); // copy functional anim from ActionControl
+        return actionControlStyles.controlAnimFnOld(); // copy functional anim from ActionControl
     }
 
     public /*override*/ propsFnOld(): JssStyle { return {

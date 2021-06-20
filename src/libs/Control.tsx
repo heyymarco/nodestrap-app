@@ -326,39 +326,6 @@ export class ControlStyles extends IndicatorStyles {
 
 
     // functions:
-    public /*virtual*/ controlPropsFn(): JssStyle { return {} }
-    public /*virtual*/ controlAnimFn(): JssStyle { return {
-        //#region re-arrange the animFn at different states
-        '&.active,&.actived': // if activated programmatically (not by user input)
-            this.stateNotDisabled({ // if ctrl was not fully disabled
-                // define an *animations* func:
-                [this.decl(this._animFnOld)]: [
-                    bcssProps.anim,
-                    this.ref(this._animActivePassive), // 4th : ctrl already pressed, move to the least priority
-                    this.ref(this._animArriveLeave),   // 3rd : cursor leaved   => low probability because holding press
-                    this.ref(this._animFocusBlur),     // 2nd : ctrl lost focus => low probability because holding press
-                    this.ref(this._animEnableDisable), // 1st : ctrl enable/disable => rarely used => low probability
-                ],
-            }),
-
-        // define an *animations* func:
-        [this.decl(this._animFnOld)]: [
-            bcssProps.anim,
-            this.ref(this._animEnableDisable), // 4th : ctrl must be enabled
-            this.ref(this._animArriveLeave),   // 3rd : cursor hovered over ctrl
-            this.ref(this._animFocusBlur),     // 2nd : ctrl got focused (can interrupt hover/leave)
-            this.ref(this._animActivePassive), // 1st : ctrl got pressed (can interrupt focus/blur)
-        ],
-        //#endregion re-arrange the animFn at different states
-    }}
-
-    public /*override*/ propsFnOld(): JssStyle { return {
-        extend: [
-            super.propsFnOld(), // copy functional props from base
-
-            this.controlPropsFn(),
-        ] as JssStyle,
-    }}
     public /*override*/ boxShadowFn(): Cust.Ref[] { return [
         ...super.boxShadowFn(),
 
@@ -366,9 +333,6 @@ export class ControlStyles extends IndicatorStyles {
 
         this.ref(this._boxShadowFocusBlur, this._boxShadowNone),
     ]}
-    public /*override*/ animFnOld(): JssStyle {
-        return this.controlAnimFn();
-    }
 
 
 
@@ -449,12 +413,30 @@ export class ControlStyles extends IndicatorStyles {
             //#endregion specific states
         ] as JssStyle,
     }}
-    public /*override*/ statesOld(inherit = false): JssStyle { return {
-        extend: [
-            super.statesOld(inherit), // copy states from base
-            
-            this.controlStatesOld(inherit),
-        ] as JssStyle,
+    public /*virtual*/ controlPropsFnOld(): JssStyle { return {} }
+    public /*virtual*/ controlAnimFnOld(): JssStyle { return {
+        //#region re-arrange the animFn at different states
+        '&.active,&.actived': // if activated programmatically (not by user input)
+            this.stateNotDisabled({ // if ctrl was not fully disabled
+                // define an *animations* func:
+                [this.decl(this._animFnOld)]: [
+                    bcssProps.anim,
+                    this.ref(this._animActivePassive), // 4th : ctrl already pressed, move to the least priority
+                    this.ref(this._animArriveLeave),   // 3rd : cursor leaved   => low probability because holding press
+                    this.ref(this._animFocusBlur),     // 2nd : ctrl lost focus => low probability because holding press
+                    this.ref(this._animEnableDisable), // 1st : ctrl enable/disable => rarely used => low probability
+                ],
+            }),
+
+        // define an *animations* func:
+        [this.decl(this._animFnOld)]: [
+            bcssProps.anim,
+            this.ref(this._animEnableDisable), // 4th : ctrl must be enabled
+            this.ref(this._animArriveLeave),   // 3rd : cursor hovered over ctrl
+            this.ref(this._animFocusBlur),     // 2nd : ctrl got focused (can interrupt hover/leave)
+            this.ref(this._animActivePassive), // 1st : ctrl got pressed (can interrupt focus/blur)
+        ],
+        //#endregion re-arrange the animFn at different states
     }}
 }
 export const controlStyles = new ControlStyles();
