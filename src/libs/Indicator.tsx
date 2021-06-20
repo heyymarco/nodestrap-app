@@ -215,8 +215,8 @@ export class IndicatorStyles extends BasicComponentStyles {
         // if all above are not set => released
         [ '&:not(.pressed):not(.press):not(:active):not(.release),' +
           '&:not(.pressed):not(.press).disabled:not(.release),'     +
-          '&:not(.pressed):not(.press):disabled:not(.release)'      +
-          '&:not(.pressed):not(.press).disable:not(.release),'                , this.released()    ],
+          '&:not(.pressed):not(.press):disabled:not(.release),'     +
+          '&:not(.pressed):not(.press).disable:not(.release)'                 , this.released()    ],
     ]}
     
     public /*virtual*/ enabled()     : JssStyle { return {

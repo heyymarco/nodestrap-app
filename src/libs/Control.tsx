@@ -178,25 +178,36 @@ export class ControlStyles extends IndicatorStyles {
 
 
 
-        [ '&.hovered'                                                                             , this.arrived()  ],
-        [ '&:hover:not(.disable):not(.disabled):not(:disabled),' +
-          '&.focus,&:focus:not(.disable):not(.disabled):not(:disabled),&.focused'                 , this.arriving() ],
-        [ '&:not(.focus):not(:focus):not(.focused).leave,&:not(:hover).blur', this.leaving()  ],
-        [ '&:not(:hover):not(.focus):not(:focus):not(.leave):not(.blur)'                          , this.left()     ],
+        // .arrived will be added after arriving-animation done
+        [ '&.arrived'                                                                        , this.arrived()  ],
+
+        // .arrive = programatically arrive (not implemented yet), :hover = user arrive
+        // focus triggers arriving too
+        [ '&:hover:not(.arrived):not(.disabled):not(:disabled):not(.disable),' +
+          '&.focused,&.focus,&:focus'                                                        , this.arriving() ],
+
+        // .leave will be added after loosing arrive and will be removed after leaving-animation done
+        [ '.leave'                                                                           , this.leaving()  ],
+
+        // if all above are not set => released
+        [ '&:not(.arrived):not(:hover):not(.focused):not(.focus):not(:focus):not(.leave),' +
+          '&:not(.arrived).disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
+          '&:not(.arrived):disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
+          '&:not(.arrived).disable:not(.focused):not(.focus):not(:focus):not(.leave)'        , this.left()    ],
 
 
 
         // .focused will be added after focusing-animation done
-        [ '&.focused'                                                      , this.focused()  ],
+        [ '&.focused'                                                                        , this.focused()  ],
 
         // .focus = programatically focus, :focus = user focus
-        [ '&.focus,&:focus:not(.focused)'                                  , this.focusing() ],
+        [ '&.focus,&:focus:not(.focused)'                                                    , this.focusing() ],
 
         // .blur will be added after loosing focus and will be removed after blurring-animation done
-        [ '&.blur'                                                         , this.blurring() ],
+        [ '&.blur'                                                                           , this.blurring() ],
 
         // if all above are not set => blurred
-        [ '&:not(.focused):not(.focus):not(:focus):not(.blur)'             , this.blurred()  ],
+        [ '&:not(.focused):not(.focus):not(:focus):not(.blur)'                               , this.blurred()  ],
     ]}
 
     public /*virtual*/ arrived()  : JssStyle { return {
