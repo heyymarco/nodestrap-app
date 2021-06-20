@@ -35,7 +35,7 @@ import {
 
 export interface IControlStylesBuilderOld {
     // states:
-    controlStates(inherit : boolean): JssStyle
+    controlStatesOld(inherit : boolean): JssStyle
 
 
 
@@ -51,8 +51,8 @@ export interface IControlStylesBuilderOld {
 export class ControlStyles extends IndicatorStyles {
     //#region props
     //#region animations
- // public    readonly _filterHoverLeave   = 'filterHoverLeave' // already defined in Indicator
-    protected readonly _animHoverLeave     = 'animHoverLeave'
+ // public    readonly _filterArriveLeave  = 'filterArriveLeave' // already defined in Indicator
+    protected readonly _animArriveLeave    = 'animArriveLeave'
     
     public    readonly _boxShadowFocusBlur = 'boxShadowFocusBlur'
     protected readonly _animFocusBlur      = 'animFocusBlur'
@@ -160,15 +160,15 @@ export class ControlStyles extends IndicatorStyles {
 
 
         [ null, {
-            // requires usePropsFn() for using _foregFn & _backgFn in the [hovered(), hovering(), focused(), focusing()] => toggleOnActive()
+            // requires usePropsFn() for using _foregFn & _backgFn in the [arrived(), arriving(), focused(), focusing()] => toggleOnActive()
             // the code below causing useStates() implicitly includes usePropsFn()
             ...this.usePropsFn(),
 
 
 
             //#region reset toggles/filters/anims to initial/inherit state
-            [this.decl(this._filterHoverLeave)]   : inherit ? 'unset' : 'initial',
-            [this.decl(this._animHoverLeave)]     : inherit ? 'unset' : 'initial',
+            [this.decl(this._filterArriveLeave)]  : inherit ? 'unset' : 'initial',
+            [this.decl(this._animArriveLeave)]    : inherit ? 'unset' : 'initial',
             [this.decl(this._boxShadowFocusBlur)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animFocusBlur)]      : inherit ? 'unset' : 'initial',
 
@@ -189,7 +189,7 @@ export class ControlStyles extends IndicatorStyles {
         // .leave will be added after loosing arrive and will be removed after leaving-animation done
         [ '.leave'                                                                           , this.leaving()  ],
 
-        // if all above are not set => released
+        // if all above are not set => left
         [ '&:not(.arrived):not(:hover):not(.focused):not(.focus):not(:focus):not(.leave),' +
           '&:not(.arrived).disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
           '&:not(.arrived):disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
@@ -210,34 +210,78 @@ export class ControlStyles extends IndicatorStyles {
         [ '&:not(.focused):not(.focus):not(:focus):not(.blur)'                               , this.blurred()  ],
     ]}
 
+    public /*override*/ disable() : JssStyle { return {
+        extend: [
+            super.disable(), // copy disable from base
+        ] as JssStyle,
+
+
+
+        // accessibility:
+        cursor     : cssProps.cursorDisable,
+        userSelect : 'none',
+    }}
+
     public /*virtual*/ arrived()  : JssStyle { return {
+        [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
+
+        ...this.toggleOnActive(),
+
+
+
         extend: [
             this.themeActive(),
         ] as JssStyle,
     }}
     public /*virtual*/ arriving() : JssStyle { return {
+        [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
+        [this.decl(this._animArriveLeave)]     : cssProps.animArrive,
+
+        ...this.toggleOnActive(),
+
+
+
         extend: [
             this.themeActive(),
         ] as JssStyle,
     }}
     public /*virtual*/ leaving()  : JssStyle { return {
+        [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
+        [this.decl(this._animArriveLeave)]     : cssProps.animLeave,
     }}
     public /*virtual*/ left()     : JssStyle { return {
+        /* --nothing-- */
     }}
 
     public /*virtual*/ focused()  : JssStyle { return {
+        [this.decl(this._boxShadowFocusBlur)] : bcssProps.boxShadowFocus,
+        
+        ...this.toggleOnActive(),
+
+
+
         extend: [
             this.themeActive(),
         ] as JssStyle,
     }}
     public /*virtual*/ focusing() : JssStyle { return {
+        [this.decl(this._boxShadowFocusBlur)] : bcssProps.boxShadowFocus,
+        [this.decl(this._animFocusBlur)]      : cssProps.animFocus,
+
+        ...this.toggleOnActive(),
+
+
+
         extend: [
             this.themeActive(),
         ] as JssStyle,
     }}
     public /*virtual*/ blurring() : JssStyle { return {
+        [this.decl(this._boxShadowFocusBlur)] : bcssProps.boxShadowFocus,
+        [this.decl(this._animFocusBlur)]      : cssProps.animFocus,
     }}
     public /*virtual*/ blurred()  : JssStyle { return {
+        /* --nothing-- */
     }}
 
     public /*override*/ themeDefault(theme: string|null = 'secondary'): JssStyle {
@@ -248,74 +292,6 @@ export class ControlStyles extends IndicatorStyles {
         // change default parameter from 'secondary' to 'primary'
         return super.themeActive(theme);
     }
-
-    public /*virtual*/ controlStates(inherit = false): JssStyle { return {
-        extend: [
-            this.iif(!inherit, {
-                //#region all initial states are none
-             // [this.decl(this._filterHoverLeave)]    : ecssProps.filterNone, // was supported from Indicator
-                [this.decl(this._animHoverLeave)]      : bcssProps.animNone,
-        
-                [this.decl(this._boxShadowFocusBlur)]  : bcssProps.boxShadowNone,
-                [this.decl(this._animFocusBlur)]       : bcssProps.animNone,
-                //#endregion all initial states are none
-            }),
-    
-    
-    
-            //#region specific states
-            //#region disable
-            this.stateDisable({ // [disabling, disabled]
-                // accessibility:
-                cursor     : cssProps.cursorDisable,
-                userSelect : 'none',
-            }),
-            //#endregion disable
-    
-    
-    
-            //#region hover, leave, focus, blur
-            this.stateLeaving({
-                [this.decl(this._filterHoverLeave)]       : cssProps.filterHover,
-                [this.decl(this._animHoverLeave)]         : cssProps.animLeave,
-            }),
-            this.stateBlurring({
-                [this.decl(this._boxShadowFocusBlur)]     : this.ref(this._boxShadowFocusFn),
-                [this.decl(this._animFocusBlur)]          : cssProps.animBlur,
-            }),
-            this.stateNotDisable({extend: [
-                // state hover & focus are possible when enabled
-                this.stateHover({
-                    [this.decl(this._filterHoverLeave)]   : cssProps.filterHover,
-                    [this.decl(this._animHoverLeave)]     : cssProps.animHover,
-    
-                    extend: [
-                        //TODO: update....
-                        this.themeActive(),
-                    ] as JssStyle,
-                }),
-                this.stateFocus({
-                    [this.decl(this._boxShadowFocusBlur)] : this.ref(this._boxShadowFocusFn),
-                    [this.decl(this._animFocusBlur)]      : cssProps.animFocus,
-    
-                    extend: [
-                        //TODO: update....
-                        this.themeActive(),
-                    ] as JssStyle,
-                }),
-            ] as JssStyle}),
-            //#endregion hover, leave, focus, blur
-            //#endregion specific states
-        ] as JssStyle,
-    }}
-
-    public /*override*/ statesOld(inherit = false): JssStyle { return {
-        extend: [
-            super.statesOld(inherit), // copy states from base
-            
-            this.controlStates(inherit),
-        ] as JssStyle,
-    }}
 
 
 
@@ -329,7 +305,7 @@ export class ControlStyles extends IndicatorStyles {
                 [this.decl(this._animFnOld)]: [
                     bcssProps.anim,
                     this.ref(this._animActivePassive), // 4th : ctrl already pressed, move to the least priority
-                    this.ref(this._animHoverLeave),    // 3rd : cursor leaved   => low probability because holding press
+                    this.ref(this._animArriveLeave),   // 3rd : cursor leaved   => low probability because holding press
                     this.ref(this._animFocusBlur),     // 2nd : ctrl lost focus => low probability because holding press
                     this.ref(this._animEnableDisable), // 1st : ctrl enable/disable => rarely used => low probability
                 ],
@@ -339,7 +315,7 @@ export class ControlStyles extends IndicatorStyles {
         [this.decl(this._animFnOld)]: [
             bcssProps.anim,
             this.ref(this._animEnableDisable), // 4th : ctrl must be enabled
-            this.ref(this._animHoverLeave),    // 3rd : cursor hovered over ctrl
+            this.ref(this._animArriveLeave),   // 3rd : cursor hovered over ctrl
             this.ref(this._animFocusBlur),     // 2nd : ctrl got focused (can interrupt hover/leave)
             this.ref(this._animActivePassive), // 1st : ctrl got pressed (can interrupt focus/blur)
         ],
@@ -380,6 +356,76 @@ export class ControlStyles extends IndicatorStyles {
             this.controlBasicStyle(),
         ] as JssStyle,
     }}
+
+
+
+    // old:
+    public /*virtual*/ controlStatesOld(inherit = false): JssStyle { return {
+        extend: [
+            this.iif(!inherit, {
+                //#region all initial states are none
+             // [this.decl(this._filterHoverLeave)]    : ecssProps.filterNone, // was supported from Indicator
+                [this.decl(this._animArriveLeave)]     : bcssProps.animNone,
+        
+                [this.decl(this._boxShadowFocusBlur)]  : bcssProps.boxShadowNone,
+                [this.decl(this._animFocusBlur)]       : bcssProps.animNone,
+                //#endregion all initial states are none
+            }),
+    
+    
+    
+            //#region specific states
+            //#region disable
+            this.stateDisable({ // [disabling, disabled]
+                // accessibility:
+                cursor     : cssProps.cursorDisable,
+                userSelect : 'none',
+            }),
+            //#endregion disable
+    
+    
+    
+            //#region hover, leave, focus, blur
+            this.stateLeaving({
+                [this.decl(this._filterArriveLeave)]      : cssProps.filterArrive,
+                [this.decl(this._animArriveLeave)]        : cssProps.animLeave,
+            }),
+            this.stateBlurring({
+                [this.decl(this._boxShadowFocusBlur)]     : this.ref(this._boxShadowFocusFn),
+                [this.decl(this._animFocusBlur)]          : cssProps.animBlur,
+            }),
+            this.stateNotDisable({extend: [
+                // state hover & focus are possible when enabled
+                this.stateHover({
+                    [this.decl(this._filterArriveLeave)]  : cssProps.filterArrive,
+                    [this.decl(this._animArriveLeave)]    : cssProps.animArrive,
+    
+                    extend: [
+                        //TODO: update....
+                        this.themeActive(),
+                    ] as JssStyle,
+                }),
+                this.stateFocus({
+                    [this.decl(this._boxShadowFocusBlur)] : this.ref(this._boxShadowFocusFn),
+                    [this.decl(this._animFocusBlur)]      : cssProps.animFocus,
+    
+                    extend: [
+                        //TODO: update....
+                        this.themeActive(),
+                    ] as JssStyle,
+                }),
+            ] as JssStyle}),
+            //#endregion hover, leave, focus, blur
+            //#endregion specific states
+        ] as JssStyle,
+    }}
+    public /*override*/ statesOld(inherit = false): JssStyle { return {
+        extend: [
+            super.statesOld(inherit), // copy states from base
+            
+            this.controlStatesOld(inherit),
+        ] as JssStyle,
+    }}
 }
 export const controlStyles = new ControlStyles();
 
@@ -388,25 +434,25 @@ export const controlStyles = new ControlStyles();
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    const keyframesHover   : PropEx.Keyframes = {
+    const keyframesArrive  : PropEx.Keyframes = {
         from: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...controlStyles.filterFn().filter((f) => f !== controlStyles.ref(controlStyles._filterHoverLeave, controlStyles._filterNone)),
+                ...controlStyles.filterFn().filter((f) => f !== controlStyles.ref(controlStyles._filterArriveLeave, controlStyles._filterNone)),
 
-             // styles.ref(styles._filterHoverLeave, styles._filterNone), // missing the last => let's the browser interpolated it
+             // controlStyles.ref(controlStyles._filterArriveLeave, controlStyles._filterNone), // missing the last => let's the browser interpolated it
             ]],
         },
         to: {
             filter: [[ // double array => makes the JSS treat as space separated values
-                ...controlStyles.filterFn().filter((f) => f !== controlStyles.ref(controlStyles._filterHoverLeave, controlStyles._filterNone)),
+                ...controlStyles.filterFn().filter((f) => f !== controlStyles.ref(controlStyles._filterArriveLeave, controlStyles._filterNone)),
 
-                controlStyles.ref(controlStyles._filterHoverLeave, controlStyles._filterNone), // existing the last => let's the browser interpolated it
+                controlStyles.ref(controlStyles._filterArriveLeave, controlStyles._filterNone), // existing the last => let's the browser interpolated it
             ]],
         },
     };
     const keyframesLeave   : PropEx.Keyframes = {
-        from : keyframesHover.to,
-        to   : keyframesHover.from,
+        from : keyframesArrive.to,
+        to   : keyframesArrive.from,
     };
 
     
@@ -435,22 +481,22 @@ const cssConfig = new CssConfig(() => {
     
     
     return {
-        cursor             : 'pointer',
-        cursorDisable      : 'not-allowed',
+        cursor              : 'pointer',
+        cursorDisable       : 'not-allowed',
     
     
 
         //#region animations
-        filterHover        : [['brightness(85%)', 'drop-shadow(0 0 0.01px rgba(0,0,0,0.4))']],
+        filterArrive        : [['brightness(85%)', 'drop-shadow(0 0 0.01px rgba(0,0,0,0.4))']],
 
-        '@keyframes hover' : keyframesHover,
-        '@keyframes leave' : keyframesLeave,
-        '@keyframes focus' : keyframesFocus,
-        '@keyframes blur'  : keyframesBlur,
-        animHover          : [['150ms', 'ease-out', 'both', keyframesHover]],
-        animLeave          : [['300ms', 'ease-out', 'both', keyframesLeave]],
-        animFocus          : [['150ms', 'ease-out', 'both', keyframesFocus]],
-        animBlur           : [['300ms', 'ease-out', 'both', keyframesBlur ]],
+        '@keyframes arrive' : keyframesArrive,
+        '@keyframes leave'  : keyframesLeave,
+        '@keyframes focus'  : keyframesFocus,
+        '@keyframes blur'   : keyframesBlur,
+        animArrive          : [['150ms', 'ease-out', 'both', keyframesArrive]],
+        animLeave           : [['300ms', 'ease-out', 'both', keyframesLeave]],
+        animFocus           : [['150ms', 'ease-out', 'both', keyframesFocus]],
+        animBlur            : [['300ms', 'ease-out', 'both', keyframesBlur ]],
         //#endregion animations
     };
 }, /*prefix: */'ctrl');

@@ -57,8 +57,8 @@ export class IndicatorStyles extends BasicComponentStyles {
     public    readonly _filterEnableDisable = 'filterEnableDisable'
     protected readonly _animEnableDisable   = 'animEnableDisable'
 
-    public    readonly _filterHoverLeave    = 'filterHoverLeave' // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
- // protected readonly _animHoverLeave      = 'animHoverLeave'   // will be defined in Control
+    public    readonly _filterArriveLeave   = 'filterArriveLeave' // will be used in Control, so we can re-use our animations (enable, disable, arrive, leave) in the Control
+ // protected readonly _animArriveLeave     = 'animArriveLeave'   // will be defined in Control
 
     public    readonly _filterActivePassive = 'filterActivePassive'
     protected readonly _animActivePassive   = 'animActivePassive'
@@ -164,7 +164,7 @@ export class IndicatorStyles extends BasicComponentStyles {
             //#region reset toggles/filters/anims to initial/inherit state
             [this.decl(this._filterEnableDisable)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animEnableDisable)]   : inherit ? 'unset' : 'initial',
-            [this.decl(this._filterHoverLeave)]    : inherit ? 'unset' : 'initial', // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
+            [this.decl(this._filterArriveLeave)]   : inherit ? 'unset' : 'initial', // will be used in Control, so we can re-use our animations (enable, disable, arrive, leave) in the Control
             [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
 
@@ -221,34 +221,86 @@ export class IndicatorStyles extends BasicComponentStyles {
     
     public /*virtual*/ enabled()     : JssStyle { return {
         /* --nothing-- */
+
+
+
+        extend: [
+            this.enable(),
+        ] as JssStyle,
     }}
     public /*virtual*/ enabling()    : JssStyle { return {
         [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
         [this.decl(this._animEnableDisable)]   : cssProps.animEnable,
+
+
+
+        extend: [
+            this.enable(),
+        ] as JssStyle,
     }}
     public /*virtual*/ disabling()   : JssStyle { return {
         [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
         [this.decl(this._animEnableDisable)]   : cssProps.animDisable,
+
+
+
+        extend: [
+            this.disable(),
+        ] as JssStyle,
     }}
     public /*virtual*/ disabled()    : JssStyle { return {
         [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
+
+
+
+        extend: [
+            this.disable(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ enable()      : JssStyle { return {
+    }}
+    public /*virtual*/ disable()     : JssStyle { return {
     }}
 
     public /*virtual*/ actived()     : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
 
-        ...this.toggleOnActive(),
-
         
         
         extend: [
-            this.themeActive(),
+            this.active(),
         ] as JssStyle,
     }}
     public /*virtual*/ activating()  : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
         [this.decl(this._animActivePassive)]   : cssProps.animActive,
 
+        
+        
+        extend: [
+            this.active(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ passivating() : JssStyle { return {
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animPassive,
+
+
+
+        extend: [
+            this.passive(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ passived()    : JssStyle { return {
+        /* --nothing-- */
+
+
+
+        extend: [
+            this.passive(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ active()      : JssStyle { return {
         ...this.toggleOnActive(),
 
         
@@ -257,12 +309,7 @@ export class IndicatorStyles extends BasicComponentStyles {
             this.themeActive(),
         ] as JssStyle,
     }}
-    public /*virtual*/ passivating() : JssStyle { return {
-        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-        [this.decl(this._animActivePassive)]   : cssProps.animPassive,
-    }}
-    public /*virtual*/ passived()    : JssStyle { return {
-        /* --nothing-- */
+    public /*virtual*/ passive()     : JssStyle { return {
     }}
     public /*virtual*/ toggleOnActive(): PropList { return {
         // _foregFn & _backgFn => requires usePropsFn() => use it at states()
@@ -323,7 +370,7 @@ export class IndicatorStyles extends BasicComponentStyles {
 
         this.ref(this._filterEnableDisable, this._filterNone),
         this.ref(this._filterActivePassive, this._filterNone),
-        this.ref(this._filterHoverLeave,    this._filterNone), // will be used in Control, so we can re-use our animations (enable, disable, hover, leave) in the Control
+        this.ref(this._filterArriveLeave,   this._filterNone), // will be used in Control, so we can re-use our animations (enable, disable, arrive, leave) in the Control
     ]}
     public /*override*/ animFn(): Cust.Ref[] { return [
         ...super.animFn(),
