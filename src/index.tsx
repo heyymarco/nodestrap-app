@@ -27,7 +27,7 @@ import ContainerApp         from './apps/ContainerApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <IndicatorApp />
+        <ContainerApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

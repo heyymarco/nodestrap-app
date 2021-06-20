@@ -7,7 +7,6 @@ import {
     JssStyle,
     PropEx,
     DictionaryOf,
-    ClassList,
     PropList,
 
     
@@ -21,7 +20,6 @@ import {
 }                           from './BasicComponent'
 import {
     IndicatorStyles,
-    cssDecls as icssDecls,
     IndicatorProps,
     Indicator,
 }                           from './Indicator'
@@ -38,7 +36,9 @@ export interface IContentStyles {
 
 
     // states:
-    contentStates(inherit: boolean): ClassList
+    contentActived()     : JssStyle
+    contentActivating()  : JssStyle
+    contentPassivating() : JssStyle
 
 
 
@@ -110,16 +110,39 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
 
 
     // states:
-    public /*override*/ states(inherit: boolean): ClassList { return [
-        ...super.states(inherit), // copy states from base
+    public /*override*/ actived()     : JssStyle { return {
+        extend: [
+            super.actived(), // copy actived from base
 
-        ...this.contentStates(inherit),
-    ]}
-    public /*virtual*/ contentStates(inherit: boolean): ClassList { return [
-        [ null, {
-            [icssDecls.filterActive] : cssProps.filterActive,
-        }],
-    ]}
+            this.contentActived(),
+        ] as JssStyle,
+    }}
+    public /*override*/ activating()  : JssStyle { return {
+        extend: [
+            super.activating(), // copy activating from base
+
+            this.contentActivating(),
+        ] as JssStyle,
+    }}
+    public /*override*/ passivating() : JssStyle { return {
+        extend: [
+            super.passivating(), // copy passivating from base
+
+            this.contentPassivating(),
+        ] as JssStyle,
+    }}
+
+    public /*virtual*/ contentActived()     : JssStyle { return {
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+    }}
+    public /*virtual*/ contentActivating()  : JssStyle { return {
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animActive,
+    }}
+    public /*virtual*/ contentPassivating() : JssStyle { return {
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animPassive,
+    }}
 
 
 
@@ -204,9 +227,9 @@ const cssConfig = new CssConfig(() => {
             borderColor : contentStyles.ref(contentStyles._outlinedForegTg, contentStyles._borderFn),
         },
         to: {
-            foreg       : contentStyles.ref(contentStyles._foreg),
-            backg       : contentStyles.ref(contentStyles._backg),
-            borderColor : contentStyles.ref(contentStyles._border),
+            foreg       : contentStyles.ref(contentStyles._foregFn),
+            backg       : contentStyles.ref(contentStyles._backgFn),
+            borderColor : contentStyles.ref(contentStyles._borderFn),
         },
     };
     const keyframesPassive   : PropEx.Keyframes = {

@@ -8,7 +8,6 @@ import {
 import {
     // general types:
     JssStyle,
-    ClassList,
     PropList,
 
     
@@ -74,14 +73,9 @@ export class FormStyles extends BasicComponentStyles implements IContentStyles, 
 
 
     // states:
-    public /*override*/ states(inherit: boolean): ClassList { return [
-        ...super.states(inherit), // copy states from base
-
-        ...this.contentStates(inherit),
-    ]}
-    public /*implement*/ contentStates(inherit: boolean): ClassList {
-        return editableTextControlStyles.contentStates(inherit); // copy states from EditableTextControl
-    }
+    public /*implement*/ contentActived()     : JssStyle { return {} } // not implemented
+    public /*implement*/ contentActivating()  : JssStyle { return {} } // not implemented
+    public /*implement*/ contentPassivating() : JssStyle { return {} } // not implemented
 
     public /*implement*/ validationThemesIf(): JssStyle {
         return editableTextControlStyles.validationThemesIf(); // copy themes from EditableTextControl

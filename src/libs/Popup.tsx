@@ -8,7 +8,6 @@ import {
     // general types:
     JssStyle,
     PropEx,
-    ClassList,
     PropList,
 
 
@@ -20,7 +19,6 @@ import {
 }                           from './BasicComponent'
 import {
     IndicatorStyles,
-    cssDecls as icssDecls,
     IndicatorProps,
     Indicator,
 }                           from './Indicator'
@@ -31,21 +29,38 @@ import {
 
 export class PopupStyles extends IndicatorStyles {
     // states:
-    public /*override*/ states(inherit: boolean): ClassList { return [
-        ...super.states(inherit), // copy states from base
+    public /*override*/ actived()     : JssStyle { return {
+        extend: [
+            super.actived(), // copy actived from base
+        ] as JssStyle,
 
 
 
-        [ null, {
-            [icssDecls.filterActive] : cssProps.filterActive,
-            [icssDecls.animActive]   : cssProps.animActive,
-            [icssDecls.animPassive]  : cssProps.animPassive,
-        }],
-    ]}
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+    }}
+    public /*override*/ activating()  : JssStyle { return {
+        extend: [
+            super.activating(), // copy activating from base
+        ] as JssStyle,
 
+
+
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animActive,
+    }}
+    public /*override*/ passivating() : JssStyle { return {
+        extend: [
+            super.passivating(), // copy passivating from base
+        ] as JssStyle,
+
+
+
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animPassive,
+    }}
     public /*override*/ passived()    : JssStyle { return {
         extend: [
-            super.passived(),
+            super.passived(), // copy passived from base
         ] as JssStyle,
 
 
