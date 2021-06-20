@@ -11,7 +11,6 @@ import {
     PropEx,
     Cust,
     ClassList,
-    PropList,
 
     
     // components:
@@ -187,12 +186,28 @@ export class ControlStyles extends IndicatorStyles {
 
 
 
-        [ '&.focused'                                                   , this.focused()     ],
+        // .focused will be added after focusing-animation done
+        [ '&.focused'                                                      , this.focused()  ],
+
+        // .focus = programatically focus, :focus = user focus
+        [ '&.focus,&:focus:not(.focused)'                                  , this.focusing() ],
+
+        // .blur will be added after loosing focus and will be removed after blurring-animation done
+        [ '&.blur'                                                         , this.blurring() ],
+
+        // if all above are not set => blurred
+        [ '&:not(.focused):not(.focus):not(:focus):not(.blur)'             , this.blurred()  ],
     ]}
 
     public /*virtual*/ arrived()  : JssStyle { return {
+        extend: [
+            this.themeActive(),
+        ] as JssStyle,
     }}
     public /*virtual*/ arriving() : JssStyle { return {
+        extend: [
+            this.themeActive(),
+        ] as JssStyle,
     }}
     public /*virtual*/ leaving()  : JssStyle { return {
     }}
@@ -200,8 +215,14 @@ export class ControlStyles extends IndicatorStyles {
     }}
 
     public /*virtual*/ focused()  : JssStyle { return {
+        extend: [
+            this.themeActive(),
+        ] as JssStyle,
     }}
     public /*virtual*/ focusing() : JssStyle { return {
+        extend: [
+            this.themeActive(),
+        ] as JssStyle,
     }}
     public /*virtual*/ blurring() : JssStyle { return {
     }}
