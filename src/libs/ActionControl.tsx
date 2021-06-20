@@ -86,9 +86,9 @@ export class ActionControlStylesBuilder extends ControlStyles {
 
 
     // states:
-    public /*override*/ controlStates(inherit = false): JssStyle { return {
+    public /*override*/ controlStatesOld(inherit = false): JssStyle { return {
         extend: [
-            super.controlStates(inherit), // copy controlStates from base
+            super.controlStatesOld(inherit), // copy controlStates from base
 
 
 
@@ -132,7 +132,7 @@ export class ActionControlStylesBuilder extends ControlStyles {
                 [this.decl(this._animFnOld)]: [
                     ecssProps.anim,
                     this.ref(this._animPressRelease),  // 5th : ctrl already pressed, move to the least priority
-                    this.ref(this._animHoverLeave),    // 4th : cursor leaved   => low probability because holding press
+                    this.ref(this._animArriveLeave),    // 4th : cursor leaved   => low probability because holding press
                     this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus => low probability because holding press
                     this.ref(this._animEnableDisable), // 2nd : ctrl enable/disable => rarely used => low probability
                     this.ref(this._animActivePassive), // 1st : ctrl got activated  => the most likely happened
@@ -144,7 +144,7 @@ export class ActionControlStylesBuilder extends ControlStyles {
             ecssProps.anim,
             this.ref(this._animEnableDisable), // 5th : ctrl must be enabled
             this.ref(this._animActivePassive), // 4th : rarely happened => low probability
-            this.ref(this._animHoverLeave),    // 3rd : cursor hovered over ctrl
+            this.ref(this._animArriveLeave),    // 3rd : cursor hovered over ctrl
             this.ref(this._animFocusBlur),     // 2nd : ctrl got focused (can interrupt hover/leave)
             this.ref(this._animPressRelease),  // 1st : ctrl got pressed (can interrupt focus/blur)
         ],

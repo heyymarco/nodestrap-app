@@ -225,63 +225,93 @@ export class ControlStyles extends IndicatorStyles {
     public /*virtual*/ arrived()  : JssStyle { return {
         [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
 
-        ...this.toggleOnActive(),
-
 
 
         extend: [
-            this.themeActive(),
+            this.arrive(),
         ] as JssStyle,
     }}
     public /*virtual*/ arriving() : JssStyle { return {
         [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
         [this.decl(this._animArriveLeave)]     : cssProps.animArrive,
 
-        ...this.toggleOnActive(),
-
 
 
         extend: [
-            this.themeActive(),
+            this.arrive(),
         ] as JssStyle,
     }}
     public /*virtual*/ leaving()  : JssStyle { return {
         [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
         [this.decl(this._animArriveLeave)]     : cssProps.animLeave,
+
+
+
+        extend: [
+            this.leave(),
+        ] as JssStyle,
     }}
     public /*virtual*/ left()     : JssStyle { return {
         /* --nothing-- */
+
+
+
+        extend: [
+            this.leave(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ arrive()   : JssStyle { return {
+        extend: [
+            this.active(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ leave()    : JssStyle { return {
     }}
 
     public /*virtual*/ focused()  : JssStyle { return {
         [this.decl(this._boxShadowFocusBlur)] : bcssProps.boxShadowFocus,
         
-        ...this.toggleOnActive(),
-
-
-
+        
+        
         extend: [
-            this.themeActive(),
+            this.focus(),
         ] as JssStyle,
     }}
     public /*virtual*/ focusing() : JssStyle { return {
         [this.decl(this._boxShadowFocusBlur)] : bcssProps.boxShadowFocus,
         [this.decl(this._animFocusBlur)]      : cssProps.animFocus,
 
-        ...this.toggleOnActive(),
-
-
-
+        
+        
         extend: [
-            this.themeActive(),
+            this.focus(),
         ] as JssStyle,
     }}
     public /*virtual*/ blurring() : JssStyle { return {
         [this.decl(this._boxShadowFocusBlur)] : bcssProps.boxShadowFocus,
         [this.decl(this._animFocusBlur)]      : cssProps.animFocus,
+
+
+
+        extend: [
+            this.blur(),
+        ] as JssStyle,
     }}
     public /*virtual*/ blurred()  : JssStyle { return {
         /* --nothing-- */
+
+
+
+        extend: [
+            this.blur(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ focus()    : JssStyle { return {
+        extend: [
+            this.active(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ blur()     : JssStyle { return {
     }}
 
     public /*override*/ themeDefault(theme: string|null = 'secondary'): JssStyle {

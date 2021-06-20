@@ -322,7 +322,7 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
                         this.ref(this._animActivePassive), // 6th : ctrl already pressed, move to the least priority
                         this.ref(this._animValUnval),      // 5th : ctrl already validated, move to the least priority
                         this.ref(this._animInvUninv),      // 4th : rarely triggered => low probability
-                        this.ref(this._animHoverLeave),    // 3rd : cursor leaved   => low probability because holding press
+                        this.ref(this._animArriveLeave),    // 3rd : cursor leaved   => low probability because holding press
                         this.ref(this._animFocusBlur),     // 2nd : ctrl lost focus => low probability because holding press
                         this.ref(this._animEnableDisable), // 1st : ctrl enable/disable => rarely used => low probability
                     ],
@@ -333,7 +333,7 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
                     this.ref(this._animActivePassive), // 6th : ctrl already pressed, move to the least priority
                     this.ref(this._animInvUninv),      // 5th : rarely triggered => low probability
                     this.ref(this._animValUnval),      // 4th : rarely triggered => low probability
-                    this.ref(this._animHoverLeave),    // 3rd : cursor leaved   => low probability because holding press
+                    this.ref(this._animArriveLeave),    // 3rd : cursor leaved   => low probability because holding press
                     this.ref(this._animFocusBlur),     // 2nd : ctrl lost focus => low probability because holding press
                     this.ref(this._animEnableDisable), // 1st : ctrl enable/disable => rarely used => low probability
                 ],
@@ -346,7 +346,7 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
                 this.ref(this._animValUnval),      // 6th : ctrl already validated, move to the least priority
                 this.ref(this._animInvUninv),      // 5th : rarely triggered => low probability
                 this.ref(this._animEnableDisable), // 4th : ctrl must be enabled
-                this.ref(this._animHoverLeave),    // 3rd : cursor hovered over ctrl
+                this.ref(this._animArriveLeave),    // 3rd : cursor hovered over ctrl
                 this.ref(this._animFocusBlur),     // 2nd : ctrl got focused (can interrupt hover/leave)
                 this.ref(this._animActivePassive), // 1st : ctrl got pressed (can interrupt focus/blur)
             ],
@@ -357,7 +357,7 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
             this.ref(this._animInvUninv),      // 6th : rarely triggered => low probability
             this.ref(this._animValUnval),      // 5th : rarely triggered => low probability
             this.ref(this._animEnableDisable), // 4th : ctrl must be enabled
-            this.ref(this._animHoverLeave),    // 3rd : cursor hovered over ctrl
+            this.ref(this._animArriveLeave),    // 3rd : cursor hovered over ctrl
             this.ref(this._animFocusBlur),     // 2nd : ctrl got focused (can interrupt hover/leave)
             this.ref(this._animActivePassive), // 1st : ctrl got pressed (can interrupt focus/blur)
         ],

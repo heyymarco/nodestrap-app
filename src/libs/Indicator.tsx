@@ -303,8 +303,6 @@ export class IndicatorStyles extends BasicComponentStyles {
     public /*virtual*/ active()      : JssStyle { return {
         ...this.toggleOnActive(),
 
-        
-        
         extend: [
             this.themeActive(),
         ] as JssStyle,

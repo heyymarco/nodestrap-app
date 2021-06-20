@@ -196,8 +196,8 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
         return {};
         // return actionControlStyles.controlThemesIf(); // copy themes from ActionControl
     }
-    public /*implement*/ controlStates(inherit = false): JssStyle {
-        return actionControlStyles.controlStates(inherit); // copy states from ActionControl
+    public /*implement*/ controlStatesOld(inherit = false): JssStyle {
+        return actionControlStyles.controlStatesOld(inherit); // copy states from ActionControl
     }
     
     public /*override*/ themesIfOld(): JssStyle { return {
@@ -211,7 +211,7 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
         extend: [
             super.statesOld(inherit), // copy states from base
             
-            this.controlStates(/*inherit =*/false), // do not inherit: Listgroup doesn't have [hover, leave, focus, blur]
+            this.controlStatesOld(/*inherit =*/false), // do not inherit: Listgroup doesn't have [hover, leave, focus, blur]
         ] as JssStyle,
     }}
 
