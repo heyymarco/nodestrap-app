@@ -289,7 +289,7 @@ export class ControlStyles extends IndicatorStyles {
     }}
     public /*virtual*/ blurring() : JssStyle { return {
         [this.decl(this._boxShadowFocusBlur)] : bcssProps.boxShadowFocus,
-        [this.decl(this._animFocusBlur)]      : cssProps.animFocus,
+        [this.decl(this._animFocusBlur)]      : cssProps.animBlur,
 
 
 
