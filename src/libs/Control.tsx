@@ -21,9 +21,6 @@ import {
 }                           from './accessibilities'
 import * as stripOuts       from './strip-outs'
 import {
-    cssProps as bcssProps,
-}                           from './BasicComponent'
-import {
     IndicatorStyles,
     IndicatorProps,
     Indicator,
@@ -179,35 +176,36 @@ export class ControlStyles extends IndicatorStyles {
 
 
         // .focused will be added after focusing-animation done
-        [ '&.focused'                                                                        , this.focused()  ],
+        [ '&.focused'                                                                                     , this.focused()  ],
 
         // .focus = programatically focus, :focus = user focus
-        [ '&.focus,&:focus:not(.focused)'                                                    , this.focusing() ],
+        [ '&.focus,&:focus:not(.focused)'                                                                 , this.focusing() ],
 
         // .blur will be added after loosing focus and will be removed after blurring-animation done
-        [ '&.blur'                                                                           , this.blurring() ],
+        [ '&.blur'                                                                                        , this.blurring() ],
 
         // if all above are not set => blurred
-        [ '&:not(.focused):not(.focus):not(:focus):not(.blur)'                               , this.blurred()  ],
+        [ '&:not(.focused):not(.focus):not(:focus):not(.blur)'                                            , this.blurred()  ],
 
 
 
         // .arrived will be added after arriving-animation done
-        [ '&.arrived'                                                                        , this.arrived()  ],
+        [ '&.arrived'                                                                                     , this.arrived()  ],
 
-        // .arrive = programatically arrive (not implemented yet), :hover = user arrive
-        // focus triggers arriving too
-        [ '&:hover:not(.arrived):not(.disabled):not(:disabled):not(.disable),' +
-          '&.focused,&.focus,&:focus'                                                        , this.arriving() ],
+        // arrive = a combination of .arrive || :hover || (.focused || .focus || :focus)
+        // .arrive = programatically arrive, :hover = user hover
+        [ '&.arrive,'                                                           +
+          '&:hover:not(.disabled):not(:disabled):not(.disable):not(.arrived),'  +
+          '&.focused:not(.arrived),&.focus:not(.arrived),&:focus:not(.arrived)'                           , this.arriving() ],
 
         // .leave will be added after loosing arrive and will be removed after leaving-animation done
-        [ '.leave'                                                                           , this.leaving()  ],
+        [ '.leave'                                                                                        , this.leaving()  ],
 
         // if all above are not set => left
-        [ '&:not(.arrived):not(:hover):not(.focused):not(.focus):not(:focus):not(.leave),' +
-          '&:not(.arrived).disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
-          '&:not(.arrived):disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
-          '&:not(.arrived).disable:not(.focused):not(.focus):not(:focus):not(.leave)'        , this.left()    ],
+        [ '&:not(.arrived):not(.arrive):not(:hover):not(.focused):not(.focus):not(:focus):not(.leave),' +
+          '&:not(.arrived):not(.arrive).disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
+          '&:not(.arrived):not(.arrive):disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
+          '&:not(.arrived):not(.arrive).disable:not(.focused):not(.focus):not(:focus):not(.leave)'        , this.left()     ],
     ]}
 
     public /*override*/ disable() : JssStyle { return {
@@ -532,7 +530,7 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
     };
 }
 
-export function useStateArriveLeave<TElement extends HTMLElement = HTMLElement>(props: ControlProps<TElement>, stateFocusBlur: { focus: boolean, blurring: boolean }) {
+export function useStateArriveLeave<TElement extends HTMLElement = HTMLElement>(props: ControlProps<TElement>, stateFocusBlur: { focus: boolean }) {
     // fn props:
     const propEnabled = usePropEnabled(props);
 
@@ -542,16 +540,15 @@ export function useStateArriveLeave<TElement extends HTMLElement = HTMLElement>(
     const [arrived,   setArrived  ] = useState<boolean>(false);     // true => arrive, false => leave
     const [animating, setAnimating] = useState<boolean|null>(null); // null => no-animation, true => arriving-animation, false => leaving-animation
 
-    const [arriveDn,   setArriveDn ] = useState<boolean>(false);    // uncontrollable (dynamic) state: true => user arrive, false => user leave
+    const [hoverDn,   setHoverDn  ] = useState<boolean>(false);     // uncontrollable (dynamic) state: true => user hover, false => user leave
 
 
 
     /*
      * state is always leave if disabled
-     * state is arrive/leave based on [uncontrollable arrive]
-     * [controllable arrive] is not supported
+     * state is arrive/leave based on [controllable arrive] (if set) and fallback to ([uncontrollable hover] || [uncontrollable focus])
      */
-    const arriveFn: boolean = propEnabled && arriveDn /*uncontrollable*/;
+    const arriveFn: boolean = propEnabled && (props.arrive /*controllable*/ ?? (hoverDn /*uncontrollable*/ || stateFocusBlur.focus /*uncontrollable*/));
 
     if (arrived !== arriveFn) { // change detected => apply the change & start animating
         setArrived(arriveFn);   // remember the last change
@@ -560,19 +557,19 @@ export function useStateArriveLeave<TElement extends HTMLElement = HTMLElement>(
 
 
     
-    const handleArrive = () => {
+    const handleHover = () => {
         if (!propEnabled) return; // control is disabled => no response required
 
 
 
-        setArriveDn(true);
+        setHoverDn(true);
     }
     const handleLeave  = () => {
         if (!propEnabled) return; // control is disabled => no response required
 
 
 
-        setArriveDn(false);
+        setHoverDn(false);
     }
     const handleIdle   = () => {
         // clean up finished animation
@@ -581,41 +578,27 @@ export function useStateArriveLeave<TElement extends HTMLElement = HTMLElement>(
     }
     return {
         arrive : arrived,
+
         class  : ((): string|null => {
-            if (animating === true)  return null; // use pseudo :hover
+            if (animating === true) {
+                // arriving by controllable prop => use class .arrive
+                if (props.arrive !== undefined) return 'arrive';
 
-            /*
-             * in our nodestrap, the leave-state is defined as (not arrive && not focus) && (leave || blur)
-             * so, when (not arrive && not focus), the blur also treated as leave
-             * mouse-leave but still keybd-focus => not leave
-             * keybd-blur  but still mouse-arrive => not leave
-             */
-            if (
-                (
-                    !arrived              // not arrive(ing|ed)
-                    &&
-                    !stateFocusBlur.focus // not focus(ing|ed)
-                )
-                &&
-                (
-                    (animating === false)   // leave
-                    ||
-                    stateFocusBlur.blurring // blur as leave
-                )
-            ) return 'leave';
+                // otherwise use a combination of :hover || (.focused || .focus || :focus)
+                return null;
+            } // if
 
-            /*
-             * .arrived class is not supported,
-             * because in our nodestrap, the arrive-state is defined as the union of [:hover || .focus || :focus]
-             * so the focus can also trigger the arriving-animation
-             * thus when the focus trigger the arriving-animation until the animation ended,
-             * then the arrive occured after it, the arriving-animation will never triggered and the onAnimationEnd will never triggered too
-             */
-            // if (arrived) return 'arrived';
+            // blurring:
+            if (animating === false) return 'leave';
 
+            // fully arrived:
+            if (arrived) return 'arrived';
+
+            // fully left:
             return null;
         })(),
-        handleMouseEnter   : handleArrive,
+
+        handleMouseEnter   : handleHover,
         handleMouseLeave   : handleLeave,
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
@@ -637,6 +620,8 @@ export interface ControlProps<TElement extends HTMLElement = HTMLElement>
     // accessibility:
     focus?    : boolean
     tabIndex? : number
+
+    arrive?   : boolean
 }
 export default function Control<TElement extends HTMLElement = HTMLElement>(props: ControlProps<TElement>) {
     // styles:
