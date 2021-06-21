@@ -74,7 +74,7 @@ export class PopupStyles extends IndicatorStyles {
 
 
     // functions:
-    public /*override*/ activePropsFn(): PropList { return {} } // no active colors
+    public /*override*/ activePropsFn(): PropList { return {} } // no active colors func
 }
 export const popupStyles = new PopupStyles();
 

@@ -160,7 +160,7 @@ export class ControlStyles extends IndicatorStyles {
 
 
         [ null, {
-            // requires usePropsFn() for using _foregFn & _backgFn in the [focused(), focusing(), arrived(), arriving()] => toggleOnActive()
+            // requires usePropsFn() for using [_foregFn, _backgFn, & _boxShadowFocusFn] in the [focused(), focusing(), arrived(), arriving()] => [focus(), arrive()] => toggleOnActive()
             // the code below causing useStates() implicitly includes usePropsFn()
             ...this.usePropsFn(),
 
@@ -223,7 +223,7 @@ export class ControlStyles extends IndicatorStyles {
     }}
 
     public /*virtual*/ focused()  : JssStyle { return {
-        [this.decl(this._boxShadowFocusBlur)] : bcssProps.boxShadowFocus,
+        [this.decl(this._boxShadowFocusBlur)] : this.ref(this._boxShadowFocusFn),
         
         
         
@@ -232,7 +232,7 @@ export class ControlStyles extends IndicatorStyles {
         ] as JssStyle,
     }}
     public /*virtual*/ focusing() : JssStyle { return {
-        [this.decl(this._boxShadowFocusBlur)] : bcssProps.boxShadowFocus,
+        [this.decl(this._boxShadowFocusBlur)] : this.ref(this._boxShadowFocusFn),
         [this.decl(this._animFocusBlur)]      : cssProps.animFocus,
 
         
@@ -242,7 +242,7 @@ export class ControlStyles extends IndicatorStyles {
         ] as JssStyle,
     }}
     public /*virtual*/ blurring() : JssStyle { return {
-        [this.decl(this._boxShadowFocusBlur)] : bcssProps.boxShadowFocus,
+        [this.decl(this._boxShadowFocusBlur)] : this.ref(this._boxShadowFocusFn),
         [this.decl(this._animFocusBlur)]      : cssProps.animBlur,
 
 
@@ -333,6 +333,14 @@ export class ControlStyles extends IndicatorStyles {
 
         this.ref(this._boxShadowFocusBlur, this._boxShadowNone),
     ]}
+    public /*override*/ animFn(): Cust.Ref[] { return [
+        ...super.animFn(),
+
+
+
+        this.ref(this._animFocusBlur, this._animNone),   // 2nd : ctrl got focus
+        this.ref(this._animArriveLeave, this._animNone), // 1st : mouse arrive in
+    ]}
 
 
 
@@ -354,90 +362,9 @@ export class ControlStyles extends IndicatorStyles {
 
 
     // old:
-    public /*virtual*/ controlStatesOld(inherit = false): JssStyle { return {
-        extend: [
-            this.iif(!inherit, {
-                //#region all initial states are none
-             // [this.decl(this._filterHoverLeave)]    : ecssProps.filterNone, // was supported from Indicator
-                [this.decl(this._animArriveLeave)]     : bcssProps.animNone,
-        
-                [this.decl(this._boxShadowFocusBlur)]  : bcssProps.boxShadowNone,
-                [this.decl(this._animFocusBlur)]       : bcssProps.animNone,
-                //#endregion all initial states are none
-            }),
-    
-    
-    
-            //#region specific states
-            //#region disable
-            this.stateDisable({ // [disabling, disabled]
-                // accessibility:
-                cursor     : cssProps.cursorDisable,
-                userSelect : 'none',
-            }),
-            //#endregion disable
-    
-    
-    
-            //#region hover, leave, focus, blur
-            this.stateLeaving({
-                [this.decl(this._filterArriveLeave)]      : cssProps.filterArrive,
-                [this.decl(this._animArriveLeave)]        : cssProps.animLeave,
-            }),
-            this.stateBlurring({
-                [this.decl(this._boxShadowFocusBlur)]     : this.ref(this._boxShadowFocusFn),
-                [this.decl(this._animFocusBlur)]          : cssProps.animBlur,
-            }),
-            this.stateNotDisable({extend: [
-                // state hover & focus are possible when enabled
-                this.stateHover({
-                    [this.decl(this._filterArriveLeave)]  : cssProps.filterArrive,
-                    [this.decl(this._animArriveLeave)]    : cssProps.animArrive,
-    
-                    extend: [
-                        //TODO: update....
-                        this.themeActive(),
-                    ] as JssStyle,
-                }),
-                this.stateFocus({
-                    [this.decl(this._boxShadowFocusBlur)] : this.ref(this._boxShadowFocusFn),
-                    [this.decl(this._animFocusBlur)]      : cssProps.animFocus,
-    
-                    extend: [
-                        //TODO: update....
-                        this.themeActive(),
-                    ] as JssStyle,
-                }),
-            ] as JssStyle}),
-            //#endregion hover, leave, focus, blur
-            //#endregion specific states
-        ] as JssStyle,
-    }}
+    public /*virtual*/ controlStatesOld(inherit = false): JssStyle { return {} }
     public /*virtual*/ controlPropsFnOld(): JssStyle { return {} }
-    public /*virtual*/ controlAnimFnOld(): JssStyle { return {
-        //#region re-arrange the animFn at different states
-        '&.active,&.actived': // if activated programmatically (not by user input)
-            this.stateNotDisabled({ // if ctrl was not fully disabled
-                // define an *animations* func:
-                [this.decl(this._animFnOld)]: [
-                    bcssProps.anim,
-                    this.ref(this._animActivePassive), // 4th : ctrl already pressed, move to the least priority
-                    this.ref(this._animArriveLeave),   // 3rd : cursor leaved   => low probability because holding press
-                    this.ref(this._animFocusBlur),     // 2nd : ctrl lost focus => low probability because holding press
-                    this.ref(this._animEnableDisable), // 1st : ctrl enable/disable => rarely used => low probability
-                ],
-            }),
-
-        // define an *animations* func:
-        [this.decl(this._animFnOld)]: [
-            bcssProps.anim,
-            this.ref(this._animEnableDisable), // 4th : ctrl must be enabled
-            this.ref(this._animArriveLeave),   // 3rd : cursor hovered over ctrl
-            this.ref(this._animFocusBlur),     // 2nd : ctrl got focused (can interrupt hover/leave)
-            this.ref(this._animActivePassive), // 1st : ctrl got pressed (can interrupt focus/blur)
-        ],
-        //#endregion re-arrange the animFn at different states
-    }}
+    public /*virtual*/ controlAnimFnOld(): JssStyle { return {} }
 }
 export const controlStyles = new ControlStyles();
 
@@ -570,14 +497,30 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
     return {
         focus    : focused,
         blurring : (animating === false),
+
         class    : ((): string|null => {
-            if (animating === true)  return ((props.focus !== undefined) ? 'focus' : null); // focusing by controllable prop => use .focus, otherwise use pseudo :focus
+            // focusing:
+            if (animating === true) {
+                // focusing by controllable prop => use class .focus
+                if (props.focus !== undefined) return 'focus';
+
+                // negative tabIndex => can't be focused by user input => treats Control as *wrapper* element => use class .focus
+                if ((props.tabIndex ?? 0) < 0) return 'focus';
+
+                // otherwise use pseudo :focus
+                return null;
+            } // if
+
+            // blurring:
             if (animating === false) return 'blur';
 
+            // fully focused:
             if (focused) return 'focused';
 
+            // fully blurred:
             return null;
         })(),
+
         handleFocus        : handleFocus,
         handleBlur         : handleBlur,
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
@@ -703,7 +646,7 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
     
     // states:
     const stateFocusBlur   = useStateFocusBlur(props);
-    const stateArriveLeave = useStateArriveLeave(props, stateFocusBlur);
+    // TODO: temporary disabled # const stateArriveLeave = useStateArriveLeave(props, stateFocusBlur);
 
 
 
@@ -726,30 +669,27 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
             // classes:
             mainClass={props.mainClass ?? styles.main}
             stateClasses={[...(props.stateClasses ?? []),
-                
-                // if [tabIndex] is negative => treats Control as *wrapper* element, so there's no :focus (pseudo) => replace with .focus (synthetic)
-                (stateFocusBlur.class ?? ((stateFocusBlur.focus && ((props.tabIndex ?? 0) < 0)) ? 'focus' : null)),
-
-                stateArriveLeave.class,
+                stateFocusBlur.class,
+                // TODO: temporary disabled # stateArriveLeave.class,
             ]}
 
 
             // Control props:
             {...{
                 // accessibility:
-                tabIndex : propEnabled ? (props.tabIndex ?? 0) : -1,
+                tabIndex : props.tabIndex ?? (propEnabled ? 0 : -1),
             }}
         
 
             // events:
             onFocus=        {(e) => { stateFocusBlur.handleFocus();        props.onFocus?.(e);      }}
             onBlur=         {(e) => { stateFocusBlur.handleBlur();         props.onBlur?.(e);       }}
-            onMouseEnter=   {(e) => { stateArriveLeave.handleMouseEnter(); props.onMouseEnter?.(e); }}
-            onMouseLeave=   {(e) => { stateArriveLeave.handleMouseLeave(); props.onMouseLeave?.(e); }}
+            // TODO: temporary disabled # onMouseEnter=   {(e) => { stateArriveLeave.handleMouseEnter(); props.onMouseEnter?.(e); }}
+            // TODO: temporary disabled # onMouseLeave=   {(e) => { stateArriveLeave.handleMouseLeave(); props.onMouseLeave?.(e); }}
             onAnimationEnd= {(e) => {
                 // states:
                 stateFocusBlur.handleAnimationEnd(e);
-                stateArriveLeave.handleAnimationEnd(e);
+                // TODO: temporary disabled # stateArriveLeave.handleAnimationEnd(e);
 
 
                 // forwards:

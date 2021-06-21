@@ -22,12 +22,13 @@ import AlertApp             from './apps/AlertApp';
 import ContentApp           from './apps/ContentApp';
 import MasonryApp           from './apps/MasonryApp';
 import ContainerApp         from './apps/ContainerApp';
+import ControlApp           from './apps/ControlApp';
 
 
 
 ReactDOM.render(
     <React.StrictMode>
-        <IndicatorApp />
+        <ControlApp />
     </React.StrictMode>,
     document.getElementById('root')
 );
