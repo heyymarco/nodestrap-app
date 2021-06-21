@@ -51,11 +51,11 @@ export interface IControlStylesBuilderOld {
 export class ControlStyles extends IndicatorStyles {
     //#region props
     //#region animations
- // public    readonly _filterArriveLeave  = 'filterArriveLeave' // already defined in Indicator
-    protected readonly _animArriveLeave    = 'animArriveLeave'
-    
     public    readonly _boxShadowFocusBlur = 'boxShadowFocusBlur'
     protected readonly _animFocusBlur      = 'animFocusBlur'
+
+ // public    readonly _filterArriveLeave  = 'filterArriveLeave' // already defined in Indicator
+    protected readonly _animArriveLeave    = 'animArriveLeave'
     //#endregion animations
     //#endregion props
 
@@ -160,21 +160,35 @@ export class ControlStyles extends IndicatorStyles {
 
 
         [ null, {
-            // requires usePropsFn() for using _foregFn & _backgFn in the [arrived(), arriving(), focused(), focusing()] => toggleOnActive()
+            // requires usePropsFn() for using _foregFn & _backgFn in the [focused(), focusing(), arrived(), arriving()] => toggleOnActive()
             // the code below causing useStates() implicitly includes usePropsFn()
             ...this.usePropsFn(),
 
 
 
             //#region reset toggles/filters/anims to initial/inherit state
-            [this.decl(this._filterArriveLeave)]  : inherit ? 'unset' : 'initial',
-            [this.decl(this._animArriveLeave)]    : inherit ? 'unset' : 'initial',
             [this.decl(this._boxShadowFocusBlur)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animFocusBlur)]      : inherit ? 'unset' : 'initial',
+            [this.decl(this._filterArriveLeave)]  : inherit ? 'unset' : 'initial',
+            [this.decl(this._animArriveLeave)]    : inherit ? 'unset' : 'initial',
 
             ...this.toggleOffActive(inherit),
             //#endregion reset toggles/filters/anims to initial/inherit state
         }],
+
+
+
+        // .focused will be added after focusing-animation done
+        [ '&.focused'                                                                        , this.focused()  ],
+
+        // .focus = programatically focus, :focus = user focus
+        [ '&.focus,&:focus:not(.focused)'                                                    , this.focusing() ],
+
+        // .blur will be added after loosing focus and will be removed after blurring-animation done
+        [ '&.blur'                                                                           , this.blurring() ],
+
+        // if all above are not set => blurred
+        [ '&:not(.focused):not(.focus):not(:focus):not(.blur)'                               , this.blurred()  ],
 
 
 
@@ -194,20 +208,6 @@ export class ControlStyles extends IndicatorStyles {
           '&:not(.arrived).disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
           '&:not(.arrived):disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
           '&:not(.arrived).disable:not(.focused):not(.focus):not(:focus):not(.leave)'        , this.left()    ],
-
-
-
-        // .focused will be added after focusing-animation done
-        [ '&.focused'                                                                        , this.focused()  ],
-
-        // .focus = programatically focus, :focus = user focus
-        [ '&.focus,&:focus:not(.focused)'                                                    , this.focusing() ],
-
-        // .blur will be added after loosing focus and will be removed after blurring-animation done
-        [ '&.blur'                                                                           , this.blurring() ],
-
-        // if all above are not set => blurred
-        [ '&:not(.focused):not(.focus):not(:focus):not(.blur)'                               , this.blurred()  ],
     ]}
 
     public /*override*/ disable() : JssStyle { return {
@@ -220,52 +220,6 @@ export class ControlStyles extends IndicatorStyles {
         // accessibility:
         cursor     : cssProps.cursorDisable,
         userSelect : 'none',
-    }}
-
-    public /*virtual*/ arrived()  : JssStyle { return {
-        [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
-
-
-
-        extend: [
-            this.arrive(),
-        ] as JssStyle,
-    }}
-    public /*virtual*/ arriving() : JssStyle { return {
-        [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
-        [this.decl(this._animArriveLeave)]     : cssProps.animArrive,
-
-
-
-        extend: [
-            this.arrive(),
-        ] as JssStyle,
-    }}
-    public /*virtual*/ leaving()  : JssStyle { return {
-        [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
-        [this.decl(this._animArriveLeave)]     : cssProps.animLeave,
-
-
-
-        extend: [
-            this.leave(),
-        ] as JssStyle,
-    }}
-    public /*virtual*/ left()     : JssStyle { return {
-        /* --nothing-- */
-
-
-
-        extend: [
-            this.leave(),
-        ] as JssStyle,
-    }}
-    public /*virtual*/ arrive()   : JssStyle { return {
-        extend: [
-            this.active(),
-        ] as JssStyle,
-    }}
-    public /*virtual*/ leave()    : JssStyle { return {
     }}
 
     public /*virtual*/ focused()  : JssStyle { return {
@@ -312,6 +266,52 @@ export class ControlStyles extends IndicatorStyles {
         ] as JssStyle,
     }}
     public /*virtual*/ blur()     : JssStyle { return {
+    }}
+
+    public /*virtual*/ arrived()  : JssStyle { return {
+        [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
+
+
+
+        extend: [
+            this.arrive(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ arriving() : JssStyle { return {
+        [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
+        [this.decl(this._animArriveLeave)]     : cssProps.animArrive,
+
+
+
+        extend: [
+            this.arrive(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ leaving()  : JssStyle { return {
+        [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
+        [this.decl(this._animArriveLeave)]     : cssProps.animLeave,
+
+
+
+        extend: [
+            this.leave(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ left()     : JssStyle { return {
+        /* --nothing-- */
+
+
+
+        extend: [
+            this.leave(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ arrive()   : JssStyle { return {
+        extend: [
+            this.active(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ leave()    : JssStyle { return {
     }}
 
     public /*override*/ themeDefault(theme: string|null = 'secondary'): JssStyle {
@@ -446,6 +446,29 @@ export const controlStyles = new ControlStyles();
 // configs:
 
 const cssConfig = new CssConfig(() => {
+    const keyframesFocus   : PropEx.Keyframes = {
+        from: {
+            boxShadow: [[[ // triple array => makes the JSS treat as comma separated values
+                ...controlStyles.boxShadowFn().filter((b) => b !== controlStyles.ref(controlStyles._boxShadowFocusBlur, controlStyles._boxShadowNone)),
+
+             // styles.ref(styles._boxShadowFocusBlur, styles._boxShadowNone), // missing the last => let's the browser interpolated it
+            ]]],
+        } as JssStyle,
+        to: {
+            boxShadow: [[[ // triple array => makes the JSS treat as comma separated values
+                ...controlStyles.boxShadowFn().filter((b) => b !== controlStyles.ref(controlStyles._boxShadowFocusBlur, controlStyles._boxShadowNone)),
+
+                controlStyles.ref(controlStyles._boxShadowFocusBlur, controlStyles._boxShadowNone), // existing the last => let's the browser interpolated it
+            ]]],
+        } as JssStyle,
+    };
+    const keyframesBlur    : PropEx.Keyframes = {
+        from : keyframesFocus.to,
+        to   : keyframesFocus.from,
+    };
+
+
+
     const keyframesArrive  : PropEx.Keyframes = {
         from: {
             filter: [[ // double array => makes the JSS treat as space separated values
@@ -469,29 +492,6 @@ const cssConfig = new CssConfig(() => {
 
     
     
-    const keyframesFocus   : PropEx.Keyframes = {
-        from: {
-            boxShadow: [[[ // triple array => makes the JSS treat as comma separated values
-                ...controlStyles.boxShadowFn().filter((b) => b !== controlStyles.ref(controlStyles._boxShadowFocusBlur, controlStyles._boxShadowNone)),
-
-             // styles.ref(styles._boxShadowFocusBlur, styles._boxShadowNone), // missing the last => let's the browser interpolated it
-            ]]],
-        } as JssStyle,
-        to: {
-            boxShadow: [[[ // triple array => makes the JSS treat as comma separated values
-                ...controlStyles.boxShadowFn().filter((b) => b !== controlStyles.ref(controlStyles._boxShadowFocusBlur, controlStyles._boxShadowNone)),
-
-                controlStyles.ref(controlStyles._boxShadowFocusBlur, controlStyles._boxShadowNone), // existing the last => let's the browser interpolated it
-            ]]],
-        } as JssStyle,
-    };
-    const keyframesBlur    : PropEx.Keyframes = {
-        from : keyframesFocus.to,
-        to   : keyframesFocus.from,
-    };
-
-    
-    
     return {
         cursor              : 'pointer',
         cursorDisable       : 'not-allowed',
@@ -501,14 +501,14 @@ const cssConfig = new CssConfig(() => {
         //#region animations
         filterArrive        : [['brightness(85%)', 'drop-shadow(0 0 0.01px rgba(0,0,0,0.4))']],
 
-        '@keyframes arrive' : keyframesArrive,
-        '@keyframes leave'  : keyframesLeave,
         '@keyframes focus'  : keyframesFocus,
         '@keyframes blur'   : keyframesBlur,
+        '@keyframes arrive' : keyframesArrive,
+        '@keyframes leave'  : keyframesLeave,
+        animFocus           : [['150ms', 'ease-out', 'both', keyframesFocus ]],
+        animBlur            : [['300ms', 'ease-out', 'both', keyframesBlur  ]],
         animArrive          : [['150ms', 'ease-out', 'both', keyframesArrive]],
-        animLeave           : [['300ms', 'ease-out', 'both', keyframesLeave]],
-        animFocus           : [['150ms', 'ease-out', 'both', keyframesFocus]],
-        animBlur            : [['300ms', 'ease-out', 'both', keyframesBlur ]],
+        animLeave           : [['300ms', 'ease-out', 'both', keyframesLeave ]],
         //#endregion animations
     };
 }, /*prefix: */'ctrl');
@@ -589,67 +589,67 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
     };
 }
 
-export function useStateHoverLeave<TElement extends HTMLElement = HTMLElement>(props: ControlProps<TElement>, stateFocusBlur: { focus: boolean, blurring: boolean }) {
+export function useStateArriveLeave<TElement extends HTMLElement = HTMLElement>(props: ControlProps<TElement>, stateFocusBlur: { focus: boolean, blurring: boolean }) {
     // fn props:
     const propEnabled = usePropEnabled(props);
 
 
 
     // states:
-    const [hovered,   setHovered  ] = useState<boolean>(false);     // true => hover, false => leave
-    const [animating, setAnimating] = useState<boolean|null>(null); // null => no-animation, true => hovering-animation, false => leaving-animation
+    const [arrived,   setArrived  ] = useState<boolean>(false);     // true => arrive, false => leave
+    const [animating, setAnimating] = useState<boolean|null>(null); // null => no-animation, true => arriving-animation, false => leaving-animation
 
-    const [hoverDn,   setHoverDn  ] = useState<boolean>(false);     // uncontrollable (dynamic) state: true => user hover, false => user leave
+    const [arriveDn,   setArriveDn ] = useState<boolean>(false);    // uncontrollable (dynamic) state: true => user arrive, false => user leave
 
 
 
     /*
      * state is always leave if disabled
-     * state is hover/leave based on [uncontrollable hover]
-     * [controllable hover] is not supported
+     * state is arrive/leave based on [uncontrollable arrive]
+     * [controllable arrive] is not supported
      */
-    const hoverFn: boolean = propEnabled && hoverDn /*uncontrollable*/;
+    const arriveFn: boolean = propEnabled && arriveDn /*uncontrollable*/;
 
-    if (hovered !== hoverFn) { // change detected => apply the change & start animating
-        setHovered(hoverFn);   // remember the last change
-        setAnimating(hoverFn); // start hovering-animation/leaving-animation
+    if (arrived !== arriveFn) { // change detected => apply the change & start animating
+        setArrived(arriveFn);   // remember the last change
+        setAnimating(arriveFn); // start arriving-animation/leaving-animation
     }
 
 
     
-    const handleHover = () => {
+    const handleArrive = () => {
         if (!propEnabled) return; // control is disabled => no response required
 
 
 
-        setHoverDn(true);
+        setArriveDn(true);
     }
-    const handleLeave = () => {
+    const handleLeave  = () => {
         if (!propEnabled) return; // control is disabled => no response required
 
 
 
-        setHoverDn(false);
+        setArriveDn(false);
     }
-    const handleIdle = () => {
+    const handleIdle   = () => {
         // clean up finished animation
 
-        setAnimating(null); // stop hovering-animation/leaving-animation
+        setAnimating(null); // stop arriving-animation/leaving-animation
     }
     return {
-        hover : hovered,
-        class : ((): string|null => {
+        arrive : arrived,
+        class  : ((): string|null => {
             if (animating === true)  return null; // use pseudo :hover
 
             /*
-             * in our nodestrap, the leave-state is defined as (not hover && not focus) && (leave || blur)
-             * so, when (not hover && not focus), the blur also treated as leave
+             * in our nodestrap, the leave-state is defined as (not arrive && not focus) && (leave || blur)
+             * so, when (not arrive && not focus), the blur also treated as leave
              * mouse-leave but still keybd-focus => not leave
-             * keybd-blur  but still mouse-hover => not leave
+             * keybd-blur  but still mouse-arrive => not leave
              */
             if (
                 (
-                    !hovered              // not hover(ing|ed)
+                    !arrived              // not arrive(ing|ed)
                     &&
                     !stateFocusBlur.focus // not focus(ing|ed)
                 )
@@ -662,21 +662,21 @@ export function useStateHoverLeave<TElement extends HTMLElement = HTMLElement>(p
             ) return 'leave';
 
             /*
-             * .hovered class is not supported,
-             * because in our nodestrap, the hover-state is defined as the union of [:hover || .focus || :focus]
-             * so the focus can also trigger the hovering-animation
-             * thus when the focus trigger the hovering-animation until the animation ended,
-             * then the hover occured after it, the hovering-animation will never triggered and the onAnimationEnd will never triggered too
+             * .arrived class is not supported,
+             * because in our nodestrap, the arrive-state is defined as the union of [:hover || .focus || :focus]
+             * so the focus can also trigger the arriving-animation
+             * thus when the focus trigger the arriving-animation until the animation ended,
+             * then the arrive occured after it, the arriving-animation will never triggered and the onAnimationEnd will never triggered too
              */
-            // if (hovered) return 'hovered';
+            // if (arrived) return 'arrived';
 
             return null;
         })(),
-        handleMouseEnter   : handleHover,
+        handleMouseEnter   : handleArrive,
         handleMouseLeave   : handleLeave,
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
-            if (/((?<![a-z])(hover|leave)|(?<=[a-z])(Hover|Leave))(?![a-z])/.test(e.animationName)) {
+            if (/((?<![a-z])(arrive|leave)|(?<=[a-z])(Arrive|Leave))(?![a-z])/.test(e.animationName)) {
                 handleIdle();
             }
         },
@@ -697,18 +697,18 @@ export interface ControlProps<TElement extends HTMLElement = HTMLElement>
 }
 export default function Control<TElement extends HTMLElement = HTMLElement>(props: ControlProps<TElement>) {
     // styles:
-    const styles          = controlStyles.useStyles();
+    const styles           = controlStyles.useStyles();
 
     
     
     // states:
-    const stateFocusBlur  = useStateFocusBlur(props);
-    const stateHoverLeave = useStateHoverLeave(props, stateFocusBlur);
+    const stateFocusBlur   = useStateFocusBlur(props);
+    const stateArriveLeave = useStateArriveLeave(props, stateFocusBlur);
 
 
 
     // fn props:
-    const propEnabled     = usePropEnabled(props);
+    const propEnabled      = usePropEnabled(props);
 
     
 
@@ -730,7 +730,7 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
                 // if [tabIndex] is negative => treats Control as *wrapper* element, so there's no :focus (pseudo) => replace with .focus (synthetic)
                 (stateFocusBlur.class ?? ((stateFocusBlur.focus && ((props.tabIndex ?? 0) < 0)) ? 'focus' : null)),
 
-                stateHoverLeave.class,
+                stateArriveLeave.class,
             ]}
 
 
@@ -742,14 +742,14 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
         
 
             // events:
-            onFocus=        {(e) => { stateFocusBlur.handleFocus();       props.onFocus?.(e);      }}
-            onBlur=         {(e) => { stateFocusBlur.handleBlur();        props.onBlur?.(e);       }}
-            onMouseEnter=   {(e) => { stateHoverLeave.handleMouseEnter(); props.onMouseEnter?.(e); }}
-            onMouseLeave=   {(e) => { stateHoverLeave.handleMouseLeave(); props.onMouseLeave?.(e); }}
+            onFocus=        {(e) => { stateFocusBlur.handleFocus();        props.onFocus?.(e);      }}
+            onBlur=         {(e) => { stateFocusBlur.handleBlur();         props.onBlur?.(e);       }}
+            onMouseEnter=   {(e) => { stateArriveLeave.handleMouseEnter(); props.onMouseEnter?.(e); }}
+            onMouseLeave=   {(e) => { stateArriveLeave.handleMouseLeave(); props.onMouseLeave?.(e); }}
             onAnimationEnd= {(e) => {
                 // states:
                 stateFocusBlur.handleAnimationEnd(e);
-                stateHoverLeave.handleAnimationEnd(e);
+                stateArriveLeave.handleAnimationEnd(e);
 
 
                 // forwards:
