@@ -56,6 +56,9 @@ function App() {
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
 
+	const arrives = [false, undefined, true];
+	const [arrive,       setArrive    ] = useState<boolean|undefined>(undefined);
+
 	const focuses = [false, undefined, true];
 	const [focus,       setFocus    ] = useState<boolean|undefined>(undefined);
 
@@ -70,6 +73,7 @@ function App() {
 
 					enabled={enabled} active={active}
 
+					arrive={arrive}
 					focus={focus}
 				>
                     control
@@ -82,6 +86,7 @@ function App() {
 
 					enabled={enabled} active={active}
 
+					arrive={arrive}
 					focus={focus}
 				>
                     control
@@ -152,6 +157,29 @@ function App() {
 						/>
 						active
 					</label>
+				</p>
+				<p>
+					Arrive:
+					{
+						arrives.map(ar =>
+							<label key={`${ar}`}>
+								<input type='radio'
+									value={`${ar}`}
+									checked={arrive===ar}
+									onChange={(e) => setArrive((() => {
+										const value = e.target.value;
+										if (!value) return undefined;
+										switch (value) {
+											case 'true' : return true;
+											case 'false': return false;
+											default     : return undefined;
+										} // switch
+									})())}
+								/>
+								{`${ar ?? 'auto'}`}
+							</label>
+						)
+					}
 				</p>
 				<p>
 					Focus:

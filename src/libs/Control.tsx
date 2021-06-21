@@ -199,7 +199,7 @@ export class ControlStyles extends IndicatorStyles {
           '&.focused:not(.arrived),&.focus:not(.arrived),&:focus:not(.arrived)'                           , this.arriving() ],
 
         // .leave will be added after loosing arrive and will be removed after leaving-animation done
-        [ '.leave'                                                                                        , this.leaving()  ],
+        [ '&.leave'                                                                                       , this.leaving()  ],
 
         // if all above are not set => left
         [ '&:not(.arrived):not(.arrive):not(:hover):not(.focused):not(.focus):not(:focus):not(.leave),' +
@@ -588,7 +588,7 @@ export function useStateArriveLeave<TElement extends HTMLElement = HTMLElement>(
                 return null;
             } // if
 
-            // blurring:
+            // leaving:
             if (animating === false) return 'leave';
 
             // fully arrived:
@@ -631,7 +631,7 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
     
     // states:
     const stateFocusBlur   = useStateFocusBlur(props);
-    // TODO: temporary disabled # const stateArriveLeave = useStateArriveLeave(props, stateFocusBlur);
+    const stateArriveLeave = useStateArriveLeave(props, stateFocusBlur);
 
 
 
@@ -655,7 +655,7 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
             mainClass={props.mainClass ?? styles.main}
             stateClasses={[...(props.stateClasses ?? []),
                 stateFocusBlur.class,
-                // TODO: temporary disabled # stateArriveLeave.class,
+                stateArriveLeave.class,
             ]}
 
 
@@ -669,12 +669,12 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
             // events:
             onFocus=        {(e) => { stateFocusBlur.handleFocus();        props.onFocus?.(e);      }}
             onBlur=         {(e) => { stateFocusBlur.handleBlur();         props.onBlur?.(e);       }}
-            // TODO: temporary disabled # onMouseEnter=   {(e) => { stateArriveLeave.handleMouseEnter(); props.onMouseEnter?.(e); }}
-            // TODO: temporary disabled # onMouseLeave=   {(e) => { stateArriveLeave.handleMouseLeave(); props.onMouseLeave?.(e); }}
+            onMouseEnter=   {(e) => { stateArriveLeave.handleMouseEnter(); props.onMouseEnter?.(e); }}
+            onMouseLeave=   {(e) => { stateArriveLeave.handleMouseLeave(); props.onMouseLeave?.(e); }}
             onAnimationEnd= {(e) => {
                 // states:
                 stateFocusBlur.handleAnimationEnd(e);
-                // TODO: temporary disabled # stateArriveLeave.handleAnimationEnd(e);
+                stateArriveLeave.handleAnimationEnd(e);
 
 
                 // forwards:
