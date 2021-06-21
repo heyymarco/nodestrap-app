@@ -16,6 +16,7 @@ import {
 
     // components:
     CssConfig,
+    ElementProps,
 }                           from './nodestrap'  // nodestrap's core
 import {
     usePropAccessibility,
@@ -475,9 +476,19 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export function useStateEnableDisable(props: IndicationProps) {
+export function useStateEnableDisable(props: IndicationProps & ElementProps) {
     // fn props:
     const propEnabled = usePropEnabled(props);
+    const htmlCtrls   = [
+        'button',
+        'fieldset',
+        'input',
+        'select',
+        'optgroup',
+        'option',
+        'textarea',
+    ];
+    const isCtrlElm   = props.tag && htmlCtrls.includes(props.tag);
 
 
 
@@ -514,7 +525,17 @@ export function useStateEnableDisable(props: IndicationProps) {
             if (animating === true)  return 'enable';
 
             // disabling:
-            if (animating === false) return null; // use pseudo :disabled
+            if (animating === false) {
+                if (isCtrlElm) {
+                    // a control_element uses pseudo :disabled for disabling
+                    // not needed using class .disable
+                    return null;
+                }
+                else {
+                    // a generic_element uses class .disable for disabling
+                    return 'disable';
+                } // if
+            } // if
 
             // fully disabled:
             if (!enabled) return 'disabled';
@@ -522,6 +543,11 @@ export function useStateEnableDisable(props: IndicationProps) {
             // fully enabled:
             return null;
         })(),
+
+        props : ((isCtrlElm && !enabled) ? {
+            // a control_element uses pseudo :disabled for disabling
+            disabled: true,
+        } : {}),
 
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
@@ -532,9 +558,10 @@ export function useStateEnableDisable(props: IndicationProps) {
     };
 }
 
-export function useStateActivePassive(props: IndicationProps, activeDn?: boolean, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }) {
+export function useStateActivePassive(props: IndicationProps & ElementProps, activeDn?: boolean, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }) {
     // fn props:
     const propActive = usePropActive(props, null);
+    const isCheckbox = (props.tag === 'input') && ((props as any).type === 'checkbox');
 
 
 
@@ -569,7 +596,17 @@ export function useStateActivePassive(props: IndicationProps, activeDn?: boolean
 
         class  : ((): string|null => {
             // activating:
-            if (animating === true)  return null; // use pseudo :checked
+            if (animating === true) {
+                if (isCheckbox) {
+                    // a checkbox uses pseudo :checked for activating
+                    // not needed using class .active
+                    return null;
+                }
+                else {
+                    // a generic_element uses class .active for activating
+                    return classes.active;
+                } // if
+            } // if
 
             // passivating:
             if (animating === false) return classes.passive;
@@ -580,6 +617,11 @@ export function useStateActivePassive(props: IndicationProps, activeDn?: boolean
             // fully passived:
             return null;
         })(),
+
+        props : ((isCheckbox && actived) ? {
+            // a checkbox uses pseudo :checked for activating
+            checked: true,
+        } : {}),
 
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
@@ -674,17 +716,6 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
     
 
     // fn props:
-    const htmlCtrls    = [
-        'button',
-        'fieldset',
-        'input',
-        'select',
-        'optgroup',
-        'option',
-        'textarea',
-    ];
-    const isCtrl       = props.tag && htmlCtrls.includes(props.tag);
-    const isCheck      = (props.tag === 'input') && ((props as any).type === 'checkbox');
     const propAccess   = usePropAccessibility(props);
 
 
@@ -699,23 +730,17 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
             // classes:
             mainClass={props.mainClass ?? styles.main}
             stateClasses={[...(props.stateClasses ?? []),
-                (stateEnbDis.class ?? ((stateEnbDis.disabled && !isCtrl) ? 'disable' : null)),
-                (stateActPass.class ?? ((stateActPass.active && !isCheck) ? 'active' : null)),
+                stateEnbDis.class,
+                stateActPass.class,
             ]}
 
 
             // Control::disabled:
-            {...((stateEnbDis.disabled && isCtrl) ? {
-                // accessibility:
-                disabled: true,
-            } : {})}
+            {...stateEnbDis.props}
             
             
             // Check::checked:
-            {...((stateActPass.active && isCheck) ? {
-                // accessibility:
-                checked: true,
-            } : {})}
+            {...stateActPass.props}
         
 
             // events:
