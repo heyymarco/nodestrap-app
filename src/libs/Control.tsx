@@ -179,12 +179,13 @@ export class ControlStyles extends IndicatorStyles {
         [ '&.focused'                                                                                     , this.focused()  ],
 
         // .focus = programatically focus, :focus = user focus
-        [ '&.focus,&:focus:not(.focused)'                                                                 , this.focusing() ],
+        [ '&.focus,&:focus:not(.focused):not(.blur):not(.blurred)'                                        , this.focusing() ],
 
         // .blur will be added after loosing focus and will be removed after blurring-animation done
         [ '&.blur'                                                                                        , this.blurring() ],
 
         // if all above are not set => blurred
+        // optionally use .blurred to kill pseudo :focus
         [ '&:not(.focused):not(.focus):not(:focus):not(.blur)'                                            , this.blurred()  ],
 
 
@@ -194,14 +195,17 @@ export class ControlStyles extends IndicatorStyles {
 
         // arrive = a combination of .arrive || :hover || (.focused || .focus || :focus)
         // .arrive = programatically arrive, :hover = user hover
-        [ '&.arrive,'                                                           +
-          '&:hover:not(.disabled):not(:disabled):not(.disable):not(.arrived),'  +
-          '&.focused:not(.arrived),&.focus:not(.arrived),&:focus:not(.arrived)'                           , this.arriving() ],
+        [ '&.arrive,'                                                                                 +
+          '&:hover:not(.disabled):not(:disabled):not(.disable):not(.arrived):not(.leave):not(.left),' +
+          '&.focused:not(.arrived):not(.leave):not(.left),'                                           +
+          '&.focus:not(.arrived):not(.leave):not(.left),'                                             +
+          '&:focus:not(.blur):not(.blurred):not(.arrived):not(.leave):not(.left)'                         , this.arriving() ],
 
         // .leave will be added after loosing arrive and will be removed after leaving-animation done
         [ '&.leave'                                                                                       , this.leaving()  ],
 
         // if all above are not set => left
+        // optionally use .left to kill [:hover || (.focused || .focus || :focus)]
         [ '&:not(.arrived):not(.arrive):not(:hover):not(.focused):not(.focus):not(:focus):not(.leave),' +
           '&:not(.arrived):not(.arrive).disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
           '&:not(.arrived):not(.arrive):disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
@@ -516,7 +520,12 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
             if (focused) return 'focused';
 
             // fully blurred:
-            return null;
+            if (props.focus !== undefined) {
+                return 'blurred'; // blurring by controllable prop => use class .blurred to kill pseudo :focus
+            }
+            else {
+                return null; // discard all classes above
+            } // if
         })(),
 
         handleFocus        : handleFocus,
@@ -595,7 +604,12 @@ export function useStateArriveLeave<TElement extends HTMLElement = HTMLElement>(
             if (arrived) return 'arrived';
 
             // fully left:
-            return null;
+            if (props.arrive !== undefined) {
+                return 'left'; // arriving by controllable prop => use class .left to kill [:hover || (.focused || .focus || :focus)]
+            }
+            else {
+                return null; // discard all classes above
+            } // if
         })(),
 
         handleMouseEnter   : handleHover,
