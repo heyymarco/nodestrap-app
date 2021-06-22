@@ -37,6 +37,7 @@ import {
 
 export class IndicatorStyles extends BasicComponentStyles {
     //#region props
+    //#region active theme
     /**
      * toggles *on* foreground color - at active state.
      */
@@ -51,6 +52,7 @@ export class IndicatorStyles extends BasicComponentStyles {
      * toggles *on* border color - at active state.
      */
     public    readonly _activeBorderTg      = 'activeBorderTg'
+    //#endregion active theme
 
 
 
@@ -58,7 +60,7 @@ export class IndicatorStyles extends BasicComponentStyles {
     public    readonly _filterEnableDisable = 'filterEnableDisable'
     protected readonly _animEnableDisable   = 'animEnableDisable'
 
-    public    readonly _filterArriveLeave   = 'filterArriveLeave' // will be used in Control, so we can re-use our animations (enable, disable, arrive, leave) in the Control
+    public    readonly _filterArriveLeave   = 'filterArriveLeave' // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
  // protected readonly _animArriveLeave     = 'animArriveLeave'   // will be defined in Control
 
     public    readonly _filterActivePassive = 'filterActivePassive'
@@ -156,7 +158,7 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
         [ null, {
-            // requires usePropsFn() for using _foregFn & _backgFn in the actived() & activating() => toggleOnActive()
+            // requires usePropsFn() for using _foregFn & _backgFn in the actived() & activating() => active() => toggleOnActive()
             // the code below causing useStates() implicitly includes usePropsFn()
             ...this.usePropsFn(),
 
@@ -165,7 +167,7 @@ export class IndicatorStyles extends BasicComponentStyles {
             //#region reset toggles/filters/anims to initial/inherit state
             [this.decl(this._filterEnableDisable)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animEnableDisable)]   : inherit ? 'unset' : 'initial',
-            [this.decl(this._filterArriveLeave)]   : inherit ? 'unset' : 'initial', // will be used in Control, so we can re-use our animations (enable, disable, arrive, leave) in the Control
+            [this.decl(this._filterArriveLeave)]   : inherit ? 'unset' : 'initial', // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
             [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
             [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
 
@@ -176,7 +178,7 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
         // if all below are not set => enabled
-        [ '&:not(.enable):not(.disable):not(:disabled):not(.disabled)'        , this.enabled()     ],
+        [ '&:not(.disabled):not(.disable):not(:disabled):not(.enable)'        , this.enabled()     ],
 
         // .enable will be added after loosing disable and will be removed after enabling-animation done
         [ '&.enable'                                                          , this.enabling()    ],
@@ -369,7 +371,7 @@ export class IndicatorStyles extends BasicComponentStyles {
 
         this.ref(this._filterEnableDisable, this._filterNone),
         this.ref(this._filterActivePassive, this._filterNone),
-        this.ref(this._filterArriveLeave,   this._filterNone), // will be used in Control, so we can re-use our animations (enable, disable, arrive, leave) in the Control
+        this.ref(this._filterArriveLeave,   this._filterNone), // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
     ]}
     public /*override*/ animFn(): Cust.Ref[] { return [
         ...super.animFn(),

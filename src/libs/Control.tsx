@@ -15,7 +15,7 @@ import {
     
     // components:
     CssConfig,
-}                           from './nodestrap'   // nodestrap's core
+}                           from './nodestrap'  // nodestrap's core
 import {
     usePropEnabled,
 }                           from './accessibilities'
@@ -157,7 +157,7 @@ export class ControlStyles extends IndicatorStyles {
 
 
         [ null, {
-            // requires usePropsFn() for using [_foregFn, _backgFn, & _boxShadowFocusFn] in the [focused(), focusing(), arrived(), arriving()] => [focus(), arrive()] => toggleOnActive()
+            // requires usePropsFn() for using [_foregFn, _backgFn, & _boxShadowFocusFn] in the [focused(), focusing(), arrived(), arriving()] => [focus(), arrive()] => active() => toggleOnActive()
             // the code below causing useStates() implicitly includes usePropsFn()
             ...this.usePropsFn(),
 
@@ -168,8 +168,6 @@ export class ControlStyles extends IndicatorStyles {
             [this.decl(this._animFocusBlur)]      : inherit ? 'unset' : 'initial',
             [this.decl(this._filterArriveLeave)]  : inherit ? 'unset' : 'initial',
             [this.decl(this._animArriveLeave)]    : inherit ? 'unset' : 'initial',
-
-            ...this.toggleOffActive(inherit),
             //#endregion reset toggles/filters/anims to initial/inherit state
         }],
 
@@ -186,7 +184,8 @@ export class ControlStyles extends IndicatorStyles {
 
         // if all above are not set => blurred
         // optionally use .blurred to kill pseudo :focus
-        [ '&:not(.focused):not(.focus):not(:focus):not(.blur)'                                            , this.blurred()  ],
+        [ '&:not(.focused):not(.focus):not(:focus):not(.blur),' +
+          '&.blurred'                                                                                     , this.blurred()  ],
 
 
 
@@ -196,7 +195,7 @@ export class ControlStyles extends IndicatorStyles {
         // arrive = a combination of .arrive || :hover || (.focused || .focus || :focus)
         // .arrive = programatically arrive, :hover = user hover
         [ '&.arrive,'                                                                                 +
-          '&:hover:not(.disabled):not(:disabled):not(.disable):not(.arrived):not(.leave):not(.left),' +
+          '&:hover:not(.disabled):not(.disable):not(:disabled):not(.arrived):not(.leave):not(.left),' +
           '&.focused:not(.arrived):not(.leave):not(.left),'                                           +
           '&.focus:not(.arrived):not(.leave):not(.left),'                                             +
           '&:focus:not(.blur):not(.blurred):not(.arrived):not(.leave):not(.left)'                         , this.arriving() ],
@@ -208,8 +207,9 @@ export class ControlStyles extends IndicatorStyles {
         // optionally use .left to kill [:hover || (.focused || .focus || :focus)]
         [ '&:not(.arrived):not(.arrive):not(:hover):not(.focused):not(.focus):not(:focus):not(.leave),' +
           '&:not(.arrived):not(.arrive).disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
+          '&:not(.arrived):not(.arrive).disable:not(.focused):not(.focus):not(:focus):not(.leave),'     +
           '&:not(.arrived):not(.arrive):disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
-          '&:not(.arrived):not(.arrive).disable:not(.focused):not(.focus):not(:focus):not(.leave)'        , this.left()     ],
+          '&.left'                                                                                        , this.left()     ],
     ]}
 
     public /*override*/ disable() : JssStyle { return {
@@ -282,6 +282,7 @@ export class ControlStyles extends IndicatorStyles {
     public /*virtual*/ arriving() : JssStyle { return {
         [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
         [this.decl(this._animArriveLeave)]     : cssProps.animArrive,
+        '--arriving': 'arriving!',
 
 
 
@@ -301,6 +302,7 @@ export class ControlStyles extends IndicatorStyles {
     }}
     public /*virtual*/ left()     : JssStyle { return {
         /* --nothing-- */
+        '--left': 'left!',
 
 
 
