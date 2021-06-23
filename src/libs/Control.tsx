@@ -174,23 +174,27 @@ export class ControlStyles extends IndicatorStyles {
 
 
         // .focused will be added after focusing-animation done
-        [ '&.focused'                                                                                     , this.focused()  ],
+        [ '&.focused'                                                                                                         , this.focused()  ],
 
         // .focus = programatically focus, :focus = user focus
-        [ '&.focus,&:focus:not(.focused):not(.blur):not(.blurred)'                                        , this.focusing() ],
+        [ '&.focus,' +
+          '&:focus:not(.disabled):not(.disable):not(:disabled):not(.focused):not(.blur):not(.blurred)'                        , this.focusing() ],
 
         // .blur will be added after loosing focus and will be removed after blurring-animation done
-        [ '&.blur'                                                                                        , this.blurring() ],
+        [ '&.blur'                                                                                                            , this.blurring() ],
 
         // if all above are not set => blurred
         // optionally use .blurred to kill pseudo :focus
         [ '&:not(.focused):not(.focus):not(:focus):not(.blur),' +
-          '&.blurred'                                                                                     , this.blurred()  ],
+          '&:not(.focused):not(.focus).disabled:not(.blur),'    +
+          '&:not(.focused):not(.focus).disable:not(.blur),'     +
+          '&:not(.focused):not(.focus):disabled:not(.blur),'    +
+          '&.blurred'                                                                                                         , this.blurred()  ],
 
 
 
         // .arrived will be added after arriving-animation done
-        [ '&.arrived'                                                                                     , this.arrived()  ],
+        [ '&.arrived'                                                                                                         , this.arrived()  ],
 
         // arrive = a combination of .arrive || :hover || (.focused || .focus || :focus)
         // .arrive = programatically arrive, :hover = user hover
@@ -198,18 +202,20 @@ export class ControlStyles extends IndicatorStyles {
           '&:hover:not(.disabled):not(.disable):not(:disabled):not(.arrived):not(.leave):not(.left),' +
           '&.focused:not(.arrived):not(.leave):not(.left),'                                           +
           '&.focus:not(.arrived):not(.leave):not(.left),'                                             +
-          '&:focus:not(.blur):not(.blurred):not(.arrived):not(.leave):not(.left)'                         , this.arriving() ],
+          '&:focus:not(.disabled):not(.disable):not(:disabled):not(.blur):not(.blurred):not(.arrived):not(.leave):not(.left)' , this.arriving() ],
 
         // .leave will be added after loosing arrive and will be removed after leaving-animation done
-        [ '&.leave'                                                                                       , this.leaving()  ],
+        [ '&.leave'                                                                                                           , this.leaving()  ],
 
         // if all above are not set => left
         // optionally use .left to kill [:hover || (.focused || .focus || :focus)]
         [ '&:not(.arrived):not(.arrive):not(:hover):not(.focused):not(.focus):not(:focus):not(.leave),' +
-          '&:not(.arrived):not(.arrive).disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
-          '&:not(.arrived):not(.arrive).disable:not(.focused):not(.focus):not(:focus):not(.leave),'     +
-          '&:not(.arrived):not(.arrive):disabled:not(.focused):not(.focus):not(:focus):not(.leave),'    +
-          '&.left'                                                                                        , this.left()     ],
+          '&:not(.arrived):not(.arrive):not(:hover).blur:not(.leave),'                                  +
+          '&:not(.arrived):not(.arrive):not(:hover).blurred:not(.leave),'                               +
+          '&:not(.arrived):not(.arrive).disabled:not(.leave),'                                          +
+          '&:not(.arrived):not(.arrive).disable:not(.leave),'                                           +
+          '&:not(.arrived):not(.arrive):disabled:not(.leave),'                                          +
+          '&.left'                                                                                                            , this.left()     ],
     ]}
 
     public /*override*/ disable() : JssStyle { return {
@@ -255,6 +261,7 @@ export class ControlStyles extends IndicatorStyles {
     }}
     public /*virtual*/ blurred()  : JssStyle { return {
         /* --nothing-- */
+        '--blurred': '"TODO"',
 
 
 
@@ -302,7 +309,7 @@ export class ControlStyles extends IndicatorStyles {
     }}
     public /*virtual*/ left()     : JssStyle { return {
         /* --nothing-- */
-        '--left': 'left!',
+        '--left': '"TODO"',
 
 
 

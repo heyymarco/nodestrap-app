@@ -178,48 +178,50 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
         // if all below are not set => enabled
-        [ '&:not(.disabled):not(.disable):not(:disabled):not(.enable)'        , this.enabled()     ],
+        [ '&:not(.disabled):not(.disable):not(:disabled):not(.enable)' , this.enabled()     ],
 
         // .enable will be added after loosing disable and will be removed after enabling-animation done
-        [ '&.enable'                                                          , this.enabling()    ],
+        [ '&.enable'                                                   , this.enabling()    ],
 
         // .disable = styled disable, :disabled = real disable
-        [ '&.disable,&:disabled:not(.disabled)'                               , this.disabling()   ],
+        [ '&.disable,&:disabled:not(.disabled)'                        , this.disabling()   ],
 
         // .disabled will be added after disabling-animation done
-        [ '&.disabled'                                                        , this.disabled()    ],
+        [ '&.disabled'                                                 , this.disabled()    ],
 
         
 
         // .actived will be added after activating-animation done
-        [ '&.actived'                                                         , this.actived()     ],
+        [ '&.actived'                                                  , this.actived()     ],
 
         // .active = programatically active, :checked = user active
-        [ '&.active,&:checked:not(.actived)'                                  , this.activating()  ],
+        [ '&.active,&:checked:not(.actived)'                           , this.activating()  ],
 
         // .passive will be added after loosing active and will be removed after deactivating-animation done
-        [ '&.passive'                                                         , this.passivating() ],
+        [ '&.passive'                                                  , this.passivating() ],
 
         // if all above are not set => passived
-        [ '&:not(.actived):not(.active):not(:checked):not(.passive)'          , this.passived()    ],
+        [ '&:not(.actived):not(.active):not(:checked):not(.passive)'   , this.passived()    ],
 
 
 
         // .pressed will be added after pressing-animation done
-        [ '&.pressed'                                                         , this.pressed()     ],
+        [ '&.pressed'                                                                                      , this.pressed()   ],
 
         // .press = programatically press, :active = user press
         [ '&.press,' +
-          '&:active:not(.pressed):not(.disabled):not(:disabled):not(.disable)', this.pressing()    ],
+          '&:active:not(.disabled):not(.disable):not(:disabled):not(.pressed):not(.release):not(.released)', this.pressing()  ],
 
         // .release will be added after loosing press and will be removed after releasing-animation done
-        [ '&.release'                                                         , this.releasing()   ],
+        [ '&.release'                                                                                      , this.releasing() ],
 
         // if all above are not set => released
+        // optionally use .released to kill pseudo :active
         [ '&:not(.pressed):not(.press):not(:active):not(.release),' +
           '&:not(.pressed):not(.press).disabled:not(.release),'     +
+          '&:not(.pressed):not(.press).disable:not(.release),'      +
           '&:not(.pressed):not(.press):disabled:not(.release),'     +
-          '&:not(.pressed):not(.press).disable:not(.release)'                 , this.released()    ],
+          '&.released'                                                                                     , this.released()  ],
     ]}
     
     public /*virtual*/ enabled()     : JssStyle { return {
