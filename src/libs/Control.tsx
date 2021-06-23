@@ -261,7 +261,6 @@ export class ControlStyles extends IndicatorStyles {
     }}
     public /*virtual*/ blurred()  : JssStyle { return {
         /* --nothing-- */
-        '--blurred': '"TODO"',
 
 
 
@@ -309,7 +308,6 @@ export class ControlStyles extends IndicatorStyles {
     }}
     public /*virtual*/ left()     : JssStyle { return {
         /* --nothing-- */
-        '--left': '"TODO"',
 
 
 
