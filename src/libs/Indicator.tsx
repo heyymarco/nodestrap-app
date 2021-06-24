@@ -202,26 +202,6 @@ export class IndicatorStyles extends BasicComponentStyles {
 
         // if all above are not set => passived
         [ '&:not(.actived):not(.active):not(:checked):not(.passive)'   , this.passived()    ],
-
-
-
-        // .pressed will be added after pressing-animation done
-        [ '&.pressed'                                                                                      , this.pressed()   ],
-
-        // .press = programatically press, :active = user press
-        [ '&.press,' +
-          '&:active:not(.disabled):not(.disable):not(:disabled):not(.pressed):not(.release):not(.released)', this.pressing()  ],
-
-        // .release will be added after loosing press and will be removed after releasing-animation done
-        [ '&.release'                                                                                      , this.releasing() ],
-
-        // if all above are not set => released
-        // optionally use .released to kill pseudo :active
-        [ '&:not(.pressed):not(.press):not(:active):not(.release),' +
-          '&:not(.pressed):not(.press).disabled:not(.release),'     +
-          '&:not(.pressed):not(.press).disable:not(.release),'      +
-          '&:not(.pressed):not(.press):disabled:not(.release),'     +
-          '&.released'                                                                                     , this.released()  ],
     ]}
     
     public /*virtual*/ enabled()     : JssStyle { return {
@@ -328,11 +308,6 @@ export class IndicatorStyles extends BasicComponentStyles {
     public /*virtual*/ themeActive(theme = 'secondary'): JssStyle {
         return this.themeIf(theme);
     }
-
-    public /*virtual*/ pressed()   : JssStyle { return {} }
-    public /*virtual*/ pressing()  : JssStyle { return {} }
-    public /*virtual*/ releasing() : JssStyle { return {} }
-    public /*virtual*/ released()  : JssStyle { return {} }
 
 
 

@@ -12,7 +12,7 @@ import type * as ActCtrls   from './ActionControl'
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        ActCtrls.Props<TElement>
+        ActCtrls.ActionControlProps<TElement>
 {
     // accessibility:
     // change default value to `true`

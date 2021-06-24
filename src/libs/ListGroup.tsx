@@ -34,7 +34,7 @@ import type {
     IControlStylesBuilderOld,
 }                           from './Control'
 import {
-    styles as actionControlStyles,
+    actionControlStyles,
 }                           from './ActionControl'
 import ListgroupItem        from './ListgroupItem'
 import type * as ListgroupItems from './ListgroupItem'

@@ -5,12 +5,16 @@ import {
     useState,
 }                           from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-
 // nodestrap (modular web components):
+import {
+    // general types:
+    JssStyle,
+    ClassList,
+
+
+    // components:
+    CssConfig,
+}                           from './nodestrap'  // nodestrap's core
 import {
     usePropAccessibility,
 }                           from './accessibilities'
@@ -18,24 +22,27 @@ import {
     cssProps as ecssProps,
 }                           from './BasicComponent'
 import {
+    useStateActivePassive,
     cssProps as icssProps,
     IndicationProps,
-    useStateActivePassive,
 }                           from './Indicator'
 import {
-    default  as Control,
     ControlStyles,
+    ControlProps,
+    Control,
 }                           from './Control'
-import type * as Controls   from './Control'
 
 
 
 // styles:
 
-export class ActionControlStylesBuilder extends ControlStyles {
-    //#region scoped css props
+export class ActionControlStyles extends ControlStyles {
+    //#region props
+    //#region animations
+    public    readonly _filterPressRelease = 'filterPressRelease'
     protected readonly _animPressRelease   = 'animPressRelease'
-    //#endregion scoped css props
+    //#endregion animations
+    //#endregion props
 
 
 
@@ -85,7 +92,68 @@ export class ActionControlStylesBuilder extends ControlStyles {
 
 
 
+    // variants:
+    public /*override*/ size(size: string): JssStyle { return {
+        extend: [
+            super.size(size), // copy sizes from base
+        ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
+    }}
+
+
+
     // states:
+    public /*override*/ states(inherit: boolean): ClassList { return [
+        ...super.states(inherit), // copy states from base
+
+
+
+        [ null, {
+            // requires usePropsFn() for using _foregFn & _backgFn in the actived() & activating() => active() => toggleOnActive()
+            // the code below causing useStates() implicitly includes usePropsFn()
+            ...this.usePropsFn(),
+
+
+
+            //#region reset toggles/filters/anims to initial/inherit state
+            [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
+            [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
+            //#endregion reset toggles/filters/anims to initial/inherit state
+        }],
+
+
+
+        // .pressed will be added after pressing-animation done
+        [ '&.pressed'                                                                                      , this.pressed()   ],
+
+        // .press = programatically press, :active = user press
+        [ '&.press,' +
+          '&:active:not(.disabled):not(.disable):not(:disabled):not(.pressed):not(.release):not(.released)', this.pressing()  ],
+
+        // .release will be added after loosing press and will be removed after releasing-animation done
+        [ '&.release'                                                                                      , this.releasing() ],
+
+        // if all above are not set => released
+        // optionally use .released to kill pseudo :active
+        [ '&:not(.pressed):not(.press):not(:active):not(.release),' +
+          '&:not(.pressed):not(.press).disabled:not(.release),'     +
+          '&:not(.pressed):not(.press).disable:not(.release),'      +
+          '&:not(.pressed):not(.press):disabled:not(.release),'     +
+          '&.released'                                                                                     , this.released()  ],
+    ]}
+
+    public /*virtual*/ pressed()   : JssStyle { return {} }
+    public /*virtual*/ pressing()  : JssStyle { return {} }
+    public /*virtual*/ releasing() : JssStyle { return {} }
+    public /*virtual*/ released()  : JssStyle { return {} }
+
+
+
+    // old:
     public /*override*/ controlStatesOld(inherit = false): JssStyle { return {
         extend: [
             super.controlStatesOld(inherit), // copy controlStates from base
@@ -120,10 +188,6 @@ export class ActionControlStylesBuilder extends ControlStyles {
             //#endregion specific states
         ] as JssStyle,
     }}
-
-
-
-    // functions:
     public /*override*/ controlAnimFnOld(): JssStyle { return {
         //#region re-arrange the animFn at different states
         '&.press,&.pressed': // if activated programmatically (not by user input)
@@ -151,7 +215,24 @@ export class ActionControlStylesBuilder extends ControlStyles {
         //#endregion re-arrange the animFn at different states
     }}
 }
-export const styles = new ActionControlStylesBuilder();
+export const actionControlStyles = new ActionControlStyles();
+
+
+
+// configs:
+
+const cssConfig = new CssConfig(() => {
+    
+
+    
+    
+    return {
+        //#region animations
+        //#endregion animations
+    };
+}, /*prefix: */'act');
+export const cssProps = cssConfig.refs;
+export const cssDecls = cssConfig.decls;
 
 
 
@@ -229,19 +310,19 @@ export function useStatePressRelease(props: IndicationProps, classes = { active:
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface ActionControlProps<TElement extends HTMLElement = HTMLElement>
     extends
-        Controls.ControlProps<TElement>
+        ControlProps<TElement>
 {
 }
-export default function ActionControl<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function ActionControl<TElement extends HTMLElement = HTMLElement>(props: ActionControlProps<TElement>) {
     // styles:
-    const actCtrlStyles = styles.useStyles();
+    const styles       = actionControlStyles.useStyles();
 
     
     
     // states:
-    const statePrssRls  = useStatePressRelease(props);
+    const statePrssRls = useStatePressRelease(props);
 
 
 
@@ -257,7 +338,7 @@ export default function ActionControl<TElement extends HTMLElement = HTMLElement
 
 
             // classes:
-            mainClass={props.mainClass ?? actCtrlStyles.main}
+            mainClass={props.mainClass ?? styles.main}
             stateClasses={[...(props.stateClasses ?? []),
                 statePrssRls.class,
             ]}
@@ -277,3 +358,4 @@ export default function ActionControl<TElement extends HTMLElement = HTMLElement
         />
     );
 }
+export { ActionControl }
