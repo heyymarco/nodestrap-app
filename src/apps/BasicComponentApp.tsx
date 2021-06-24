@@ -64,6 +64,7 @@ function App() {
 
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
+	const [mild,       setMild      ] = useState(false);
 
 
 
@@ -72,7 +73,7 @@ function App() {
             <Container>
                 <BasicComponent
 					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+					outlined={outlined} mild={mild}
 				>
                     basic component
                 </BasicComponent>
@@ -123,6 +124,15 @@ function App() {
 							onChange={(e) => setOutlined(e.target.checked)}
 						/>
 						outlined
+					</label>
+				</p>
+				<p>
+					<label>
+						<input type='checkbox'
+							checked={mild}
+							onChange={(e) => setMild(e.target.checked)}
+						/>
+						mild
 					</label>
 				</p>
             </Container>

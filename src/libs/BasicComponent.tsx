@@ -120,42 +120,98 @@ export class BasicComponentStyles extends ElementStyles {
 
     //#region outlined - foreground
     /**
-     * themed foreground color - at outlined state.
+     * themed foreground color - at outlined variant.
      */
     protected readonly _outlinedForegTh    = 'outlinedForegTh'
 
     /**
-     * conditional foreground color - at outlined state.
+     * conditional foreground color - at outlined variant.
      */
     protected readonly _outlinedForegIfIf  = 'outlinedForegIfIf'
 
     /**
-     * conditional unthemed foreground color - at outlined state.
+     * conditional unthemed foreground color - at outlined variant.
      */
     protected readonly _outlinedForegIf    = 'outlinedForegIf'
 
     /**
-     * functional foreground color - at outlined state.
+     * functional foreground color - at outlined variant.
      */
     public    readonly _outlinedForegFn    = 'outlinedForegFn'
 
     /**
-     * toggles *on* foreground color - at outlined state.
+     * toggles *on* foreground color - at outlined variant.
      */
     public    readonly _outlinedForegTg    = 'outlinedForegTg'
     //#endregion outlined - foreground
 
     //#region outlined - background
     /**
-     * functional backgrounds - at outlined state.
+     * functional backgrounds - at outlined variant.
      */
     public    readonly _outlinedBackgFn    = 'outlinedBackgFn'
 
     /**
-     * toggles *on* backgrounds - at outlined state.
+     * toggles *on* backgrounds - at outlined variant.
      */
     public    readonly _outlinedBackgTg    = 'outlinedBackgTg'
     //#endregion outlined - background
+
+
+
+    //#region mild - foreground
+    /**
+     * themed foreground color - at mild variant.
+     */
+    protected readonly _mildForegTh        = 'mildForegTh'
+
+    /**
+     * conditional foreground color - at mild variant.
+     */
+    protected readonly _mildForegIfIf      = 'mildForegIfIf'
+
+    /**
+     * conditional unthemed foreground color - at mild variant.
+     */
+    protected readonly _mildForegIf        = 'mildForegIf'
+
+    /**
+     * functional foreground color - at mild variant.
+     */
+    public    readonly _mildForegFn        = 'mildForegFn'
+
+    /**
+     * toggles *on* foreground color - at mild variant.
+     */
+    public    readonly _mildForegTg        = 'mildForegTg'
+    //#endregion mild - foreground
+
+    //#region mild - background
+    /**
+     * themed background - at mild variant.
+     */
+    protected readonly _mildBackgTh        = 'mildBackgTh'
+
+    /**
+     * conditional background - at mild variant.
+     */
+    protected readonly _mildBackgIfIf      = 'mildBackgIfIf'
+
+    /**
+     * conditional unthemed background - at mild variant.
+     */
+    protected readonly _mildBackgIf        = 'mildBackgIf'
+
+    /**
+     * functional backgrounds - at mild variant.
+     */
+    public    readonly _mildBackgFn        = 'mildBackgFn'
+
+    /**
+     * toggles *on* backgrounds - at mild variant.
+     */
+    public    readonly _mildBackgTg        = 'mildBackgTg'
+    //#endregion mild - background
 
 
 
@@ -275,6 +331,7 @@ export class BasicComponentStyles extends ElementStyles {
         ...this.sizes(),
         [ 'gradient', this.gradient() ],
         [ 'outlined', this.outlined() ],
+        [ 'mild'    , this.mild()     ],
     ]}
 
     /**
@@ -305,10 +362,12 @@ export class BasicComponentStyles extends ElementStyles {
      * @returns A `JssStyle` represents the color definition for the current `theme`.
      */
     public /*virtual*/ theme(theme: string): JssStyle { return {
-        [this.decl(this._foregTh)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
+        [this.decl(this._foregTh)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`],         // light on dark backg | dark on light backg
         [this.decl(this._backgTh)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
-        [this.decl(this._borderTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
+        [this.decl(this._borderTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],         // 20% background + 80% page's foreground
         [this.decl(this._outlinedForegTh)]  : (colors as DictionaryOf<typeof colors>)[theme],
+        [this.decl(this._mildForegTh)]      :                 (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],  // light on dark backg | dark on light backg with slightly color from background
+        [this.decl(this._mildBackgTh)]      : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]), // thin opacity with slightly color from background
         [this.decl(this._boxShadowFocusTh)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
     }}
 
@@ -345,7 +404,7 @@ export class BasicComponentStyles extends ElementStyles {
     }}
 
     /**
-     * Creates a gradient definition for if the gradient feature is enabled.
+     * Creates a gradient definition for if the gradient variant is enabled.
      * @returns A `JssStyle` represents the gradient definition.
      */
     public /*virtual*/ gradient(): JssStyle {
@@ -362,7 +421,7 @@ export class BasicComponentStyles extends ElementStyles {
     }}
 
     /**
-     * Creates an outlined definition for if the outlined feature is enabled.
+     * Creates an outlined definition for if the outlined variant is enabled.
      * @returns A `JssStyle` represents the outlined definition.
      */
     public /*virtual*/ outlined(): JssStyle {
@@ -378,6 +437,25 @@ export class BasicComponentStyles extends ElementStyles {
         // *toggle off* the outlined props:
         [this.decl(this._outlinedForegTg)] : inherit ? 'unset' : 'initial',
         [this.decl(this._outlinedBackgTg)] : inherit ? 'unset' : 'initial',
+    }}
+
+    /**
+     * Creates a mild definition for if the mild variant is enabled.
+     * @returns A `JssStyle` represents the mild definition.
+     */
+    public /*virtual*/ mild(): JssStyle {
+        // *toggle on* the mild props:
+        return this.toggleOnMild();
+    }
+    public /*virtual*/ toggleOnMild(): PropList { return {
+        // *toggle on* the mild props:
+        [this.decl(this._mildForegTg)] : this.ref(this._mildForegFn),
+        [this.decl(this._mildBackgTg)] : this.ref(this._mildBackgFn),
+    }}
+    public /*virtual*/ toggleOffMild(inherit = false): PropList { return {
+        // *toggle off* the mild props:
+        [this.decl(this._mildForegTg)] : inherit ? 'unset' : 'initial',
+        [this.decl(this._mildBackgTg)] : inherit ? 'unset' : 'initial',
     }}
 
 
@@ -401,6 +479,8 @@ export class BasicComponentStyles extends ElementStyles {
             [this.decl(this._backgIf)]          : this.ref(this._backgNone),
             [this.decl(this._borderIf)]         : cssProps.borderColor,
             [this.decl(this._outlinedForegIf)]  : cssProps.foreg,
+            [this.decl(this._mildForegIf)]      : this.ref(this._foregIf),
+            [this.decl(this._mildBackgIf)]      : this.ref(this._backgIf),
             [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
         };
     }
@@ -410,10 +490,12 @@ export class BasicComponentStyles extends ElementStyles {
      * @returns A `JssStyle` represents the conditional color definition for the specified `theme`.
      */
     public /*final*/ themeIf(theme: string): JssStyle { return {
-        [this.decl(this._foregIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
+        [this.decl(this._foregIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`],         // light on dark backg | dark on light backg
         [this.decl(this._backgIf)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
-        [this.decl(this._borderIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
+        [this.decl(this._borderIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],         // 20% background + 80% page's foreground
         [this.decl(this._outlinedForegIf)]  : (colors as DictionaryOf<typeof colors>)[theme],
+        [this.decl(this._mildForegIf)]      :                 (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],  // light on dark backg | dark on light backg with slightly color from background
+        [this.decl(this._mildBackgIf)]      : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]), // thin opacity with slightly color from background
         [this.decl(this._boxShadowFocusIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
     }}
     /**
@@ -422,10 +504,12 @@ export class BasicComponentStyles extends ElementStyles {
      * @returns A `JssStyle` represents the important conditional color definition for the specified `theme`.
      */
     public /*final*/ themeIfIf(theme: string): JssStyle { return {
-        [this.decl(this._foregIfIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`], // light on dark backg | dark on light backg
+        [this.decl(this._foregIfIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`],         // light on dark backg | dark on light backg
         [this.decl(this._backgIfIf)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
-        [this.decl(this._borderIfIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`], // 20% background + 80% page's foreground
+        [this.decl(this._borderIfIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],         // 20% background + 80% page's foreground
         [this.decl(this._outlinedForegIfIf)]  : (colors as DictionaryOf<typeof colors>)[theme],
+        [this.decl(this._mildForegIfIf)]      :                 (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],  // light on dark backg | dark on light backg with slightly color from background
+        [this.decl(this._mildBackgIfIf)]      : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]), // thin opacity with slightly color from background
         [this.decl(this._boxShadowFocusIfIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
     }}
 
@@ -497,6 +581,34 @@ export class BasicComponentStyles extends ElementStyles {
             this._backgNone,
         ),
 
+
+        
+        // define a mild *foreground* color func:
+        [this.decl(this._mildForegFn)] : this.ref(
+            this._foregIfIf,   // first  priority
+            this._mildForegTh, // second priority
+            this._foregIf,     // third  priority
+        ),
+
+        // define a mild *backgrounds* func:
+        [this.decl(this._mildBackgFn)] : [
+            // top layer:
+            this.ref(
+                this._backgGradTg,
+                this._backgNone,
+            ),
+
+            // middle layer:
+            this.ref(
+                this._backgIfIf,   // first  priority
+                this._mildBackgTh, // second priority
+                this._backgIf,     // third  priority
+            ),
+
+            // bottom layer:
+            cssProps.backg,
+        ],
+
         
 
         // define a *focused box-shadow color* func:
@@ -517,12 +629,14 @@ export class BasicComponentStyles extends ElementStyles {
         // define a final *foreground* color func:
         [this.decl(this._foreg)]     : this.ref(
             this._outlinedForegTg, // toggle outlined
+            this._mildForegTg,     // toggle mild
             this._foregFn,
         ),
 
         // define a final *backgrounds* func:
         [this.decl(this._backg)]     : this.ref(
             this._outlinedBackgTg, // toggle outlined
+            this._mildBackgTg,     // toggle mild
             this._backgFn,
         ),
 
@@ -727,6 +841,15 @@ export function useVariantOutlined(props: VariantOutlined) {
     };
 }
 
+export interface VariantMild {
+    mild?: boolean
+}
+export function useVariantMild(props: VariantMild) {
+    return {
+        class: props.mild ? 'mild' : null,
+    };
+}
+
 export type OrientationStyle = 'block'|'inline'
 export interface VariantOrientation {
     orientation?: OrientationStyle
@@ -748,7 +871,8 @@ export interface BasicComponentProps<TElement extends HTMLElement = HTMLElement>
         VariantTheme,
         VariantSize,
         VariantGradient,
-        VariantOutlined
+        VariantOutlined,
+        VariantMild
 {
 }
 export default function BasicComponent<TElement extends HTMLElement = HTMLElement>(props: BasicComponentProps<TElement>) {
@@ -762,6 +886,7 @@ export default function BasicComponent<TElement extends HTMLElement = HTMLElemen
     const variSize     = useVariantSize(props);
     const variGradient = useVariantGradient(props);
     const variOutlined = useVariantOutlined(props);
+    const variMild     = useVariantMild(props);
 
 
 
@@ -779,6 +904,7 @@ export default function BasicComponent<TElement extends HTMLElement = HTMLElemen
                 variSize.class,
                 variGradient.class,
                 variOutlined.class,
+                variMild.class,
             ]}
         />
     );

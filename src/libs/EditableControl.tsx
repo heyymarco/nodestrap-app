@@ -70,7 +70,7 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
     protected readonly _boxShadowFocusIfVal = 'boxShadowFocusIfVal'
 
     /**
-     * valid-state foreground color - at outlined state.
+     * valid-state foreground color - at outlined variant.
      */
     protected readonly _outlinedForegIfVal  = 'outlinedForegIfVal'
  
@@ -96,7 +96,7 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
     protected readonly _boxShadowFocusIfInv = 'boxShadowFocusIfInv'
 
     /**
-     * invalid-state foreground color - at outlined state.
+     * invalid-state foreground color - at outlined variant.
      */
     protected readonly _outlinedForegIfInv  = 'outlinedForegIfInv'
 
