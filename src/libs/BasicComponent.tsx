@@ -607,7 +607,7 @@ export const basicComponentStyles = new BasicComponentStyles();
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    const keyframesNone   : PropEx.Keyframes = { };
+    const keyframesNone : PropEx.Keyframes = { };
 
     
     

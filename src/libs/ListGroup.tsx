@@ -240,7 +240,7 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
 
     // styles:
     public /*implement*/ controlBasicStyle(): JssStyle {
-        return actionControlStyles.controlBasicStyle(); // copy basicStyle from ActionControl
+        return actionControlStyles.controlBasicStyleOld(); // copy basicStyle from ActionControl
     }
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [

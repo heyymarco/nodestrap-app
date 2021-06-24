@@ -329,10 +329,10 @@ export class IndicatorStyles extends BasicComponentStyles {
         return this.themeIf(theme);
     }
 
-    public /*virtual*/ pressed(): JssStyle { return {} }
-    public /*virtual*/ pressing(): JssStyle { return {} }
-    public /*virtual*/ releasing(): JssStyle { return {} }
-    public /*virtual*/ released(): JssStyle { return {} }
+    public /*virtual*/ pressed()   : JssStyle { return {} }
+    public /*virtual*/ pressing()  : JssStyle { return {} }
+    public /*virtual*/ releasing() : JssStyle { return {} }
+    public /*virtual*/ released()  : JssStyle { return {} }
 
 
 
@@ -411,7 +411,7 @@ export const indicatorStyles = new IndicatorStyles();
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    const keyframesDisable   : PropEx.Keyframes = {
+    const keyframesDisable : PropEx.Keyframes = {
         from: {
             filter: [[ // double array => makes the JSS treat as space separated values
                 ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterEnableDisable, indicatorStyles._filterNone)),
@@ -427,14 +427,14 @@ const cssConfig = new CssConfig(() => {
             ]],
         },
     };
-    const keyframesEnable    : PropEx.Keyframes = {
+    const keyframesEnable  : PropEx.Keyframes = {
         from : keyframesDisable.to,
         to   : keyframesDisable.from,
     };
 
     
     
-    const keyframesActive    : PropEx.Keyframes = {
+    const keyframesActive  : PropEx.Keyframes = {
         from: {
             filter: [[ // double array => makes the JSS treat as space separated values
                 ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterActivePassive, indicatorStyles._filterNone)),
@@ -450,7 +450,7 @@ const cssConfig = new CssConfig(() => {
             ]],
         },
     };
-    const keyframesPassive   : PropEx.Keyframes = {
+    const keyframesPassive : PropEx.Keyframes = {
         from : keyframesActive.to,
         to   : keyframesActive.from,
     };

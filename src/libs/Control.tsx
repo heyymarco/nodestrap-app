@@ -288,7 +288,6 @@ export class ControlStyles extends IndicatorStyles {
     public /*virtual*/ arriving() : JssStyle { return {
         [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
         [this.decl(this._animArriveLeave)]     : cssProps.animArrive,
-        '--arriving': 'arriving!',
 
 
 
@@ -347,25 +346,24 @@ export class ControlStyles extends IndicatorStyles {
 
 
 
-        this.ref(this._animFocusBlur, this._animNone),   // 2nd : ctrl got focus
+        this.ref(this._animFocusBlur,   this._animNone), // 2nd : ctrl got focus
         this.ref(this._animArriveLeave, this._animNone), // 1st : mouse arrive in
     ]}
 
 
 
     // styles:
-    public /*virtual*/ controlBasicStyle(): JssStyle { return {
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             stripOuts.control,  // clear browser's default styles
 
             super.basicStyle(), // copy basicStyle from base
-
-            this.controlBasicStyle(),
         ] as JssStyle,
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 
 
@@ -374,6 +372,7 @@ export class ControlStyles extends IndicatorStyles {
     public /*virtual*/ controlStatesOld(inherit = false): JssStyle { return {} }
     public /*virtual*/ controlPropsFnOld(): JssStyle { return {} }
     public /*virtual*/ controlAnimFnOld(): JssStyle { return {} }
+    public /*virtual*/ controlBasicStyleOld(): JssStyle { return {} }
 }
 export const controlStyles = new ControlStyles();
 
@@ -382,12 +381,12 @@ export const controlStyles = new ControlStyles();
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    const keyframesFocus   : PropEx.Keyframes = {
+    const keyframesFocus  : PropEx.Keyframes = {
         from: {
             boxShadow: [[[ // triple array => makes the JSS treat as comma separated values
                 ...controlStyles.boxShadowFn().filter((b) => b !== controlStyles.ref(controlStyles._boxShadowFocusBlur, controlStyles._boxShadowNone)),
 
-             // styles.ref(styles._boxShadowFocusBlur, styles._boxShadowNone), // missing the last => let's the browser interpolated it
+             // controlStyles.ref(controlStyles._boxShadowFocusBlur, controlStyles._boxShadowNone), // missing the last => let's the browser interpolated it
             ]]],
         } as JssStyle,
         to: {
@@ -398,14 +397,14 @@ const cssConfig = new CssConfig(() => {
             ]]],
         } as JssStyle,
     };
-    const keyframesBlur    : PropEx.Keyframes = {
+    const keyframesBlur   : PropEx.Keyframes = {
         from : keyframesFocus.to,
         to   : keyframesFocus.from,
     };
 
 
 
-    const keyframesArrive  : PropEx.Keyframes = {
+    const keyframesArrive : PropEx.Keyframes = {
         from: {
             filter: [[ // double array => makes the JSS treat as space separated values
                 ...controlStyles.filterFn().filter((f) => f !== controlStyles.ref(controlStyles._filterArriveLeave, controlStyles._filterNone)),
@@ -421,7 +420,7 @@ const cssConfig = new CssConfig(() => {
             ]],
         },
     };
-    const keyframesLeave   : PropEx.Keyframes = {
+    const keyframesLeave  : PropEx.Keyframes = {
         from : keyframesArrive.to,
         to   : keyframesArrive.from,
     };
