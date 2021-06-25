@@ -1,0 +1,126 @@
+todo:
+Alert CloseButton imperfect
+***Builder
+***Old()
+ecssProps => bcssProps
+scoped css props => props
+
+.*(FocusBlur|Focus|Blur).*
+(?!:not|:disabled):\w+
+
+
+readonly
+themeDefault
+themeIf
+themeActive
+propsFn
+contentPropsFn
+delete icon
+
+themeDefault
+	Control
+		EditableTextControl
+	Button::icon
+	Popup
+
+themeActive
+	Control
+		EditableTextControl
+	Popup
+
+indicationStatesOld
+	Popup
+	Modal
+	AccordionItem
+
+
+
+Navbar => split navMenu to another class
+Navbar => add observable resize
+
+\w+2\s*=
+
+
+add
+// jsx functions:
+
+
+
+// styles:
+
+// variants:
+// states:
+// appearances:
+// layouts:
+
+// contexts:
+
+// rest props: (tidy up!)
+// fn props:
+
+// dom effects:
+// handlers:
+// functions:
+// jsx fn props:
+// jsx:
+
+
+fin comp (14) (generic):
+Container<TElement>$
+BasicComponent<TElement>$
+	Icon<TElement>#
+	Carousel<TElement>@
+	CarouselItem<TElement>@
+	Indicator<TElement>$
+		Content<TElement>$
+			Listgroup<TElement>#
+				Navscroll<TElement>@
+				Accordion<TElement>@
+			ListgroupItem<TElement>#
+				AccordionItem<TElement>#
+			Card<TElement>@
+				Modal<TElement>#
+		Control<TElement>@
+			ActionControl<TElement>@
+			EditableControl<TElement>@
+				EditableTextControl<TElement>#
+		Popup<TElement>$
+			Alert<TElement>$
+	Masonry<TElement>$
+
+
+
+non gen (11):
+Button#
+	ButtonIcon#
+		CloseButton#
+Check#
+	Radio#
+	TogglerMenuButton#
+Input@
+
+Form???????
+
+validations@
+accessibilities@
+
+Navbar#
+NavbarMenu#
+
+
+
+
+
+1. Element		2	decl, set
+
+2. EditableControl	2	get/set validator
+3. Form			2	get/set validator
+
+4. Input		1	wrapper input=text
+5. Check		1	wrapper input=check
+6. Modal		2	wrapper Card, get/set Focus
+
+7. Navbar		2	get/set calculateDynCompact
+
+8. Carousel		2	wrapper <ul>, get/set Navscroll.targetRef
+			14
