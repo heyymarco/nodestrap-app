@@ -65,6 +65,9 @@ export class IndicatorStyles extends BasicComponentStyles {
 
     public    readonly _filterActivePassive = 'filterActivePassive'
     protected readonly _animActivePassive   = 'animActivePassive'
+
+    public    readonly _filterPressRelease  = 'filterPressRelease' // will be used in ActionControl, so we can re-use our animations (enable, disable, active, passive) in the Control
+ // protected readonly _animPressRelease    = 'animPressRelease'   // will be defined in ActionControl
     //#endregion animations
     //#endregion props
 
@@ -350,7 +353,8 @@ export class IndicatorStyles extends BasicComponentStyles {
 
         this.ref(this._filterEnableDisable, this._filterNone),
         this.ref(this._filterActivePassive, this._filterNone),
-        this.ref(this._filterArriveLeave,   this._filterNone), // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
+        this.ref(this._filterPressRelease,   this._filterNone), // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
+        this.ref(this._filterArriveLeave,   this._filterNone),  // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
     ]}
     public /*override*/ animFn(): Cust.Ref[] { return [
         ...super.animFn(),
@@ -604,6 +608,7 @@ export function useStateActivePassive(props: IndicationProps & ElementProps, act
             checked: true,
         } : {}),
 
+        handleIdle         : handleIdle,
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
             if (/((?<![a-z])(active|passive)|(?<=[a-z])(Active|Passive))(?![a-z])/.test(e.animationName)) {

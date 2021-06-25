@@ -9,6 +9,8 @@ import {
 import {
     // general types:
     JssStyle,
+    PropEx,
+    Cust,
     ClassList,
 
 
@@ -16,7 +18,7 @@ import {
     CssConfig,
 }                           from './nodestrap'  // nodestrap's core
 import {
-    usePropAccessibility,
+    usePropEnabled,
 }                           from './accessibilities'
 import {
     cssProps as ecssProps,
@@ -39,8 +41,8 @@ import {
 export class ActionControlStyles extends ControlStyles {
     //#region props
     //#region animations
-    public    readonly _filterPressRelease = 'filterPressRelease'
-    protected readonly _animPressRelease   = 'animPressRelease'
+ // public    readonly _filterPressRelease  = 'filterPressRelease' // already defined in Indicator
+    protected readonly _animPressRelease    = 'animPressRelease'
     //#endregion animations
     //#endregion props
 
@@ -113,15 +115,9 @@ export class ActionControlStyles extends ControlStyles {
 
 
         [ null, {
-            // requires usePropsFn() for using _foregFn & _backgFn in the actived() & activating() => active() => toggleOnActive()
-            // the code below causing useStates() implicitly includes usePropsFn()
-            ...this.usePropsFn(),
-
-
-
             //#region reset toggles/filters/anims to initial/inherit state
-            [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
-            [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
+            [this.decl(this._filterPressRelease)] : inherit ? 'unset' : 'initial',
+            [this.decl(this._animPressRelease)]   : inherit ? 'unset' : 'initial',
             //#endregion reset toggles/filters/anims to initial/inherit state
         }],
 
@@ -147,31 +143,58 @@ export class ActionControlStyles extends ControlStyles {
     ]}
 
     public /*virtual*/ pressed()   : JssStyle { return {
+        [this.decl(this._filterPressRelease)] : cssProps.filterPress,
+
+
+
         extend: [
             this.press(),
         ] as JssStyle,
     }}
     public /*virtual*/ pressing()  : JssStyle { return {
+        [this.decl(this._filterPressRelease)] : cssProps.filterPress,
+        [this.decl(this._animPressRelease)]   : cssProps.animPress,
+
+
+
         extend: [
             this.press(),
         ] as JssStyle,
     }}
     public /*virtual*/ releasing() : JssStyle { return {
+        [this.decl(this._filterPressRelease)] : cssProps.filterPress,
+        [this.decl(this._animPressRelease)]   : cssProps.animRelease,
+
+
+
         extend: [
             this.release(),
         ] as JssStyle,
     }}
     public /*virtual*/ released()  : JssStyle { return {
+        /* --nothing-- */
+
+
+
         extend: [
             this.release(),
         ] as JssStyle,
     }}
-    public /*virtual*/ press()   : JssStyle { return {
-        
+    public /*virtual*/ press()     : JssStyle { return {
     }}
-    public /*virtual*/ release()  : JssStyle { return {
+    public /*virtual*/ release()   : JssStyle { return {
+    }}
 
-    }}
+
+
+    // functions:
+    public /*override*/ animFn(): Cust.Ref[] { return [
+        ...super.animFn(),
+
+
+
+        this.ref(this._animPressRelease, this._animNone), // 1st : ctrl got pressed
+    ]}
 
 
 
@@ -244,12 +267,37 @@ export const actionControlStyles = new ActionControlStyles();
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    
+    const keyframesPress  : PropEx.Keyframes = {
+        from: {
+            filter: [[ // double array => makes the JSS treat as space separated values
+                ...actionControlStyles.filterFn().filter((f) => f !== actionControlStyles.ref(actionControlStyles._filterPressRelease, actionControlStyles._filterNone)),
 
-    
-    
+             // actionControlStyles.ref(actionControlStyles._filterPressRelease, actionControlStyles._filterNone), // missing the last => let's the browser interpolated it
+            ]],
+        },
+        to: {
+            filter: [[ // double array => makes the JSS treat as space separated values
+                ...actionControlStyles.filterFn().filter((f) => f !== actionControlStyles.ref(actionControlStyles._filterPressRelease, actionControlStyles._filterNone)),
+
+                actionControlStyles.ref(actionControlStyles._filterPressRelease, actionControlStyles._filterNone), // existing the last => let's the browser interpolated it
+            ]],
+        },
+    };
+    const keyframesRelease : PropEx.Keyframes = {
+        from : keyframesPress.to,
+        to   : keyframesPress.from,
+    };
+
+
+
     return {
         //#region animations
+        filterPress          : icssProps.filterActive,
+
+        '@keyframes press'   : keyframesPress,
+        '@keyframes release' : keyframesRelease,
+        animPress            : [['150ms', 'ease-out', 'both', keyframesPress  ]],
+        animRelease          : [['300ms', 'ease-out', 'both', keyframesRelease]],
         //#endregion animations
     };
 }, /*prefix: */'act');
@@ -260,11 +308,9 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export function useStatePressRelease(props: IndicationProps, classes = { active: 'press' as (string|null), actived: 'pressed' as (string|null), passive: 'release' as (string|null) }, mouses: string[]|null = ['click'], keys: string[]|null = ['space']) {
+export function useStatePressRelease(props: IndicationProps, classes = { active: 'press' as (string|null), actived: 'pressed' as (string|null), passive: 'release' as (string|null) }, mouses: number[]|null = [0], keys: string[]|null = ['space']) {
     // fn props:
-    const propAccess  = usePropAccessibility<boolean, null>(props, undefined, null);
-    const propEnabled = propAccess.enabled;
-    const propActive  = propAccess.active;
+    const propEnabled = usePropEnabled(props);
 
 
 
@@ -289,27 +335,25 @@ export function useStatePressRelease(props: IndicationProps, classes = { active:
 
     
     useEffect(() => {
-        if (!propEnabled)        return; // control is disabled => no response required
-        if (propActive !== null) return; // controllable [active] is set => no uncontrollable required
+        if (!propEnabled) return; // control is disabled => no response required
 
 
 
-        const handlePassivating = () => {
+        const handleReleasing = () => {
             setActiveDn(false);
         }
-        window.addEventListener('mouseup', handlePassivating);
-        window.addEventListener('keyup',   handlePassivating);
+        window.addEventListener('mouseup', handleReleasing);
+        window.addEventListener('keyup',   handleReleasing);
         return () => {
-            window.removeEventListener('mouseup', handlePassivating);
-            window.removeEventListener('keyup',   handlePassivating);
+            window.removeEventListener('mouseup', handleReleasing);
+            window.removeEventListener('keyup',   handleReleasing);
         }
-    }, [propEnabled, propActive]);
+    }, [propEnabled]);
 
 
 
-    const handleActivating = () => {
-        if (!propEnabled)        return; // control is disabled => no response required
-        if (propActive !== null) return; // controllable [active] is set => no uncontrollable required
+    const handlePressing = () => {
+        if (!propEnabled) return; // control is disabled => no response required
 
 
 
@@ -320,11 +364,18 @@ export function useStatePressRelease(props: IndicationProps, classes = { active:
 
         
         handleMouseDown : ((e) => { // for ActionControl
-            if (!mouses || mouses.includes(e.type.toLowerCase())) handleActivating();
+            if (!mouses || mouses.includes(e.button)) handlePressing();
         }) as React.MouseEventHandler<HTMLElement>,
         handleKeyDown   : ((e) => { // for ActionControl
-            if (!keys || keys.includes(e.code.toLowerCase()) || keys.includes(e.key.toLowerCase())) handleActivating();
+            if (!keys || keys.includes(e.code.toLowerCase()) || keys.includes(e.key.toLowerCase())) handlePressing();
         }) as React.KeyboardEventHandler<HTMLElement>,
+
+        handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
+            if (e.target !== e.currentTarget) return; // no bubbling
+            if (/((?<![a-z])(press|release)|(?<=[a-z])(Press|Release))(?![a-z])/.test(e.animationName)) {
+                stateActPass.handleIdle();
+            }
+        },
     };
 }
 
