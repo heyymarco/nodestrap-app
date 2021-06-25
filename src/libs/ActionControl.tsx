@@ -146,10 +146,32 @@ export class ActionControlStyles extends ControlStyles {
           '&.released'                                                                                     , this.released()  ],
     ]}
 
-    public /*virtual*/ pressed()   : JssStyle { return {} }
-    public /*virtual*/ pressing()  : JssStyle { return {} }
-    public /*virtual*/ releasing() : JssStyle { return {} }
-    public /*virtual*/ released()  : JssStyle { return {} }
+    public /*virtual*/ pressed()   : JssStyle { return {
+        extend: [
+            this.press(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ pressing()  : JssStyle { return {
+        extend: [
+            this.press(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ releasing() : JssStyle { return {
+        extend: [
+            this.release(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ released()  : JssStyle { return {
+        extend: [
+            this.release(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ press()   : JssStyle { return {
+        
+    }}
+    public /*virtual*/ release()  : JssStyle { return {
+
+    }}
 
 
 

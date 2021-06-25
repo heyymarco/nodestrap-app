@@ -25,8 +25,7 @@ import {
     Popup,
 }                           from './Popup'
 import {
-    IContentStyles,
-    contentStyles,
+    cssProps as ccssProps,
 }                           from './Content'
 import Icon                 from './Icon'
 import CloseButton          from './CloseButton'
@@ -39,20 +38,11 @@ const iconElm    = '&>.icon';
 const bodyElm    = '&>.body';
 const controlElm = '&>.control';
 
-export class AlertStyles extends PopupStyles implements IContentStyles {
+export class AlertStyles extends PopupStyles {
     // variants:
-    public /*override*/ theme(theme: string): JssStyle { return {
-        extend: [
-            super.theme(theme), // copy themes from base
-            
-            this.contentTheme(theme),
-        ] as JssStyle,
-    }}
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
-
-            this.contentSize(size),
         ] as JssStyle,
 
 
@@ -61,40 +51,12 @@ export class AlertStyles extends PopupStyles implements IContentStyles {
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
-    public /*implement*/ contentTheme(theme: string): JssStyle {
-        return contentStyles.contentTheme(theme); // copy themes from Content
-    }
-    public /*implement*/ contentSize(size: string): JssStyle {
-        return contentStyles.contentSize(size); // copy sizes from Content
-    }
-
-
-
-    // states:
-    public /*implement*/ contentActived()     : JssStyle { return {} } // not implemented
-    public /*implement*/ contentActivating()  : JssStyle { return {} } // not implemented
-    public /*implement*/ contentPassivating() : JssStyle { return {} } // not implemented
-
-
-
-    // functions:
-    public /*override*/ propsFn(): PropList { return {
-        ...super.propsFn(), // copy functional props from base
-        
-        ...this.contentPropsFn(),
-    }}
-    public /*implement*/ contentPropsFn(): PropList {
-        return contentStyles.contentPropsFn(); // copy functional props from Content
-    }
-
 
 
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
-
-            this.contentBasicStyle(),
         ] as JssStyle,
 
 
@@ -130,9 +92,6 @@ export class AlertStyles extends PopupStyles implements IContentStyles {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    public /*implement*/ contentBasicStyle(): JssStyle {
-        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
-    }
     protected /*virtual*/ iconBasicStyle(): JssStyle { return {
         // layout:
         gridArea    : '1 / -3', // the first row / the third column starting from the last
@@ -174,8 +133,15 @@ export const alertStyles = new AlertStyles();
 const cssConfig = new CssConfig(() => {
     return {
         //#region spacings
-        gapX : spacers.default,
-        gapY : spacers.default,
+        paddingInline   : ccssProps.paddingInline,   // override to Element
+        paddingBlock    : ccssProps.paddingBlock,    // override to Element
+        paddingInlineSm : ccssProps.paddingInlineSm, // override to Element
+        paddingBlockSm  : ccssProps.paddingBlockSm,  // override to Element
+        paddingInlineLg : ccssProps.paddingInlineLg, // override to Element
+        paddingBlockLg  : ccssProps.paddingBlockLg,  // override to Element
+
+        gapX            : spacers.default,
+        gapY            : spacers.default,
         //#endregion spacings
     };
 }, /*prefix: */'alrt');
@@ -339,6 +305,10 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
         <Popup
             // other props:
             {...restProps}
+
+
+            // variants:
+            mild={props.mild ?? true}
 
 
             // classes:

@@ -8,7 +8,7 @@ import {
 import './App.css';
 
 import Container from '../libs/Container';
-import Control from '../libs/Control';
+import ActionControl from '../libs/ActionControl';
 
 
 
@@ -68,7 +68,7 @@ function App() {
     return (
         <div className="App">
             <Container>
-                <Control
+                <ActionControl
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined} mild={mild}
 
@@ -77,9 +77,9 @@ function App() {
 					arrive={arrive}
 					focus={focus}
 				>
-                    control
-                </Control>
-                <Control
+                    action control
+                </ActionControl>
+                <ActionControl
 					tag='button'
 					
 					theme={theme} size={size} enableGradient={enableGrad}
@@ -90,8 +90,8 @@ function App() {
 					arrive={arrive}
 					focus={focus}
 				>
-                    control
-                </Control>
+                    action control
+                </ActionControl>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:

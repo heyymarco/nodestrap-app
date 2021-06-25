@@ -27,15 +27,14 @@ import {
     BasicComponent,
 }                           from './BasicComponent'
 import {
-    IContentStyles,
-    contentStyles,
+    cssProps as ccssProps,
 }                           from './Content'
 
 
 
 // styles:
 
-export class MasonryStyles extends BasicComponentStyles implements IContentStyles {
+export class MasonryStyles extends BasicComponentStyles {
     // variants:
     public /*override*/ variants(): ClassList { return [
         ...super.variants(), // copy variants from base
@@ -45,18 +44,9 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
         [ '&:not(.inline)', this.block()  ], // block  style as default
         [ '&.inline'      , this.inline() ], // inline style as optional
     ]}
-    public /*override*/ theme(theme: string): JssStyle { return {
-        extend: [
-            super.theme(theme), // copy themes from base
-            
-            this.contentTheme(theme),
-        ] as JssStyle,
-    }}
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
-
-            this.contentSize(size),
         ] as JssStyle,
 
 
@@ -64,13 +54,6 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-
-    public /*implement*/ contentTheme(theme: string): JssStyle {
-        return contentStyles.contentTheme(theme); // copy themes from Content
-    }
-    public /*implement*/ contentSize(size: string): JssStyle {
-        return contentStyles.contentSize(size); // copy sizes from Content
-    }
 
     public /*virtual*/ block(): JssStyle { return {
         // layout:
@@ -142,39 +125,6 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
 
         columnGap : [[0], '!important'], // strip out the `columnGap` because it conflicts with masonry's direction
     }}
-
-
-
-    // states:
-    public /*implement*/ contentActived()     : JssStyle { return {} } // not implemented
-    public /*implement*/ contentActivating()  : JssStyle { return {} } // not implemented
-    public /*implement*/ contentPassivating() : JssStyle { return {} } // not implemented
-
-
-    
-    // functions:
-    public /*override*/ propsFn(): PropList { return {
-        ...super.propsFn(), // copy functional props from base
-        
-        ...this.contentPropsFn(),
-    }}
-    public /*implement*/ contentPropsFn(): PropList {
-        return contentStyles.contentPropsFn(); // copy functional props from Content
-    }
-
-
-
-    // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
-        extend: [
-            super.basicStyle(), // copy basicStyle from base
-
-            this.contentBasicStyle(),
-        ] as JssStyle,
-    }}
-    public /*implement*/ contentBasicStyle(): JssStyle {
-        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
-    }
 }
 export const masonryStyles = new MasonryStyles();
 
@@ -185,12 +135,19 @@ export const masonryStyles = new MasonryStyles();
 const cssConfig = new CssConfig(() => {
     return {
         //#region spacings
-        columnGap            : spacers.sm,
-        columnGapSm          : spacers.xs,
-        columnGapLg          : spacers.md,
-        rowGap               : spacers.sm,
-        rowGapSm             : spacers.xs,
-        rowGapLg             : spacers.md,
+        paddingInline   : ccssProps.paddingInline,   // override to Element
+        paddingBlock    : ccssProps.paddingBlock,    // override to Element
+        paddingInlineSm : ccssProps.paddingInlineSm, // override to Element
+        paddingBlockSm  : ccssProps.paddingBlockSm,  // override to Element
+        paddingInlineLg : ccssProps.paddingInlineLg, // override to Element
+        paddingBlockLg  : ccssProps.paddingBlockLg,  // override to Element
+
+        columnGap       : spacers.sm,
+        columnGapSm     : spacers.xs,
+        columnGapLg     : spacers.md,
+        rowGap          : spacers.sm,
+        rowGapSm        : spacers.xs,
+        rowGapLg        : spacers.md,
         //#endregion spacings
 
 
@@ -457,6 +414,10 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
                     } // if
                 } // if
             }}
+
+
+            // variants:
+            mild={props.mild ?? true}
 
 
             // classes:

@@ -19,16 +19,17 @@ import BasicComponentApp    from './apps/BasicComponentApp';
 import IndicatorApp         from './apps/IndicatorApp';
 import PopupApp             from './apps/PopupApp';
 import AlertApp             from './apps/AlertApp';
-import ContentApp           from './apps/ContentApp';
+    import ContentApp           from './apps/ContentApp';
 import MasonryApp           from './apps/MasonryApp';
 import ContainerApp         from './apps/ContainerApp';
 import ControlApp           from './apps/ControlApp';
+import ActionControlApp     from './apps/ActionControlApp';
 
 
 
 ReactDOM.render(
     <React.StrictMode>
-        <IndicatorApp />
+        <ActionControlApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

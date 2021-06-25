@@ -22,29 +22,16 @@ import {
     BasicComponentProps,
     BasicComponent,
 }                           from './BasicComponent'
-import {
-    IContentStyles,
-    contentStyles,
-}                           from './Content'
 
 
 
 // styles:
 
-export class ContainerStyles extends BasicComponentStyles implements IContentStyles {
+export class ContainerStyles extends BasicComponentStyles {
     // variants:
-    public /*override*/ theme(theme: string): JssStyle { return {
-        extend: [
-            super.theme(theme), // copy themes from base
-            
-            this.contentTheme(theme),
-        ] as JssStyle,
-    }}
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
-
-            this.contentSize(size),
         ] as JssStyle,
 
 
@@ -61,32 +48,6 @@ export class ContainerStyles extends BasicComponentStyles implements IContentSty
         })()),
     }}
 
-    public /*implement*/ contentTheme(theme: string): JssStyle {
-        return contentStyles.contentTheme(theme); // copy themes from Content
-    }
-    public /*implement*/ contentSize(size: string): JssStyle {
-        return contentStyles.contentSize(size); // copy sizes from Content
-    }
-
-
-
-    // states:
-    public /*implement*/ contentActived()     : JssStyle { return {} } // not implemented
-    public /*implement*/ contentActivating()  : JssStyle { return {} } // not implemented
-    public /*implement*/ contentPassivating() : JssStyle { return {} } // not implemented
-
-
-
-    // functions:
-    public /*override*/ propsFn(): PropList { return {
-        ...super.propsFn(), // copy functional props from base
-        
-        ...this.contentPropsFn(),
-    }}
-    public /*implement*/ contentPropsFn(): PropList {
-        return contentStyles.contentPropsFn(); // copy functional props from Content
-    }
-
 
 
     // styles:
@@ -94,7 +55,6 @@ export class ContainerStyles extends BasicComponentStyles implements IContentSty
         extend: [
             super.basicStyle(),         // copy basicStyle from base
 
-            this.contentBasicStyle(),
             this.containerBasicStyle(), // applies responsive container functionality
         ] as JssStyle,
 
@@ -103,9 +63,6 @@ export class ContainerStyles extends BasicComponentStyles implements IContentSty
         // layout:
         display: 'block',
     }}
-    public /*implement*/ contentBasicStyle(): JssStyle {
-        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
-    }
     /**
      * Applies responsive container functionality - without any other styling.
      * @returns A `JssStyle` represents a responsive container style definition.
@@ -224,6 +181,10 @@ export default function Container<TElement extends HTMLElement = HTMLElement>(pr
         <BasicComponent<TElement>
             // other props:
             {...props}
+
+
+            // variants:
+            mild={props.mild ?? true}
 
 
             // classes:

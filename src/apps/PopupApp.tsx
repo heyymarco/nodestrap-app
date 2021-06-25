@@ -52,6 +52,7 @@ function App() {
 
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
+	const [mild,       setMild      ] = useState(false);
 
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
@@ -62,7 +63,7 @@ function App() {
         <div className="App">
             <Container>
 				<Button onClick={() => setActive(!active)}>Toggle popup</Button>
-				<Popup theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled}
+				<Popup theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} mild={mild} enabled={enabled}
 				
 					active={active}
 				>
@@ -115,6 +116,15 @@ function App() {
 							onChange={(e) => setOutlined(e.target.checked)}
 						/>
 						outlined
+					</label>
+				</p>
+				<p>
+					<label>
+						<input type='checkbox'
+							checked={mild}
+							onChange={(e) => setMild(e.target.checked)}
+						/>
+						mild
 					</label>
 				</p>
 				<p>

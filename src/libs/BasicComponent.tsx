@@ -326,8 +326,7 @@ export class BasicComponentStyles extends ElementStyles {
 
 
             // *toggle off* the mild props:
-            // but still be able to *toggle on* by parent (inherit)
-            ...this.toggleOffMild(/*inherit =*/true),
+            ...this.toggleOffMild(/*inherit =*/false), // no inherit
             //#endregion reset toggles/filters/anims to initial/inherit state
         }],
 
