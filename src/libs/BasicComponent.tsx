@@ -306,7 +306,7 @@ export class BasicComponentStyles extends ElementStyles {
 
 
         [ null, {
-            // requires usePropsFn() for using _outlinedForegFn & _outlinedBackgFn in the outlined() => toggleOnOutlined()
+            // requires usePropsFn() for using [_outlinedForegFn, _outlinedBackgFn, _mildForegFn, _mildBackgFn] in the [outlined() & mild()] => [toggleOnOutlined() & toggleOnMild()]
             // the code below causing useVariants() implicitly includes usePropsFn()
             ...this.usePropsFn(),
 
@@ -322,6 +322,12 @@ export class BasicComponentStyles extends ElementStyles {
             // *toggle off* the outlined props:
             // but still be able to *toggle on* by parent (inherit)
             ...this.toggleOffOutlined(/*inherit =*/true),
+
+
+
+            // *toggle off* the mild props:
+            // but still be able to *toggle on* by parent (inherit)
+            ...this.toggleOffMild(/*inherit =*/true),
             //#endregion reset toggles/filters/anims to initial/inherit state
         }],
 
