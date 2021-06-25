@@ -321,21 +321,23 @@ export class IndicatorStyles extends BasicComponentStyles {
         //#region finals
         // define a final *foreground* color func:
         [this.decl(this._foreg)]     : this.ref(
-            this._activeForegTg,   // toggle active
+            this._activeForegTg,   // toggle active (if actived, _activeForegTg === _foregFn)
             this._outlinedForegTg, // toggle outlined
+            this._mildForegTg,     // toggle mild
             this._foregFn,
         ),
 
         // define a final *backgrounds* func:
         [this.decl(this._backg)]     : this.ref(
-            this._activeBackgTg,   // toggle active
+            this._activeBackgTg,   // toggle active (if actived, _activeBackgTg === _backgFn)
             this._outlinedBackgTg, // toggle outlined
+            this._mildBackgTg,     // toggle mild
             this._backgFn,
         ),
 
         // define a final *border* color func:
         [this.decl(this._border)]    : this.ref(
-            this._activeBorderTg,  // toggle active
+            this._activeBorderTg,  // toggle active (if actived, _activeBorderTg === _borderFn)
             this._outlinedForegTg, // toggle outlined
             this._borderFn
         ),

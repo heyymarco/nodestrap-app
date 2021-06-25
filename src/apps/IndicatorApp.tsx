@@ -144,7 +144,7 @@ function App() {
 
 				<Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
 				>
