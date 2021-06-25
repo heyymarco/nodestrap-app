@@ -28,7 +28,7 @@ import ControlApp           from './apps/ControlApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <BasicComponentApp />
+        <IndicatorApp />
     </React.StrictMode>,
     document.getElementById('root')
 );
