@@ -206,7 +206,7 @@ export class ModalStylesBuilder extends PopupStyles {
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
-            containerStyles.containerGridBasicStyle(), // apply responsive container functionality using css grid
+            containerStyles.useContainerGrid(), // apply responsive container functionality using css grid
         ] as JssStyle,
 
 

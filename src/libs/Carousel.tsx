@@ -51,13 +51,6 @@ const nextBtnElm = '&>.nextBtn';
 
 export class CarouselStylesBuilder extends BasicComponentStyles implements IContentStyles {
     // variants:
-    public /*override*/ theme(theme: string): JssStyle { return {
-        extend: [
-            super.theme(theme), // copy themes from base
-            
-            this.contentTheme(theme),
-        ] as JssStyle,
-    }}
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
@@ -70,31 +63,8 @@ export class CarouselStylesBuilder extends BasicComponentStyles implements ICont
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-
-    public /*implement*/ contentTheme(theme: string): JssStyle {
-        return contentStyles.contentTheme(theme); // copy themes from Content
-    }
     public /*implement*/ contentSize(size: string): JssStyle {
         return contentStyles.contentSize(size); // copy sizes from Content
-    }
-
-
-
-    // states:
-    public /*implement*/ contentActived()     : JssStyle { return {} } // not implemented
-    public /*implement*/ contentActivating()  : JssStyle { return {} } // not implemented
-    public /*implement*/ contentPassivating() : JssStyle { return {} } // not implemented
-
-
-
-    // functions:
-    public /*override*/ propsFn(): PropList { return {
-        ...super.propsFn(), // copy functional props from base
-        
-        ...this.contentPropsFn(),
-    }}
-    public /*implement*/ contentPropsFn(): PropList {
-        return contentStyles.contentPropsFn(); // copy functional props from Content
     }
 
 

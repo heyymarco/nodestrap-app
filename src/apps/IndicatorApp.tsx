@@ -72,7 +72,7 @@ function App() {
 
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
-	const [mild,       setMild      ] = useState(false);
+	const [mild,       setMild      ] = useState(true);
 
 	const [childEnabled,    setChildEnabled   ] = useState(true);
 	const [childActive,      setChildActive   ] = useState(false);

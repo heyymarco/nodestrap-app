@@ -289,13 +289,19 @@ export class IndicatorStyles extends BasicComponentStyles {
         ] as JssStyle,
     }}
     public /*virtual*/ active()      : JssStyle { return {
+        extend: [
+            this.markActive(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ passive()     : JssStyle { return {
+    }}
+
+    public /*virtual*/ markActive()  : JssStyle { return {
         ...this.toggleOnActive(),
 
         extend: [
             this.themeActive(),
         ] as JssStyle,
-    }}
-    public /*virtual*/ passive()     : JssStyle { return {
     }}
     public /*virtual*/ toggleOnActive(): PropList { return {
         // _foregFn & _backgFn => requires usePropsFn() => use it at states()
@@ -353,8 +359,8 @@ export class IndicatorStyles extends BasicComponentStyles {
 
         this.ref(this._filterEnableDisable, this._filterNone),
         this.ref(this._filterActivePassive, this._filterNone),
-        this.ref(this._filterPressRelease,   this._filterNone), // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
-        this.ref(this._filterArriveLeave,   this._filterNone),  // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
+        this.ref(this._filterPressRelease,  this._filterNone), // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
+        this.ref(this._filterArriveLeave,   this._filterNone), // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
     ]}
     public /*override*/ animFn(): Cust.Ref[] { return [
         ...super.animFn(),
@@ -417,6 +423,10 @@ const cssConfig = new CssConfig(() => {
     
     const keyframesActive  : PropEx.Keyframes = {
         from: {
+            foreg       : indicatorStyles.ref(indicatorStyles._outlinedForegTg, indicatorStyles._mildForegTg, indicatorStyles._foregFn),
+            backg       : indicatorStyles.ref(indicatorStyles._outlinedBackgTg, indicatorStyles._mildBackgTg, indicatorStyles._backgFn),
+            borderColor : indicatorStyles.ref(indicatorStyles._outlinedForegTg,                               indicatorStyles._borderFn),
+
             filter: [[ // double array => makes the JSS treat as space separated values
                 ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterActivePassive, indicatorStyles._filterNone)),
 
@@ -424,6 +434,10 @@ const cssConfig = new CssConfig(() => {
             ]],
         },
         to: {
+            foreg       : indicatorStyles.ref(indicatorStyles._foregFn),
+            backg       : indicatorStyles.ref(indicatorStyles._backgFn),
+            borderColor : indicatorStyles.ref(indicatorStyles._borderFn),
+
             filter: [[ // double array => makes the JSS treat as space separated values
                 ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterActivePassive, indicatorStyles._filterNone)),
 
@@ -441,7 +455,7 @@ const cssConfig = new CssConfig(() => {
     return {
         //#region animations
         filterDisable        : [['grayscale(50%)',  'opacity(50%)'  ]],
-        filterActive         : [['brightness(65%)', 'contrast(150%)']],
+        filterActive         : 'unset',
 
         '@keyframes enable'  : keyframesEnable,
         '@keyframes disable' : keyframesDisable,
@@ -529,9 +543,9 @@ export function useStateEnableDisable(props: IndicationProps & ElementProps) {
             return null;
         })(),
 
-        props : ((isCtrlElm && !enabled) ? {
+        props : (isCtrlElm ? {
             // a control_element uses pseudo :disabled for disabling
-            disabled: true,
+            disabled: !enabled,
         } : {}),
 
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
@@ -603,9 +617,9 @@ export function useStateActivePassive(props: IndicationProps & ElementProps, act
             return null;
         })(),
 
-        props : ((isCheckbox && actived) ? {
+        props : (isCheckbox ? {
             // a checkbox uses pseudo :checked for activating
-            checked: true,
+            checked: actived,
         } : {}),
 
         handleIdle         : handleIdle,
@@ -711,6 +725,10 @@ export default function Indicator<TElement extends HTMLElement = HTMLElement>(pr
         <BasicComponent<TElement>
             // other props:
             {...props}
+
+
+            // variants:
+            mild={props.mild ?? true}
 
 
             // classes:

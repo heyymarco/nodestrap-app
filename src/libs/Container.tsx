@@ -8,7 +8,6 @@ import {
     // general types:
     JssStyle,
     PropEx,
-    PropList,
 
     
     // components:
@@ -28,34 +27,12 @@ import {
 // styles:
 
 export class ContainerStyles extends BasicComponentStyles {
-    // variants:
-    public /*override*/ size(size: string): JssStyle { return {
-        extend: [
-            super.size(size), // copy sizes from base
-        ] as JssStyle,
-
-
-
-        // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, (() => {
-            const cssPropsSize = this.filterSuffixProps(cssProps, size);
-
-            // padding(Inline|Block) are already handled by mediaBreakpoints => delete them:
-            delete cssPropsSize.paddingInline;
-            delete cssPropsSize.paddingBlock;
-
-            return cssPropsSize;
-        })()),
-    }}
-
-
-
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(),         // copy basicStyle from base
 
-            this.containerBasicStyle(), // applies responsive container functionality
+            this.useContainer(), // applies responsive container functionality
         ] as JssStyle,
 
 
@@ -67,7 +44,7 @@ export class ContainerStyles extends BasicComponentStyles {
      * Applies responsive container functionality - without any other styling.
      * @returns A `JssStyle` represents a responsive container style definition.
      */
-    public /*virtual*/ containerBasicStyle(): JssStyle { return {
+    public /*virtual*/ useContainer(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
@@ -75,7 +52,7 @@ export class ContainerStyles extends BasicComponentStyles {
      * Applies responsive container functionality using css grid - without any other styling.
      * @returns A `JssStyle` represents a responsive container style definition using css grid.
      */
-    public /*virtual*/ containerGridBasicStyle(): JssStyle { return {
+    public /*virtual*/ useContainerGrid(): JssStyle { return {
         // layout:
         display             : 'grid',
         gridTemplateRows    : [[cssProps.paddingBlock,  'auto', cssProps.paddingBlock ]],

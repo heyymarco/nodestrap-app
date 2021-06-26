@@ -270,7 +270,7 @@ export class ControlStyles extends IndicatorStyles {
     }}
     public /*virtual*/ focus()    : JssStyle { return {
         extend: [
-            this.active(),
+            this.markActive(),
         ] as JssStyle,
     }}
     public /*virtual*/ blur()     : JssStyle { return {
@@ -316,7 +316,7 @@ export class ControlStyles extends IndicatorStyles {
     }}
     public /*virtual*/ arrive()   : JssStyle { return {
         extend: [
-            this.active(),
+            this.markActive(),
         ] as JssStyle,
     }}
     public /*virtual*/ leave()    : JssStyle { return {

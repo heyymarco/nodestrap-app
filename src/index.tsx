@@ -15,15 +15,18 @@ import NavscrollApp from './apps/NavscrollApp';
 import AccordionApp from './apps/AccordionApp';
 import IconApp from './apps/IconApp';
 
-import BasicComponentApp    from './apps/BasicComponentApp';
-import IndicatorApp         from './apps/IndicatorApp';
-import PopupApp             from './apps/PopupApp';
-import AlertApp             from './apps/AlertApp';
-    import ContentApp           from './apps/ContentApp';
+
+import BasicComponentApp            from './apps/BasicComponentApp';
+    import ContainerApp             from './apps/ContainerApp';
+    import IndicatorApp             from './apps/IndicatorApp';
+        import ContentApp           from './apps/ContentApp';
+        import PopupApp             from './apps/PopupApp';
+            import AlertApp         from './apps/AlertApp';
+        import ControlApp           from './apps/ControlApp';
+            import ActionControlApp from './apps/ActionControlApp';
+    
+
 import MasonryApp           from './apps/MasonryApp';
-import ContainerApp         from './apps/ContainerApp';
-import ControlApp           from './apps/ControlApp';
-import ActionControlApp     from './apps/ActionControlApp';
 
 
 

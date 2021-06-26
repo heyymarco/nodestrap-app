@@ -21,11 +21,7 @@ import {
     usePropEnabled,
 }                           from './accessibilities'
 import {
-    cssProps as ecssProps,
-}                           from './BasicComponent'
-import {
     useStateActivePassive,
-    cssProps as icssProps,
     IndicationProps,
 }                           from './Indicator'
 import {
@@ -142,6 +138,35 @@ export class ActionControlStyles extends ControlStyles {
           '&.released'                                                                                     , this.released()  ],
     ]}
 
+    public /*override*/ actived()     : JssStyle { return {
+        extend: [
+            super.actived(),
+
+            this.pressed(),
+        ] as JssStyle,
+    }}
+    public /*override*/ activating()  : JssStyle { return {
+        extend: [
+            super.activating(),
+
+            this.pressing(),
+        ] as JssStyle,
+    }}
+    public /*override*/ passivating() : JssStyle { return {
+        extend: [
+            super.passivating(),
+
+            this.releasing(),
+        ] as JssStyle,
+    }}
+    public /*override*/ passived()    : JssStyle { return {
+        extend: [
+            super.passived(),
+
+            this.released(),
+        ] as JssStyle,
+    }}
+
     public /*virtual*/ pressed()   : JssStyle { return {
         [this.decl(this._filterPressRelease)] : cssProps.filterPress,
 
@@ -200,64 +225,8 @@ export class ActionControlStyles extends ControlStyles {
 
     // old:
     public /*override*/ controlStatesOld(inherit = false): JssStyle { return {
-        extend: [
-            super.controlStatesOld(inherit), // copy controlStates from base
-
-
-
-            this.iif(!inherit, {
-                //#region all initial states are none
-                [this.decl(this._animPressRelease)]    : ecssProps.animNone,
-                //#endregion all initial states are none
-            }),
-
-
-
-            //#region specific states
-            //#region press, release
-            this.statePressReleasing({ // [pressing, pressed, releasing]
-                [this.decl(this._filterActivePassive)] : icssProps.filterActive,
-            }),
-            this.statePress({ // [pressing, pressed]
-                [this.decl(this._animPressRelease)]    : icssProps.animActive,
-            }),
-            this.stateReleasing({ // [releasing]
-                [this.decl(this._animPressRelease)]    : icssProps.animPassive,
-            }),
-            {
-                // [pressed]
-                '&.pressed': // if activated programmatically (not by user input), disable the animation
-                    this.applyStateNoAnimStartupOld(),
-            },
-            //#endregion press, release
-            //#endregion specific states
-        ] as JssStyle,
     }}
     public /*override*/ controlAnimFnOld(): JssStyle { return {
-        //#region re-arrange the animFn at different states
-        '&.press,&.pressed': // if activated programmatically (not by user input)
-            this.stateNotDisabled({ // if ctrl was not fully disabled
-                // define an *animations* func:
-                [this.decl(this._animFnOld)]: [
-                    ecssProps.anim,
-                    this.ref(this._animPressRelease),  // 5th : ctrl already pressed, move to the least priority
-                    this.ref(this._animArriveLeave),    // 4th : cursor leaved   => low probability because holding press
-                    this.ref(this._animFocusBlur),     // 3rd : ctrl lost focus => low probability because holding press
-                    this.ref(this._animEnableDisable), // 2nd : ctrl enable/disable => rarely used => low probability
-                    this.ref(this._animActivePassive), // 1st : ctrl got activated  => the most likely happened
-                ],
-            }),
-
-        // define an *animations* func:
-        [this.decl(this._animFnOld)]: [
-            ecssProps.anim,
-            this.ref(this._animEnableDisable), // 5th : ctrl must be enabled
-            this.ref(this._animActivePassive), // 4th : rarely happened => low probability
-            this.ref(this._animArriveLeave),    // 3rd : cursor hovered over ctrl
-            this.ref(this._animFocusBlur),     // 2nd : ctrl got focused (can interrupt hover/leave)
-            this.ref(this._animPressRelease),  // 1st : ctrl got pressed (can interrupt focus/blur)
-        ],
-        //#endregion re-arrange the animFn at different states
     }}
 }
 export const actionControlStyles = new ActionControlStyles();
@@ -292,7 +261,7 @@ const cssConfig = new CssConfig(() => {
 
     return {
         //#region animations
-        filterPress          : icssProps.filterActive,
+        filterPress          : [['brightness(65%)', 'contrast(150%)']],
 
         '@keyframes press'   : keyframesPress,
         '@keyframes release' : keyframesRelease,

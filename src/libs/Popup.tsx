@@ -15,9 +15,6 @@ import {
     CssConfig,
 }                           from './nodestrap'  // nodestrap's core
 import {
-    cssProps as bcssProps,
-}                           from './BasicComponent'
-import {
     IndicatorStyles,
     IndicatorProps,
     Indicator,
@@ -106,7 +103,7 @@ const cssConfig = new CssConfig(() => {
     
     return {
         //#endregion animations
-        filterActive         : bcssProps.filterNone,
+        filterActive         : 'unset',
 
         '@keyframes active'  : keyframesActive,
         '@keyframes passive' : keyframesPassive,

@@ -19,10 +19,6 @@ import {
     default as EditableControl,
 }                           from './EditableControl'
 import {
-    IContentStyles,
-    contentStyles,
-}                           from './Content'
-import {
     styles as iconStyles,
 }                           from './Icon'
 
@@ -32,7 +28,7 @@ import {
 
 const iconElm = '&::after';
 
-export class EditableTextControlStylesBuilder extends EditableControlStyles implements IContentStyles {
+export class EditableTextControlStylesBuilder extends EditableControlStyles {
     //#region scoped css props
     /**
      * Icon for indicating valid/invalid state.
@@ -49,18 +45,9 @@ export class EditableTextControlStylesBuilder extends EditableControlStyles impl
 
 
     // variants:
-    public /*override*/ theme(theme: string): JssStyle { return {
-        extend: [
-            super.theme(theme), // copy themes from base
-            
-            this.contentTheme(theme),
-        ] as JssStyle,
-    }}
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
-
-            this.contentSize(size),
         ] as JssStyle,
 
 
@@ -69,52 +56,9 @@ export class EditableTextControlStylesBuilder extends EditableControlStyles impl
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
-    public /*implement*/ contentTheme(theme: string): JssStyle {
-        return contentStyles.contentTheme(theme); // copy themes from Content
-    }
-    public /*implement*/ contentSize(size: string): JssStyle {
-        const contentSize = contentStyles.contentSize(size); // copy sizes from Content
-        delete contentSize.paddingInline;
-        delete contentSize.paddingBlock;
-
-        return contentSize;
-    }
-
 
 
     // states:
-    public /*override*/ actived()     : JssStyle { return {
-        extend: [
-            super.actived(), // copy actived from base
-
-            this.contentActived(),
-        ] as JssStyle,
-    }}
-    public /*override*/ activating()  : JssStyle { return {
-        extend: [
-            super.activating(), // copy activating from base
-
-            this.contentActivating(),
-        ] as JssStyle,
-    }}
-    public /*override*/ passivating() : JssStyle { return {
-        extend: [
-            super.passivating(), // copy passivating from base
-
-            this.contentPassivating(),
-        ] as JssStyle,
-    }}
-
-    public /*implement*/ contentActived()     : JssStyle {
-        return contentStyles.contentActived();
-    }
-    public /*implement*/ contentActivating()  : JssStyle {
-        return contentStyles.contentActivating();
-    }
-    public /*implement*/ contentPassivating() : JssStyle {
-        return contentStyles.contentPassivating();
-    }
-    
     public /*override*/ themeDefault(theme: string|null = 'secondary'): JssStyle { return {
         extend: [
             super.themeDefault(theme), // copy default theme from base
@@ -181,24 +125,10 @@ export class EditableTextControlStylesBuilder extends EditableControlStyles impl
 
 
 
-    // functions:
-    public /*override*/ propsFn(): PropList { return {
-        ...super.propsFn(), // copy functional props from base
-        
-        ...this.contentPropsFn(),
-    }}
-    public /*implement*/ contentPropsFn(): PropList {
-        return contentStyles.contentPropsFn(); // copy functional props from Content
-    }
-
-
-
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
-
-            this.contentBasicStyle(),
         ] as JssStyle,
 
 
@@ -239,13 +169,6 @@ export class EditableTextControlStylesBuilder extends EditableControlStyles impl
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    public /*implement*/ contentBasicStyle(): JssStyle {
-        const contentBasicStyle = contentStyles.contentBasicStyle(); // copy basicStyle from Content
-        delete contentBasicStyle.paddingInline;
-        delete contentBasicStyle.paddingBlock;
-
-        return contentBasicStyle;
-    }
 }
 export const styles = new EditableTextControlStylesBuilder();
 

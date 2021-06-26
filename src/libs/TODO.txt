@@ -66,13 +66,13 @@ add
 
 
 fin comp (14) (generic):
-Container<TElement>$
-BasicComponent<TElement>$
+BasicComponent<TElement>^
+	Container<TElement>^
 	Icon<TElement>#
 	Carousel<TElement>@
 	CarouselItem<TElement>@
-	Indicator<TElement>$
-		Content<TElement>$
+	Indicator<TElement>^
+		Content<TElement>^
 			Listgroup<TElement>#
 				Navscroll<TElement>@
 				Accordion<TElement>@
@@ -80,12 +80,12 @@ BasicComponent<TElement>$
 				AccordionItem<TElement>#
 			Card<TElement>@
 				Modal<TElement>#
-		Control<TElement>@
+		Control<TElement>^
 			ActionControl<TElement>@
 			EditableControl<TElement>@
 				EditableTextControl<TElement>#
-		Popup<TElement>$
-			Alert<TElement>$
+		Popup<TElement>^
+			Alert<TElement>^
 	Masonry<TElement>$
 
 

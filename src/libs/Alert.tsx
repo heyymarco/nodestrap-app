@@ -25,7 +25,8 @@ import {
     Popup,
 }                           from './Popup'
 import {
-    cssProps as ccssProps,
+    IContentStyles,
+    contentStyles,
 }                           from './Content'
 import Icon                 from './Icon'
 import CloseButton          from './CloseButton'
@@ -38,11 +39,13 @@ const iconElm    = '&>.icon';
 const bodyElm    = '&>.body';
 const controlElm = '&>.control';
 
-export class AlertStyles extends PopupStyles {
+export class AlertStyles extends PopupStyles implements IContentStyles {
     // variants:
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
+
+            this.contentSize(size),
         ] as JssStyle,
 
 
@@ -50,6 +53,9 @@ export class AlertStyles extends PopupStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
+    public /*implement*/ contentSize(size: string): JssStyle {
+        return contentStyles.contentSize(size); // copy sizes from Content
+    }
 
 
 
@@ -57,6 +63,8 @@ export class AlertStyles extends PopupStyles {
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
+
+            this.contentBasicStyle(),
         ] as JssStyle,
 
 
@@ -92,6 +100,9 @@ export class AlertStyles extends PopupStyles {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
+    public /*implement*/ contentBasicStyle(): JssStyle {
+        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
+    }
     protected /*virtual*/ iconBasicStyle(): JssStyle { return {
         // layout:
         gridArea    : '1 / -3', // the first row / the third column starting from the last
@@ -133,13 +144,6 @@ export const alertStyles = new AlertStyles();
 const cssConfig = new CssConfig(() => {
     return {
         //#region spacings
-        paddingInline   : ccssProps.paddingInline,   // override to Element
-        paddingBlock    : ccssProps.paddingBlock,    // override to Element
-        paddingInlineSm : ccssProps.paddingInlineSm, // override to Element
-        paddingBlockSm  : ccssProps.paddingBlockSm,  // override to Element
-        paddingInlineLg : ccssProps.paddingInlineLg, // override to Element
-        paddingBlockLg  : ccssProps.paddingBlockLg,  // override to Element
-
         gapX            : spacers.default,
         gapY            : spacers.default,
         //#endregion spacings
@@ -305,10 +309,6 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
         <Popup
             // other props:
             {...restProps}
-
-
-            // variants:
-            mild={props.mild ?? true}
 
 
             // classes:
