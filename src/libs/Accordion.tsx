@@ -8,7 +8,7 @@ import type * as AccordionItems from './AccordionItem'
 
 // react components:
 
-export type Props = Listgroups.Props
+export type Props = Listgroups.ListgroupProps
 export default Listgroup;
 
 type OrientationStyle   = Listgroups.OrientationStyle

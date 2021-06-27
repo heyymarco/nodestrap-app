@@ -1,38 +1,36 @@
 // react (builds html using javascript):
 import React                from 'react'       // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-    Styles,
-}                           from 'jss'          // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-
 // nodestrap (modular web components):
 import {
+    // general types:
+    JssStyle,
+    Styles,
     ClassList,
+
+    
+    // components:
+    CssConfig,
     Element,
+
+    
+    // utils:
     isTypeOf,
-}                           from './nodestrap'  // nodestrap's core
+}                           from './nodestrap'   // nodestrap's core
 import * as stripOuts       from './strip-outs'
 import spacers              from './spacers'    // configurable spaces defs
 import * as border          from './borders'    // configurable borders & border radiuses defs
 import {
-    cssProps as ecssProps,
-    useVariantOrientation,
-}                           from './BasicComponent'
-import type {
     OrientationStyle,
     VariantOrientation,
+    useVariantOrientation,
+    cssProps as ecssProps,
 }                           from './BasicComponent'
 import {
-    default  as Content,
     ContentStyles,
+    ContentProps,
+    Content,
 }                           from './Content'
-import type * as Contents   from './Content'
-import type {
-    IControlStylesBuilderOld,
-}                           from './Control'
 import {
     actionControlStyles,
 }                           from './ActionControl'
@@ -46,8 +44,16 @@ import type * as ListgroupItems from './ListgroupItem'
 const wrapperElm  = '&>li, &>*';
 const listItemElm = '&>*';
 
-class ListItemStylesBuilder extends ContentStyles {
+class ListgroupItemStyles extends ContentStyles {
     // variants:
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
+
+
+        
+        [ '*:not(.inline)>*>&', this.block() ],
+        [      '*.inline>*>&' , this.inline() ],
+    ]}
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
@@ -58,35 +64,7 @@ class ListItemStylesBuilder extends ContentStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-
-
-
-    // states:
-    // public /*override*/ watchStates(inherit = true): JssStyle {
-    //     // change default inherit to true
-    //     return super.watchStates(inherit);
-    // }
-
-
-
-    // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
-        extend: [
-            super.basicStyle(), // copy basicStyle from base
-        ] as JssStyle,
-
-
-        
-        // layout:
-        display      : 'block',
-
-
-
-        // sizes:
-        flex         : [[1, 1]], // growable & shrinkable, the size fills the wrapper
-
-
-
+    public /*virtual*/ block(): JssStyle { return {
         // borders:
         //#region strip out borders almost completely
         /*
@@ -132,13 +110,8 @@ class ListItemStylesBuilder extends ContentStyles {
         // strip out shadows:
         // moved from here to parent,
         boxShadow : undefined as unknown as null,
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
-    public /*virtual*/ inlineStyle(): JssStyle { return {
+    public /*virtual*/ inline(): JssStyle { return {
         // borders:
         //#region strip out borders almost completely
         /*
@@ -160,9 +133,6 @@ class ListItemStylesBuilder extends ContentStyles {
             the left-border separating the header & body is also hidden
         */
 
-        border       : ecssProps.border,         // reset border from blockStyle
-        borderColor  : this.ref(this._borderFn), // reset border from blockStyle
-
         borderBlockWidth           : 0, // remove (top|bottom)-border for all-items
 
         // remove right-border at the last-item, so that it wouldn't collide with the wrapper's right-border
@@ -175,12 +145,46 @@ class ListItemStylesBuilder extends ContentStyles {
             borderInlineStartWidth : 0,
         },
         //#endregion border-strokes as a separator
+
+
+
+        // border radiuses:
+        borderRadius : 0, // strip out border radius
         //#endregion strip out borders almost completely
+
+
+
+        // strip out shadows:
+        // moved from here to parent,
+        boxShadow : undefined as unknown as null,
+    }}
+
+
+
+    // styles:
+    public /*override*/ basicStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(), // copy basicStyle from base
+        ] as JssStyle,
+
+
+        
+        // layout:
+        display : 'block',
+
+
+
+        // sizes:
+        flex    : [[1, 1]], // growable & shrinkable, the size fills the wrapper
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
 }
-const listItemStyles = new ListItemStylesBuilder();
 
-class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements IControlStylesBuilderOld {
+class ListgroupActionItemStyles extends ListgroupItemStyles {
     //#region mixins
     protected /*override*/ applyStateNoAnimStartupOld(): JssStyle {
         // @ts-ignore
@@ -252,17 +256,17 @@ class ListItemActionCtrlStylesBuilder extends ListItemStylesBuilder implements I
         ] as JssStyle,
     }}
 }
-const listItemActionCtrlStyles = new ListItemActionCtrlStylesBuilder();
 
-export class ListgroupStylesBuilder extends ContentStyles {
+export class ListgroupStyles extends ContentStyles {
     // variants:
     public /*override*/ variants(): ClassList { return [
         ...super.variants(), // copy variants from base
 
 
 
-        [ 'inline', this.inline() ],
-        [ 'bullet', this.bullet() ],
+        [ '&:not(.inline)', this.block()  ],
+        [      '&.inline',  this.inline() ],
+        [ 'bullet', this.bullet()         ],
     ]}
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -274,6 +278,49 @@ export class ListgroupStylesBuilder extends ContentStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
+    public /*virtual*/ block(): JssStyle { return {
+        // layout:
+        display           : 'flex',   // use flexbox as the layout
+        flexDirection     : 'column', // items are stacked vertically
+
+
+
+        //#region children
+        [wrapperElm]: { // wrapper of listItem
+            // layout:
+            flexDirection : 'column', // listItems are stacked vertically (supports for the Accordion at blockStyle)
+    
+    
+    
+            // borders:
+            //#region border-strokes as a separator
+            /*
+                we play with top-border,
+                because the top element is treated as the primary element
+                and the next one is treated as the secondary, tertiary, and so on
+
+                so if the secondary is hidden,
+                the top-border separating the primary & secondary is also hidden
+            */
+
+            border       : ecssProps.border,       // moved in from children
+            borderColor  : this.ref(this._border), // moved in from children
+
+            borderInlineWidth         : 0, // remove (left|right)-border for all-wrappers
+
+            // remove bottom-border at the last-child, so that it wouldn't collide with the Listgroup's bottom-border
+            // and
+            // remove double border by removing bottom-border starting from the second-last-child to the first-child
+            borderBlockEndWidth       : 0,
+
+            // remove top-border at the first-child, so that it wouldn't collide with the Listgroup's top-border
+            '&:first-child': {
+                borderBlockStartWidth : 0,
+            },
+            //#endregion border-strokes as a separator
+        } as JssStyle, // wrapper of listItem
+        //#endregion children
+    }}
     public /*virtual*/ inline(): JssStyle { return {
         // layout:
         display        : 'inline-flex', // use flexbox as the layout
@@ -284,7 +331,7 @@ export class ListgroupStylesBuilder extends ContentStyles {
         //#region children
         [wrapperElm]: { // wrapper of listItem
             // layout:
-            flexDirection  : 'row',  // listItems are stacked horizontally (supports for the Accordion at inlineStyle)
+            flexDirection  : 'row',     // listItems are stacked horizontally (supports for the Accordion at inlineStyle)
 
 
 
@@ -299,8 +346,8 @@ export class ListgroupStylesBuilder extends ContentStyles {
                 the left-border separating the primary & secondary is also hidden
             */
 
-            border       : ecssProps.border,         // moved in from children
-            borderColor  : this.ref(this._borderFn), // moved in from children
+            border       : ecssProps.border,       // moved in from children
+            borderColor  : this.ref(this._border), // moved in from children
 
             borderBlockWidth           : 0, // remove (top|bottom)-border for all-wrappers
 
@@ -314,14 +361,6 @@ export class ListgroupStylesBuilder extends ContentStyles {
                 borderInlineStartWidth : 0,
             },
             //#endregion border-strokes as a separator
-
-
-
-            // children:
-            [listItemElm]: {
-                '&:not(.actionCtrl)' : listItemStyles.inlineStyle(),
-                '&.actionCtrl'       : listItemActionCtrlStyles.inlineStyle(),
-            },
         } as JssStyle, // wrapper of listItem
         //#endregion children
     }}
@@ -360,15 +399,15 @@ export class ListgroupStylesBuilder extends ContentStyles {
                     // borders:
                     //#region bullet style border
                     //#region border-strokes
-                    border       : ecssProps.border,         // moved in from children
-                    borderColor  : this.ref(this._borderFn), // moved in from children
+                    border       : ecssProps.border,       // moved in from children
+                    borderColor  : this.ref(this._border), // moved in from children
                     //#endregion border-strokes
     
     
     
                     //#region border radiuses
-                    borderRadius : border.radiuses.pill, // big rounded corner
-                    overflow     : 'hidden',             // clip the children at the rounded corners
+                    borderRadius : border.radiuses.pill,   // big rounded corner
+                    overflow     : 'hidden',               // clip the children at the rounded corners
                     //#endregion border radiuses
                     //#endregion bullet style border
     
@@ -405,8 +444,6 @@ export class ListgroupStylesBuilder extends ContentStyles {
 
 
         // layout:
-        display        : 'flex',    // use flexbox as the layout
-        flexDirection  : 'column',  // items are stacked vertically
         justifyContent : 'center',  // items are placed starting from the center and then spread to both sides
         alignItems     : 'stretch', // items width are 100% of the parent
 
@@ -428,22 +465,22 @@ export class ListgroupStylesBuilder extends ContentStyles {
 
 
         //#region border-strokes
-        border       : ecssProps.border,         // moved in from children
-        borderColor  : this.ref(this._borderFn), // moved in from children
+        border       : ecssProps.border,       // moved in from children
+        borderColor  : this.ref(this._border), // moved in from children
         //#endregion border-strokes
 
 
 
         //#region border radiuses
-        borderRadius : ecssProps.borderRadius,   // moved in from children
-        overflow     : 'hidden',                 // clip the children at the rounded corners
+        borderRadius : ecssProps.borderRadius, // moved in from children
+        overflow     : 'hidden',               // clip the children at the rounded corners
         //#endregion border radiuses
         //#endregion make a nicely rounded corners
 
 
 
         // shadows:
-        boxShadow      : ecssProps.boxShadow, // moved in from children
+        boxShadow    : ecssProps.boxShadow, // moved in from children
 
 
 
@@ -451,46 +488,8 @@ export class ListgroupStylesBuilder extends ContentStyles {
         [wrapperElm]: { // wrapper of listItem
             // layout:
             display        : 'flex',    // use flexbox as the layout
-            flexDirection  : 'column',  // listItems are stacked vertically (supports for the Accordion at blockStyle)
             justifyContent : 'stretch', // listItems height are 100% of the wrapper (the listItems also need to have growable & shrinkable)
             alignItems     : 'stretch', // listItems width  are 100% of the wrapper
-    
-    
-    
-            // borders:
-            //#region border-strokes as a separator
-            /*
-                we play with top-border,
-                because the top element is treated as the primary element
-                and the next one is treated as the secondary, tertiary, and so on
-
-                so if the secondary is hidden,
-                the top-border separating the primary & secondary is also hidden
-            */
-
-            border       : ecssProps.border,         // moved in from children
-            borderColor  : this.ref(this._borderFn), // moved in from children
-
-            borderInlineWidth         : 0, // remove (left|right)-border for all-wrappers
-
-            // remove bottom-border at the last-child, so that it wouldn't collide with the Listgroup's bottom-border
-            // and
-            // remove double border by removing bottom-border starting from the second-last-child to the first-child
-            borderBlockEndWidth       : 0,
-
-            // remove top-border at the first-child, so that it wouldn't collide with the Listgroup's top-border
-            '&:first-child': {
-                borderBlockStartWidth : 0,
-            },
-            //#endregion border-strokes as a separator
-    
-    
-    
-            // children:
-            [listItemElm]: {
-                '&:not(.actionCtrl)' : listItemStyles.basicStyle(),
-                '&.actionCtrl'       : listItemActionCtrlStyles.basicStyle(),
-            },
         } as JssStyle, // wrapper of listItem
         '&:not(.bullet)' : {
             [wrapperElm] : {
@@ -510,94 +509,66 @@ export class ListgroupStylesBuilder extends ContentStyles {
     }}
     protected /*override*/ styles(): Styles<'main'|'@global'> {
         const styles = super.styles();
+        
+        const listgroupItemStyles       = new ListgroupItemStyles();
+        const listgroupActionItemStyles = new ListgroupActionItemStyles();
+
+
+
         styles.main = {
             extend: [
                 styles.main,
+
                 {
-                    //#region forwards outlined to list items
-                    /**
-                     * -- fix imperfection by design --
-                     * because outlined() depended on toggleOnOutlined() depended on propsFn()
-                     * and we re-define propsFn() on [wrapperElm]>[listItemElm]
-                     * so we need to re-define outlined() on [wrapperElm]>[listItemElm]
-                     */
-                    '&.outlined': {
-                        [wrapperElm]: {
-                            [listItemElm]: {
-                                '&:not(.actionCtrl), &.actionCtrl': this.outlined(),
-                            },
-                        },
-                    },
-                    /*
-                    // not needed because the [.active] state is self handled
-                    ...this.stateActive({
-                        [wrapperElm]: {
-                            [listItemElm]: {
-                                '&:not(.actionCtrl), &.actionCtrl': {
-                                    '&:not(._x)': this.toggleOffOutlined(),
-                                },
-                            },
-                        },
-                    }),
-                    */
-                    //#endregion forwards outlined to list items
-        
-        
-        
-                    // children:
-                    [wrapperElm]: {
-                        [listItemElm]: {
-                            '&:not(.actionCtrl)': {
-                                extend: [
-                                    // watch variant classes:
-                                    listItemStyles.useVariants(),
-            
-                                    // watch state classes/pseudo-classes:
-                                    listItemStyles.useStates(),
-            
-                                    // after watching => use func props:
-                                    listItemStyles.propsFnOld(),
-                                ] as JssStyle,
-                            },
-                            '&.actionCtrl': {
-                                extend: [
-                                    // watch variant classes:
-                                    listItemActionCtrlStyles.useVariants(),
-            
-                                    // watch state classes/pseudo-classes:
-                                    listItemActionCtrlStyles.useStates(),
-            
-                                    // after watching => use func props:
-                                    listItemActionCtrlStyles.propsFnOld(),
-                                ] as JssStyle,
-                            },
-                        },
-                    },
+                    [wrapperElm]: { [listItemElm]: {
+                        '&:not(.actionCtrl)': { extend: [
+                            // watch variant classes:
+                            listgroupItemStyles.useVariants(),
+                
+                            // watch state classes/pseudo-classes:
+                            listgroupItemStyles.useStates(),
+                            
+                            // after watching => use func props:
+                            listgroupItemStyles.usePropsFn(),
+
+                            // all the required stuff has been loaded,
+                            // now load the basicStyle:
+                            listgroupItemStyles.basicStyle(),
+                        ] as JssStyle },
+
+
+
+                        '&.actionCtrl': { extend: [
+                            // watch variant classes:
+                            listgroupActionItemStyles.useVariants(),
+                
+                            // watch state classes/pseudo-classes:
+                            listgroupActionItemStyles.useStates(),
+                            
+                            // after watching => use func props:
+                            listgroupActionItemStyles.usePropsFn(),
+
+                            // all the required stuff has been loaded,
+                            // now load the basicStyle:
+                            listgroupActionItemStyles.basicStyle(),
+                        ] as JssStyle },
+                    }},
                 },
             ] as JssStyle,
         };
-        
 
-        
+
+
         return styles;
     }
 }
-export const styles = new ListgroupStylesBuilder();
+export const listgroupStyles = new ListgroupStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     return {
         //#region spacings
         bulletSpacing   : spacers.sm,
@@ -631,16 +602,17 @@ export function useVariantList(props: VariantList) {
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface ListgroupProps<TElement extends HTMLElement = HTMLElement>
     extends
-        Contents.ContentProps<TElement>,
+        ContentProps<TElement>,
+
         VariantOrientation,
         VariantList
 {
 }
-export default function Listgroup<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function Listgroup<TElement extends HTMLElement = HTMLElement>(props: ListgroupProps<TElement>) {
     // styles:
-    const lgStyles        = styles.useStyles();
+    const styles          = listgroupStyles.useStyles();
 
     
     
@@ -684,7 +656,7 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
             
 
             // classes:
-            mainClass={props.mainClass ?? lgStyles.main}
+            mainClass={props.mainClass ?? styles.main}
             variantClasses={[...(props.variantClasses ?? []),
                 variOrientation.class,
                 variList.class,
@@ -738,6 +710,7 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
         </Content>
     );
 }
+export { Listgroup }
 
 export type { OrientationStyle, VariantOrientation }
 

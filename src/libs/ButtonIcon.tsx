@@ -14,7 +14,7 @@ import {
 }                           from './BasicComponent'
 import {
     default  as Button,
-    ButtonStylesBuilder,
+    ButtonStyles,
     cssProps as bcssProps,
 }                           from './Button'
 import type * as Buttons    from './Button'
@@ -28,7 +28,7 @@ import typos                from './typos/index' // configurable typography (tex
 
 // styles:
 
-export class ButtonIconStylesBuilder extends ButtonStylesBuilder {
+export class ButtonIconStylesBuilder extends ButtonStyles {
     // variants:
     public /*override*/ sizeOptions(): string[] {
         return ['xs', 'sm', 'lg', 'xl'];
@@ -129,7 +129,7 @@ export const cssDecls = cssConfig.decls;
 
 export interface Props
     extends
-        Buttons.Props
+        Buttons.ButtonProps
 {
     // appearances:
     icon?: string

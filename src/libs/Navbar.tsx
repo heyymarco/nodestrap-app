@@ -372,7 +372,7 @@ export class NavbarStylesBuilder extends ControlStyles {
 
         
         // apply fn props:
-        backg          : this.ref(this._backgFn),
+        backg          : this.ref(this._backg),
         anim           : this.ref(this._menusAnimFn),
 
 

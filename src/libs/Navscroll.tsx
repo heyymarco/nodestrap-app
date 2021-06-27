@@ -361,7 +361,7 @@ const findLast  = <T,R>(array: T[], predicate: (value: T) => R|null): [R, number
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Listgroups.Props<TElement>
+        Listgroups.ListgroupProps<TElement>
 {
     // scrolls:
     targetRef?       : React.MutableRefObject<HTMLElement|null>

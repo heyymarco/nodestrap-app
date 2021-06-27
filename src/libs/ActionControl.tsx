@@ -142,28 +142,28 @@ export class ActionControlStyles extends ControlStyles {
         extend: [
             super.actived(),
 
-            this.pressed(),
+            // this.pressed(),
         ] as JssStyle,
     }}
     public /*override*/ activating()  : JssStyle { return {
         extend: [
             super.activating(),
 
-            this.pressing(),
+            // this.pressing(),
         ] as JssStyle,
     }}
     public /*override*/ passivating() : JssStyle { return {
         extend: [
             super.passivating(),
 
-            this.releasing(),
+            // this.releasing(),
         ] as JssStyle,
     }}
     public /*override*/ passived()    : JssStyle { return {
         extend: [
             super.passived(),
 
-            this.released(),
+            // this.released(),
         ] as JssStyle,
     }}
 

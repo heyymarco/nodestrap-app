@@ -32,7 +32,7 @@ import {
     styles as iconStyles,
 }                           from './Icon'
 import {
-    styles as buttonStyles,
+    buttonStyles as buttonStyles,
 }                           from './Button'
 import {
     usePropEnabled,
@@ -393,7 +393,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
             extend: [
                 iconStyles.useIcon( // apply icon
                     /*img   :*/ cssProps.img,
-                    /*foreg :*/ this.ref(this._foregFn)
+                    /*foreg :*/ this.ref(this._foreg)
                 ),
             ] as JssStyle,
 
@@ -451,7 +451,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     
         
         // apply fn props:
-        foreg         : this.ref(this._borderFn),
+        foreg         : this.ref(this._border),
 
 
 

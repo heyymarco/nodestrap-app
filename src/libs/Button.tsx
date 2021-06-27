@@ -1,29 +1,29 @@
 // react (builds html using javascript):
 import React                from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-
 // nodestrap (modular web components):
 import {
+    // general types:
+    JssStyle,
     ClassList,
-}                           from './nodestrap'  // nodestrap's core
+
+
+    // components:
+    CssConfig,
+}                           from './nodestrap'   // nodestrap's core
 import * as border          from './borders'     // configurable borders & border radiuses defs
 import spacers              from './spacers'     // configurable spaces defs
 import {
-    default  as Control,
-    ControlStyles,
-}                           from './Control'
-import type * as Controls   from './Control'
+    ActionControlStyles,
+    ActionControlProps,
+    ActionControl,
+}                           from './ActionControl'
 
 
 
 // styles:
 
-export class ButtonStylesBuilder extends ControlStyles {
+export class ButtonStyles extends ActionControlStyles {
     // variants:
     public /*override*/ variants(): ClassList { return [
         ...super.variants(), // copy variants from base
@@ -43,28 +43,7 @@ export class ButtonStylesBuilder extends ControlStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-    protected /*virtual*/ staticOutlinedStyle(): JssStyle { return {
-        '&:not(.outlined)' : {
-            extend: [
-                //#region disable dynamic outlined
-                this.stateActive( // [activating, actived]
-                    // always *toggle on* the outlined props:
-                    this.toggleOnOutlined(),
-                ),
-                this.stateNotDisable({extend: [
-                    this.stateHover(
-                        // always *toggle on* the outlined props:
-                        this.toggleOnOutlined(),
-                    ),
-                    this.stateFocus(
-                        // always *toggle on* the outlined props:
-                        this.toggleOnOutlined(),
-                    ),
-                ] as JssStyle}),
-                //#endregion disable dynamic outlined
-            ] as JssStyle,
-        },
-    }}
+
     public /*virtual*/ link(): JssStyle { return {
         extend: [
             this.outlined(), // copy outlined style from base
@@ -74,19 +53,13 @@ export class ButtonStylesBuilder extends ControlStyles {
 
         //#region fully link style without outlined
         '&:not(.outlined)' : {
-            extend: [
-                this.staticOutlinedStyle(), // disable dynamic outlined
-            ] as JssStyle,
-
-
-
             // borders:
-            borderWidth  : 0, // hides the border if not outlined
+            borderWidth  : 0, // no_border if not outlined
 
 
 
             // backgrounds:
-            [this.decl(this._backgGradTg)] : 'initial', // gradient is not supported if not outlined
+            ...this.toggleOffOutlined(), // gradient is not supported because no_border
         },
         //#endregion fully link style without outlined
 
@@ -138,14 +111,10 @@ export class ButtonStylesBuilder extends ControlStyles {
         //#region fully ghost style without outlined
         '&:not(.outlined)' : {
             extend: [
-                this.staticOutlinedStyle(), // disable dynamic outlined
-
-
-
                 //#region enable gradient only if hover
                 {'&:not(:hover)': {
                     // backgrounds:
-                    [this.decl(this._backgGradTg)] : 'initial', // gradient is not supported if not outlined and not hover
+                    ...this.toggleOffOutlined(), // gradient is not supported because no_border and not hover
                 }},
                 //#endregion enable gradient only if hover
             ] as JssStyle,
@@ -216,22 +185,13 @@ export class ButtonStylesBuilder extends ControlStyles {
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
-export const styles = new ButtonStylesBuilder();
+export const buttonStyles = new ButtonStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     return {
         orientation : 'row',
         whiteSpace  : 'normal',
@@ -274,9 +234,10 @@ export function useVariantButton(props: VariantButton) {
 
 export type BtnType = 'button'|'submit'|'reset'
 
-export interface Props
+export interface ButtonProps
     extends
-        Controls.ControlProps<HTMLButtonElement>,
+        ActionControlProps<HTMLButtonElement>,
+        
         VariantButton
 {
     // actions:
@@ -292,9 +253,9 @@ export interface Props
     // children:
     children?    : React.ReactNode
 }
-export default function Button(props: Props) {
+export default function Button(props: ButtonProps) {
     // styles:
-    const btnStyles  = styles.useStyles();
+    const styles     = buttonStyles.useStyles();
 
     
     
@@ -323,7 +284,7 @@ export default function Button(props: Props) {
 
     // jsx:
     return (
-        <Control<HTMLButtonElement>
+        <ActionControl<HTMLButtonElement>
             // other props:
             {...restProps}
 
@@ -336,8 +297,12 @@ export default function Button(props: Props) {
             aria-label={props.label}
 
 
+            // variants:
+            mild={props.mild ?? false}
+
+
             // classes:
-            mainClass={props.mainClass ?? btnStyles.main}
+            mainClass={props.mainClass ?? styles.main}
             variantClasses={[...(props.variantClasses ?? []),
                 variButton.class,
             ]}
@@ -352,6 +317,7 @@ export default function Button(props: Props) {
         >
             { props.text }
             { props.children }
-        </Control>
+        </ActionControl>
     );
 }
+export { Button }

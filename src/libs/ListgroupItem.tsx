@@ -3,16 +3,18 @@ import React                from 'react'        // base technology of our nodest
 
 // nodestrap (modular web components):
 import Indicator            from './Indicator'
-import ActionControl        from './ActionControl'
-import type * as ActCtrls   from './ActionControl'
+import {
+    ActionControlProps,
+    ActionControl,
+}                           from './ActionControl'
 
 
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface ListgroupItemProps<TElement extends HTMLElement = HTMLElement>
     extends
-        ActCtrls.ActionControlProps<TElement>
+        ActionControlProps<TElement>
 {
     // accessibility:
     // change default value to `true`
@@ -27,7 +29,7 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     // children:
     children?      : React.ReactNode
 }
-export default function ListgroupItem<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function ListgroupItem<TElement extends HTMLElement = HTMLElement>(props: ListgroupItemProps<TElement>) {
     // jsx:
     return (
         props.actionCtrl
@@ -62,3 +64,4 @@ export default function ListgroupItem<TElement extends HTMLElement = HTMLElement
         />
     );
 }
+export { ListgroupItem }

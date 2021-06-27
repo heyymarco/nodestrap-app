@@ -7,8 +7,11 @@ import {
 }                          from 'react-jss'         // base technology of our nodestrap components
 import './App.css';
 
-import Container from '../libs/Container';
-import ActionControl from '../libs/ActionControl';
+import Container 		from '../libs/Container';
+import Control 			from '../libs/Control';
+import ActionControl	from '../libs/ActionControl';
+import Button			from '../libs/Button';
+import AccordionItem	from '../libs/AccordionItem';
 
 
 
@@ -52,7 +55,9 @@ function App() {
 
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
-	const [mild,       setMild      ] = useState(false);
+
+	const milds = [false, undefined, true];
+	const [mild,       setMild      ] = useState<boolean|undefined>(undefined);
 
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
@@ -68,6 +73,46 @@ function App() {
     return (
         <div className="App">
             <Container>
+                <Control
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+				>
+                    control
+                </Control>
+                <Control
+					tag='button'
+					
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+				>
+                    control
+                </Control>
+				<Control
+					tag='textarea'
+					
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+
+					{...{
+						defaultValue: 'textarea',
+					}}
+				/>
+                <hr style={{flexBasis: '100%'}} />
                 <ActionControl
 					theme={theme} size={size} enableGradient={enableGrad}
 					outlined={outlined} mild={mild}
@@ -93,6 +138,63 @@ function App() {
                     action control
                 </ActionControl>
                 <hr style={{flexBasis: '100%'}} />
+				<ActionControl
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+
+					onClick={() => setActive(!active)}
+				>
+                    toggler action control
+                </ActionControl>
+                <ActionControl
+					tag='button'
+					
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+
+					onClick={() => setActive(!active)}
+				>
+                    toggler action control
+                </ActionControl>
+                <hr style={{flexBasis: '100%'}} />
+				<AccordionItem
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+
+					label={
+						<>Accordion Item</>
+					}
+				>
+                    Accordion body here...
+                </AccordionItem>
+				<hr style={{flexBasis: '100%'}} />
+				<Button
+					theme={theme} size={size} enableGradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+				>
+                    button
+                </Button>
+				<hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:
 					{
@@ -142,13 +244,27 @@ function App() {
 					</label>
 				</p>
 				<p>
-					<label>
-						<input type='checkbox'
-							checked={mild}
-							onChange={(e) => setMild(e.target.checked)}
-						/>
-						mild
-					</label>
+					Mild:
+					{
+						milds.map(mi =>
+							<label key={`${mi}`}>
+								<input type='radio'
+									value={`${mi}`}
+									checked={mild===mi}
+									onChange={(e) => setMild((() => {
+										const value = e.target.value;
+										if (!value) return undefined;
+										switch (value) {
+											case 'true' : return true;
+											case 'false': return false;
+											default     : return undefined;
+										} // switch
+									})())}
+								/>
+								{`${mi ?? 'unset'}`}
+							</label>
+						)
+					}
 				</p>
 				<p>
 					<label>

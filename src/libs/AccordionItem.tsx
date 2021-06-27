@@ -1,196 +1,100 @@
 // react (builds html using javascript):
-import {
-    default as React,
-}                           from 'react'        // base technology of our nodestrap components
-
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-import {
-    PropEx,
-}                           from './Css'        // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
+import React                from 'react'         // base technology of our nodestrap components
 
 // nodestrap (modular web components):
 import {
+    // general types:
+    JssStyle,
+    PropEx,
     ClassList,
+
+    
+    // components:
+    CssConfig,
     Element,
-}                           from './nodestrap'  // nodestrap's core
+}                           from './nodestrap'   // nodestrap's core
 import {
-    cssProps as ecssProps,
-}                           from './BasicComponent'
-import {
-    cssProps as icssProps,
     useTogglerActive,
+    TogglerActiveProps,
 }                           from './Indicator'
-import type * as Indicators from './Indicator'
 import {
     PopupStyles,
 }                           from './Popup'
-import ListgroupItem        from './ListgroupItem'
-import type * as ListgroupItems from './ListgroupItem'
+import {
+    ListgroupItemProps,
+    ListgroupItem,
+}                           from './ListgroupItem'
 
 
 
 // styles:
 
+/*
+    Basic ListgroupItem's styling **was done** by ListGroupStyles.
+    We just watches **popup functionality** at the AccordionItem
+    and forward the functionality to the sibling `.body`.
+*/
+
 const bodyElm = '&~.body.body'; // double the .body for winning to Listgroup's *:not(.actionCtrl)
 
-export class AccordionItemStylesBuilder extends PopupStyles {
+export class AccordionItemStyles extends PopupStyles {
     // variants:
-    public /*override*/ themes(): ClassList { return [] } // disabled
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
+
+
+        
+        [ '*.inline>*>&', this.inline() ],
+    ]}
+    // disable all variants except the size() for injecting our cssProps ending with size suffix
+    public /*override*/ themes(): ClassList { return [] }   // disabled
     public /*override*/ size(size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
+        [bodyElm]: this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-    public /*override*/ gradient(): JssStyle { return {} } // disabled
-    public /*override*/ outlined(): JssStyle { return {} } // disabled
+    public /*override*/ gradient() : JssStyle { return {} } // disabled
+    public /*override*/ outlined() : JssStyle { return {} } // disabled
+    public /*override*/ mild()     : JssStyle { return {} } // disabled
+
+    public /*virtual*/ inline(): JssStyle { return {
+        // overwrites propName = propName{Inline}:
+        [bodyElm]: this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, 'Inline')),
+    }}
 
 
-    
+
     // states:
-    public /*override*/ indicationStatesOld(inherit = false): JssStyle { return {
-        /*
-        watch [enable, disable] state on current element but forward the action to sibling element (body)
-        watch [active, passive] state on current element but forward the action to sibling element (body)
-        */
-        
-        
-        
-        extend: [
-            this.iif(!inherit, {
-                //#region all initial states are none
-                [bodyElm]: {
-                    [this.decl(this._filterEnableDisable)] : ecssProps.filterNone,
-                    [this.decl(this._animEnableDisable)]   : ecssProps.animNone,
+    public /*override*/ themeDefault(theme: string|null = null) : JssStyle { return {} } // no default theme
 
-                    [this.decl(this._animActivePassive)]   : ecssProps.animNone,
-                },
-                //#endregion all initial states are none
-            }),
+    //#region discards enable/disable state
+    public /*override*/ enabled()     : JssStyle { return {} }
+    public /*override*/ enabling()    : JssStyle { return {} }
+    public /*override*/ disabling()   : JssStyle { return {} }
+    public /*override*/ disabled()    : JssStyle { return {} }
+    //#endregion discards enable/disable state
 
-
-
-            //#region specific states
-            //#region enable, disable => body enable, disable
-            this.stateEnablingDisable({ // [enabling, disabling, disabled]
-                [bodyElm]: {
-                    [this.decl(this._filterEnableDisable)] : icssProps.filterDisable,
-                },
-            }),
-            this.stateEnabling({ // [enabling]
-                [bodyElm]: {
-                    [this.decl(this._animEnableDisable)]   : icssProps.animEnable,
-                },
-            }),
-            this.stateDisable({ // [disabling, disabled]
-                [bodyElm]: {
-                    [this.decl(this._animEnableDisable)]   : icssProps.animDisable,
-                },
-            }),
-            { // [disabled]
-                '&.disabled,&:disabled:not(.disable)': { // if ctrl was fully disabled programatically, disable first animation
-                    [bodyElm]: this.applyStateNoAnimStartupOld(),
-                },
-            },
-            //#endregion enable, disable => body enable, disable
-
-
-
-            //#region active, passive => body active, passive
-            this.stateActive({ // [activating, actived]
-                [bodyElm]: {
-                    [this.decl(this._animActivePassive)]   : cssProps.bodyAnimActive,
-                },
-
-                extend: [
-                    //TODO: update....
-                    this.themeActive(),
-                ] as JssStyle,
-            }),
-            this.statePassivating({ // [passivating]
-                [bodyElm]: {
-                    [this.decl(this._animActivePassive)]   : cssProps.bodyAnimPassive,
-                },
-            }),
-            this.stateNotActivePassivating({ // hides the AccordionItem's body if not [activating, actived, passivating]
-                [bodyElm]: {
-                    display: 'none',
-                },
-            }),
-            {
-                // [actived]
-                '&.actived': { // if activated programmatically (not by user input), disable the animation
-                    [bodyElm]: this.applyStateNoAnimStartupOld(),
-                },
-            },
-            //#endregion active, passive => body active, passive
-            //#endregion specific states
-        ] as JssStyle,
-
-
-
-        // apply the orientation variants:
-        '*.inline>*>&': {
-            [bodyElm]: {
-                // overwrites propName = propName{Inline}:
-                ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, 'Inline')),
-            },
-        },
+    //#region forwards active/passive state to .body
+    public /*override*/ actived()     : JssStyle { return {
+        // children:
+        [bodyElm]: super.actived(),
     }}
-
-    public /*override*/ statesOld(inherit = false): JssStyle {
-        // skip Element's states
-        // jump to indication's states
-        return this.indicationStatesOld(inherit);
-    }
-
-
-
-    // functions:
-    public /*override*/ indicationAnimFnOld(): JssStyle { return {
-        // define an *animations* func for the AccordionItem's body:
-        [bodyElm]: {
-            [this.decl(this._animFnOld)]: [
-                ecssProps.anim,
-                this.ref(this._animEnableDisable), // 2nd : if AccordionItem's header is disable(d) => the AccordionItem's body is disable(d) too
-                this.ref(this._animActivePassive), // 1st : if AccordionItem's header is active(d)  => the AccordionItem's body is visible
-            ],
-        },
+    public /*override*/ activating()  : JssStyle { return {
+        // children:
+        [bodyElm]: super.activating(),
     }}
-
-    public /*override*/ propsFnOld(): JssStyle { return {
-        // skip Element's propsFn but preserves animFn
-        // jump to indication's propsFn
-
-        extend: [
-            //TODO: update...
-            // this.indicationPropsFn(),
-        ] as JssStyle,
-
-
-
-        ...this.animFnOld(),
+    public /*override*/ passivating() : JssStyle { return {
+        // children:
+        [bodyElm]: super.passivating(),
     }}
-    public /*override*/ animFnOld(): JssStyle {
-        // skip Element's animFn
-        // jump to indication's animFn
-        return this.indicationAnimFnOld();
-    }
+    public /*override*/ passived()    : JssStyle { return {
+        // children:
+        [bodyElm]: super.passived(),
+    }}
+    //#endregion forwards active/passive state to .body
 
 
 
     // styles:
-    protected /*virtual*/ bodyBasicStyle(): JssStyle { return {
-        // apply fn props:
-        anim : this.ref(this._animFnOld),
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'body')), // apply *general* cssProps starting with body***
-    }}
     public /*override*/ basicStyle(): JssStyle { return {
         // children:
         [bodyElm]: this.bodyBasicStyle(),
@@ -200,8 +104,17 @@ export class AccordionItemStylesBuilder extends PopupStyles {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
+    protected /*virtual*/ bodyBasicStyle(): JssStyle { return {
+        // apply fn props:
+        anim : this.ref(this._anim),
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'body')), // apply *general* cssProps starting with body***
+    }}
 }
-export const styles = new AccordionItemStylesBuilder();
+export const accordionItemStyles = new AccordionItemStyles();
 
 
 
@@ -279,17 +192,17 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface AccordionItemProps<TElement extends HTMLElement = HTMLElement>
     extends
-        ListgroupItems.Props<TElement>,
-        Indicators.TogglerActiveProps
+        ListgroupItemProps<TElement>,
+        TogglerActiveProps
 {
     // accessibility:
     label?          : string | React.ReactNode
 }
-export default function AccordionItem<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function AccordionItem<TElement extends HTMLElement = HTMLElement>(props: AccordionItemProps<TElement>) {
     // styles:
-    const accItemStyles         = styles.useStyles();
+    const styles                = accordionItemStyles.useStyles();
 
     
     
@@ -335,7 +248,7 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
 
 
             // classes:
-            mainClass={props.mainClass ?? accItemStyles.main}
+            mainClass={props.mainClass ?? styles.main}
 
 
             // events:
@@ -359,3 +272,4 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
     </>);
 }
 AccordionItem.prototype = ListgroupItem.prototype; // mark as ListgroupItem compatible
+export { AccordionItem }
