@@ -30,21 +30,6 @@ import {
 
 // styles:
 
-export interface IControlStylesBuilderOld {
-    // states:
-    controlStatesOld(inherit : boolean): JssStyle
-
-
-
-    // functions:
-    controlPropsFn(): JssStyle
-    controlAnimFn(): JssStyle
-
-
-
-    // styles:
-    controlBasicStyle(): JssStyle
-}
 export class ControlStyles extends IndicatorStyles {
     //#region props
     //#region animations
@@ -365,14 +350,6 @@ export class ControlStyles extends IndicatorStyles {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-
-
-
-    // old:
-    public /*virtual*/ controlStatesOld(inherit = false): JssStyle { return {} }
-    public /*virtual*/ controlPropsFnOld(): JssStyle { return {} }
-    public /*virtual*/ controlAnimFnOld(): JssStyle { return {} }
-    public /*virtual*/ controlBasicStyleOld(): JssStyle { return {} }
 }
 export const controlStyles = new ControlStyles();
 

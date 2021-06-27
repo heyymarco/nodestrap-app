@@ -220,14 +220,6 @@ export class ActionControlStyles extends ControlStyles {
 
         this.ref(this._animPressRelease, this._animNone), // 1st : ctrl got pressed
     ]}
-
-
-
-    // old:
-    public /*override*/ controlStatesOld(inherit = false): JssStyle { return {
-    }}
-    public /*override*/ controlAnimFnOld(): JssStyle { return {
-    }}
 }
 export const actionControlStyles = new ActionControlStyles();
 

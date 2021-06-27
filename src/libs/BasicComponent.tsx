@@ -465,17 +465,15 @@ export class BasicComponentStyles extends ElementStyles {
 
 
     // states:
-    public /*override*/ useStates(inherit = false): JssStyle { return {
-        extend: [
-            super.useStates(inherit), // copy state rules from base
+    public /*override*/ states(inherit: boolean): ClassList { return [
+        ...super.states(inherit), // copy states from base
 
 
 
-            this.iif(!inherit,
-                this.themeDefault() // reset theme to default
-            ),
-        ] as JssStyle,
-    }}
+        [ null, this.iif(!inherit,
+            this.themeDefault() // reset theme to default
+        )],
+    ]}
     public /*virtual*/ themeDefault(theme: string|null = null): JssStyle {
         if (theme) return this.themeIf(theme);
         

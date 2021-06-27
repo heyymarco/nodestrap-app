@@ -6,7 +6,9 @@ import {
     // general types:
     JssStyle,
     Styles,
+    Cust,
     ClassList,
+    PropList,
 
     
     // components:
@@ -185,74 +187,46 @@ class ListgroupItemStyles extends ContentStyles {
 }
 
 class ListgroupActionItemStyles extends ListgroupItemStyles {
-    //#region mixins
-    protected /*override*/ applyStateNoAnimStartupOld(): JssStyle {
-        // @ts-ignore
-        return actionControlStyles.applyStateNoAnimStartupOld(); // copy no-anim-startup from ActionControl
-    }
-    //#endregion mixins
+    // variants:
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
+
+        ...actionControlStyles.variants(),
+    ]}
 
 
 
     // states:
-    public /*implement*/ controlThemesIf(): JssStyle {
-        //TODO: update
-        return {};
-        // return actionControlStyles.controlThemesIf(); // copy themes from ActionControl
-    }
-    public /*implement*/ controlStatesOld(inherit = false): JssStyle {
-        return actionControlStyles.controlStatesOld(inherit); // copy states from ActionControl
-    }
-    
-    public /*override*/ themesIfOld(): JssStyle { return {
-        extend: [
-            super.themesIfOld(), // copy themes from base
+    public /*override*/ states(inherit: boolean): ClassList { return [
+        ...super.states(inherit), // copy states from base
 
-            this.controlThemesIf(),
-        ] as JssStyle,
-    }}
-    public /*override*/ statesOld(inherit = false): JssStyle { return {
-        extend: [
-            super.statesOld(inherit), // copy states from base
-            
-            this.controlStatesOld(/*inherit =*/false), // do not inherit: Listgroup doesn't have [hover, leave, focus, blur]
-        ] as JssStyle,
-    }}
+        ...actionControlStyles.states(inherit),
+    ]}
 
 
 
     // functions:
-    public /*implement*/ controlPropsFn(): JssStyle {
-        return actionControlStyles.controlPropsFnOld(); // copy functional props from ActionControl
+    public /*override*/ propsFn(): PropList {
+        return actionControlStyles.propsFn();
     }
-    public /*implement*/ controlAnimFn(): JssStyle {
-        return actionControlStyles.controlAnimFnOld(); // copy functional anim from ActionControl
+    public /*override*/ boxShadowFn(): Cust.Ref[] {
+        return actionControlStyles.boxShadowFn();
     }
-
-    public /*override*/ propsFnOld(): JssStyle { return {
-        extend: [
-            super.propsFnOld(), // copy functional props from base
-
-            this.controlPropsFn(),
-        ] as JssStyle,
-    }}
-    public /*override*/ animFnOld(): JssStyle {
-        return this.controlAnimFn();
+    public /*override*/ filterFn(): Cust.Ref[] {
+        return actionControlStyles.filterFn();
+    }
+    public /*override*/ animFn(): Cust.Ref[] {
+        return actionControlStyles.animFn();
     }
 
 
 
     // styles:
-    public /*implement*/ controlBasicStyle(): JssStyle {
-        return actionControlStyles.controlBasicStyleOld(); // copy basicStyle from ActionControl
-    }
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
-            stripOuts.control,  // clear browser's default styles
-
             super.basicStyle(), // copy basicStyle from base
 
-            this.controlBasicStyle(),
+            actionControlStyles.basicStyle(),
         ] as JssStyle,
     }}
 }
@@ -508,8 +482,7 @@ export class ListgroupStyles extends ContentStyles {
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
     protected /*override*/ styles(): Styles<'main'|'@global'> {
-        const styles = super.styles();
-        
+        const styles                    = super.styles();
         const listgroupItemStyles       = new ListgroupItemStyles();
         const listgroupActionItemStyles = new ListgroupActionItemStyles();
 
