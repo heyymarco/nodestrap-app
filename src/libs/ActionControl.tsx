@@ -220,6 +220,25 @@ export class ActionControlStyles extends ControlStyles {
 
         this.ref(this._animPressRelease, this._animNone), // 1st : ctrl got pressed
     ]}
+
+
+
+    // styles:
+    public /*override*/ basicStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(), // copy basicStyle from base
+        ] as JssStyle,
+
+
+
+        // accessibility:
+        userSelect : 'none', // disable selecting text (double clicking not causing selecting text)
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
 }
 export const actionControlStyles = new ActionControlStyles();
 

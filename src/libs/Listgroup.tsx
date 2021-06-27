@@ -6,9 +6,7 @@ import {
     // general types:
     JssStyle,
     Styles,
-    Cust,
     ClassList,
-    PropList,
 
     
     // components:
@@ -34,7 +32,7 @@ import {
     Content,
 }                           from './Content'
 import {
-    actionControlStyles,
+    ActionControlStyles,
 }                           from './ActionControl'
 import ListgroupItem        from './ListgroupItem'
 import type * as ListgroupItems from './ListgroupItem'
@@ -178,56 +176,39 @@ class ListgroupItemStyles extends ContentStyles {
 
         // sizes:
         flex    : [[1, 1]], // growable & shrinkable, the size fills the wrapper
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
 }
 
-class ListgroupActionItemStyles extends ListgroupItemStyles {
-    // variants:
-    public /*override*/ variants(): ClassList { return [
-        ...super.variants(), // copy variants from base
-
-        ...actionControlStyles.variants(),
-    ]}
-
-
-
+class ListgroupActionItemStyles extends ActionControlStyles {
     // states:
-    public /*override*/ states(inherit: boolean): ClassList { return [
-        ...super.states(inherit), // copy states from base
+    public /*override*/ active()      : JssStyle { return {
+        extend: [
+            super.active(),
 
-        ...actionControlStyles.states(inherit),
-    ]}
-
-
-
-    // functions:
-    public /*override*/ propsFn(): PropList {
-        return actionControlStyles.propsFn();
-    }
-    public /*override*/ boxShadowFn(): Cust.Ref[] {
-        return actionControlStyles.boxShadowFn();
-    }
-    public /*override*/ filterFn(): Cust.Ref[] {
-        return actionControlStyles.filterFn();
-    }
-    public /*override*/ animFn(): Cust.Ref[] {
-        return actionControlStyles.animFn();
-    }
-
-
-
+            super.markActive(), // keeps mark active on active
+        ] as JssStyle,
+    }}
+    public /*override*/ markActive() : JssStyle { return {} } // do not mark active on focus, arrive
+    
+    
+    
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
-
-            actionControlStyles.basicStyle(),
         ] as JssStyle,
+
+
+
+        // strip out borders:
+        border      : undefined,
+        borderColor : undefined,
+        borderRadius: undefined,
+
+
+
+        // strip out shadows:
+        boxShadow   : undefined,
     }}
 }
 
@@ -240,7 +221,17 @@ export class ListgroupStyles extends ContentStyles {
 
         [ '&:not(.inline)', this.block()  ],
         [      '&.inline',  this.inline() ],
-        [ 'bullet', this.bullet()         ],
+
+        [ '&.bullet', this.bullet()       ],
+        [ '&:not(.bullet)', {
+            [wrapperElm] : {
+                [listItemElm]: {
+                    '&:not(.actionCtrl), &.actionCtrl': {
+                        boxShadow : [['none'], '!important'], // no focus animation
+                    },
+                },
+            },
+        }]
     ]}
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -359,7 +350,7 @@ export class ListgroupStyles extends ContentStyles {
 
 
         //#region children
-        '&, &.inline': { // for normal and .inline style
+        '&:not(.inline), &.inline': { // for .block and .inline style
             [wrapperElm]: { // wrapper of listItem
                 // kill separator between bullets:
                 borderWidth : 0,
@@ -465,15 +456,6 @@ export class ListgroupStyles extends ContentStyles {
             justifyContent : 'stretch', // listItems height are 100% of the wrapper (the listItems also need to have growable & shrinkable)
             alignItems     : 'stretch', // listItems width  are 100% of the wrapper
         } as JssStyle, // wrapper of listItem
-        '&:not(.bullet)' : {
-            [wrapperElm] : {
-                [listItemElm]: {
-                    '&:not(.actionCtrl), &.actionCtrl': {
-                        boxShadow : [['none'], '!important'], // no focus animation
-                    },
-                },
-            },
-        },
         //#endregion children
 
 
@@ -494,7 +476,7 @@ export class ListgroupStyles extends ContentStyles {
 
                 {
                     [wrapperElm]: { [listItemElm]: {
-                        '&:not(.actionCtrl)': { extend: [
+                        extend: [
                             // watch variant classes:
                             listgroupItemStyles.useVariants(),
                 
@@ -507,7 +489,7 @@ export class ListgroupStyles extends ContentStyles {
                             // all the required stuff has been loaded,
                             // now load the basicStyle:
                             listgroupItemStyles.basicStyle(),
-                        ] as JssStyle },
+                        ] as JssStyle,
 
 
 
@@ -525,6 +507,11 @@ export class ListgroupStyles extends ContentStyles {
                             // now load the basicStyle:
                             listgroupActionItemStyles.basicStyle(),
                         ] as JssStyle },
+
+
+
+                        // customize:
+                        '&:not(.actionCtrl), &.actionCtrl': this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
                     }},
                 },
             ] as JssStyle,

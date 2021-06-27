@@ -176,11 +176,6 @@ export class ButtonStyles extends ActionControlStyles {
 
 
 
-        // accessibility:
-        userSelect     : 'none', // disable selecting button's text
-
-
-
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
