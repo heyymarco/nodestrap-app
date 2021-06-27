@@ -142,7 +142,7 @@ export class ControlStyles extends IndicatorStyles {
 
 
         [ null, {
-            // requires usePropsFn() for using [_foregFn, _backgFn, & _boxShadowFocusFn] in the [focused(), focusing(), arrived(), arriving()] => [focus(), arrive()] => active() => toggleOnActive()
+            // requires usePropsFn() for using [_foregFn, _backgFn, & _boxShadowFocusFn] in the [focused(), focusing(), arrived(), arriving()] => [focus(), arrive()] => markActive() => toggleOnActive()
             // the code below causing useStates() implicitly includes usePropsFn()
             ...this.usePropsFn(),
 

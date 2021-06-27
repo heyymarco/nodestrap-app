@@ -161,7 +161,7 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
         [ null, {
-            // requires usePropsFn() for using _foregFn & _backgFn in the actived() & activating() => active() => toggleOnActive()
+            // requires usePropsFn() for using _foregFn & _backgFn in the actived() & activating() => active() => markActive() => toggleOnActive()
             // the code below causing useStates() implicitly includes usePropsFn()
             ...this.usePropsFn(),
 
@@ -359,7 +359,7 @@ export class IndicatorStyles extends BasicComponentStyles {
 
         this.ref(this._filterEnableDisable, this._filterNone),
         this.ref(this._filterActivePassive, this._filterNone),
-        this.ref(this._filterPressRelease,  this._filterNone), // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
+        this.ref(this._filterPressRelease,  this._filterNone), // will be used in ActionControl, so we can re-use our animations (enable, disable, active, passive) in the Control
         this.ref(this._filterArriveLeave,   this._filterNone), // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
     ]}
     public /*override*/ animFn(): Cust.Ref[] { return [
