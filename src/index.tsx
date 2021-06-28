@@ -32,7 +32,7 @@ import MasonryApp           from './apps/MasonryApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <ControlApp />
+        <ActionControlApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

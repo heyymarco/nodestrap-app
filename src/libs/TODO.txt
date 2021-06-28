@@ -81,7 +81,7 @@ BasicComponent<TElement>^
 			Card<TElement>@
 				Modal<TElement>#
 		Control<TElement>^
-			ActionControl<TElement>@
+			ActionControl<TElement>^
 			EditableControl<TElement>@
 				EditableTextControl<TElement>#
 		Popup<TElement>^

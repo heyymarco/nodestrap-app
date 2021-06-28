@@ -237,7 +237,6 @@ export interface ButtonProps
 {
     // actions:
     type?        : BtnType
-    onClick?     : React.MouseEventHandler<HTMLButtonElement>
     
     
     // accessibility:
@@ -307,7 +306,6 @@ export default function Button(props: ButtonProps) {
             {...{
                 // actions:
                 type    : typeFn,
-                onClick : props.onClick,
             }}
         >
             { props.text }

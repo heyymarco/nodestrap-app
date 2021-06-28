@@ -138,35 +138,6 @@ export class ActionControlStyles extends ControlStyles {
           '&.released'                                                                                     , this.released()  ],
     ]}
 
-    public /*override*/ actived()     : JssStyle { return {
-        extend: [
-            super.actived(),
-
-            // this.pressed(),
-        ] as JssStyle,
-    }}
-    public /*override*/ activating()  : JssStyle { return {
-        extend: [
-            super.activating(),
-
-            // this.pressing(),
-        ] as JssStyle,
-    }}
-    public /*override*/ passivating() : JssStyle { return {
-        extend: [
-            super.passivating(),
-
-            // this.releasing(),
-        ] as JssStyle,
-    }}
-    public /*override*/ passived()    : JssStyle { return {
-        extend: [
-            super.passived(),
-
-            // this.released(),
-        ] as JssStyle,
-    }}
-
     public /*virtual*/ pressed()   : JssStyle { return {
         [this.decl(this._filterPressRelease)] : cssProps.filterPress,
 
@@ -310,7 +281,6 @@ export function useStatePressRelease(props: IndicationProps, classes = { active:
         // behaviors:
         actionCtrl    : true,      // always use actionCtrl implementation
     }, activeDn, classes);
-
 
 
     
