@@ -306,7 +306,7 @@ export class BasicComponentStyles extends ElementStyles {
 
 
         [ null, {
-            // requires usePropsFn() for using [_outlinedForegFn, _outlinedBackgFn, _mildForegFn, _mildBackgFn] in the [outlined() & mild()] => [toggleOnOutlined() & toggleOnMild()]
+            // requires usePropsFn() for using [_outlinedForegFn, _outlinedBackgFn, _mildForegFn, _mildBackgFn] in the [outlined() & mild()]
             // the code below causing useVariants() implicitly includes usePropsFn()
             ...this.usePropsFn(),
         }],
