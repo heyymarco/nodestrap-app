@@ -10,7 +10,10 @@ import './App.css';
 import Container 		from '../libs/Container';
 import Control 			from '../libs/Control';
 import ActionControl	from '../libs/ActionControl';
-import Button			from '../libs/Button';
+import {
+	Button,
+	BtnStyle,
+}						from '../libs/Button';
 
 
 
@@ -70,6 +73,9 @@ function App() {
 
 	const presses = [false, undefined, true];
 	const [press,       setPress      ] = useState<boolean|undefined>(undefined);
+
+	const btnStyles = [undefined, 'link', 'ghost'];
+	const [btnStyle,    setBtnStyle     ] = useState<BtnStyle|undefined>(undefined);
 
 
 
@@ -155,6 +161,8 @@ function App() {
 					focus={focus}
 					
 					press={press}
+
+					btnStyle={btnStyle}
 				>
                     button
                 </Button>
@@ -327,6 +335,21 @@ function App() {
 									})())}
 								/>
 								{`${pr ?? 'auto'}`}
+							</label>
+						)
+					}
+				</p>
+				<p>
+					BtnStyle:
+					{
+						btnStyles.map(st =>
+							<label key={st ?? ''}>
+								<input type='radio'
+									value={st}
+									checked={btnStyle===st}
+									onChange={(e) => setBtnStyle((e.target.value || undefined) as (BtnStyle|undefined))}
+								/>
+								{`${st}`}
 							</label>
 						)
 					}

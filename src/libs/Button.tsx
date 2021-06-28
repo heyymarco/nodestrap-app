@@ -54,12 +54,12 @@ export class ButtonStyles extends ActionControlStyles {
         //#region fully link style without outlined
         '&:not(.outlined)' : {
             // borders:
-            borderWidth  : 0, // no_border if not outlined
+            border : 'none', // no_border if not outlined
 
 
 
             // backgrounds:
-            ...this.toggleOffOutlined(), // gradient is not supported because no_border
+            ...this.toggleOffGradient(), // gradient is not supported because no_border
         },
         //#endregion fully link style without outlined
 
@@ -72,18 +72,22 @@ export class ButtonStyles extends ActionControlStyles {
 
 
 
-        // spacings:
-        padding        : spacers.xs,
-
-
-
         // borders:
         borderRadius   : border.radiuses.sm,
 
 
 
-        // re-define a default theme:
-        ...this.themeDefault('primary'),
+        // spacings:
+        padding        : spacers.xs,
+
+
+
+        // set the active theme as a default theme:
+        ...this.themeActive(),
+
+        // no switch active:
+        [this.decl(this._activeForegTg)]: 'initial !important',
+        [this.decl(this._activeBackgTg)]: 'initial !important',
         //#endregion link styles
 
 
