@@ -139,11 +139,6 @@ export class ButtonStyles extends ActionControlStyles {
 
 
 
-    // states:
-    /* -- same as parent -- */
-
-
-
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
@@ -266,6 +261,10 @@ export default function Button(props: ButtonProps) {
 
         // actions:
         type,
+
+
+        // accessibility:
+        active,
     ...restProps} = props;
     
 
@@ -289,6 +288,7 @@ export default function Button(props: ButtonProps) {
 
             // accessibility:
             aria-label={props.label}
+            press={props.press ?? active}
 
 
             // variants:

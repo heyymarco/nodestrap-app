@@ -22,7 +22,6 @@ import {
 }                           from './accessibilities'
 import {
     useStateActivePassive,
-    IndicationProps,
 }                           from './Indicator'
 import {
     ControlStyles,
@@ -177,6 +176,9 @@ export class ActionControlStyles extends ControlStyles {
         ] as JssStyle,
     }}
     public /*virtual*/ press()     : JssStyle { return {
+        extend: [
+            this.markActive(),
+        ] as JssStyle,
     }}
     public /*virtual*/ release()   : JssStyle { return {
     }}
@@ -259,7 +261,7 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export function useStatePressRelease(props: IndicationProps, classes = { active: 'press' as (string|null), actived: 'pressed' as (string|null), passive: 'release' as (string|null) }, mouses: number[]|null = [0], keys: string[]|null = ['space']) {
+export function useStatePressRelease(props: ActionControlProps, classes = { active: 'press' as (string|null), actived: 'pressed' as (string|null), passive: 'release' as (string|null) }, mouses: number[]|null = [0], keys: string[]|null = ['space']) {
     // fn props:
     const propEnabled = usePropEnabled(props);
 
@@ -274,18 +276,18 @@ export function useStatePressRelease(props: IndicationProps, classes = { active:
 
 
         // accessibility:
-        active        : undefined, // do not `.press`/`.release` when [active] (no *controllable active*)
-        inheritActive : false,     // do not `.press`/`.release` when parent [active]
+        active        : props.press, // controllable active => controllable press
+        inheritActive : false,       // do not `.press`/`.release` when parent [active]
 
 
         // behaviors:
-        actionCtrl    : true,      // always use actionCtrl implementation
+        actionCtrl    : true,        // always use actionCtrl implementation
     }, activeDn, classes);
 
 
     
     useEffect(() => {
-        if (!propEnabled) return; // control is disabled => no response required
+        if (!propEnabled) return;    // control is disabled => no response required
 
 
 
@@ -337,6 +339,8 @@ export interface ActionControlProps<TElement extends HTMLElement = HTMLElement>
     extends
         ControlProps<TElement>
 {
+    // accessibility:
+    press?   : boolean
 }
 export default function ActionControl<TElement extends HTMLElement = HTMLElement>(props: ActionControlProps<TElement>) {
     // styles:

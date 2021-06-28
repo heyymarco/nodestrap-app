@@ -24,6 +24,7 @@ import BasicComponentApp            from './apps/BasicComponentApp';
             import AlertApp         from './apps/AlertApp';
         import ControlApp           from './apps/ControlApp';
             import ActionControlApp from './apps/ActionControlApp';
+                import ButtonApp    from './apps/ButtonApp';
     
 
 import MasonryApp           from './apps/MasonryApp';
@@ -32,7 +33,7 @@ import MasonryApp           from './apps/MasonryApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <ActionControlApp />
+        <ButtonApp />
     </React.StrictMode>,
     document.getElementById('root')
 );
