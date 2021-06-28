@@ -92,9 +92,11 @@ export class ModalStylesBuilder extends PopupStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-    public /*override*/ gradient(): JssStyle { return {} } // disabled
-    public /*override*/ outlined(): JssStyle { return {} } // disabled
-    public /*virtual*/ scrollable(): JssStyle { return {
+    public /*override*/ noGradient() : JssStyle { return {} } // disabled
+    public /*override*/ gradient()   : JssStyle { return {} } // disabled
+    public /*override*/ noOutlined() : JssStyle { return {} } // disabled
+    public /*override*/ outlined()   : JssStyle { return {} } // disabled
+    public /*virtual*/ scrollable()  : JssStyle { return {
         [cardElm]: { // Card's layer
             '&:not(._)': { // force overwrite
                 // sizes:

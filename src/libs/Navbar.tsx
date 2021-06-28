@@ -521,7 +521,9 @@ export class NavbarStylesBuilder extends ControlStyles {
                                     menusElm,
                                     menuElm,
                                 ].join(',')]: {
-                                    ...this.toggleOffGradient(),
+                                    extend: [
+                                        this.noGradient(),
+                                    ] as JssStyle,
                                 } as JssStyle,
                             },
                             //#endregion remove double gradient to menu group & menu items

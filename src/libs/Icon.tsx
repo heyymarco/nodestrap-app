@@ -70,7 +70,8 @@ export class IconStylesBuilder extends BasicComponentStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-    public /*override*/ outlined(): JssStyle { return {} } // remove outlined style
+    public /*override*/ noOutlined() : JssStyle { return {} } // disabled
+    public /*override*/ outlined()   : JssStyle { return {} } // disabled
     public /*virtual*/ font(): JssStyle { return {
         '&::after': {
             // layout:

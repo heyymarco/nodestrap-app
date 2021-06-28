@@ -309,34 +309,21 @@ export class BasicComponentStyles extends ElementStyles {
             // requires usePropsFn() for using [_outlinedForegFn, _outlinedBackgFn, _mildForegFn, _mildBackgFn] in the [outlined() & mild()] => [toggleOnOutlined() & toggleOnMild()]
             // the code below causing useVariants() implicitly includes usePropsFn()
             ...this.usePropsFn(),
-
-
-
-            //#region reset toggles/filters/anims to initial/inherit state
-            // *toggle off* the background gradient prop:
-            // but still be able to *toggle on* by parent (inherit)
-            ...this.toggleOffGradient(/*inherit =*/true),
-
-
-
-            // *toggle off* the outlined props:
-            // but still be able to *toggle on* by parent (inherit)
-            ...this.toggleOffOutlined(/*inherit =*/true),
-
-
-
-            // *toggle off* the mild props:
-            ...this.toggleOffMild(/*inherit =*/false), // no inherit
-            //#endregion reset toggles/filters/anims to initial/inherit state
         }],
 
 
 
         ...this.themes(),
         ...this.sizes(),
-        [ 'gradient', this.gradient() ],
-        [ 'outlined', this.outlined() ],
-        [ 'mild'    , this.mild()     ],
+
+        [ '&:not(.gradient)', this.noGradient(/*inherit =*/true) ],
+        [      '&.gradient' , this.gradient()                    ],
+
+        [ '&:not(.outlined)', this.noOutlined(/*inherit =*/true) ],
+        [      '&.outlined' , this.outlined()                    ],
+
+        [ '&:not(.mild)'    , this.noMild(/*inherit =*/false)    ],
+        [      '&.mild'     , this.mild()                        ],
     ]}
 
     /**
@@ -409,58 +396,58 @@ export class BasicComponentStyles extends ElementStyles {
     }}
 
     /**
-     * Creates a gradient definition for if the gradient variant is enabled.
-     * @returns A `JssStyle` represents the gradient definition.
+     * Creates a no gradient definition when the gradient variant is disabled.
+     * @returns A `JssStyle` represents the no gradient definition.
      */
-    public /*virtual*/ gradient(): JssStyle {
-        // *toggle on* the background gradient prop:
-        return this.toggleOnGradient();
-    }
-    public /*virtual*/ toggleOnGradient(): PropList { return {
-        // *toggle on* the background gradient prop:
-        [this.decl(this._backgGradTg)]     : cssProps.backgGrad,
-    }}
-    public /*virtual*/ toggleOffGradient(inherit = false): PropList { return {
+    public /*virtual*/ noGradient(inherit = false): JssStyle { return {
         // *toggle off* the background gradient prop:
         [this.decl(this._backgGradTg)]     : inherit ? 'unset' : 'initial',
     }}
+    /**
+     * Creates a gradient definition when the gradient variant is enabled.
+     * @returns A `JssStyle` represents the gradient definition.
+     */
+    public /*virtual*/ gradient(): JssStyle { return {
+        // *toggle on* the background gradient prop:
+        [this.decl(this._backgGradTg)]     : cssProps.backgGrad,
+    }}
 
     /**
-     * Creates an outlined definition for if the outlined variant is enabled.
-     * @returns A `JssStyle` represents the outlined definition.
+     * Creates a no outlined definition when the outlined variant is disabled.
+     * @returns A `JssStyle` represents the no outlined definition.
      */
-    public /*virtual*/ outlined(): JssStyle {
-        // *toggle on* the outlined props:
-        return this.toggleOnOutlined();
-    }
-    public /*virtual*/ toggleOnOutlined(): PropList { return {
-        // *toggle on* the outlined props:
-        [this.decl(this._outlinedForegTg)] : this.ref(this._outlinedForegFn),
-        [this.decl(this._outlinedBackgTg)] : this.ref(this._outlinedBackgFn),
-    }}
-    public /*virtual*/ toggleOffOutlined(inherit = false): PropList { return {
+    public /*virtual*/ noOutlined(inherit = false): JssStyle { return {
         // *toggle off* the outlined props:
         [this.decl(this._outlinedForegTg)] : inherit ? 'unset' : 'initial',
         [this.decl(this._outlinedBackgTg)] : inherit ? 'unset' : 'initial',
     }}
+    /**
+     * Creates an outlined definition when the outlined variant is enabled.
+     * @returns A `JssStyle` represents the outlined definition.
+     */
+    public /*virtual*/ outlined(): JssStyle { return {
+        // *toggle on* the outlined props:
+        [this.decl(this._outlinedForegTg)] : this.ref(this._outlinedForegFn),
+        [this.decl(this._outlinedBackgTg)] : this.ref(this._outlinedBackgFn),
+    }}
 
     /**
-     * Creates a mild definition for if the mild variant is enabled.
-     * @returns A `JssStyle` represents the mild definition.
+     * Creates a no mild definition when the mild variant is disabled.
+     * @returns A `JssStyle` represents the no mild definition.
      */
-    public /*virtual*/ mild(): JssStyle {
-        // *toggle on* the mild props:
-        return this.toggleOnMild();
-    }
-    public /*virtual*/ toggleOnMild(): PropList { return {
-        // *toggle on* the mild props:
-        [this.decl(this._mildForegTg)] : this.ref(this._mildForegFn),
-        [this.decl(this._mildBackgTg)] : this.ref(this._mildBackgFn),
-    }}
-    public /*virtual*/ toggleOffMild(inherit = false): PropList { return {
+    public /*virtual*/ noMild(inherit = false): JssStyle { return {
         // *toggle off* the mild props:
         [this.decl(this._mildForegTg)] : inherit ? 'unset' : 'initial',
         [this.decl(this._mildBackgTg)] : inherit ? 'unset' : 'initial',
+    }}
+    /**
+     * Creates a mild definition when the mild variant is enabled.
+     * @returns A `JssStyle` represents the mild definition.
+     */
+    public /*virtual*/ mild(): JssStyle { return {
+        // *toggle on* the mild props:
+        [this.decl(this._mildForegTg)] : this.ref(this._mildForegFn),
+        [this.decl(this._mildBackgTg)] : this.ref(this._mildBackgFn),
     }}
 
 

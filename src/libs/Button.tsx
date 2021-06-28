@@ -6,6 +6,7 @@ import {
     // general types:
     JssStyle,
     ClassList,
+    PropList,
 
 
     // components:
@@ -13,6 +14,9 @@ import {
 }                           from './nodestrap'   // nodestrap's core
 import * as border          from './borders'     // configurable borders & border radiuses defs
 import spacers              from './spacers'     // configurable spaces defs
+import {
+    ControlStyles,
+}                           from './Control'
 import {
     ActionControlStyles,
     ActionControlProps,
@@ -22,6 +26,87 @@ import {
 
 
 // styles:
+
+class GhostStyles extends ControlStyles {
+    // variants:
+    public /*override*/ themes()                     : ClassList { return [] } // disabled
+    public /*override*/ sizes()                      : ClassList { return [] } // disabled
+    public /*override*/ noGradient(inherit = false)  : JssStyle  { return {} } // disabled
+    public /*override*/ gradient()                   : JssStyle  { return {} } // disabled
+    public /*override*/ noOutlined(inherit = false)  : JssStyle  { return {
+        // borders:
+        border : 'none', // no_border if not outlined
+    }}
+    public /*override*/ outlined()                   : JssStyle  { return {} } // disabled
+    public /*override*/ noMild(inherit = false)      : JssStyle  { return {} } // disabled
+    public /*override*/ mild()                       : JssStyle  { return {} } // disabled
+
+
+
+    // states:
+    public /*override*/ themeDefault(theme: string|null): JssStyle { return {} } // disabled
+
+    public /*override*/ enabled()     : JssStyle { return {} } // disabled
+    public /*override*/ enabling()    : JssStyle { return {} } // disabled
+    public /*override*/ disabling()   : JssStyle { return {} } // disabled
+    public /*override*/ disabled()    : JssStyle { return {} } // disabled
+
+    public /*override*/ actived()     : JssStyle { return {} } // disabled
+    public /*override*/ activating()  : JssStyle { return {} } // disabled
+    public /*override*/ passivating() : JssStyle { return {} } // disabled
+    public /*override*/ passived()    : JssStyle { return {} } // disabled
+
+    public /*override*/ focused()     : JssStyle { return {} } // disabled
+    public /*override*/ focusing()    : JssStyle { return {} } // disabled
+    public /*override*/ blurring()    : JssStyle { return {} } // disabled
+    public /*override*/ blurred()     : JssStyle { return {} } // disabled
+
+    public /*override*/ arrived()     : JssStyle {
+        return this.arrive();
+    }
+    public /*override*/ arriving()    : JssStyle {
+        return this.arrive();
+    }
+    public /*override*/ arrive()      : JssStyle { return {
+        opacity: cssProps.ghostOpacityHover,
+    }}
+    public /*override*/ leaving()     : JssStyle { return {} } // disabled
+    public /*override*/ left()        : JssStyle { return {
+        extend: [
+            super.noGradient(),
+        ] as JssStyle,
+    }}
+
+
+
+    // functions:
+    public /*override*/ propsFn(): PropList { return {} } // disabled
+
+
+
+    // styles:
+    public /*override*/ basicStyle(): JssStyle { return {
+        extend: [
+            super.outlined(),
+        ] as JssStyle,
+
+
+
+        // borders:
+        boxShadow : 'none !important', // no focus animation
+
+
+
+        // no switch active:
+        [this.decl(this._activeForegTg)]: 'initial !important',
+        [this.decl(this._activeBackgTg)]: 'initial !important',
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'ghost')), // apply *general* cssProps starting with ghost***
+    }}
+}
 
 export class ButtonStyles extends ActionControlStyles {
     // variants:
@@ -46,7 +131,7 @@ export class ButtonStyles extends ActionControlStyles {
 
     public /*virtual*/ link(): JssStyle { return {
         extend: [
-            this.outlined(), // copy outlined style from base
+            this.outlined(),
         ] as JssStyle,
 
 
@@ -59,7 +144,9 @@ export class ButtonStyles extends ActionControlStyles {
 
 
             // backgrounds:
-            ...this.toggleOffGradient(), // gradient is not supported because no_border
+            extend: [
+                super.noGradient(), // gradient is not supported because no_border
+            ] as JssStyle,
         },
         //#endregion fully link style without outlined
 
@@ -95,9 +182,29 @@ export class ButtonStyles extends ActionControlStyles {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'link')), // apply *general* cssProps starting with link***
     }}
-    public /*virtual*/ ghost(): JssStyle { return {
+    public /*virtual*/ ghost(): JssStyle {
+        const ghostStyles = new GhostStyles();
+
+        return {
+            extend: [
+                // watch variant classes:
+                ghostStyles.useVariants(),
+                        
+                // watch state classes/pseudo-classes:
+                ghostStyles.useStates(),
+
+                // after watching => use func props:
+                ghostStyles.usePropsFn(),
+
+                // all the required stuff has been loaded,
+                // now load the basicStyle:
+                ghostStyles.basicStyle(),
+            ] as JssStyle,
+        };
+    }
+    public /*virtual*/ ghostX(): JssStyle { return {
         extend: [
-            this.outlined(), // copy outlined style from base
+            this.outlined(),
 
 
 
@@ -118,7 +225,7 @@ export class ButtonStyles extends ActionControlStyles {
                 //#region enable gradient only if hover
                 {'&:not(:hover)': {
                     // backgrounds:
-                    ...this.toggleOffOutlined(), // gradient is not supported because no_border and not hover
+                    ...this.noOutlined(), // gradient is not supported because no_border and not hover
                 }},
                 //#endregion enable gradient only if hover
             ] as JssStyle,
@@ -126,14 +233,14 @@ export class ButtonStyles extends ActionControlStyles {
 
 
             // borders:
-            borderWidth  : 0, // hides the border if not outlined
+            border : 'none', // no_border if not outlined
         },
         //#endregion fully ghost style without outlined
 
 
 
         // borders:
-        boxShadow : [['none'], '!important'], // no focus animation
+        boxShadow : 'none !important', // no focus animation
 
 
 
@@ -247,6 +354,7 @@ export interface ButtonProps
     children?    : React.ReactNode
 }
 export default function Button(props: ButtonProps) {
+    new GhostStyles().useStyles();
     // styles:
     const styles     = buttonStyles.useStyles();
 

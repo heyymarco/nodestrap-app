@@ -52,9 +52,12 @@ export class AccordionItemStyles extends PopupStyles {
         // overwrites propName = propName{Size}:
         [bodyElm]: this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-    public /*override*/ gradient() : JssStyle { return {} } // disabled
-    public /*override*/ outlined() : JssStyle { return {} } // disabled
-    public /*override*/ mild()     : JssStyle { return {} } // disabled
+    public /*override*/ noGradient() : JssStyle { return {} } // disabled
+    public /*override*/ gradient()   : JssStyle { return {} } // disabled
+    public /*override*/ noOutlined() : JssStyle { return {} } // disabled
+    public /*override*/ outlined()   : JssStyle { return {} } // disabled
+    public /*override*/ noMild()     : JssStyle { return {} } // disabled
+    public /*override*/ mild()       : JssStyle { return {} } // disabled
 
     public /*virtual*/ inline(): JssStyle { return {
         // overwrites propName = propName{Inline}:
