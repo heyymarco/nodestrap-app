@@ -96,6 +96,8 @@ export class ModalStylesBuilder extends PopupStyles {
     public /*override*/ gradient()   : JssStyle { return {} } // disabled
     public /*override*/ noOutlined() : JssStyle { return {} } // disabled
     public /*override*/ outlined()   : JssStyle { return {} } // disabled
+    public /*override*/ noMild()     : JssStyle { return {} } // disabled
+    public /*override*/ mild()       : JssStyle { return {} } // disabled
     public /*virtual*/ scrollable()  : JssStyle { return {
         [cardElm]: { // Card's layer
             '&:not(._)': { // force overwrite

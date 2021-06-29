@@ -145,7 +145,7 @@ export class ButtonStyles extends ActionControlStyles {
 
             // backgrounds:
             extend: [
-                super.noGradient(), // gradient is not supported because no_border
+                this.noGradient(), // gradient is not supported because no_border
             ] as JssStyle,
         },
         //#endregion fully link style without outlined
@@ -202,51 +202,6 @@ export class ButtonStyles extends ActionControlStyles {
             ] as JssStyle,
         };
     }
-    public /*virtual*/ ghostX(): JssStyle { return {
-        extend: [
-            this.outlined(),
-
-
-
-            //#region fully opaque if enable & hover
-            this.stateNotDisable({extend: [
-                this.stateHover({
-                    opacity: cssProps.ghostOpacityHover,
-                }),
-            ] as JssStyle}),
-            //#endregion fully opaque if enable & hover
-        ] as JssStyle,
-
-
-
-        //#region fully ghost style without outlined
-        '&:not(.outlined)' : {
-            extend: [
-                //#region enable gradient only if hover
-                {'&:not(:hover)': {
-                    // backgrounds:
-                    ...this.noOutlined(), // gradient is not supported because no_border and not hover
-                }},
-                //#endregion enable gradient only if hover
-            ] as JssStyle,
-
-
-
-            // borders:
-            border : 'none', // no_border if not outlined
-        },
-        //#endregion fully ghost style without outlined
-
-
-
-        // borders:
-        boxShadow : 'none !important', // no focus animation
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'ghost')), // apply *general* cssProps starting with ghost***
-    }}
 
 
 
