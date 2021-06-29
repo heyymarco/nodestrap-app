@@ -142,10 +142,7 @@ export class ModalStylesBuilder extends PopupStyles {
                 [this.decl(this._animActivePassive)]        : cssProps.animActive,
                 [this.decl(this._overlayAnimActivePassive)] : cssProps.overlayAnimActive,
     
-                extend: [
-                    //TODO: update....
-                    this.themeActive(),
-                ] as JssStyle,
+                ...this.themeActive(),
             }),
             this.statePassivating({ // [passivating]
                 [this.decl(this._animActivePassive)]        : cssProps.animPassive,

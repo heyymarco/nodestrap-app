@@ -457,11 +457,19 @@ export class BasicComponentStyles extends ElementStyles {
 
 
 
-        [ null, this.iif(!inherit,
-            this.themeDefault() // reset theme to default
-        )],
+        [ null, {
+            // reset filters/anims/toggles to initial/inherit state:
+            ...this.resetDefaultState(inherit),
+        }],
     ]}
-    public /*virtual*/ themeDefault(theme: string|null = null): JssStyle {
+
+    public /*virtual*/ resetDefaultState(inherit = false): PropList {
+        return this.iif(!inherit,
+            this.themeDefault() // reset theme to default
+        );
+    }
+
+    public /*virtual*/ themeDefault(theme: string|null = null): PropList {
         if (theme) return this.themeIf(theme);
         
         return {
@@ -477,9 +485,9 @@ export class BasicComponentStyles extends ElementStyles {
     /**
      * Creates a conditional color definition for the specified `theme`.
      * @param theme The theme name written in camel case.
-     * @returns A `JssStyle` represents the conditional color definition for the specified `theme`.
+     * @returns A `PropList` represents the conditional color definition for the specified `theme`.
      */
-    public /*final*/ themeIf(theme: string): JssStyle { return {
+    public /*final*/ themeIf(theme: string): PropList { return {
         [this.decl(this._foregIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`],         // light on dark backg | dark on light backg
         [this.decl(this._backgIf)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
         [this.decl(this._borderIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],         // 20% background + 80% page's foreground
@@ -491,9 +499,9 @@ export class BasicComponentStyles extends ElementStyles {
     /**
      * Creates an important conditional color definition for the specified `theme`.
      * @param theme The theme name written in camel case.
-     * @returns A `JssStyle` represents the important conditional color definition for the specified `theme`.
+     * @returns A `PropList` represents the important conditional color definition for the specified `theme`.
      */
-    public /*final*/ themeIfIf(theme: string): JssStyle { return {
+    public /*final*/ themeIfIf(theme: string): PropList { return {
         [this.decl(this._foregIfIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`],         // light on dark backg | dark on light backg
         [this.decl(this._backgIfIf)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
         [this.decl(this._borderIfIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],         // 20% background + 80% page's foreground

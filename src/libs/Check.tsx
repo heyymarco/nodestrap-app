@@ -282,10 +282,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
                     [this.decl(this._animActivePassive)]   : icssProps.animActive,
                 },
 
-                extend: [
-                    //TODO: update....
-                    this.themeActive(),
-                ] as JssStyle,
+                ...this.themeActive(),
             }),
             this.stateClearing({ // [clearing] => label [passivating]
                 [labelElm]: {

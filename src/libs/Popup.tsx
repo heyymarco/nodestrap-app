@@ -64,9 +64,9 @@ export class PopupStyles extends IndicatorStyles {
 
         display: 'none', // hide the popup
     }}
-    public /*override*/ toggleOnActive()                 : PropList { return {} } // no active colors
     public /*override*/ toggleOffActive(inherit = false) : PropList { return {} } // no active colors
-    public /*override*/ themeActive(theme = 'secondary') : JssStyle { return {} } // no active theme
+    public /*override*/ toggleOnActive()                 : PropList { return {} } // no active colors
+    public /*override*/ themeActive(theme = 'secondary') : PropList { return {} } // no active theme
 
 
 

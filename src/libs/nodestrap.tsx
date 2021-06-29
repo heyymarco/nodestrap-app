@@ -292,8 +292,8 @@ export class ElementStyles {
 
 
     //#region mixins
-    protected iif(condition: boolean, content: JssStyle): JssStyle {
-        return condition ? content : {};
+    protected iif<T extends PropList|JssStyle>(condition: boolean, content: T): T {
+        return condition ? content : ({} as T);
     }
     //#endregion mixins
 

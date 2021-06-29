@@ -12,6 +12,7 @@ import {
     PropEx,
     Cust,
     ClassList,
+    PropList,
 
 
     // components:
@@ -110,10 +111,8 @@ export class ActionControlStyles extends ControlStyles {
 
 
         [ null, {
-            //#region reset toggles/filters/anims to initial/inherit state
-            [this.decl(this._filterPressRelease)] : inherit ? 'unset' : 'initial',
-            [this.decl(this._animPressRelease)]   : inherit ? 'unset' : 'initial',
-            //#endregion reset toggles/filters/anims to initial/inherit state
+            // reset filters/anims/toggles to initial/inherit state:
+            ...this.resetPressRelease(inherit),
         }],
 
 
@@ -137,6 +136,10 @@ export class ActionControlStyles extends ControlStyles {
           '&.released'                                                                                     , this.released()  ],
     ]}
 
+    public /*override*/ resetPressRelease(inherit: boolean) : PropList { return {
+        [this.decl(this._filterPressRelease)] : inherit ? 'unset' : 'initial',
+        [this.decl(this._animPressRelease)]   : inherit ? 'unset' : 'initial',
+    }}
     public /*virtual*/ pressed()   : JssStyle { return {
         [this.decl(this._filterPressRelease)] : cssProps.filterPress,
 

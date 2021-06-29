@@ -30,21 +30,25 @@ import {
 class GhostStyles extends ControlStyles {
     // variants:
     public /*override*/ themes()                     : ClassList { return [] } // disabled
+
     public /*override*/ sizes()                      : ClassList { return [] } // disabled
+
     public /*override*/ noGradient(inherit = false)  : JssStyle  { return {} } // disabled
     public /*override*/ gradient()                   : JssStyle  { return {} } // disabled
+
     public /*override*/ noOutlined(inherit = false)  : JssStyle  { return {
         // borders:
         border : 'none', // no_border if not outlined
     }}
     public /*override*/ outlined()                   : JssStyle  { return {} } // disabled
+
     public /*override*/ noMild(inherit = false)      : JssStyle  { return {} } // disabled
     public /*override*/ mild()                       : JssStyle  { return {} } // disabled
 
 
 
     // states:
-    public /*override*/ themeDefault(theme: string|null): JssStyle { return {} } // disabled
+    public /*override*/ resetDefaultState(inherit = false): PropList { return {} } // disabled
 
     public /*override*/ enabled()     : JssStyle { return {} } // disabled
     public /*override*/ enabling()    : JssStyle { return {} } // disabled

@@ -11,6 +11,7 @@ import {
     PropEx,
     Cust,
     ClassList,
+    PropList,
 
     
     // components:
@@ -148,12 +149,9 @@ export class ControlStyles extends IndicatorStyles {
 
 
 
-            //#region reset toggles/filters/anims to initial/inherit state
-            [this.decl(this._boxShadowFocusBlur)] : inherit ? 'unset' : 'initial',
-            [this.decl(this._animFocusBlur)]      : inherit ? 'unset' : 'initial',
-            [this.decl(this._filterArriveLeave)]  : inherit ? 'unset' : 'initial',
-            [this.decl(this._animArriveLeave)]    : inherit ? 'unset' : 'initial',
-            //#endregion reset toggles/filters/anims to initial/inherit state
+            // reset filters/anims/toggles to initial/inherit state:
+            ...this.resetFocusBlur(inherit),
+            ...this.resetArriveLeave(inherit),
         }],
 
 
@@ -215,6 +213,10 @@ export class ControlStyles extends IndicatorStyles {
         userSelect : 'none',
     }}
 
+    public /*virtual*/ resetFocusBlur(inherit: boolean) : PropList { return {
+        [this.decl(this._boxShadowFocusBlur)] : inherit ? 'unset' : 'initial',
+        [this.decl(this._animFocusBlur)]      : inherit ? 'unset' : 'initial',
+    }}
     public /*virtual*/ focused()  : JssStyle { return {
         [this.decl(this._boxShadowFocusBlur)] : this.ref(this._boxShadowFocusFn),
         
@@ -261,6 +263,10 @@ export class ControlStyles extends IndicatorStyles {
     public /*virtual*/ blur()     : JssStyle { return {
     }}
 
+    public /*override*/ resetArriveLeave(inherit: boolean) : PropList { return {
+        [this.decl(this._filterArriveLeave)]  : inherit ? 'unset' : 'initial',
+        [this.decl(this._animArriveLeave)]    : inherit ? 'unset' : 'initial',
+    }}
     public /*virtual*/ arrived()  : JssStyle { return {
         [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
 
@@ -307,11 +313,11 @@ export class ControlStyles extends IndicatorStyles {
     public /*virtual*/ leave()    : JssStyle { return {
     }}
 
-    public /*override*/ themeDefault(theme: string|null = 'secondary'): JssStyle {
+    public /*override*/ themeDefault(theme: string|null = 'secondary'): PropList {
         // change default parameter from null to 'secondary'
         return super.themeDefault(theme);
     }
-    public /*override*/ themeActive(theme = 'primary'): JssStyle {
+    public /*override*/ themeActive(theme = 'primary'): PropList {
         // change default parameter from 'secondary' to 'primary'
         return super.themeActive(theme);
     }

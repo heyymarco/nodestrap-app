@@ -7,6 +7,7 @@ import {
     JssStyle,
     PropEx,
     ClassList,
+    PropList,
 
     
     // components:
@@ -67,14 +68,12 @@ export class AccordionItemStyles extends PopupStyles {
 
 
     // states:
-    public /*override*/ themeDefault(theme: string|null = null) : JssStyle { return {} } // no default theme
+    public /*override*/ resetDefaultState(inherit = false) : PropList { return {} } // disabled
 
-    //#region discards enable/disable state
-    public /*override*/ enabled()     : JssStyle { return {} }
-    public /*override*/ enabling()    : JssStyle { return {} }
-    public /*override*/ disabling()   : JssStyle { return {} }
-    public /*override*/ disabled()    : JssStyle { return {} }
-    //#endregion discards enable/disable state
+    public /*override*/ enabled()     : JssStyle { return {} } // disabled
+    public /*override*/ enabling()    : JssStyle { return {} } // disabled
+    public /*override*/ disabling()   : JssStyle { return {} } // disabled
+    public /*override*/ disabled()    : JssStyle { return {} } // disabled
 
     //#region forwards active/passive state to .body
     public /*override*/ actived()     : JssStyle { return {

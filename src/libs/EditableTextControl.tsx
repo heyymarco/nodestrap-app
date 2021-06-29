@@ -59,10 +59,8 @@ export class EditableTextControlStylesBuilder extends EditableControlStyles {
 
 
     // states:
-    public /*override*/ themeDefault(theme: string|null = 'secondary'): JssStyle { return {
-        extend: [
-            super.themeDefault(theme), // copy default theme from base
-        ] as JssStyle,
+    public /*override*/ themeDefault(theme: string|null = 'secondary'): PropList { return {
+        ...super.themeDefault(theme), // copy default theme from base
 
 
 
@@ -70,10 +68,8 @@ export class EditableTextControlStylesBuilder extends EditableControlStyles {
         [this.decl(this._foregIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
         [this.decl(this._backgIf)] : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]),
     }}
-    public /*override*/ themeActive(theme = 'primary'): JssStyle { return {
-        extend: [
-            super.themeActive(theme), // copy active theme from base
-        ] as JssStyle,
+    public /*override*/ themeActive(theme = 'primary'): PropList { return {
+        ...super.themeActive(theme), // copy active theme from base
 
 
 

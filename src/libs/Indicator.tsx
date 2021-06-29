@@ -167,15 +167,12 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
 
-            //#region reset toggles/filters/anims to initial/inherit state
-            [this.decl(this._filterEnableDisable)] : inherit ? 'unset' : 'initial',
-            [this.decl(this._animEnableDisable)]   : inherit ? 'unset' : 'initial',
-            [this.decl(this._filterArriveLeave)]   : inherit ? 'unset' : 'initial', // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
-            [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
-            [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
-
+            // reset filters/anims/toggles to initial/inherit state:
+            ...this.resetEnableDisable(inherit),
+            ...this.resetArriveLeave(inherit),
+            ...this.resetActivePassive(inherit),
+            ...this.resetPressRelease(inherit),
             ...this.toggleOffActive(inherit),
-            //#endregion reset toggles/filters/anims to initial/inherit state
         }],
 
 
@@ -207,6 +204,10 @@ export class IndicatorStyles extends BasicComponentStyles {
         [ '&:not(.actived):not(.active):not(:checked):not(.passive)'   , this.passived()    ],
     ]}
     
+    public /*virtual*/ resetEnableDisable(inherit: boolean) : PropList { return {
+        [this.decl(this._filterEnableDisable)] : inherit ? 'unset' : 'initial',
+        [this.decl(this._animEnableDisable)]   : inherit ? 'unset' : 'initial',
+    }}
     public /*virtual*/ enabled()     : JssStyle { return {
         /* --nothing-- */
 
@@ -250,6 +251,14 @@ export class IndicatorStyles extends BasicComponentStyles {
     public /*virtual*/ disable()     : JssStyle { return {
     }}
 
+    public /*virtual*/ resetArriveLeave(inherit: boolean) : PropList { return {
+        [this.decl(this._filterArriveLeave)]   : inherit ? 'unset' : 'initial', // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
+    }}
+
+    public /*virtual*/ resetActivePassive(inherit: boolean) : PropList { return {
+        [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
+        [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
+    }}
     public /*virtual*/ actived()     : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
 
@@ -298,10 +307,12 @@ export class IndicatorStyles extends BasicComponentStyles {
 
     public /*virtual*/ markActive()  : JssStyle { return {
         ...this.toggleOnActive(),
-
-        extend: [
-            this.themeActive(),
-        ] as JssStyle,
+        ...this.themeActive(),
+    }}
+    public /*virtual*/ toggleOffActive(inherit = false): PropList { return {
+        [this.decl(this._activeForegTg)]  : inherit ? 'unset' : 'initial',
+        [this.decl(this._activeBackgTg)]  : inherit ? 'unset' : 'initial',
+        [this.decl(this._activeBorderTg)] : inherit ? 'unset' : 'initial',
     }}
     public /*virtual*/ toggleOnActive(): PropList { return {
         // _foregFn & _backgFn => requires usePropsFn() => use it at states()
@@ -309,14 +320,13 @@ export class IndicatorStyles extends BasicComponentStyles {
         [this.decl(this._activeBackgTg)]  : this.ref(this._backgFn),
         [this.decl(this._activeBorderTg)] : this.ref(this._borderFn),
     }}
-    public /*virtual*/ toggleOffActive(inherit = false): PropList { return {
-        [this.decl(this._activeForegTg)]  : inherit ? 'unset' : 'initial',
-        [this.decl(this._activeBackgTg)]  : inherit ? 'unset' : 'initial',
-        [this.decl(this._activeBorderTg)] : inherit ? 'unset' : 'initial',
-    }}
-    public /*virtual*/ themeActive(theme = 'secondary'): JssStyle {
+    public /*virtual*/ themeActive(theme = 'secondary'): PropList {
         return this.themeIf(theme);
     }
+
+    public /*virtual*/ resetPressRelease(inherit: boolean) : PropList { return {
+        [this.decl(this._filterPressRelease)]  : inherit ? 'unset' : 'initial', // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
+    }}
 
 
 
