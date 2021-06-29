@@ -220,9 +220,9 @@ export class ListgroupStyles extends ContentStyles {
 
 
         [ '&:not(.inline)', this.block()  ],
-        [      '&.inline',  this.inline() ],
+        [      '&.inline' , this.inline() ],
 
-        [ '&.bullet', this.bullet()       ],
+        [ '&.bullet'      , this.bullet() ],
         [ '&:not(.bullet)', {
             [wrapperElm] : {
                 [listItemElm]: {
@@ -233,6 +233,7 @@ export class ListgroupStyles extends ContentStyles {
             },
         }]
     ]}
+
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
@@ -243,6 +244,7 @@ export class ListgroupStyles extends ContentStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
+
     public /*virtual*/ block(): JssStyle { return {
         // layout:
         display           : 'flex',   // use flexbox as the layout
@@ -329,6 +331,7 @@ export class ListgroupStyles extends ContentStyles {
         } as JssStyle, // wrapper of listItem
         //#endregion children
     }}
+
     public /*virtual*/ bullet(): JssStyle { return {
         // layout:
         alignItems   : 'center', // child items are centered horizontally
@@ -477,36 +480,12 @@ export class ListgroupStyles extends ContentStyles {
                 {
                     [wrapperElm]: { [listItemElm]: {
                         extend: [
-                            // watch variant classes:
-                            listgroupItemStyles.useVariants(),
-                
-                            // watch state classes/pseudo-classes:
-                            listgroupItemStyles.useStates(),
-                            
-                            // after watching => use func props:
-                            listgroupItemStyles.usePropsFn(),
-
-                            // all the required stuff has been loaded,
-                            // now load the basicStyle:
-                            listgroupItemStyles.basicStyle(),
+                            listgroupItemStyles.compositeStyle(),
                         ] as JssStyle,
 
 
 
-                        '&.actionCtrl': { extend: [
-                            // watch variant classes:
-                            listgroupActionItemStyles.useVariants(),
-                
-                            // watch state classes/pseudo-classes:
-                            listgroupActionItemStyles.useStates(),
-                            
-                            // after watching => use func props:
-                            listgroupActionItemStyles.usePropsFn(),
-
-                            // all the required stuff has been loaded,
-                            // now load the basicStyle:
-                            listgroupActionItemStyles.basicStyle(),
-                        ] as JssStyle },
+                        '&.actionCtrl': listgroupActionItemStyles.compositeStyle(),
 
 
 

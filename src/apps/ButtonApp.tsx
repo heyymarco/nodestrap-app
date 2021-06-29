@@ -14,6 +14,7 @@ import {
 	Button,
 	BtnStyle,
 }						from '../libs/Button';
+import type * as Buttons from '../libs/Button';
 
 
 
@@ -73,6 +74,9 @@ function App() {
 
 	const presses = [false, undefined, true];
 	const [press,       setPress      ] = useState<boolean|undefined>(undefined);
+
+	const orientations = [undefined, 'block', 'inline'];
+	const [orientation,    setOrientation     ] = useState<Buttons.OrientationStyle|undefined>(undefined);
 
 	const btnStyles = [undefined, 'link', 'ghost'];
 	const [btnStyle,    setBtnStyle     ] = useState<BtnStyle|undefined>(undefined);
@@ -162,6 +166,7 @@ function App() {
 					
 					press={press}
 
+					orientation={orientation}
 					btnStyle={btnStyle}
 				>
                     button
@@ -335,6 +340,21 @@ function App() {
 									})())}
 								/>
 								{`${pr ?? 'auto'}`}
+							</label>
+						)
+					}
+				</p>
+				<p>
+					OrientationStyle:
+					{
+						orientations.map(ori =>
+							<label key={ori ?? ''}>
+								<input type='radio'
+									value={ori}
+									checked={orientation===ori}
+									onChange={(e) => setOrientation((e.target.value || undefined) as (Buttons.OrientationStyle|undefined))}
+								/>
+								{`${ori}`}
 							</label>
 						)
 					}

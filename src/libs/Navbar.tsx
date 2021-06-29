@@ -487,6 +487,7 @@ export class NavbarStylesBuilder extends ControlStyles {
     }}
     protected /*override*/ styles(): Styles<'main'|'@global'> {
         return {
+            // TODO: use compositeStyle
             main: {
                 extend: [
                     // watch variant classes:

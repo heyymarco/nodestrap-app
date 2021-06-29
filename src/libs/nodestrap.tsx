@@ -368,6 +368,27 @@ export class ElementStyles {
     public /*virtual*/ basicStyle(): JssStyle { return {} }
 
     /**
+     * Creates a composite style made up from basicStyle + variants + states + functions.
+     * @returns A `JssStyle` represents a composite style definition.
+     */
+    public /*virtual*/ compositeStyle(): JssStyle { return {
+        extend: [
+            // watch variant classes:
+            this.useVariants(),
+
+            // watch state classes/pseudo-classes:
+            this.useStates(),
+            
+            // after watching => use func props:
+            this.usePropsFn(),
+
+            // all the required stuff has been loaded,
+            // now load the basicStyle:
+            this.basicStyle(),
+        ] as JssStyle,
+    }}
+
+    /**
      * Creates a global style applied to a whole document.
      * @returns A `JssStyle` represents a global style definition.
      */
@@ -379,24 +400,9 @@ export class ElementStyles {
      */
     protected /*virtual*/ styles(): Styles<'main'|'@global'> {
         return {
-            main: {
-                extend: [
-                    // watch variant classes:
-                    this.useVariants(),
-        
-                    // watch state classes/pseudo-classes:
-                    this.useStates(),
-                    
-                    // after watching => use func props:
-                    this.usePropsFn(),
+            main      : this.compositeStyle(),
 
-                    // all the required stuff has been loaded,
-                    // now load the basicStyle:
-                    this.basicStyle(),
-                ] as JssStyle,
-            },
-
-            '@global': this.globalStyle(),
+            '@global' : this.globalStyle(),
         };
     }
 

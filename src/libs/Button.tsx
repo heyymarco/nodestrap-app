@@ -15,6 +15,12 @@ import {
 import * as border          from './borders'     // configurable borders & border radiuses defs
 import spacers              from './spacers'     // configurable spaces defs
 import {
+    OrientationStyle,
+    VariantOrientation,
+    useVariantOrientation,
+    cssProps as ecssProps,
+}                           from './BasicComponent'
+import {
     ControlStyles,
 }                           from './Control'
 import {
@@ -38,7 +44,7 @@ class GhostStyles extends ControlStyles {
 
     public /*override*/ noOutlined(inherit = false)  : JssStyle  { return {
         // borders:
-        border : 'none', // no_border if not outlined
+        border : 'none', // no_border if no_outlined
     }}
     public /*override*/ outlined()                   : JssStyle  { return {} } // disabled
 
@@ -48,29 +54,30 @@ class GhostStyles extends ControlStyles {
 
 
     // states:
-    public /*override*/ resetDefaultState(inherit = false): PropList { return {} } // disabled
+    public /*override*/ resetDefaultState(inherit = false)   : PropList { return {} } // disabled
 
+    public /*override*/ resetEnableDisable(inherit: boolean) : PropList { return {} } // disabled
     public /*override*/ enabled()     : JssStyle { return {} } // disabled
     public /*override*/ enabling()    : JssStyle { return {} } // disabled
     public /*override*/ disabling()   : JssStyle { return {} } // disabled
     public /*override*/ disabled()    : JssStyle { return {} } // disabled
 
+    public /*override*/ resetActivePassive(inherit: boolean) : PropList { return {} } // disabled
     public /*override*/ actived()     : JssStyle { return {} } // disabled
     public /*override*/ activating()  : JssStyle { return {} } // disabled
     public /*override*/ passivating() : JssStyle { return {} } // disabled
     public /*override*/ passived()    : JssStyle { return {} } // disabled
+    public /*override*/ toggleOffActive(inherit = false)     : PropList { return {} } // disabled
 
+    public /*override*/ resetFocusBlur(inherit: boolean)     : PropList { return {} } // disabled
     public /*override*/ focused()     : JssStyle { return {} } // disabled
     public /*override*/ focusing()    : JssStyle { return {} } // disabled
     public /*override*/ blurring()    : JssStyle { return {} } // disabled
     public /*override*/ blurred()     : JssStyle { return {} } // disabled
 
-    public /*override*/ arrived()     : JssStyle {
-        return this.arrive();
-    }
-    public /*override*/ arriving()    : JssStyle {
-        return this.arrive();
-    }
+    public /*override*/ resetArriveLeave(inherit: boolean)   : PropList { return {} } // disabled
+    public /*override*/ arrived()     : JssStyle { return this.arrive(); }
+    public /*override*/ arriving()    : JssStyle { return this.arrive(); }
     public /*override*/ arrive()      : JssStyle { return {
         opacity: cssProps.ghostOpacityHover,
     }}
@@ -80,6 +87,8 @@ class GhostStyles extends ControlStyles {
             super.noGradient(),
         ] as JssStyle,
     }}
+
+    public /*override*/ resetPressRelease(inherit: boolean)  : PropList { return {} } // disabled
 
 
 
@@ -102,8 +111,9 @@ class GhostStyles extends ControlStyles {
 
 
         // no switch active:
-        [this.decl(this._activeForegTg)]: 'initial !important',
-        [this.decl(this._activeBackgTg)]: 'initial !important',
+        [this.decl(this._activeForegTg)]  : 'initial !important',
+        [this.decl(this._activeBackgTg)]  : 'initial !important',
+        [this.decl(this._activeBorderTg)] : 'initial !important',
 
 
 
@@ -119,9 +129,13 @@ export class ButtonStyles extends ActionControlStyles {
 
 
 
-        [ 'link' , this.link()  ],
-        [ 'ghost', this.ghost() ],
+        [ '&:not(.block)', this.inline() ],
+        [      '&.block' , this.block()  ],
+
+        [ 'link'         , this.link()   ],
+        [ 'ghost'        , this.ghost()  ],
     ]}
+
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
@@ -131,6 +145,15 @@ export class ButtonStyles extends ActionControlStyles {
 
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
+    }}
+
+    public /*virtual*/ inline(): JssStyle { return {
+        // layout:
+        flexDirection  : 'row',
+    }}
+    public /*virtual*/ block(): JssStyle { return {
+        // layout:
+        flexDirection  : 'column',
     }}
 
     public /*virtual*/ link(): JssStyle { return {
@@ -143,13 +166,13 @@ export class ButtonStyles extends ActionControlStyles {
         //#region fully link style without outlined
         '&:not(.outlined)' : {
             // borders:
-            border : 'none', // no_border if not outlined
+            border : 'none', // no_border if no_outlined
 
 
 
             // backgrounds:
             extend: [
-                this.noGradient(), // gradient is not supported because no_border
+                this.noGradient(), // gradient is not supported if no_outlined
             ] as JssStyle,
         },
         //#endregion fully link style without outlined
@@ -173,12 +196,13 @@ export class ButtonStyles extends ActionControlStyles {
 
 
 
-        // set the active theme as a default theme:
+        // set the active theme as the default theme:
         ...this.themeActive(),
 
         // no switch active:
-        [this.decl(this._activeForegTg)]: 'initial !important',
-        [this.decl(this._activeBackgTg)]: 'initial !important',
+        [this.decl(this._activeForegTg)]  : 'initial !important',
+        [this.decl(this._activeBackgTg)]  : 'initial !important',
+        [this.decl(this._activeBorderTg)] : 'initial !important',
         //#endregion link styles
 
 
@@ -187,24 +211,7 @@ export class ButtonStyles extends ActionControlStyles {
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'link')), // apply *general* cssProps starting with link***
     }}
     public /*virtual*/ ghost(): JssStyle {
-        const ghostStyles = new GhostStyles();
-
-        return {
-            extend: [
-                // watch variant classes:
-                ghostStyles.useVariants(),
-                        
-                // watch state classes/pseudo-classes:
-                ghostStyles.useStates(),
-
-                // after watching => use func props:
-                ghostStyles.usePropsFn(),
-
-                // all the required stuff has been loaded,
-                // now load the basicStyle:
-                ghostStyles.basicStyle(),
-            ] as JssStyle,
-        };
+        return (new GhostStyles()).compositeStyle();
     }
 
 
@@ -219,7 +226,7 @@ export class ButtonStyles extends ActionControlStyles {
 
         // layout:
         display        : 'inline-flex',        // use flexbox as the layout
-        flexDirection  : cssProps.orientation, // customizable orientation
+     // flexDirection  : 'row',                // customizable orientation // already defined in inline()
         justifyContent : 'center',             // center items horizontally
         alignItems     : 'center',             // center items vertically
 
@@ -253,7 +260,6 @@ export const buttonStyles = new ButtonStyles();
 
 const cssConfig = new CssConfig(() => {
     return {
-        orientation : 'row',
         whiteSpace  : 'normal',
 
         //#region spacings
@@ -298,6 +304,7 @@ export interface ButtonProps
     extends
         ActionControlProps<HTMLButtonElement>,
         
+        VariantOrientation,
         VariantButton
 {
     // actions:
@@ -313,13 +320,13 @@ export interface ButtonProps
     children?    : React.ReactNode
 }
 export default function Button(props: ButtonProps) {
-    new GhostStyles().useStyles();
     // styles:
     const styles     = buttonStyles.useStyles();
 
     
     
     // variants:
+    const variOrientation = useVariantOrientation(props);
     const variButton = useVariantButton(props);
 
 
@@ -369,6 +376,7 @@ export default function Button(props: ButtonProps) {
             // classes:
             mainClass={props.mainClass ?? styles.main}
             variantClasses={[...(props.variantClasses ?? []),
+                variOrientation.class,
                 variButton.class,
             ]}
 
@@ -385,3 +393,5 @@ export default function Button(props: ButtonProps) {
     );
 }
 export { Button }
+
+export type { OrientationStyle, VariantOrientation }

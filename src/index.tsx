@@ -33,7 +33,7 @@ import MasonryApp           from './apps/MasonryApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <ModalApp />
+        <ButtonApp />
     </React.StrictMode>,
     document.getElementById('root')
 );
