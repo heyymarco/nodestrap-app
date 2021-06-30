@@ -630,7 +630,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
 interface NavButtonProps
     extends
-        Buttons.Props
+        Buttons.ButtonIconProps
 {
     id? : string
 }

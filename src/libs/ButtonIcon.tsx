@@ -1,34 +1,44 @@
 // react (builds html using javascript):
 import React                from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-
 // nodestrap (modular web components):
 import {
-    cssProps as ecssProps,
-    cssDecls as ecssDecls,
+    // general types:
+    JssStyle,
+    ClassList,
+    PropList,
+
+
+    // components:
+    CssConfig,
+}                           from './nodestrap'   // nodestrap's core
+import typos                from './typos/index' // configurable typography (texting) defs
+import {
+    cssProps as bcssProps,
+    cssDecls as bcssDecls,
 }                           from './BasicComponent'
 import {
-    default  as Button,
+    OrientationStyle,
+    VariantOrientation,
+
+    BtnStyle,
+    VariantButton,
+
     ButtonStyles,
-    cssProps as bcssProps,
+    cssProps as btcssProps,
+    ButtonProps,
+    Button,
 }                           from './Button'
-import type * as Buttons    from './Button'
 import {
-    default  as Icon,
     cssDecls as icssDecls,
+    Icon,
 }                           from './Icon'
-import typos                from './typos/index' // configurable typography (texting) defs
 
 
 
 // styles:
 
-export class ButtonIconStylesBuilder extends ButtonStyles {
+export class ButtonIconStyles extends ButtonStyles {
     // variants:
     public /*override*/ sizeOptions(): string[] {
         return ['xs', 'sm', 'lg', 'xl'];
@@ -46,11 +56,6 @@ export class ButtonIconStylesBuilder extends ButtonStyles {
 
 
 
-    // states:
-    /* -- same as parent -- */
-
-
-
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
@@ -62,7 +67,7 @@ export class ButtonIconStylesBuilder extends ButtonStyles {
         // Icon:
         // fill the entire parent text's height:
         [icssDecls.size]  : [['calc(1em *',
-            `var(${ecssDecls.lineHeight},${typos.lineHeight})`,
+            `var(${bcssDecls.lineHeight},${typos.lineHeight})`,
         ')']],
         // set icon's color as parent's font color:
         [icssDecls.foreg] : 'currentColor',
@@ -73,22 +78,13 @@ export class ButtonIconStylesBuilder extends ButtonStyles {
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
-export const styles = new ButtonIconStylesBuilder();
+export const buttonIconStyles = new ButtonIconStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     return {
         //#region typos
         fontSize          : typos.fontSize,
@@ -96,27 +92,32 @@ const cssConfig = new CssConfig(() => {
         fontSizeXl        : typos.fontSizeLg,
         //#endregion typos
 
+        
+        
         //#region foreg, backg, borders
-        borderRadius      : ecssProps.borderRadius,
-        borderRadiusXs    : ecssProps.borderRadiusSm,
-        borderRadiusXl    : ecssProps.borderRadiusLg,
+        borderRadius      : bcssProps.borderRadius,
+        borderRadiusXs    : bcssProps.borderRadiusSm,
+        borderRadiusXl    : bcssProps.borderRadiusLg,
         //#endregion foreg, backg, borders
 
+        
+        
         //#region spacings
-        paddingInline     : ecssProps.paddingInline,
-        paddingBlock      : ecssProps.paddingBlock,
-        paddingInlineXs   : ecssProps.paddingInlineSm,
-        paddingBlockXs    : ecssProps.paddingBlockSm,
-        paddingInlineXl   : ecssProps.paddingInlineLg,
-        paddingBlockXl    : ecssProps.paddingBlockLg,
+        paddingInline     : bcssProps.paddingInline,
+        paddingBlock      : bcssProps.paddingBlock,
+        paddingInlineXs   : bcssProps.paddingInlineSm,
+        paddingBlockXs    : bcssProps.paddingBlockSm,
+        paddingInlineXl   : bcssProps.paddingInlineLg,
+        paddingBlockXl    : bcssProps.paddingBlockLg,
 
         
-        gapX              : bcssProps.gapX,
-        gapY              : bcssProps.gapY,
-        gapXXs            : bcssProps.gapXSm,
-        gapYXs            : bcssProps.gapYSm,
-        gapXXl            : bcssProps.gapXLg,
-        gapYXl            : bcssProps.gapYLg,
+        
+        gapX              : btcssProps.gapX,
+        gapY              : btcssProps.gapY,
+        gapXXs            : btcssProps.gapXSm,
+        gapYXs            : btcssProps.gapYSm,
+        gapXXl            : btcssProps.gapXLg,
+        gapYXl            : btcssProps.gapYLg,
         //#endregion spacings
     };
 }, /*prefix: */'btni');
@@ -127,16 +128,16 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
-export interface Props
+export interface ButtonIconProps
     extends
-        Buttons.ButtonProps
+        ButtonProps
 {
     // appearances:
     icon?: string
 }
-export default function ButtonIcon(props: Props) {
+export default function ButtonIcon(props: ButtonIconProps) {
     // styles:
-    const btnIcoStyles  = styles.useStyles();
+    const styles  = buttonIconStyles.useStyles();
 
 
 
@@ -164,7 +165,7 @@ export default function ButtonIcon(props: Props) {
 
 
             // classes:
-            mainClass={props.mainClass ?? btnIcoStyles.main}
+            mainClass={props.mainClass ?? styles.main}
         >
             { icon && <Icon icon={icon} /> }
             { text }
@@ -173,3 +174,7 @@ export default function ButtonIcon(props: Props) {
     );
 }
 ButtonIcon.prototype = Button.prototype; // mark as Button compatible
+export { ButtonIcon }
+
+export type { OrientationStyle, VariantOrientation }
+export type { BtnStyle, VariantButton }

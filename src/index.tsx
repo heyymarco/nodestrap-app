@@ -13,18 +13,19 @@ import NavbarApp from './apps/NavbarApp';
 import CarouselApp from './apps/CarouselApp';
 import NavscrollApp from './apps/NavscrollApp';
 import AccordionApp from './apps/AccordionApp';
-import IconApp from './apps/IconApp';
 
 
-import BasicComponentApp            from './apps/BasicComponentApp';
-    import ContainerApp             from './apps/ContainerApp';
-    import IndicatorApp             from './apps/IndicatorApp';
-        import ContentApp           from './apps/ContentApp';
-        import PopupApp             from './apps/PopupApp';
-            import AlertApp         from './apps/AlertApp';
-        import ControlApp           from './apps/ControlApp';
-            import ActionControlApp from './apps/ActionControlApp';
-                import ButtonApp    from './apps/ButtonApp';
+import BasicComponentApp                    from './apps/BasicComponentApp';
+    import ContainerApp                     from './apps/ContainerApp';
+    import IndicatorApp                     from './apps/IndicatorApp';
+        import ContentApp                   from './apps/ContentApp';
+        import PopupApp                     from './apps/PopupApp';
+            import AlertApp                 from './apps/AlertApp';
+        import ControlApp                   from './apps/ControlApp';
+            import ActionControlApp         from './apps/ActionControlApp';
+                import ButtonApp            from './apps/ButtonApp';
+                    import ButtonIconApp    from './apps/ButtonIconApp';
+    import IconApp                          from './apps/IconApp';
     
 
 import MasonryApp           from './apps/MasonryApp';
@@ -33,7 +34,7 @@ import MasonryApp           from './apps/MasonryApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <ButtonApp />
+        <IconApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

@@ -29,7 +29,7 @@ import {
 }                           from './EditableControl'
 import type * as EditableControls   from './EditableControl'
 import {
-    styles as iconStyles,
+    iconStyles,
 }                           from './Icon'
 import {
     buttonStyles as buttonStyles,

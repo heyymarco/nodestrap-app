@@ -11,7 +11,7 @@ import type * as ButtonIcons from './ButtonIcon'
 
 export interface Props
     extends
-        ButtonIcons.Props
+        ButtonIcons.ButtonIconProps
 {
 }
 export default function CloseButton(props: Props) {

@@ -56,6 +56,9 @@ function App() {
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
 
+	const milds = [false, undefined, true];
+	const [mild,       setMild      ] = useState<boolean|undefined>(undefined);
+
 	const [enabled,    setEnabled   ] = useState(true);
 
 	
@@ -65,66 +68,66 @@ function App() {
             <Container>
                 <BasicComponent
 					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+					outlined={outlined} mild={mild}
 				>
 					element
-					<Icon icon='face' size={size} />
-					<Icon icon='face' theme={theme} size={size} />
-					<Icon icon='instagram' size={size} />
-					<Icon icon='instagram' theme={theme} size={size} />
+					<Icon icon='face'               size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='face' theme={theme} size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='instagram' 				 size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='instagram' theme={theme} size={size} enableGradient={enableGrad} mild={mild} />
                 </BasicComponent>
                 <Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+					outlined={outlined} mild={mild}
 
 					enabled={enabled}
 				>
 					indicator
-					<Icon icon='face' size={size} />
-					<Icon icon='face' theme={theme} size={size} />
-					<Icon icon='instagram' size={size} />
-					<Icon icon='instagram' theme={theme} size={size} />
+					<Icon icon='face'               size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='face' theme={theme} size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='instagram' 				 size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='instagram' theme={theme} size={size} enableGradient={enableGrad} mild={mild} />
                 </Indicator>
                 <Indicator
 					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={true}
 				>
 					indicator active
-					<Icon icon='face' size={size} />
-					<Icon icon='face' theme={theme} size={size} />
-					<Icon icon='instagram' size={size} />
-					<Icon icon='instagram' theme={theme} size={size} />
+					<Icon icon='face'               size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='face' theme={theme} size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='instagram' 				 size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='instagram' theme={theme} size={size} enableGradient={enableGrad} mild={mild} />
                 </Indicator>
                 <Content
 					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+					outlined={outlined} mild={mild}
 
 					enabled={enabled}
 				>
 					content
-					<Icon icon='face' size={size} />
-					<Icon icon='face' theme={theme} size={size} />
-					<Icon icon='instagram' size={size} />
-					<Icon icon='instagram' theme={theme} size={size} />
+					<Icon icon='face'               size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='face' theme={theme} size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='instagram' 				 size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='instagram' theme={theme} size={size} enableGradient={enableGrad} mild={mild} />
                 </Content>
 				<Content
 					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={true}
 				>
 					content active
-					<Icon icon='face' size={size} />
-					<Icon icon='face' theme={theme} size={size} />
-					<Icon icon='instagram' size={size} />
-					<Icon icon='instagram' theme={theme} size={size} />
+					<Icon icon='face'               size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='face' theme={theme} size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='instagram' 				 size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='instagram' theme={theme} size={size} enableGradient={enableGrad} mild={mild} />
                 </Content>
-				<Icon icon='face' size={size} />
-				<Icon icon='face' theme={theme} size={size} />
-				<Icon icon='instagram' size={size} />
-				<Icon icon='instagram' theme={theme} size={size} />
+				<Icon icon='face'               size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='face' theme={theme} size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='instagram' 				 size={size} enableGradient={enableGrad} mild={mild} />
+					<Icon icon='instagram' theme={theme} size={size} enableGradient={enableGrad} mild={mild} />
 				<hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:
@@ -173,6 +176,29 @@ function App() {
 						/>
 						outlined
 					</label>
+				</p>
+				<p>
+					Mild:
+					{
+						milds.map(mi =>
+							<label key={`${mi}`}>
+								<input type='radio'
+									value={`${mi}`}
+									checked={mild===mi}
+									onChange={(e) => setMild((() => {
+										const value = e.target.value;
+										if (!value) return undefined;
+										switch (value) {
+											case 'true' : return true;
+											case 'false': return false;
+											default     : return undefined;
+										} // switch
+									})())}
+								/>
+								{`${mi ?? 'unset'}`}
+							</label>
+						)
+					}
 				</p>
 				<p>
 					<label>

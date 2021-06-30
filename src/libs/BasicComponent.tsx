@@ -472,6 +472,8 @@ export class BasicComponentStyles extends ElementStyles {
     public /*virtual*/ themeDefault(theme: string|null = null): PropList {
         if (theme) return this.themeIf(theme);
         
+        
+        
         return {
             [this.decl(this._foregIf)]          : cssProps.foreg,
             [this.decl(this._backgIf)]          : this.ref(this._backgNone),

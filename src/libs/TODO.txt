@@ -91,7 +91,7 @@ BasicComponent<TElement>^
 
 
 non gen (11):
-Button#
+Button^
 	ButtonIcon#
 		CloseButton#
 Check#

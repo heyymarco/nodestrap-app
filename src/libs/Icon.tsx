@@ -4,18 +4,18 @@ import {
     useMemo,
 }                           from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-import {
-    Cust,
-}                           from './Css'        // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-
 // nodestrap (modular web components):
 import {
+    // general types:
+    JssStyle,
+    PropEx,
+    Cust,
     ClassList,
+    PropList,
+
+
+    // components:
+    CssConfig,
 }                           from './nodestrap'  // nodestrap's core
 import fontMaterial         from './Icon-font-material'
 import {
@@ -29,13 +29,13 @@ import type * as Elements   from './BasicComponent'
 
 // styles:
 
-export class IconStylesBuilder extends BasicComponentStyles {
-    //#region scoped css props
+export class IconStyles extends BasicComponentStyles {
+    //#region props
     /**
      * Icon's image url (with additional image's props).
      */
     public readonly _img = 'img'
-    //#endregion scoped css props
+    //#endregion props
 
 
 
@@ -48,6 +48,7 @@ export class IconStylesBuilder extends BasicComponentStyles {
         [ 'font', this.font()  ],
         [ 'img' , this.image() ],
     ]}
+
     public /*override*/ theme(theme: string): JssStyle { return {
         extend: [
             super.theme(theme), // copy themes from base
@@ -55,14 +56,24 @@ export class IconStylesBuilder extends BasicComponentStyles {
 
 
 
-        // to be able to inherit theme from parent, we use _outlinedForegTh** as the variable name
+        /*
+            to be able to inherit theme from parent, we use:
+            _outlinedForeg** as the normal color
+            _mildBackg**     as the mild   color
+        */
+
+
+
         // other unnecessary variables are deleted
         [this.decl(this._foregTh)]          : null,
         [this.decl(this._backgTh)]          : null,
         [this.decl(this._borderTh)]         : null,
-     // [this.decl(this._outlinedForegTh)]  : null,
+     // [this.decl(this._outlinedForegTh)]  : null, // necessary
+        [this.decl(this._mildForegTh)]      : null,
+     // [this.decl(this._mildBackgTh)]      : null, // necessary
         [this.decl(this._boxShadowFocusTh)] : null,
     }}
+
     public /*override*/ sizeOptions(): string[] {
         return ['sm', 'nm', 'md', 'lg', '1em'];
     }
@@ -70,8 +81,13 @@ export class IconStylesBuilder extends BasicComponentStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-    public /*override*/ noOutlined() : JssStyle { return {} } // disabled
-    public /*override*/ outlined()   : JssStyle { return {} } // disabled
+
+    public /*override*/ noGradient(inherit = false) : JssStyle { return {} } // disabled
+    public /*override*/ gradient()                  : JssStyle { return {} } // disabled
+
+    public /*override*/ noOutlined(inherit = false) : JssStyle { return {} } // disabled
+    public /*override*/ outlined()                  : JssStyle { return {} } // disabled
+
     public /*virtual*/ font(): JssStyle { return {
         '&::after': {
             // layout:
@@ -80,8 +96,8 @@ export class IconStylesBuilder extends BasicComponentStyles {
             
 
             // colors:
-            backg         : 'transparent',                   // setup backg color
-            foreg         : this.ref(this._outlinedForegFn), // setup icon's color
+            backg         : 'transparent',         // setup backg color
+            foreg         : this.ref(this._foreg), // setup icon's color
             
     
             // sizes:
@@ -103,7 +119,7 @@ export class IconStylesBuilder extends BasicComponentStyles {
             '@global': {
                 '@font-face': {
                     ...config.font.styles,
-                    src: config.font.files.map((fileName) => `url("${styles.concatUrl(fileName, config.font.path)}") ${this.formatOf(fileName)}`).join(','),
+                    src: config.font.files.map((fileName) => `url("${iconStyles.concatUrl(fileName, config.font.path)}") ${this.formatOf(fileName)}`).join(','),
                 },
             },
     
@@ -133,7 +149,7 @@ export class IconStylesBuilder extends BasicComponentStyles {
     }}
     public /*virtual*/ image(): JssStyle { return {
         // colors:
-        backg         : this.ref(this._outlinedForegFn), // setup icon's color
+        backg         : this.ref(this._foreg), // setup icon's color
         
         
         // transition:
@@ -182,49 +198,98 @@ export class IconStylesBuilder extends BasicComponentStyles {
 
 
     // states:
-    public /*override*/ themesIfOld(): JssStyle { return {
-        extend: [
-            super.themesIfOld(), // copy themes from base
-        ] as JssStyle,
+    public /*virtual*/ themeDefault(theme: string|null = null): PropList {
+        /*
+            to be able to inherit theme from parent, we use:
+            _outlinedForeg** as the normal color
+            _mildBackg**     as the mild   color
+        */
+
+        
+        
+        if (theme) return {
+            ...this.themeIf(theme),
+
+            
+            
+            // other unnecessary variables are deleted
+            [this.decl(this._foregIf)]          : null,
+            [this.decl(this._backgIf)]          : null,
+            [this.decl(this._borderIf)]         : null,
+         // [this.decl(this._outlinedForegIf)]  : null, // necessary
+            [this.decl(this._mildForegIf)]      : null,
+         // [this.decl(this._mildBackgIf)]      : null, // necessary
+            [this.decl(this._boxShadowFocusIf)] : null,
+        };
 
 
 
-        // to be able to inherit theme from parent, we use _outlinedForegTh** as the variable name
-        // other unnecessary variables are deleted
-        [this.decl(this._foregIf)]          : null,
-        [this.decl(this._backgIf)]          : null,
-        [this.decl(this._borderIf)]         : null,
-     // [this.decl(this._outlinedForegIf)]  : null,
-        [this.decl(this._boxShadowFocusIf)] : null,
-    }}
+        return {
+            [this.decl(this._outlinedForegIf)]  : cssProps.foreg,
+            [this.decl(this._mildBackgIf)]      : cssProps.foreg,
+        };
+    }
 
 
 
     // functions:
-    public /*override*/ propsFnOld(): JssStyle { return {
-        extend: [
-            super.propsFnOld(), // copy functional props from base
-        ] as JssStyle,
+    public /*override*/ propsFn(): PropList { return {
+        ...super.propsFn(), // copy functional props from base
 
 
 
-        [this.decl(this._outlinedForegTh)]  : 'initial', // prevent theme from inheritance, so the Icon always use currentColor if the theme is not set
+        //#region nones
+        [this.decl(this._backgNone)]     : null,
+        [this.decl(this._boxShadowNone)] : null,
+        [this.decl(this._filterNone)]    : null,
+        [this.decl(this._animNone)]      : null,
+        //#endregion nones
 
 
 
-        // to be able to inherit theme from parent, we use _outlinedForegTh** as the variable name
+        // prevent theme from inheritance, so the Icon always use currentColor if the theme is not set
+        [this.decl(this._outlinedForegTh)]  : 'initial',
+        [this.decl(this._mildBackgTh)]      : 'initial',
+
+
+
+        /*
+            to be able to inherit theme from parent, we use:
+            _outlinedForeg** as the normal color
+            _mildBackg**     as the mild   color
+        */
+
+
+
         // other unnecessary variables are deleted
-        [this.decl(this._backgNone)]        : null,
-        // TODO: add another none
         [this.decl(this._foregFn)]          : null,
-        // [this.decl(this._backgLy)]          : null,
         [this.decl(this._backgFn)]          : null,
         [this.decl(this._borderFn)]         : null,
-     // [this.decl(this._outlinedForegFn)]  : null,
+
+     // [this.decl(this._outlinedForegFn)]  : null, // necessary
         [this.decl(this._outlinedBackgFn)]  : null,
+
+        [this.decl(this._mildForegFn)]      : null,
+     // [this.decl(this._mildBackgFn)]      : null, // necessary
+
         [this.decl(this._boxShadowFocusFn)] : null,
+
+
+
+        //#region finals
+        // define a final *foreground* color func:
+        [this.decl(this._foreg)]     : this.ref(
+            this._mildBackgTg,     // toggle mild
+            this._outlinedForegFn,
+        ),
+
+        [this.decl(this._backg)]     : null,
+        [this.decl(this._border)]    : null,
+        [this.decl(this._boxShadow)] : null,
+        [this.decl(this._filter)]    : null,
+        [this.decl(this._anim)]      : null,
+        //#endregion finals
     }}
-    public /*override*/ animFnOld(): JssStyle { return {} } // remove animations
 
 
 
@@ -279,8 +344,8 @@ export class IconStylesBuilder extends BasicComponentStyles {
         [this.decl(this._img)]     : img,
 
         // setup icon's color:
-        ...((foreg && (foreg !== this.ref(this._outlinedForegFn))) ? {
-            [this.decl(this._outlinedForegFn)] : foreg,
+        ...((foreg && (foreg !== this.ref(this._foreg))) ? {
+            [this.decl(this._foreg)] : foreg,
         } : {}),
     }}
 
@@ -325,28 +390,21 @@ export class IconStylesBuilder extends BasicComponentStyles {
         return null;
     }
 }
-export const styles = new IconStylesBuilder();
+export const iconStyles = new IconStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     const basics = {
         foreg  : 'currentColor',
         
         sizeNm : '24px',
     };
 
+    
+    
     return {
         ...basics,
         size    :            basics.sizeNm,
@@ -416,12 +474,12 @@ const config = {
 
 // hooks:
 
-export function useIcon<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export function useIcon<TElement extends HTMLElement = HTMLElement>(props: IconProps<TElement>) {
     return useMemo(() => {
         const imgIcon = (() => {
             const fileName = config.img.files.find((file) => file.match(/[\w-.]+(?=[.]\w+$)/)?.[0] === props.icon);
             if (!fileName) return null;
-            return styles.concatUrl(fileName, config.img.path);
+            return iconStyles.concatUrl(fileName, config.img.path);
         })();
 
         const isFontIcon = config.font.items.includes(props.icon);
@@ -433,7 +491,7 @@ export function useIcon<TElement extends HTMLElement = HTMLElement>(props: Props
 
             style: {
                 // appearances:
-                [styles.decl(styles._img)] : imgIcon ? `url("${imgIcon}")` : `"${props.icon}"`,
+                [iconStyles.decl(iconStyles._img)] : imgIcon ? `url("${imgIcon}")` : `"${props.icon}"`,
             },
 
             children: [
@@ -449,21 +507,21 @@ export function useIcon<TElement extends HTMLElement = HTMLElement>(props: Props
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface IconProps<TElement extends HTMLElement = HTMLElement>
     extends
         Elements.BasicComponentProps<TElement>
 {
     // appearances:
     icon: string
 }
-export default function Icon<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function Icon<TElement extends HTMLElement = HTMLElement>(props: IconProps<TElement>) {
     // styles:
-    const icoStyles = styles.useStyles();
+    const styles = iconStyles.useStyles();
 
     
     
     // appearances:
-    const icon      = useIcon(props);
+    const icon   = useIcon(props);
 
 
 
@@ -479,7 +537,7 @@ export default function Icon<TElement extends HTMLElement = HTMLElement>(props: 
 
 
             // classes:
-            mainClass={props.mainClass ?? icoStyles.main}
+            mainClass={props.mainClass ?? styles.main}
             classes={[...(props.classes ?? []),
                 // appearances:
                 icon.class,
@@ -497,3 +555,4 @@ export default function Icon<TElement extends HTMLElement = HTMLElement>(props: 
         </Element>
     );
 }
+export { Icon }

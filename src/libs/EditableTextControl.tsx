@@ -19,7 +19,7 @@ import {
     default as EditableControl,
 }                           from './EditableControl'
 import {
-    styles as iconStyles,
+    iconStyles,
 }                           from './Icon'
 
 
