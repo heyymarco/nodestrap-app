@@ -252,6 +252,14 @@ export class BasicComponentStyles extends ElementStyles {
     public    readonly _foreg              = 'foreg'
 
     /**
+     * final background color.
+     */
+    public    readonly _backgCol           = 'backgCol'
+    /**
+     * final background color as solid background.
+     */
+    public    readonly _backgSol           = 'backgSol'
+    /**
      * final backgrounds.
      */
     public    readonly _backg              = 'backg'
@@ -354,12 +362,12 @@ export class BasicComponentStyles extends ElementStyles {
      * @returns A `JssStyle` represents the color definition for the current `theme`.
      */
     public /*virtual*/ theme(theme: string): JssStyle { return {
-        [this.decl(this._foregTh)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`],         // light on dark backg | dark on light backg
-        [this.decl(this._backgTh)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
-        [this.decl(this._borderTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],         // 20% background + 80% page's foreground
-        [this.decl(this._outlinedForegTh)]  : (colors as DictionaryOf<typeof colors>)[theme],
-        [this.decl(this._mildForegTh)]      :                 (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],  // light on dark backg | dark on light backg with slightly color from background
-        [this.decl(this._mildBackgTh)]      : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]), // thin opacity with slightly color from background
+        [this.decl(this._foregTh)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`],   // light on dark backg | dark on light backg
+        [this.decl(this._backgTh)]          : (colors as DictionaryOf<typeof colors>)[theme],
+        [this.decl(this._borderTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],   // 20% background + 80% page's foreground
+        [this.decl(this._outlinedForegTh)]  : this.ref(this._backgTh),
+        [this.decl(this._mildForegTh)]      : this.ref(this._borderTh),
+        [this.decl(this._mildBackgTh)]      : (colors as DictionaryOf<typeof colors>)[`${theme}Thin`],   // thin opacity with slightly color from background
         [this.decl(this._boxShadowFocusTh)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
     }}
 
@@ -476,9 +484,9 @@ export class BasicComponentStyles extends ElementStyles {
         
         return {
             [this.decl(this._foregIf)]          : cssProps.foreg,
-            [this.decl(this._backgIf)]          : this.ref(this._backgNone),
+            [this.decl(this._backgIf)]          : 'transparent',
             [this.decl(this._borderIf)]         : cssProps.borderColor,
-            [this.decl(this._outlinedForegIf)]  : cssProps.foreg,
+            [this.decl(this._outlinedForegIf)]  : this.ref(this._foregIf),
             [this.decl(this._mildForegIf)]      : this.ref(this._foregIf),
             [this.decl(this._mildBackgIf)]      : this.ref(this._backgIf),
             [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
@@ -490,12 +498,12 @@ export class BasicComponentStyles extends ElementStyles {
      * @returns A `PropList` represents the conditional color definition for the specified `theme`.
      */
     public /*final*/ themeIf(theme: string): PropList { return {
-        [this.decl(this._foregIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`],         // light on dark backg | dark on light backg
-        [this.decl(this._backgIf)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
-        [this.decl(this._borderIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],         // 20% background + 80% page's foreground
-        [this.decl(this._outlinedForegIf)]  : (colors as DictionaryOf<typeof colors>)[theme],
-        [this.decl(this._mildForegIf)]      :                 (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],  // light on dark backg | dark on light backg with slightly color from background
-        [this.decl(this._mildBackgIf)]      : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]), // thin opacity with slightly color from background
+        [this.decl(this._foregIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`],   // light on dark backg | dark on light backg
+        [this.decl(this._backgIf)]          : (colors as DictionaryOf<typeof colors>)[theme],
+        [this.decl(this._borderIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],   // 20% background + 80% page's foreground
+        [this.decl(this._outlinedForegIf)]  : this.ref(this._backgIf),
+        [this.decl(this._mildForegIf)]      : this.ref(this._borderIf),
+        [this.decl(this._mildBackgIf)]      : (colors as DictionaryOf<typeof colors>)[`${theme}Thin`],   // thin opacity with slightly color from background
         [this.decl(this._boxShadowFocusIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
     }}
     /**
@@ -504,12 +512,12 @@ export class BasicComponentStyles extends ElementStyles {
      * @returns A `PropList` represents the important conditional color definition for the specified `theme`.
      */
     public /*final*/ themeIfIf(theme: string): PropList { return {
-        [this.decl(this._foregIfIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`],         // light on dark backg | dark on light backg
-        [this.decl(this._backgIfIf)]          : this.solidBackg((colors as DictionaryOf<typeof colors>)[theme]),
-        [this.decl(this._borderIfIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],         // 20% background + 80% page's foreground
-        [this.decl(this._outlinedForegIfIf)]  : (colors as DictionaryOf<typeof colors>)[theme],
-        [this.decl(this._mildForegIfIf)]      :                 (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],  // light on dark backg | dark on light backg with slightly color from background
-        [this.decl(this._mildBackgIfIf)]      : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]), // thin opacity with slightly color from background
+        [this.decl(this._foregIfIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`],   // light on dark backg | dark on light backg
+        [this.decl(this._backgIfIf)]          : (colors as DictionaryOf<typeof colors>)[theme],
+        [this.decl(this._borderIfIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],   // 20% background + 80% page's foreground
+        [this.decl(this._outlinedForegIfIf)]  : this.ref(this._backgIfIf),
+        [this.decl(this._mildForegIfIf)]      : this.ref(this._borderIfIf),
+        [this.decl(this._mildBackgIfIf)]      : (colors as DictionaryOf<typeof colors>)[`${theme}Thin`],   // thin opacity with slightly color from background
         [this.decl(this._boxShadowFocusIfIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
     }}
 
@@ -541,23 +549,11 @@ export class BasicComponentStyles extends ElementStyles {
         ),
     
         // define a *backgrounds* func:
-        [this.decl(this._backgFn)] : [
-            // top layer:
-            this.ref(
-                this._backgGradTg,
-                this._backgNone,
-            ),
-
-            // middle layer:
-            this.ref(
-                this._backgIfIf, // first  priority
-                this._backgTh,   // second priority
-                this._backgIf,   // third  priority
-            ),
-
-            // bottom layer:
-            cssProps.backg,
-        ],
+        [this.decl(this._backgFn)] : this.ref(
+            this._backgIfIf, // first  priority
+            this._backgTh,   // second priority
+            this._backgIf,   // third  priority
+        ),
 
         // define a *border* color func:
         [this.decl(this._borderFn)] : this.ref(
@@ -576,38 +572,23 @@ export class BasicComponentStyles extends ElementStyles {
         ),
     
         // define a *backgrounds* func - at *outlined* state:
-        [this.decl(this._outlinedBackgFn)] : this.ref(
-            this._backgGradTg,
-            this._backgNone,
-        ),
+        [this.decl(this._outlinedBackgFn)] : 'transparent',
 
 
         
         // define a mild *foreground* color func:
         [this.decl(this._mildForegFn)] : this.ref(
-            this._foregIfIf,   // first  priority
-            this._mildForegTh, // second priority
-            this._foregIf,     // third  priority
+            this._mildForegIfIf, // first  priority
+            this._mildForegTh,   // second priority
+            this._mildForegIf,   // third  priority
         ),
 
         // define a mild *backgrounds* func:
-        [this.decl(this._mildBackgFn)] : [
-            // top layer:
-            this.ref(
-                this._backgGradTg,
-                this._backgNone,
-            ),
-
-            // middle layer:
-            this.ref(
-                this._backgIfIf,   // first  priority
-                this._mildBackgTh, // second priority
-                this._backgIf,     // third  priority
-            ),
-
-            // bottom layer:
-            cssProps.backg,
-        ],
+        [this.decl(this._mildBackgFn)] : this.ref(
+            this._mildBackgIfIf, // first  priority
+            this._mildBackgTh,   // second priority
+            this._mildBackgIf,   // third  priority
+        ),
 
         
 
@@ -633,12 +614,27 @@ export class BasicComponentStyles extends ElementStyles {
             this._foregFn,
         ),
 
-        // define a final *backgrounds* func:
-        [this.decl(this._backg)]     : this.ref(
+        // define a final *background* color func:
+        [this.decl(this._backgCol)]  : this.ref(
             this._outlinedBackgTg, // toggle outlined
             this._mildBackgTg,     // toggle mild
             this._backgFn,
         ),
+        [this.decl(this._backgSol)]  : this.solidBackg(this.ref(this._backgCol)),
+        // define a final *backgrounds* func:
+        [this.decl(this._backg)] : [
+            // top layer:
+            this.ref(
+                this._backgGradTg,
+                this._backgNone,
+            ),
+
+            // middle layer:
+            this.ref(this._backgSol),
+
+            // bottom layer:
+            cssProps.backg,
+        ],
 
         // define a final *border* color func:
         [this.decl(this._border)]    : this.ref(

@@ -283,6 +283,8 @@ export class IconStyles extends BasicComponentStyles {
             this._outlinedForegFn,
         ),
 
+        [this.decl(this._backgCol)]  : null,
+        [this.decl(this._backgSol)]  : null,
         [this.decl(this._backg)]     : null,
         [this.decl(this._border)]    : null,
         [this.decl(this._boxShadow)] : null,

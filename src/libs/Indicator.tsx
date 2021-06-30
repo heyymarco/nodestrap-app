@@ -346,8 +346,8 @@ export class IndicatorStyles extends BasicComponentStyles {
             this._foregFn,
         ),
 
-        // define a final *backgrounds* func:
-        [this.decl(this._backg)]     : this.ref(
+        // define a final *background* color func:
+        [this.decl(this._backgCol)]  : this.ref(
             this._activeBackgTg,   // toggle active (if actived, _activeBackgTg === _backgFn)
             this._outlinedBackgTg, // toggle outlined
             this._mildBackgTg,     // toggle mild

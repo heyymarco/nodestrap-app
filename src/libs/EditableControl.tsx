@@ -177,20 +177,20 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
     protected /*virtual*/ applyStateValid(): JssStyle { return {
         //TODO: update....
         // apply a *valid* color theme:
-        [this.decl(this._foregIfIf)]          : this.ref(this._foregIfVal),
-        [this.decl(this._backgIfIf)]          : this.ref(this._backgIfVal),
-        [this.decl(this._borderIfIf)]         : this.ref(this._borderIfVal),
-        [this.decl(this._outlinedForegIfIf)]  : this.ref(this._outlinedForegIfVal),
-        [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfVal),
+        // [this.decl(this._foregIfIf)]          : this.ref(this._foregIfVal),
+        // [this.decl(this._backgIfIf)]          : this.ref(this._backgIfVal),
+        // [this.decl(this._borderIfIf)]         : this.ref(this._borderIfVal),
+        // [this.decl(this._outlinedForegIfIf)]  : this.ref(this._outlinedForegIfVal),
+        // [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfVal),
     }}
     protected /*virtual*/ applyStateInvalid(): JssStyle { return {
         //TODO: update....
         // apply an *invalid* color theme:
-        [this.decl(this._foregIfIf)]          : this.ref(this._foregIfInv),
-        [this.decl(this._backgIfIf)]          : this.ref(this._backgIfInv),
-        [this.decl(this._borderIfIf)]         : this.ref(this._borderIfInv),
-        [this.decl(this._outlinedForegIfIf)]  : this.ref(this._outlinedForegIfInv),
-        [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfInv),
+        // [this.decl(this._foregIfIf)]          : this.ref(this._foregIfInv),
+        // [this.decl(this._backgIfIf)]          : this.ref(this._backgIfInv),
+        // [this.decl(this._borderIfIf)]         : this.ref(this._borderIfInv),
+        // [this.decl(this._outlinedForegIfIf)]  : this.ref(this._outlinedForegIfInv),
+        // [this.decl(this._boxShadowFocusIfIf)] : this.ref(this._boxShadowFocusIfInv),
     }}
     //#endregion mixins
 
@@ -399,7 +399,7 @@ const cssConfig = new CssConfig(() => {
             backg: colors.success,
         },
         to: {
-            backg: styles.ref(styles._backgFn),
+            backg: styles.ref(styles._backg),
         },
     };
     const keyframesUnvalid   : PropEx.Keyframes = {};
@@ -409,7 +409,7 @@ const cssConfig = new CssConfig(() => {
             backg: colors.danger,
         },
         to: {
-            backg: styles.ref(styles._backgFn),
+            backg: styles.ref(styles._backg),
         },
     };
     const keyframesUninvalid : PropEx.Keyframes = {};

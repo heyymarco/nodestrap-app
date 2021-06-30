@@ -65,8 +65,8 @@ export class EditableTextControlStylesBuilder extends EditableControlStyles {
 
 
         // overwrite some default's theme color with *softer* colors:
-        [this.decl(this._foregIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
-        [this.decl(this._backgIf)] : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]),
+        // [this.decl(this._foregIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
+        // [this.decl(this._backgIf)] : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]),
     }}
     public /*override*/ themeActive(theme = 'primary'): PropList { return {
         ...super.themeActive(theme), // copy active theme from base
@@ -74,8 +74,8 @@ export class EditableTextControlStylesBuilder extends EditableControlStyles {
 
 
         // overwrite some active's theme color with *softer* colors:
-        [this.decl(this._foregIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
-        [this.decl(this._backgIf)] : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]),
+        // [this.decl(this._foregIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
+        // [this.decl(this._backgIf)] : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]),
     }}
 
     public /*override*/ validationThemesIf(): JssStyle { return {
@@ -134,7 +134,7 @@ export class EditableTextControlStylesBuilder extends EditableControlStyles {
             extend: [
                 iconStyles.useIcon( // apply icon
                     /*img   :*/ this.ref(this._iconValInv),
-                    /*foreg :*/ this.ref(this._outlinedForegFn)
+                    /*foreg :*/ this.ref(this._foreg)
                 ),
             ] as JssStyle,
     
