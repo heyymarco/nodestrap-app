@@ -5,8 +5,6 @@ import React                from 'react'        // base technology of our nodest
 import {
     // general types:
     JssStyle,
-    ClassList,
-    PropList,
 
 
     // components:
@@ -21,6 +19,7 @@ import {
     OrientationStyle,
     VariantOrientation,
 
+    BtnType,
     BtnStyle,
     VariantButton,
 
@@ -30,6 +29,7 @@ import {
     Button,
 }                           from './Button'
 import {
+    cssProps as icssProps,
     cssDecls as icssDecls,
     Icon,
 }                           from './Icon'
@@ -64,13 +64,23 @@ export class ButtonIconStyles extends ButtonStyles {
 
 
 
-        // Icon:
+        //#region Icon
         // fill the entire parent text's height:
         [icssDecls.size]  : [['calc(1em *',
             `var(${bcssDecls.lineHeight},${typos.lineHeight})`,
         ')']],
+
         // set icon's color as parent's font color:
         [icssDecls.foreg] : 'currentColor',
+
+        // modify icon's transition:
+        [icssDecls.transition] : [
+            icssProps.transition,
+
+            ['color'      , '0s'], // no color      transition, follow Button's transition
+            ['background' , '0s'], // no background transition, follow Button's transition
+        ],
+        //#endregion Icon
 
 
 
@@ -89,6 +99,8 @@ const cssConfig = new CssConfig(() => {
         //#region typos
         fontSize          : typos.fontSize,
         fontSizeXs        : typos.fontSizeSm,
+        fontSizeSm        : typos.fontSizeSm,
+        fontSizeLg        : typos.fontSizeLg,
         fontSizeXl        : typos.fontSizeLg,
         //#endregion typos
 
@@ -97,6 +109,8 @@ const cssConfig = new CssConfig(() => {
         //#region foreg, backg, borders
         borderRadius      : bcssProps.borderRadius,
         borderRadiusXs    : bcssProps.borderRadiusSm,
+        borderRadiusSm    : bcssProps.borderRadiusSm,
+        borderRadiusLg    : bcssProps.borderRadiusLg,
         borderRadiusXl    : bcssProps.borderRadiusLg,
         //#endregion foreg, backg, borders
 
@@ -107,6 +121,10 @@ const cssConfig = new CssConfig(() => {
         paddingBlock      : bcssProps.paddingBlock,
         paddingInlineXs   : bcssProps.paddingInlineSm,
         paddingBlockXs    : bcssProps.paddingBlockSm,
+        paddingInlineSm   : bcssProps.paddingInlineSm,
+        paddingBlockSm    : bcssProps.paddingBlockSm,
+        paddingInlineLg   : bcssProps.paddingInlineLg,
+        paddingBlockLg    : bcssProps.paddingBlockLg,
         paddingInlineXl   : bcssProps.paddingInlineLg,
         paddingBlockXl    : bcssProps.paddingBlockLg,
 
@@ -116,6 +134,10 @@ const cssConfig = new CssConfig(() => {
         gapY              : btcssProps.gapY,
         gapXXs            : btcssProps.gapXSm,
         gapYXs            : btcssProps.gapYSm,
+        gapXSm            : btcssProps.gapXSm,
+        gapYSm            : btcssProps.gapYSm,
+        gapXLg            : btcssProps.gapXLg,
+        gapYLg            : btcssProps.gapYLg,
         gapXXl            : btcssProps.gapXLg,
         gapYXl            : btcssProps.gapYLg,
         //#endregion spacings
@@ -177,4 +199,4 @@ ButtonIcon.prototype = Button.prototype; // mark as Button compatible
 export { ButtonIcon }
 
 export type { OrientationStyle, VariantOrientation }
-export type { BtnStyle, VariantButton }
+export type { BtnType, BtnStyle, VariantButton }

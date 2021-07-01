@@ -68,7 +68,7 @@ add
 fin comp (14) (generic):
 BasicComponent<TElement>^
 	Container<TElement>^
-	Icon<TElement>#
+	Icon<TElement>^
 	Carousel<TElement>@
 	CarouselItem<TElement>@
 	Indicator<TElement>^
@@ -92,7 +92,7 @@ BasicComponent<TElement>^
 
 non gen (11):
 Button^
-	ButtonIcon#
+	ButtonIcon^
 		CloseButton#
 Check#
 	Radio#

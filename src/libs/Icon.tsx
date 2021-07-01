@@ -161,11 +161,6 @@ export class IconStyles extends BasicComponentStyles {
         
         
         
-        // transition:
-        transition    : 'inherit',
-
-
-        
         // sizes:
         //#region children
         // a dummy element, for making the image's width
@@ -341,11 +336,6 @@ export class IconStyles extends BasicComponentStyles {
 
 
 
-        // transition:
-        transition    : bcssProps.transition,
-
-
-
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
 
@@ -437,6 +427,11 @@ const cssConfig = new CssConfig(() => {
         sizeMd  : [['calc(', basics.sizeNm, '*', 1.50  , ')']],
         sizeLg  : [['calc(', basics.sizeNm, '*', 2.00  , ')']],
         size1em : '1em',
+
+
+
+        // animations:
+        transition : bcssProps.transition,
     };
 }, /*prefix: */'ico');
 export const cssProps = cssConfig.refs;
