@@ -8,7 +8,6 @@ import {
 import {
     // general types:
     JssStyle,
-    PropEx,
     Cust,
     ClassList,
     PropList,
@@ -17,13 +16,13 @@ import {
     // components:
     CssConfig,
 }                           from './nodestrap'  // nodestrap's core
-import fontMaterial         from './Icon-font-material'
+import fontItems            from './Icon-font-material'
 import {
-    default  as Element,
     BasicComponentStyles,
-    cssProps as ecssProps,
+    cssProps as bcssProps,
+    BasicComponentProps,
+    BasicComponent,
 }                           from './BasicComponent'
-import type * as Elements   from './BasicComponent'
 
 
 
@@ -32,7 +31,7 @@ import type * as Elements   from './BasicComponent'
 export class IconStyles extends BasicComponentStyles {
     //#region props
     /**
-     * Icon's image url (with additional image's props).
+     * Icon's image url or icon's name.
      */
     public readonly _img = 'img'
     //#endregion props
@@ -58,17 +57,17 @@ export class IconStyles extends BasicComponentStyles {
 
         /*
             to be able to inherit theme from parent, we use:
-            _outlinedForeg** as the normal color
-            _mildBackg**     as the mild   color
+            _backg**     as the normal color
+            _mildBackg** as the mild   color
         */
 
 
 
         // other unnecessary variables are deleted
         [this.decl(this._foregTh)]          : null,
-        [this.decl(this._backgTh)]          : null,
+     // [this.decl(this._backgTh)]          : null, // necessary
         [this.decl(this._borderTh)]         : null,
-     // [this.decl(this._outlinedForegTh)]  : null, // necessary
+        [this.decl(this._outlinedForegTh)]  : null,
         [this.decl(this._mildForegTh)]      : null,
      // [this.decl(this._mildBackgTh)]      : null, // necessary
         [this.decl(this._boxShadowFocusTh)] : null,
@@ -91,45 +90,53 @@ export class IconStyles extends BasicComponentStyles {
     public /*virtual*/ font(): JssStyle { return {
         '&::after': {
             // layout:
-            content    : this.ref(this._img),
-            display    : 'inline',
+            content       : this.ref(this._img), // put the icon's name here, the font system will replace the name to the actual image
+            display       : 'inline',            // use inline, so it takes the width & height automatically
             
 
+            
             // colors:
-            backg         : 'transparent',         // setup backg color
-            foreg         : this.ref(this._foreg), // setup icon's color
+            backg         : 'transparent',         // set backg color
+            foreg         : this.ref(this._foreg), // set icon's color
             
     
+            
             // sizes:
-            fontSize      : cssProps.size,  // setup icon's size
-            overflowY     : 'hidden',       // hide the pseudo-inherited underline
+            fontSize      : cssProps.size, // set icon's size
+            overflowY     : 'hidden',      // hides the pseudo-inherited underline
+            
             
             
             // transition:
-            transition    : ecssProps.transition,
+            transition    : 'inherit',
     
     
+            
             // accessibility:
-            userSelect    : 'none',         // disable selecting icon's text
+            userSelect    : 'none', // disable selecting icon's text
     
     
+            
             //#region fonts
             //#region custom font
-            // load custom font:
+            // load a custom font:
             '@global': {
                 '@font-face': {
-                    ...config.font.styles,
-                    src: config.font.files.map((fileName) => `url("${iconStyles.concatUrl(fileName, config.font.path)}") ${this.formatOf(fileName)}`).join(','),
+                    ...config.font.styles, // define the font's properties
+
+                    src: config.font.files.map((file) => `url("${this.concatUrl(config.font.path, file)}") ${this.formatOf(file)}`).join(','),
                 },
             },
     
     
     
-            // apply custom font:
-            ...config.font.styles,
+            // use the loaded custom font:
+            ...config.font.styles, // apply the defined font's properties
             //#endregion custom font
     
     
+            
+            // typos:
             lineHeight    : 1,
             textTransform : 'none',
             letterSpacing : 'normal',
@@ -138,46 +145,49 @@ export class IconStyles extends BasicComponentStyles {
             direction     : 'ltr',
     
     
-            //#region browser supports
+            
+            //#region turn on available browser features
             '-webkit-font-smoothing'  : 'antialiased',        // support for all WebKit browsers
             'textRendering'           : 'optimizeLegibility', // support for Safari and Chrome
             '-moz-osx-font-smoothing' : 'grayscale',          // support for Firefox
             fontFeatureSettings       : 'liga',               // support for IE
-            //#endregion browser supports
+            //#endregion turn on available browser features
             //#endregion fonts
         },
     }}
     public /*virtual*/ image(): JssStyle { return {
         // colors:
-        backg         : this.ref(this._foreg), // setup icon's color
+        backg         : this.ref(this._foreg), // set icon's color
+        
         
         
         // transition:
-        transition    : ecssProps.transition,
+        transition    : 'inherit',
 
 
+        
         // sizes:
         //#region children
-        // just a *dummy* element for calculating the image's width
+        // a dummy element, for making the image's width
         '&>img': {
             // layout:
-            display    : 'inline-block', // use inline-block
+            display    : 'inline-block', // use inline-block, so it takes the width & height as we set
 
 
 
             // appearances:
-            visibility : 'hidden', // hide the element, but still consume the dimension
+            visibility : 'hidden', // hide the element, but still consumes the dimension
 
 
 
             // sizes:
-            blockSize  : cssProps.size, // follow config's size
-            inlineSize : 'auto',        // calculates the width by [height * aspect-ratio]
+            blockSize  : cssProps.size, // set icon's size
+            inlineSize : 'auto',        // calculates the width by [blockSize * aspect_ratio]
 
 
 
             // transition:
-            transition : 'inherit',
+            transition : 'inherit', // inherit transition for smooth sizing changes
 
 
 
@@ -187,11 +197,12 @@ export class IconStyles extends BasicComponentStyles {
         //#endregion children
 
 
+        
         //#region image masking
-        maskSize      : 'contain',           // default image props
-        maskRepeat    : 'no-repeat',         // default image props
-        maskPosition  : 'center',            // default image props
-        mask          : this.ref(this._img), // image with additional image's props
+        maskSize      : 'contain',           // image's size is as big as possible without being cropped
+        maskRepeat    : 'no-repeat',         // just one image, no repetition
+        maskPosition  : 'center',            // place the image at the center
+        maskImage     : this.ref(this._img), // set icon's image
         //#endregion image masking
     }}
 
@@ -201,8 +212,8 @@ export class IconStyles extends BasicComponentStyles {
     public /*virtual*/ themeDefault(theme: string|null = null): PropList {
         /*
             to be able to inherit theme from parent, we use:
-            _outlinedForeg** as the normal color
-            _mildBackg**     as the mild   color
+            _backg**     as the normal color
+            _mildBackg** as the mild   color
         */
 
         
@@ -214,9 +225,9 @@ export class IconStyles extends BasicComponentStyles {
             
             // other unnecessary variables are deleted
             [this.decl(this._foregIf)]          : null,
-            [this.decl(this._backgIf)]          : null,
+         // [this.decl(this._backgIf)]          : null, // necessary
             [this.decl(this._borderIf)]         : null,
-         // [this.decl(this._outlinedForegIf)]  : null, // necessary
+            [this.decl(this._outlinedForegIf)]  : null,
             [this.decl(this._mildForegIf)]      : null,
          // [this.decl(this._mildBackgIf)]      : null, // necessary
             [this.decl(this._boxShadowFocusIf)] : null,
@@ -225,8 +236,8 @@ export class IconStyles extends BasicComponentStyles {
 
 
         return {
-            [this.decl(this._outlinedForegIf)]  : cssProps.foreg,
-            [this.decl(this._mildBackgIf)]      : cssProps.foreg,
+            [this.decl(this._backgIf)]          : cssProps.foreg,
+            [this.decl(this._mildBackgIf)]      : this.ref(this._backgIf),
         };
     }
 
@@ -248,25 +259,25 @@ export class IconStyles extends BasicComponentStyles {
 
 
         // prevent theme from inheritance, so the Icon always use currentColor if the theme is not set
-        [this.decl(this._outlinedForegTh)]  : 'initial',
+        [this.decl(this._backgTh)]          : 'initial',
         [this.decl(this._mildBackgTh)]      : 'initial',
 
 
 
         /*
             to be able to inherit theme from parent, we use:
-            _outlinedForeg** as the normal color
-            _mildBackg**     as the mild   color
+            _backg**     as the normal color
+            _mildBackg** as the mild   color
         */
 
 
 
         // other unnecessary variables are deleted
         [this.decl(this._foregFn)]          : null,
-        [this.decl(this._backgFn)]          : null,
+     // [this.decl(this._backgFn)]          : null, // necessary
         [this.decl(this._borderFn)]         : null,
 
-     // [this.decl(this._outlinedForegFn)]  : null, // necessary
+        [this.decl(this._outlinedForegFn)]  : null,
         [this.decl(this._outlinedBackgFn)]  : null,
 
         [this.decl(this._mildForegFn)]      : null,
@@ -280,7 +291,7 @@ export class IconStyles extends BasicComponentStyles {
         // define a final *foreground* color func:
         [this.decl(this._foreg)]     : this.ref(
             this._mildBackgTg,     // toggle mild
-            this._outlinedForegFn,
+            this._backgFn,
         ),
 
         [this.decl(this._backgCol)]  : null,
@@ -298,28 +309,29 @@ export class IconStyles extends BasicComponentStyles {
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
         // layout:
-        display       : 'inline-flex',
-        alignItems    : 'center', // center items vertically
-        flexWrap      : 'nowrap',
+        display       : 'inline-flex', // use inline flexbox, so it takes the width & height as we set
+        flexDirection : 'row',         // flow to the document's writting flow
+        alignItems    : 'center',      // center items vertically
+        flexWrap      : 'nowrap',      // do not wrap the children to the next row
 
 
 
         // positions:
-        verticalAlign : 'baseline',
+        verticalAlign : 'baseline', // icon's text should be aligned with sibling text, so the icon behave like <span> wrapper
 
 
 
-        // the dummy text content, for making parent's height as tall as line-height
-        '&::before': {
+        // a dummy text content, for making parent's height as tall as line-height
+        '&::before'   : {
             // layout:
-            content    : '"\xa0"', // &nbsp;
+            content    : '"\xa0"',       // &nbsp;
             display    : 'inline-block', // use inline-block, so we can kill the width
             
 
 
             // appearances:
-            overflow   : 'hidden', // crop the text (&nbsp;)
-            visibility : 'hidden', // hide the element, but still consume the dimension
+            overflow   : 'hidden', // crop the text width (&nbsp;)
+            visibility : 'hidden', // hide the element, but still consumes the dimension
 
             
             
@@ -329,13 +341,19 @@ export class IconStyles extends BasicComponentStyles {
 
 
 
+        // transition:
+        transition    : bcssProps.transition,
+
+
+
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
 
-        foreg         : null, // delete from cssProps; in img-icon: foreg => backgColor ; in font-icon: foreg => foreg => color (font-color)
+        foreg         : null, // delete from cssProps; in img-icon: foreg => backgColor ; in font-icon: foreg => font-color
     }}
     public /*virtual*/ useIcon(img: Cust.Ref, foreg?: Cust.Ref): JssStyle { return {
         extend: [
+            // basicStyle + image => img-icon
             this.basicStyle(),
             this.image(),
         ] as JssStyle,
@@ -343,7 +361,7 @@ export class IconStyles extends BasicComponentStyles {
 
 
         // setup icon's image:
-        [this.decl(this._img)]     : img,
+        [this.decl(this._img)]       : img,
 
         // setup icon's color:
         ...((foreg && (foreg !== this.ref(this._foreg))) ? {
@@ -356,13 +374,13 @@ export class IconStyles extends BasicComponentStyles {
     // utilities:
     /**
      * Merges two specified url to final url.
-     * @param target The relative or absolute target url.
      * @param base The relative or absolute base url.
+     * @param target The relative or absolute target url.
      * @returns A final url.  
      * If `target` is an absolute url, the `base` discarded.  
      * Otherwise, the combination of `base` url followed by `target` url.
      */
-    public concatUrl(target: string, base: string) {
+    public concatUrl(base: string, target: string) {
         const dummyUrl  = new URL('http://dummy')
         const baseUrl   = new URL(base, dummyUrl);
         const targetUrl = new URL(target, baseUrl);
@@ -374,7 +392,7 @@ export class IconStyles extends BasicComponentStyles {
 
     /**
      * Gets the file format based on the extension of the specified `fileName`.
-     * @param fileName The name of file to retrieve.
+     * @param fileName The name of the file to retrieve.
      * @returns  
      * A `string` represents the file format.  
      * -or-  
@@ -383,12 +401,17 @@ export class IconStyles extends BasicComponentStyles {
     public formatOf(fileName: string) {
         if (!fileName) return null;
     
-        const match = fileName.match(/(?<=[.])\w+$/)?.[0];
+        
+        
+        const match = fileName.match(/(?<=\.)\w+$/)?.[0];
         if (match) {
             if (match === 'ttf') return 'format("truetype")';
-            return `format("${match}")`;
+
+            return                      `format("${match}")`;
         } // if
     
+        
+        
         return null;
     }
 }
@@ -420,11 +443,12 @@ export const cssProps = cssConfig.refs;
 export const cssDecls = cssConfig.decls;
 
 
+
 const config = {
     font: {
         /**
-         * A *url directory* pointing to the collection of icon's fonts.  
-         * It's the *front-end url*, not the physical path on the server.
+         * A `url directory` pointing to the collection of the icon's fonts.  
+         * It's the `front-end url`, not the physical path on the server.
          */
         path  : '/fonts/',
 
@@ -441,7 +465,7 @@ const config = {
         /**
          * A list of valid icon-font's content.
          */
-        items : fontMaterial,
+        items : fontItems,
 
         /**
          * The css style of icon-font to be loaded.
@@ -455,8 +479,8 @@ const config = {
     },
     img: {
         /**
-         * A *url directory* pointing to the collection of icon's images.  
-         * It's the *front-end url*, not the physical path on the server.
+         * A `url directory` pointing to the collection of the icon's images.  
+         * It's the `front-end url`, not the physical path on the server.
          */
         path  : '/icons/',
 
@@ -479,9 +503,9 @@ const config = {
 export function useIcon<TElement extends HTMLElement = HTMLElement>(props: IconProps<TElement>) {
     return useMemo(() => {
         const imgIcon = (() => {
-            const fileName = config.img.files.find((file) => file.match(/[\w-.]+(?=[.]\w+$)/)?.[0] === props.icon);
-            if (!fileName) return null;
-            return iconStyles.concatUrl(fileName, config.img.path);
+            const file = config.img.files.find((file) => file.match(/[\w-.]+(?=\.\w+$)/)?.[0] === props.icon);
+            if (!file) return null;
+            return iconStyles.concatUrl(config.img.path, file);
         })();
 
         const isFontIcon = config.font.items.includes(props.icon);
@@ -489,18 +513,30 @@ export function useIcon<TElement extends HTMLElement = HTMLElement>(props: IconP
 
 
         return {
-            class: imgIcon ? 'img' : (isFontIcon ? 'font' : null),
+            class: (() => {
+                if (imgIcon)    return 'img';  // icon name is found in imgIcon
+
+                if (isFontIcon) return 'font'; // icon name is found in fontIcon
+
+                return null; // icon name is not found in both imgIcon & fontIcon
+            })(),
 
             style: {
                 // appearances:
-                [iconStyles.decl(iconStyles._img)] : imgIcon ? `url("${imgIcon}")` : `"${props.icon}"`,
+                [iconStyles.decl(iconStyles._img)]: (() => {
+                    if (imgIcon)    return `url("${imgIcon}")`; // the url of the icon's image
+
+                    if (isFontIcon) return `"${props.icon}"`;   // the string of the icon's name
+
+                    return undefined; // icon name is not found in both imgIcon & fontIcon
+                })(),
             },
 
             children: [
-                (imgIcon ? (
+                (imgIcon && (
                     <img key='ico-img' src={imgIcon} alt='' />
-                ) : null),
-            ].filter((child) => (child !== null)) as React.ReactNode,
+                )),
+            ].filter((child) => !!child) as React.ReactNode,
         };
     }, [props.icon]);
 }
@@ -511,7 +547,7 @@ export function useIcon<TElement extends HTMLElement = HTMLElement>(props: IconP
 
 export interface IconProps<TElement extends HTMLElement = HTMLElement>
     extends
-        Elements.BasicComponentProps<TElement>
+        BasicComponentProps<TElement>
 {
     // appearances:
     icon: string
@@ -529,7 +565,7 @@ export default function Icon<TElement extends HTMLElement = HTMLElement>(props: 
 
     // jsx:
     return (
-        <Element<TElement>
+        <BasicComponent<TElement>
             // other props:
             {...props}
 
@@ -554,7 +590,7 @@ export default function Icon<TElement extends HTMLElement = HTMLElement>(props: 
         >
             { icon.children }
             { props.children }
-        </Element>
+        </BasicComponent>
     );
 }
 export { Icon }
