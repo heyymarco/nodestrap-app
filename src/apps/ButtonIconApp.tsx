@@ -15,6 +15,9 @@ import {
 	BtnStyle,
 }						from '../libs/ButtonIcon';
 import type * as Buttons from '../libs/ButtonIcon';
+import {
+	CloseButton,
+}						from '../libs/CloseButton';
 
 
 
@@ -191,6 +194,21 @@ function App() {
 				>
                     button icon
                 </ButtonIcon>
+				<CloseButton
+					// theme={theme}
+					size={size} enableGradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+					
+					press={press}
+
+					orientation={orientation}
+					// btnStyle={btnStyle}
+				/>
 				<hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:

@@ -2,19 +2,28 @@
 import React                 from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
-import ButtonIcon            from './ButtonIcon'
-import type * as ButtonIcons from './ButtonIcon'
+import {
+    OrientationStyle,
+    VariantOrientation,
+
+    BtnType,
+    BtnStyle,
+    VariantButton,
+
+    ButtonIconProps,
+    ButtonIcon,
+}                           from './ButtonIcon'
 
 
 
 // react components:
 
-export interface Props
+export interface CloseButtonProps
     extends
-        ButtonIcons.ButtonIconProps
+        ButtonIconProps
 {
 }
-export default function CloseButton(props: Props) {
+export default function CloseButton(props: CloseButtonProps) {
     // jsx:
     return (
         <ButtonIcon
@@ -37,3 +46,7 @@ export default function CloseButton(props: Props) {
     );
 }
 CloseButton.prototype = ButtonIcon.prototype; // mark as ButtonIcon compatible
+export { CloseButton }
+
+export type { OrientationStyle, VariantOrientation }
+export type { BtnType, BtnStyle, VariantButton }

@@ -93,7 +93,7 @@ BasicComponent<TElement>^
 non gen (11):
 Button^
 	ButtonIcon^
-		CloseButton#
+		CloseButton^
 Check#
 	Radio#
 	TogglerMenuButton#
