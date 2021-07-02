@@ -324,14 +324,14 @@ export class BasicComponentStyles extends ElementStyles {
         ...this.themes(),
         ...this.sizes(),
 
-        [ '&:not(.gradient)', this.noGradient(/*inherit =*/true) ],
-        [      '&.gradient' , this.gradient()                    ],
+        [ ':not(.gradient)', this.noGradient(/*inherit =*/true) ],
+        [      '.gradient' , this.gradient()                    ],
 
-        [ '&:not(.outlined)', this.noOutlined(/*inherit =*/true) ],
-        [      '&.outlined' , this.outlined()                    ],
+        [ ':not(.outlined)', this.noOutlined(/*inherit =*/true) ],
+        [      '.outlined' , this.outlined()                    ],
 
-        [ '&:not(.mild)'    , this.noMild(/*inherit =*/false)    ],
-        [      '&.mild'     , this.mild()                        ],
+        [ ':not(.mild)'    , this.noMild(/*inherit =*/false)    ],
+        [      '.mild'     , this.mild()                        ],
     ]}
 
     /**

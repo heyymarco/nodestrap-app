@@ -6,6 +6,7 @@ import {
     // general types:
     JssStyle,
     Styles,
+    Cust,
     ClassList,
 
     
@@ -55,8 +56,8 @@ class ListgroupItemStyles extends ContentStyles {
 
 
         
-        [ ':not(.inline)>*>&', this.block() ],
-        [      '.inline>*>&' , this.inline() ],
+        [ ':not(.inline)&', this.block() ],
+        [      '.inline&' , this.inline() ],
     ]}
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -108,12 +109,6 @@ class ListgroupItemStyles extends ContentStyles {
         // border radiuses:
         borderRadius : 0, // strip out border radius
         //#endregion strip out borders almost completely
-
-
-
-        // strip out shadows:
-        // moved from here to parent,
-        boxShadow : undefined,
     }}
     public /*virtual*/ inline(): JssStyle { return {
         // borders:
@@ -155,12 +150,6 @@ class ListgroupItemStyles extends ContentStyles {
         // border radiuses:
         borderRadius : 0, // strip out border radius
         //#endregion strip out borders almost completely
-
-
-
-        // strip out shadows:
-        // moved from here to parent,
-        boxShadow : undefined,
     }}
 
 
@@ -180,10 +169,31 @@ class ListgroupItemStyles extends ContentStyles {
 
         // sizes:
         flex    : [[1, 1]], // growable & shrinkable, fills the wrapper's height
+
+
+
+        // strip out shadows:
+        // moved from here to parent,
+        boxShadow : undefined as unknown as null,
     }}
 }
 
 class ListgroupActionItemStyles extends ActionControlStyles {
+    // variants:
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
+
+
+
+        [ ':not(.bullet)&', this.notBullet() ],
+    ]}
+    public /*virtual*/ notBullet(): JssStyle { return {
+        // no focus animation:
+        [this.decl(this._boxShadowFocusBlur)] : 'initial !important',
+    }}
+
+
+    
     // states:
     public /*override*/ active()      : JssStyle { return {
         extend: [
@@ -196,6 +206,15 @@ class ListgroupActionItemStyles extends ActionControlStyles {
     
     
     
+    // functions:
+    public /*override*/ boxShadowFn(): Cust.Ref[] { return [
+        // the boxShadow just for focusing_indicator
+
+        this.ref(this._boxShadowFocusBlur, this._boxShadowNone),
+    ]}
+
+
+
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
@@ -205,14 +224,9 @@ class ListgroupActionItemStyles extends ActionControlStyles {
 
 
         // strip out borders:
-        border      : undefined,
-        borderColor : undefined,
-        borderRadius: undefined,
-
-
-
-        // strip out shadows:
-        boxShadow   : undefined,
+        border       : undefined,
+        borderColor  : undefined,
+        borderRadius : undefined,
     }}
 }
 
@@ -223,11 +237,10 @@ export class ListgroupStyles extends ContentStyles {
 
 
 
-        [ '&:not(.inline)', this.block()     ],
-        [      '&.inline' , this.inline()    ],
+        [ ':not(.inline)', this.block()  ],
+        [      '.inline' , this.inline() ],
 
-        [ '&:not(.bullet)', this.notBullet() ],
-        [      '&.bullet' , this.bullet()    ],
+        [ '.bullet'      , this.bullet() ],
     ]}
 
     public /*override*/ size(size: string): JssStyle { return {
@@ -326,14 +339,6 @@ export class ListgroupStyles extends ContentStyles {
         } as JssStyle,
     }}
 
-    public /*virtual*/ notBullet(): JssStyle { return {
-        // children:
-        [wrapperElm]: { [listItemElm]: {
-            '&:not(.actionCtrl), &.actionCtrl': {
-                boxShadow : [['none'], '!important'], // no focus animation
-            },
-        } as JssStyle } as JssStyle,
-    }}
     public /*virtual*/ bullet(): JssStyle { return {
         // layout:
         alignItems   : 'center', // child items are centered horizontally

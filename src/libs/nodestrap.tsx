@@ -307,7 +307,13 @@ export class ElementStyles {
     public /*virtual*/ useVariants(): JssStyle { return {
         extend: [
             // variant rules:
-            ...this.variants().map(([variant, style]) => ({ [variant ? (variant.includes('&') ? variant : `&.${variant}`) : '&'] : style })),
+            ...this.variants().map(([variant, style]) => ({ [variant ? (() => {
+                if (variant.includes('&')) return variant;
+
+                if (variant.includes('.') || variant.includes(':')) return `&${variant}`;
+
+                return `&.${variant}`;
+            })() : '&'] : style })),
         ] as JssStyle,
     }}
     /**
@@ -327,7 +333,13 @@ export class ElementStyles {
     public /*virtual*/ useStates(inherit = false): JssStyle { return {
         extend: [
             // state rules:
-            ...this.states(inherit).map(([state, style]) => ({ [state ? (state.includes('&') ? state : `&.${state}`) : '&'] : style })),
+            ...this.states(inherit).map(([state, style]) => ({ [state ? (() => {
+                if (state.includes('&')) return state;
+
+                if (state.includes('.') || state.includes(':')) return `&${state}`;
+
+                return `&.${state}`;
+            })() : '&'] : style })),
         ] as JssStyle,
     }}
 

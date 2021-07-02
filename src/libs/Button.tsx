@@ -128,11 +128,11 @@ export class ButtonStyles extends ActionControlStyles {
 
 
 
-        [ '&:not(.block)', this.inline() ],
-        [      '&.block' , this.block()  ],
+        [ ':not(.block)', this.inline() ],
+        [      '.block' , this.block()  ],
 
-        [ 'link'         , this.link()   ],
-        [ 'ghost'        , this.ghost()  ],
+        [ '.link'       , this.link()   ],
+        [ '.ghost'      , this.ghost()  ],
     ]}
 
     public /*override*/ size(size: string): JssStyle { return {

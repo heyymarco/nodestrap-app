@@ -34,7 +34,7 @@ import MasonryApp           from './apps/MasonryApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <ListgroupApp />
+        <ButtonIconApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

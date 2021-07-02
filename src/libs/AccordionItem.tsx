@@ -45,7 +45,7 @@ export class AccordionItemStyles extends PopupStyles {
 
 
         
-        [ '*.inline>*>&', this.inline() ],
+        [ '.inline&', this.inline() ],
     ]}
     // disable all variants except the size() for injecting our cssProps ending with size suffix
     public /*override*/ themes(): ClassList { return [] }   // disabled

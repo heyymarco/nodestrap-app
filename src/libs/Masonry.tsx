@@ -42,8 +42,8 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
 
 
         
-        [ '&:not(.inline)', this.block()  ], // block  style as default
-        [ '&.inline'      , this.inline() ], // inline style as optional
+        [ ':not(.inline)', this.block()  ], // block  style as default
+        [      '.inline' , this.inline() ], // inline style as optional
     ]}
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
