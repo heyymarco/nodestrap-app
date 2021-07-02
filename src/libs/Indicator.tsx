@@ -355,7 +355,7 @@ export class IndicatorStyles extends BasicComponentStyles {
         ),
 
         // define a final *border* color func:
-        [this.decl(this._border)]    : this.ref(
+        [this.decl(this._borderCol)] : this.ref(
             this._activeBorderTg,  // toggle active (if actived, _activeBorderTg === _borderFn)
             this._outlinedForegTg, // toggle outlined
             this._borderFn

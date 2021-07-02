@@ -5,7 +5,6 @@ import reportWebVitals from './reportWebVitals';
 
 import App from './apps/App';
 import CheckApp from './apps/CheckApp';
-import ListgroupApp from './apps/ListgroupApp';
 import CardApp from './apps/CardApp';
 import ModalApp from './apps/ModalApp';
 import FormApp from './apps/FormApp';
@@ -19,6 +18,7 @@ import BasicComponentApp                    from './apps/BasicComponentApp';
     import ContainerApp                     from './apps/ContainerApp';
     import IndicatorApp                     from './apps/IndicatorApp';
         import ContentApp                   from './apps/ContentApp';
+            import ListgroupApp             from './apps/ListgroupApp';
         import PopupApp                     from './apps/PopupApp';
             import AlertApp                 from './apps/AlertApp';
         import ControlApp                   from './apps/ControlApp';
@@ -34,7 +34,7 @@ import MasonryApp           from './apps/MasonryApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <ButtonIconApp />
+        <ListgroupApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

@@ -267,7 +267,7 @@ export class BasicComponentStyles extends ElementStyles {
     /**
      * final border color.
      */
-    public    readonly _border             = 'border'
+    public    readonly _borderCol          = 'borderCol'
 
     /**
      * final box-shadow.
@@ -637,7 +637,7 @@ export class BasicComponentStyles extends ElementStyles {
         ],
 
         // define a final *border* color func:
-        [this.decl(this._border)]    : this.ref(
+        [this.decl(this._borderCol)] : this.ref(
             this._outlinedForegTg, // toggle outlined
             this._borderFn
         ),
@@ -689,7 +689,7 @@ export class BasicComponentStyles extends ElementStyles {
         // apply final props:
         foreg       : this.ref(this._foreg),
         backg       : this.ref(this._backg),
-        borderColor : this.ref(this._border),
+        borderColor : this.ref(this._borderCol),
         boxShadow   : this.ref(this._boxShadow),
         filter      : this.ref(this._filter),
         anim        : this.ref(this._anim),

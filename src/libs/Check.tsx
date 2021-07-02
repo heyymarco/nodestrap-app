@@ -448,7 +448,7 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
     
         
         // apply fn props:
-        foreg         : this.ref(this._border),
+        foreg         : this.ref(this._mildForegFn),
 
 
 

@@ -87,8 +87,8 @@ export class CardStylesBuilder extends ContentStyles {
 
         // borders:
         //#region border-strokes as a separator
-        border       : ecssProps.border,       // copy from children (can't inherit because border(Inline|Block)Width might have been modified)
-        borderColor  : this.ref(this._border), // copy from children (can't inherit because border(Inline|Block)Width might have been modified)
+        border       : ecssProps.border,          // copy from children (can't inherit because border(Inline|Block)Width might have been modified)
+        borderColor  : this.ref(this._borderCol), // copy from children (can't inherit because border(Inline|Block)Width might have been modified)
 
         borderInlineWidth         : 0,  // remove (left|right)-border for all-children
 
@@ -268,8 +268,8 @@ export class CardStylesBuilder extends ContentStyles {
 
 
         //#region border-strokes
-        border       : ecssProps.border,       // moved in from children
-        borderColor  : this.ref(this._border), // moved in from children
+        border       : ecssProps.border,          // moved in from children
+        borderColor  : this.ref(this._borderCol), // moved in from children
         //#endregion border-strokes
 
 

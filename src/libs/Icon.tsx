@@ -292,7 +292,7 @@ export class IconStyles extends BasicComponentStyles {
         [this.decl(this._backgCol)]  : null,
         [this.decl(this._backgSol)]  : null,
         [this.decl(this._backg)]     : null,
-        [this.decl(this._border)]    : null,
+        [this.decl(this._borderCol)] : null,
         [this.decl(this._boxShadow)] : null,
         [this.decl(this._filter)]    : null,
         [this.decl(this._anim)]      : null,
