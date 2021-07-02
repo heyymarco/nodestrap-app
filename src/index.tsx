@@ -34,7 +34,7 @@ import MasonryApp           from './apps/MasonryApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <ListgroupApp />
+        <AccordionApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

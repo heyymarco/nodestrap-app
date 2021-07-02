@@ -670,7 +670,7 @@ export function useTogglerActive(props: TogglerActiveProps): [boolean, React.Dis
 
         
         
-        if (propActive !== null) { // controllable [active] is set => no uncontrollable required
+        if (propActive === null) { // controllable [active] is set => no uncontrollable required, otherwise do it
             setActiveTg(newActiveValue); // set dynamic (uncontrollable)
         } // if
         
