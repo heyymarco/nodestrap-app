@@ -5,7 +5,6 @@ import React                from 'react'        // base technology of our nodest
 import {
     // general types:
     JssStyle,
-    Styles,
     Cust,
     ClassList,
 
@@ -163,17 +162,22 @@ class ListgroupItemStyles extends ContentStyles {
 
         
         // layout:
-        display : 'block',  // fills the wrapper's width
+        display   : 'block',  // fills the wrapper's width
 
 
 
         // sizes:
-        flex    : [[1, 1]], // growable & shrinkable, fills the wrapper's height
+        flex      : [[1, 1]], // growable & shrinkable, fills the wrapper's height
 
 
 
         // strip out shadows:
         // moved from here to parent,
+        /*
+            i don't know why setting `null` causing the JSS not working,
+            but setting `undefined` causing TS error.
+            so the hack `undefined as unknown as null` solved this problem.
+        */
         boxShadow : undefined as unknown as null,
     }}
 }
@@ -454,7 +458,7 @@ export class ListgroupStyles extends ContentStyles {
         // children:
         [wrapperElm]: {
             // layout:
-            display        : 'flex',    // use flexbox as the layout
+            display        : 'flex',    // use flexbox as the layout, fills the Listgroup's width
             justifyContent : 'stretch', // listItems height are 100% of the wrapper (the listItems also need to have growable & shrinkable)
             alignItems     : 'stretch', // listItems width  are 100% of the wrapper
         } as JssStyle,
@@ -464,40 +468,30 @@ export class ListgroupStyles extends ContentStyles {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected /*override*/ styles(): Styles<'main'|'@global'> {
-        const styles                    = super.styles();
-        const listgroupItemStyles       = new ListgroupItemStyles();
-        const listgroupActionItemStyles = new ListgroupActionItemStyles();
+    public /*override*/ compositeStyle(): JssStyle { return {
+        extend: [
+            super.compositeStyle(), // copy compositeStyle from base
+        ] as JssStyle,
 
 
 
-        styles.main = {
+        [wrapperElm]: { [listItemElm]: {
             extend: [
-                styles.main,
-
-                {
-                    [wrapperElm]: { [listItemElm]: {
-                        extend: [
-                            listgroupItemStyles.compositeStyle(),
-                        ] as JssStyle,
-
-
-
-                        '&.actionCtrl': listgroupActionItemStyles.compositeStyle(),
-
-
-
-                        // customize:
-                        '&:not(.actionCtrl), &.actionCtrl': this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
-                    } as JssStyle } as JssStyle,
-                },
+                // general ListgroupItem:
+                (new ListgroupItemStyles()).compositeStyle(),
             ] as JssStyle,
-        };
 
 
 
-        return styles;
-    }
+            // special ListgroupItem:
+            '&.actionCtrl': (new ListgroupActionItemStyles()).compositeStyle(),
+
+
+
+            // customize:
+            '&:not(.actionCtrl), &.actionCtrl': this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
+        } as JssStyle } as JssStyle,
+    }}
 }
 export const listgroupStyles = new ListgroupStyles();
 
