@@ -73,7 +73,7 @@ BasicComponent<TElement>^
 	CarouselItem<TElement>@
 	Indicator<TElement>^
 		Content<TElement>^
-			Listgroup<TElement>#
+			Listgroup<TElement>^
 				Navscroll<TElement>@
 				Accordion<TElement>@
 			ListgroupItem<TElement>^

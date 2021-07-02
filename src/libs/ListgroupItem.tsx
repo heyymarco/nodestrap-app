@@ -43,6 +43,10 @@ export default function ListgroupItem<TElement extends HTMLElement = HTMLElement
             inheritActive={props.inheritActive ?? true} // change default value to `true`
 
 
+            // variants:
+            mild={props.mild ?? false}
+
+
             // classes:
             mainClass={props.mainClass ?? ''}
             classes={[...(props.classes ?? []),
@@ -57,6 +61,10 @@ export default function ListgroupItem<TElement extends HTMLElement = HTMLElement
 
             // accessibility:
             inheritActive={props.inheritActive ?? true} // change default value to `true`
+
+
+            // variants:
+            mild={props.mild ?? false}
 
 
             // classes:

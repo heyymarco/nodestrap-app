@@ -61,6 +61,9 @@ function App() {
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
 
+	const milds = [false, undefined, true];
+	const [mild,       setMild      ] = useState<boolean|undefined>(undefined);
+
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
 
@@ -134,7 +137,7 @@ function App() {
                 </ActionControl>
 				<Listgroup
 					theme={theme} size={size} enableGradient={enableGrad}
-					outlined={outlined}
+					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active} actionCtrl={actionCtrl}
 					orientation={orientation}
@@ -233,6 +236,29 @@ function App() {
 						/>
 						outlined
 					</label>
+				</p>
+				<p>
+					Mild:
+					{
+						milds.map(mi =>
+							<label key={`${mi}`}>
+								<input type='radio'
+									value={`${mi}`}
+									checked={mild===mi}
+									onChange={(e) => setMild((() => {
+										const value = e.target.value;
+										if (!value) return undefined;
+										switch (value) {
+											case 'true' : return true;
+											case 'false': return false;
+											default     : return undefined;
+										} // switch
+									})())}
+								/>
+								{`${mi ?? 'unset'}`}
+							</label>
+						)
+					}
 				</p>
 				<p>
 					<label>

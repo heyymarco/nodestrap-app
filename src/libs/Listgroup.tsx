@@ -55,7 +55,7 @@ class ListgroupItemStyles extends ContentStyles {
 
 
         
-        [ ':not(.inline)&', this.block() ],
+        [ ':not(.inline)&', this.block()  ],
         [      '.inline&' , this.inline() ],
     ]}
     public /*override*/ size(size: string): JssStyle { return {
@@ -179,6 +179,11 @@ class ListgroupItemStyles extends ContentStyles {
             so the hack `undefined as unknown as null` solved this problem.
         */
         boxShadow : undefined as unknown as null,
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
 
@@ -256,6 +261,31 @@ export class ListgroupStyles extends ContentStyles {
 
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
+    }}
+
+    public /*override*/ outlined(): JssStyle { return {
+        extend: [
+            super.outlined(), // copy outlined from base
+        ] as JssStyle,
+
+        
+        
+        // on ListgroupItem, *toggle on* the outlined with their own theme:
+        [wrapperElm]: { [listItemElm]:
+            super.outlined()
+        } as JssStyle,
+    }}
+    public /*override*/ mild(): JssStyle { return {
+        extend: [
+            super.mild(), // copy mild from base
+        ] as JssStyle,
+
+
+
+        // on ListgroupItem, *toggle on* the mild with their own theme:
+        [wrapperElm]: { [listItemElm]:
+            super.mild()
+        } as JssStyle,
     }}
 
     public /*virtual*/ block(): JssStyle { return {
