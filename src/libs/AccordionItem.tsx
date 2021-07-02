@@ -45,7 +45,7 @@ export class AccordionItemStyles extends PopupStyles {
 
 
         
-        [ '.inline', this.inline() ],
+        [ '.inline>*>&', this.inline() ],
     ]}
     
     public /*override*/ themes()     : ClassList { return [] } // disabled
@@ -72,7 +72,7 @@ export class AccordionItemStyles extends PopupStyles {
 
 
     // states:
-    public /*override*/ resetDefaultState(inherit = false)   : PropList { return {} } // disabled
+    public /*override*/ themeDefault(theme: string|null = 'secondary') : PropList { return {} } // disabled
 
     public /*override*/ resetEnableDisable(inherit: boolean) : PropList { return {} } // disabled
     public /*override*/ enabled()     : JssStyle { return {} } // disabled
@@ -80,24 +80,56 @@ export class AccordionItemStyles extends PopupStyles {
     public /*override*/ disabling()   : JssStyle { return {} } // disabled
     public /*override*/ disabled()    : JssStyle { return {} } // disabled
 
-    //#region forwards active/passive state to .body
     public /*override*/ actived()     : JssStyle { return {
         // children:
-        [bodyElm]: super.actived(),
+        [bodyElm]: {
+            extend: [
+                super.actived(), // copy actived from base
+            ] as JssStyle,
+
+
+
+            [this.decl(this._filterActivePassive)] : null,
+        } as JssStyle,
     }}
     public /*override*/ activating()  : JssStyle { return {
         // children:
-        [bodyElm]: super.activating(),
+        [bodyElm]: {
+            extend: [
+                super.activating(), // copy activating from base
+            ] as JssStyle,
+
+
+
+            [this.decl(this._filterActivePassive)] : null,
+            [this.decl(this._animActivePassive)]   : cssProps.bodyAnimActive,
+        } as JssStyle,
     }}
     public /*override*/ passivating() : JssStyle { return {
         // children:
-        [bodyElm]: super.passivating(),
+        [bodyElm]: {
+            extend: [
+                super.passivating(), // copy passivating from base
+            ] as JssStyle,
+
+
+
+            [this.decl(this._filterActivePassive)] : null,
+            [this.decl(this._animActivePassive)]   : cssProps.bodyAnimPassive,
+        } as JssStyle,
     }}
     public /*override*/ passived()    : JssStyle { return {
         // children:
-        [bodyElm]: super.passived(),
+        [bodyElm]: {
+            extend: [
+                super.passived(), // copy passived from base
+            ] as JssStyle,
+
+
+
+            /* --nothing-- */
+        } as JssStyle,
     }}
-    //#endregion forwards active/passive state to .body
 
 
 
