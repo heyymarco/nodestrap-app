@@ -325,7 +325,7 @@ export class IndicatorStyles extends BasicComponentStyles {
     }
 
     public /*virtual*/ resetPressRelease(inherit: boolean) : PropList { return {
-        [this.decl(this._filterPressRelease)]  : inherit ? 'unset' : 'initial', // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
+        [this.decl(this._filterPressRelease)]  : inherit ? 'unset' : 'initial', // will be used in ActionControl, so we can re-use our animations (enable, disable, active, passive) in the Control
     }}
 
 

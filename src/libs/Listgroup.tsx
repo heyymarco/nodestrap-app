@@ -7,6 +7,7 @@ import {
     JssStyle,
     Cust,
     ClassList,
+    PropList,
 
     
     // components:
@@ -68,6 +69,12 @@ class ListgroupItemStyles extends ContentStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
+    public /*override*/ noOutlined(inherit = false): JssStyle {
+        return super.noOutlined(true); // always inherit, ignores parameter
+    }
+    public /*override*/ noMild(inherit = false): JssStyle {
+        return super.noMild(true); // always inherit, ignores parameter
+    }
     public /*virtual*/ block(): JssStyle { return {
         // borders:
         //#region strip out borders almost completely
@@ -190,7 +197,7 @@ class ListgroupItemStyles extends ContentStyles {
 class ListgroupActionItemStyles extends ActionControlStyles {
     // variants:
     public /*override*/ variants(): ClassList { return [
-        ...super.variants(), // copy variants from base
+        // ...super.variants(), // no base's variants
 
 
 
@@ -204,14 +211,22 @@ class ListgroupActionItemStyles extends ActionControlStyles {
 
     
     // states:
-    public /*override*/ active()      : JssStyle { return {
-        extend: [
-            super.active(),
+    public /*override*/ themeDefault(theme: string|null = 'secondary') : PropList { return {} } // disabled
 
-            super.markActive(), // keeps mark active on active
-        ] as JssStyle,
-    }}
-    public /*override*/ markActive() : JssStyle { return {} } // do not mark active on focus, arrive
+    public /*override*/ resetEnableDisable(inherit: boolean) : PropList { return {} } // disabled
+    public /*override*/ enabled()     : JssStyle { return this.enable()  } // partially disabled
+    public /*override*/ enabling()    : JssStyle { return this.enable()  } // partially disabled
+    public /*override*/ disabling()   : JssStyle { return this.disable() } // partially disabled
+    public /*override*/ disabled()    : JssStyle { return this.disable() } // partially disabled
+
+    public /*override*/ resetActivePassive(inherit: boolean) : PropList { return {} } // disabled
+    public /*override*/ actived()     : JssStyle { return {} } // disabled
+    public /*override*/ activating()  : JssStyle { return {} } // disabled
+    public /*override*/ passivating() : JssStyle { return {} } // disabled
+    public /*override*/ passived()    : JssStyle { return {} } // disabled
+    public /*override*/ toggleOffActive(inherit = false) : PropList { return {} } // disabled
+    public /*override*/ toggleOnActive()                 : PropList { return {} } // disabled
+    public /*override*/ themeActive(theme = 'primary')   : PropList { return {} } // disabled
     
     
     

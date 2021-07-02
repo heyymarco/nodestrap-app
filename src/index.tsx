@@ -11,7 +11,6 @@ import FormApp from './apps/FormApp';
 import NavbarApp from './apps/NavbarApp';
 import CarouselApp from './apps/CarouselApp';
 import NavscrollApp from './apps/NavscrollApp';
-import AccordionApp from './apps/AccordionApp';
 
 
 import BasicComponentApp                    from './apps/BasicComponentApp';
@@ -19,6 +18,7 @@ import BasicComponentApp                    from './apps/BasicComponentApp';
     import IndicatorApp                     from './apps/IndicatorApp';
         import ContentApp                   from './apps/ContentApp';
             import ListgroupApp             from './apps/ListgroupApp';
+                import AccordionApp         from './apps/AccordionApp';
         import PopupApp                     from './apps/PopupApp';
             import AlertApp                 from './apps/AlertApp';
         import ControlApp                   from './apps/ControlApp';

@@ -66,7 +66,9 @@ class GhostStyles extends ControlStyles {
     public /*override*/ activating()  : JssStyle { return {} } // disabled
     public /*override*/ passivating() : JssStyle { return {} } // disabled
     public /*override*/ passived()    : JssStyle { return {} } // disabled
-    public /*override*/ toggleOffActive(inherit = false)     : PropList { return {} } // disabled
+    public /*override*/ toggleOffActive(inherit = false) : PropList { return {} } // disabled
+    public /*override*/ toggleOnActive()                 : PropList { return {} } // disabled
+    public /*override*/ themeActive(theme = 'primary')   : PropList { return {} } // disabled
 
     public /*override*/ resetFocusBlur(inherit: boolean)     : PropList { return {} } // disabled
     public /*override*/ focused()     : JssStyle { return {} } // disabled

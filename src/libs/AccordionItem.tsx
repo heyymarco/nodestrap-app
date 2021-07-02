@@ -45,20 +45,24 @@ export class AccordionItemStyles extends PopupStyles {
 
 
         
-        [ '.inline&', this.inline() ],
+        [ '.inline', this.inline() ],
     ]}
-    // disable all variants except the size() for injecting our cssProps ending with size suffix
-    public /*override*/ themes(): ClassList { return [] }   // disabled
+    
+    public /*override*/ themes()     : ClassList { return [] } // disabled
+
     public /*override*/ size(size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
         [bodyElm]: this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-    public /*override*/ noGradient() : JssStyle { return {} } // disabled
-    public /*override*/ gradient()   : JssStyle { return {} } // disabled
-    public /*override*/ noOutlined() : JssStyle { return {} } // disabled
-    public /*override*/ outlined()   : JssStyle { return {} } // disabled
-    public /*override*/ noMild()     : JssStyle { return {} } // disabled
-    public /*override*/ mild()       : JssStyle { return {} } // disabled
+
+    public /*override*/ noGradient() : JssStyle { return {} }  // disabled
+    public /*override*/ gradient()   : JssStyle { return {} }  // disabled
+
+    public /*override*/ noOutlined() : JssStyle { return {} }  // disabled
+    public /*override*/ outlined()   : JssStyle { return {} }  // disabled
+
+    public /*override*/ noMild()     : JssStyle { return {} }  // disabled
+    public /*override*/ mild()       : JssStyle { return {} }  // disabled
 
     public /*virtual*/ inline(): JssStyle { return {
         // overwrites propName = propName{Inline}:
@@ -68,8 +72,9 @@ export class AccordionItemStyles extends PopupStyles {
 
 
     // states:
-    public /*override*/ resetDefaultState(inherit = false) : PropList { return {} } // disabled
+    public /*override*/ resetDefaultState(inherit = false)   : PropList { return {} } // disabled
 
+    public /*override*/ resetEnableDisable(inherit: boolean) : PropList { return {} } // disabled
     public /*override*/ enabled()     : JssStyle { return {} } // disabled
     public /*override*/ enabling()    : JssStyle { return {} } // disabled
     public /*override*/ disabling()   : JssStyle { return {} } // disabled
@@ -123,15 +128,6 @@ export const accordionItemStyles = new AccordionItemStyles();
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     const keyframesBodyActive  : PropEx.Keyframes = {
         from: {
             overflow     : 'hidden',

@@ -1,20 +1,30 @@
 // nodestrap (modular web components):
-import Listgroup            from './Listgroup'
-import type * as Listgroups from './Listgroup'
-import AccordionItem        from './AccordionItem'
-import type * as AccordionItems from './AccordionItem'
+import {
+    OrientationStyle,
+    VariantOrientation,
+
+    ListStyle,
+    VariantList,
+
+    ListgroupProps,
+    Listgroup,
+}                           from './Listgroup'
+import {
+    AccordionItemProps,
+    AccordionItem,
+}                           from './AccordionItem'
+import * as AccordionItems  from './AccordionItem'
 
 
 
 // react components:
 
-export type Props = Listgroups.ListgroupProps
+export type { ListgroupProps }
 export default Listgroup;
 
-type OrientationStyle   = Listgroups.OrientationStyle
-type VariantOrientation = Listgroups.VariantOrientation
-type ListStyle          = Listgroups.ListStyle
-export type { OrientationStyle, VariantOrientation, ListStyle }
+export type { OrientationStyle, VariantOrientation }
+export type { ListStyle, VariantList }
 
-export { AccordionItem, AccordionItem as Item }
+export type { AccordionItemProps, AccordionItemProps as ItemProps }
 export type { AccordionItems, AccordionItems as Items }
+export { AccordionItem, AccordionItem as Item }
