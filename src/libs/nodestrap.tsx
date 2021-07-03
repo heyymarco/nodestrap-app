@@ -94,7 +94,7 @@ export class ElementStyles {
              * animValid
              * animInvalidInline
              */
-             if ((/(Enable|Disable|Active|Passive|Check|Clear|Hover|Arrive|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid|Full|Compact)(Block|Inline)?$/).test(name)) continue; // exclude
+             if ((/(Enable|Disable|Active|Passive|Press|Release|Check|Clear|Hover|Arrive|Leave|Focus|Blur|Valid|Unvalid|Invalid|Uninvalid|Full|Compact)(Block|Inline)?$/).test(name)) continue; // exclude
 
             // special props:
             /**

@@ -15,6 +15,9 @@ import {
     Element,
 }                           from './nodestrap'   // nodestrap's core
 import {
+    useStateEnableDisable,
+    useStateActivePassive,
+
     useTogglerActive,
     TogglerActiveProps,
 }                           from './Indicator'
@@ -31,12 +34,9 @@ import {
 // styles:
 
 /*
-    Basic ListgroupItem's styling **was done** by ListGroupStyles.
-    We just watches **popup functionality** at the AccordionItem
-    and forward the functionality to the sibling `.body`.
+    Basic ListgroupItem's styling *was done* by ListGroupStyles.
+    We just add a *popup functionality* to the *body*.
 */
-
-const bodyElm = '&~.body.body'; // double the .body for winning to Listgroup's *:not(.actionCtrl)
 
 export class AccordionItemStyles extends PopupStyles {
     // variants:
@@ -51,8 +51,14 @@ export class AccordionItemStyles extends PopupStyles {
     public /*override*/ themes()     : ClassList { return [] } // disabled
 
     public /*override*/ size(size: string): JssStyle { return {
+        extend: [
+            super.size(size), // copy sizes from base
+        ] as JssStyle,
+
+
+
         // overwrites propName = propName{Size}:
-        [bodyElm]: this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
     public /*override*/ noGradient() : JssStyle { return {} }  // disabled
@@ -66,7 +72,7 @@ export class AccordionItemStyles extends PopupStyles {
 
     public /*virtual*/ inline(): JssStyle { return {
         // overwrites propName = propName{Inline}:
-        [bodyElm]: this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, 'Inline')),
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, 'Inline')),
     }}
 
 
@@ -81,76 +87,97 @@ export class AccordionItemStyles extends PopupStyles {
     public /*override*/ disabled()    : JssStyle { return {} } // disabled
 
     public /*override*/ actived()     : JssStyle { return {
-        // children:
-        [bodyElm]: {
-            extend: [
-                super.actived(), // copy actived from base
-            ] as JssStyle,
+        extend: [
+            super.actived(), // copy actived from base
+        ] as JssStyle,
 
 
 
-            [this.decl(this._filterActivePassive)] : null,
-        } as JssStyle,
+        [this.decl(this._filterActivePassive)] : 'unset',
     }}
     public /*override*/ activating()  : JssStyle { return {
-        // children:
-        [bodyElm]: {
-            extend: [
-                super.activating(), // copy activating from base
-            ] as JssStyle,
+        extend: [
+            super.activating(), // copy activating from base
+        ] as JssStyle,
 
 
 
-            [this.decl(this._filterActivePassive)] : null,
-            [this.decl(this._animActivePassive)]   : cssProps.bodyAnimActive,
-        } as JssStyle,
+        [this.decl(this._filterActivePassive)] : 'unset',
+        [this.decl(this._animActivePassive)]   : cssProps.animActive,
     }}
     public /*override*/ passivating() : JssStyle { return {
-        // children:
-        [bodyElm]: {
-            extend: [
-                super.passivating(), // copy passivating from base
-            ] as JssStyle,
+        extend: [
+            super.passivating(), // copy passivating from base
+        ] as JssStyle,
 
 
 
-            [this.decl(this._filterActivePassive)] : null,
-            [this.decl(this._animActivePassive)]   : cssProps.bodyAnimPassive,
-        } as JssStyle,
+        [this.decl(this._filterActivePassive)] : 'unset',
+        [this.decl(this._animActivePassive)]   : cssProps.animPassive,
     }}
     public /*override*/ passived()    : JssStyle { return {
-        // children:
-        [bodyElm]: {
-            extend: [
-                super.passived(), // copy passived from base
-            ] as JssStyle,
+        extend: [
+            super.passived(), // copy passived from base
+        ] as JssStyle,
 
 
 
-            /* --nothing-- */
-        } as JssStyle,
+        /* --nothing-- */
+    }}
+
+
+
+    // functions:
+    public /*override*/ propsFn(): PropList { return {
+        ...super.propsFn(), // copy functional props from base
+
+
+
+        //#region nones
+        [this.decl(this._backgNone)]     : null,
+        [this.decl(this._boxShadowNone)] : null,
+        [this.decl(this._filterNone)]    : null,
+        [this.decl(this._animNone)]      : null,
+        //#endregion nones
+
+
+
+        [this.decl(this._foregFn)]          : null,
+        [this.decl(this._backgFn)]          : null,
+        [this.decl(this._borderFn)]         : null,
+
+        [this.decl(this._outlinedForegFn)]  : null,
+        [this.decl(this._outlinedBackgFn)]  : null,
+
+        [this.decl(this._mildForegFn)]      : null,
+        [this.decl(this._mildBackgFn)]      : null,
+
+        [this.decl(this._boxShadowFocusFn)] : null,
+
+
+
+        //#region finals
+        // define a final *foreground* color func:
+     // [this.decl(this._foreg)]     : null, // necessary
+     // [this.decl(this._backgCol)]  : null, // necessary
+     // [this.decl(this._backgSol)]  : null, // necessary
+     // [this.decl(this._backg)]     : null, // necessary
+        [this.decl(this._borderCol)] : null,
+        [this.decl(this._boxShadow)] : null,
+        [this.decl(this._filter)]    : null,
+        [this.decl(this._anim)]      : null,
+        //#endregion finals
     }}
 
 
 
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
-        // children:
-        [bodyElm]: this.bodyBasicStyle(),
-
-
-
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected /*virtual*/ bodyBasicStyle(): JssStyle { return {
-        // apply fn props:
-        anim : this.ref(this._anim),
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'body')), // apply *general* cssProps starting with body***
+    public /*override*/ compositeStyle(): JssStyle { return {
+        '&&': super.compositeStyle(), // makes AccordionItem more specific than ListGroupItem
     }}
 }
 export const accordionItemStyles = new AccordionItemStyles();
@@ -160,7 +187,7 @@ export const accordionItemStyles = new AccordionItemStyles();
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    const keyframesBodyActive  : PropEx.Keyframes = {
+    const keyframesActive  : PropEx.Keyframes = {
         from: {
             overflow     : 'hidden',
             maxBlockSize : 0,
@@ -174,13 +201,13 @@ const cssConfig = new CssConfig(() => {
             maxBlockSize : 'unset',
         },
     };
-    const keyframesBodyPassive : PropEx.Keyframes = {
-        from : keyframesBodyActive.to,
-        '1%' : keyframesBodyActive['99%'],
-        to   : keyframesBodyActive.from,
+    const keyframesPassive : PropEx.Keyframes = {
+        from : keyframesActive.to,
+        '1%' : keyframesActive['99%'],
+        to   : keyframesActive.from,
     };
 
-    const keyframesBodyActiveInline  : PropEx.Keyframes = {
+    const keyframesActiveInline  : PropEx.Keyframes = {
         from: {
             overflow      : 'hidden',
             maxInlineSize : 0,
@@ -194,25 +221,25 @@ const cssConfig = new CssConfig(() => {
             maxInlineSize : 'unset',
         },
     };
-    const keyframesBodyPassiveInline : PropEx.Keyframes = {
-        from : keyframesBodyActiveInline.to,
-        '1%' : keyframesBodyActiveInline['99%'],
-        to   : keyframesBodyActiveInline.from,
+    const keyframesPassiveInline : PropEx.Keyframes = {
+        from : keyframesActiveInline.to,
+        '1%' : keyframesActiveInline['99%'],
+        to   : keyframesActiveInline.from,
     };
 
 
     return {
         // anim props:
 
-        '@keyframes bodyActive'        : keyframesBodyActive,
-        '@keyframes bodyPassive'       : keyframesBodyPassive,
-        bodyAnimActive                 : [['300ms', 'ease-out', 'both', keyframesBodyActive ]],
-        bodyAnimPassive                : [['300ms', 'ease-out', 'both', keyframesBodyPassive]],
+        '@keyframes active'        : keyframesActive,
+        '@keyframes passive'       : keyframesPassive,
+        animActive                 : [['300ms', 'ease-out', 'both', keyframesActive ]],
+        animPassive                : [['300ms', 'ease-out', 'both', keyframesPassive]],
 
-        '@keyframes bodyActiveInline'  : keyframesBodyActiveInline,
-        '@keyframes bodyPassiveInline' : keyframesBodyPassiveInline,
-        bodyAnimActiveInline           : [['300ms', 'ease-out', 'both', keyframesBodyActiveInline ]],
-        bodyAnimPassiveInline          : [['300ms', 'ease-out', 'both', keyframesBodyPassiveInline]],
+        '@keyframes activeInline'  : keyframesActiveInline,
+        '@keyframes passiveInline' : keyframesPassiveInline,
+        animActiveInline           : [['300ms', 'ease-out', 'both', keyframesActiveInline ]],
+        animPassiveInline          : [['300ms', 'ease-out', 'both', keyframesPassiveInline]],
     };
 }, /*prefix: */'acci');
 export const cssProps = cssConfig.refs;
@@ -237,7 +264,20 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
     
     
     // states:
+    const stateEnbDis           = useStateEnableDisable(props);
     const [isActive, setActive] = useTogglerActive(props);
+    const stateActPass          = useStateActivePassive({
+        // tag            : props.tag,
+        // ...{
+        //     type       : ((props as any).type,
+        // },
+
+        enabled        : props.enabled,
+        inheritEnabled : props.inheritEnabled,
+
+        active         : props.active,
+        inheritActive  : props.inheritActive,
+    }, /*activeDn: */isActive);
 
     
     
@@ -277,10 +317,6 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
             actionCtrl={props.actionCtrl ?? true}
 
 
-            // classes:
-            mainClass={props.mainClass ?? styles.main}
-
-
             // events:
             onClick={(e) => {
                 // backwards:
@@ -293,9 +329,33 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
         >
             { label }
         </ListgroupItem>
-        <Element
+        <Element<TElement>
             // classes:
-            mainClass='body'
+            mainClass={props.mainClass ?? styles.main}
+            stateClasses={[...(props.stateClasses ?? []),
+                stateEnbDis.class,
+                stateActPass.class,
+            ]}
+
+
+            // Control::disabled:
+            {...stateEnbDis.props}
+
+
+            // Check::checked:
+            {...stateActPass.props}
+
+
+            // events:
+            onAnimationEnd={(e) => {
+                // states:
+                stateEnbDis.handleAnimationEnd(e);
+                stateActPass.handleAnimationEnd(e);
+
+
+                // forwards:
+                props.onAnimationEnd?.(e);
+            }}
         >
             { children }
         </Element>
