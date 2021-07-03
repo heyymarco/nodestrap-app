@@ -89,7 +89,7 @@ function App() {
 						<Check
 							key={theme ?? 'none'}
 
-							theme={theme} size={size} enableGradient={enableGrad} outlined={outlined}
+							theme={theme} size={size} gradient={enableGrad} outlined={outlined}
 		
 							enabled={enabled} active={active}
 		

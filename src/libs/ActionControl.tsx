@@ -281,10 +281,6 @@ export function useStatePressRelease(props: ActionControlProps, classes = { acti
         // accessibility:
         active        : props.press, // controllable active => controllable press
         inheritActive : false,       // do not `.press`/`.release` when parent [active]
-
-
-        // behaviors:
-        actionCtrl    : true,        // always use actionCtrl implementation
     }, activeDn, classes);
 
 
@@ -361,10 +357,6 @@ export default function ActionControl<TElement extends HTMLElement = HTMLElement
         <Control<TElement>
             // other props:
             {...props}
-
-
-            // behaviors:
-            actionCtrl={false} // turn off default actionCtrl behavior, use a new actionCtrl implementation
 
 
             // classes:

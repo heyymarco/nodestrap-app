@@ -72,7 +72,7 @@ function App() {
         <div className="App" style={{background: 'url("/stone--.svg")'}}>
 			
 			<Navbar
-				theme={theme} size={size} enableGradient={enableGrad}
+				theme={theme} size={size} gradient={enableGrad}
 				outlined={outlined}
 
 				enabled={enabled}
@@ -94,17 +94,17 @@ function App() {
 				<NavbarMenu theme='success'>fine</NavbarMenu>
 				<NavbarMenu size='sm'>small</NavbarMenu>
 				<NavbarMenu size='lg'>big</NavbarMenu>
-				<NavbarMenu enableGradient={true}>i'm 3d</NavbarMenu>
+				<NavbarMenu gradient={true}>i'm 3d</NavbarMenu>
 			</Navbar>
             <Container>
                 <BasicComponent
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 				>
                         test
                 </BasicComponent>
                 <Indicator
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -112,7 +112,7 @@ function App() {
                         test
                 </Indicator>
                 <Content
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}

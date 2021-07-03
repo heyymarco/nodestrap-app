@@ -75,9 +75,9 @@ BasicComponent<TElement>^
 		Content<TElement>^
 			Listgroup<TElement>^
 				Navscroll<TElement>@
-				Accordion<TElement>@
+				Accordion<TElement>^
 			ListgroupItem<TElement>^
-				AccordionItem<TElement>#
+				AccordionItem<TElement>^
 			Card<TElement>@
 				Modal<TElement>#
 		Control<TElement>^

@@ -82,7 +82,7 @@ function App() {
 				</AccordionItem>
 				<hr style={{flexBasis: '100%'}} />
                 <Accordion
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active} actionCtrl={actionCtrl}
@@ -144,7 +144,7 @@ function App() {
 					<ListgroupItem theme='success'>i'm fine</ListgroupItem>
 					<ListgroupItem size='sm'>i'm small</ListgroupItem>
 					<ListgroupItem size='lg'>i'm big</ListgroupItem>
-					<ListgroupItem enableGradient={true}>i'm 3d</ListgroupItem>
+					<ListgroupItem gradient={true}>i'm 3d</ListgroupItem>
 					<ListgroupItem outlined={true}>i'm transparent</ListgroupItem>
 					<ListgroupItem actionCtrl={true}>i'm controllable</ListgroupItem>
 					<ListgroupItem actionCtrl={true} active={true}>i'm controllable</ListgroupItem>

@@ -69,7 +69,7 @@ function App() {
         <div className="App">
             <Container>
                 <Control
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -82,7 +82,7 @@ function App() {
                 <Control
 					tag='button'
 					
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}

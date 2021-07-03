@@ -87,7 +87,7 @@ function App() {
         <div className="App">
             <Container>
                 <Control
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -100,7 +100,7 @@ function App() {
                 <Control
 					tag='button'
 					
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -113,7 +113,7 @@ function App() {
 				<Control
 					tag='textarea'
 					
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -127,7 +127,7 @@ function App() {
 				/>
                 <hr style={{flexBasis: '100%'}} />
                 <ActionControl
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -142,7 +142,7 @@ function App() {
                 <ActionControl
 					tag='button'
 					
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -156,7 +156,7 @@ function App() {
                 </ActionControl>
 				<hr style={{flexBasis: '100%'}} />
 				<Button
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}

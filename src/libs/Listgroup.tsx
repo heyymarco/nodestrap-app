@@ -29,6 +29,9 @@ import {
     cssProps as bcssProps,
 }                           from './BasicComponent'
 import {
+    IContentStyles,
+    contentStyles,
+
     ContentStyles,
     ContentProps,
     Content,
@@ -194,7 +197,7 @@ class ListgroupItemStyles extends ContentStyles {
     }}
 }
 
-class ListgroupActionItemStyles extends ActionControlStyles {
+class ListgroupActionItemStyles extends ActionControlStyles implements IContentStyles {
     // variants:
     public /*override*/ variants(): ClassList { return [
         // ...super.variants(), // no base's variants
@@ -207,6 +210,7 @@ class ListgroupActionItemStyles extends ActionControlStyles {
         // no focus animation:
         [this.decl(this._boxShadowFocusBlur)] : 'initial !important',
     }}
+    public /*implement*/ contentSize(size: string): JssStyle { return {} } // not implemented, already belong to ListgroupItemStyles
 
 
     
@@ -243,6 +247,8 @@ class ListgroupActionItemStyles extends ActionControlStyles {
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
+
+            this.contentBasicStyle(),
         ] as JssStyle,
 
 
@@ -252,6 +258,9 @@ class ListgroupActionItemStyles extends ActionControlStyles {
         borderColor  : undefined,
         borderRadius : undefined,
     }}
+    public /*implement*/ contentBasicStyle(): JssStyle {
+        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
+    }
 }
 
 export class ListgroupStyles extends ContentStyles {
@@ -585,6 +594,8 @@ export interface ListgroupProps<TElement extends HTMLElement = HTMLElement>
         VariantOrientation,
         VariantList
 {
+    // behaviors:
+    actionCtrl? : boolean
 }
 export default function Listgroup<TElement extends HTMLElement = HTMLElement>(props: ListgroupProps<TElement>) {
     // styles:

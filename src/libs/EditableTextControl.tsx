@@ -224,10 +224,6 @@ export default function EditableTextControl<TElement extends EditableTextControl
             {...props}
 
 
-            // behaviors:
-            actionCtrl={props.actionCtrl ?? false}
-
-
             // classes:
             mainClass={props.mainClass ?? etctrlStyles.main}
         />

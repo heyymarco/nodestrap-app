@@ -81,7 +81,7 @@ function App() {
             <Container>
 				<div style={{display: 'flex', flexDirection: 'row'}}>
 					<Navscroll classes={['nav']} style={{flex: '1 1'}}
-						theme={theme} size={size} enableGradient={enableGrad}
+						theme={theme} size={size} gradient={enableGrad}
 						outlined={outlined}
 
 						enabled={enabled} active={active} actionCtrl={actionCtrl}
@@ -96,7 +96,7 @@ function App() {
 						<NavscrollItem>
 							Second heading
 							<Navscroll
-								theme='success' size='sm' enableGradient={enableGrad}
+								theme='success' size='sm' gradient={enableGrad}
 								outlined={outlined}
 
 								enabled={enabled} active={active}
@@ -116,7 +116,7 @@ function App() {
 					</Navscroll>
 
 					{/* <Navscroll classes={['nav']} style={{flex: '1 1'}}
-						theme={theme} size={size} enableGradient={enableGrad}
+						theme={theme} size={size} gradient={enableGrad}
 						outlined={outlined}
 
 						enabled={enabled} active={active}
@@ -131,7 +131,7 @@ function App() {
 						<NavscrollItem>
 							Second heading
 							<Navscroll
-								theme='success' size='sm' enableGradient={enableGrad}
+								theme='success' size='sm' gradient={enableGrad}
 								outlined={outlined}
 
 								enabled={enabled} active={active}

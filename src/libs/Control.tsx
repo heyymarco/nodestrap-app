@@ -650,10 +650,6 @@ export default function Control<TElement extends HTMLElement = HTMLElement>(prop
             {...props}
 
 
-            // behaviors:
-            actionCtrl={props.actionCtrl ?? true}
-
-
             // classes:
             mainClass={props.mainClass ?? styles.main}
             stateClasses={[...(props.stateClasses ?? []),

@@ -79,13 +79,13 @@ function App() {
                 </a>
                 <hr style={{flexBasis: '100%'}} />
                 <BasicComponent
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 				>
                         test
                 </BasicComponent>
                 <Indicator
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -93,7 +93,7 @@ function App() {
                         test
                 </Indicator>
                 <Content
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -101,7 +101,7 @@ function App() {
                         test
                 </Content>
 				<Card
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -115,11 +115,11 @@ function App() {
 				>
 					<p>Hello world</p>
                 </Card>
-				<Card theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}>
+				<Card theme={theme} size={size} gradient={enableGrad} outlined={outlined} enabled={enabled} active={active}>
 					Lorem ipsum dolor sit amet consectetur adipisicing elit.
 					Lorem ipsum dolor sit amet consectetur adipisicing elit.
 				</Card>
-				<Card theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}
+				<Card theme={theme} size={size} gradient={enableGrad} outlined={outlined} enabled={enabled} active={active}
 					header=
 						'Lorem ipsum dolor'
 					
@@ -131,30 +131,30 @@ function App() {
 						'dolor sit amet'
 					
 				/>
-				<Card theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}>
+				<Card theme={theme} size={size} gradient={enableGrad} outlined={outlined} enabled={enabled} active={active}>
 					<h5>Card title</h5>
 					<p>Some quick example text to build on the card title and make up the bulk of the card's content.</p>
 					<a href='/'>Card link</a>
 					<a href='/'>Another link</a>
 				</Card>
-				<Card theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}>
+				<Card theme={theme} size={size} gradient={enableGrad} outlined={outlined} enabled={enabled} active={active}>
 					<h5>Card title</h5>
 					<h6>Card subtitle</h6>
 					<p>Some quick example text to build on the card title and make up the bulk of the card's content.</p>
 					<a href='/'>Card link</a>
 					<a href='/'>Another link</a>
 				</Card>
-				<Card theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}>
+				<Card theme={theme} size={size} gradient={enableGrad} outlined={outlined} enabled={enabled} active={active}>
 					<img src='https://picsum.photos/300/200' alt='' />
 				</Card>
-				<Card theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}>
+				<Card theme={theme} size={size} gradient={enableGrad} outlined={outlined} enabled={enabled} active={active}>
 					<img src='https://picsum.photos/300/200' alt='' />
 					<h5>Card title</h5>
 					<p>This is a wider card with supporting text below as a natural lead-in to additional content.<br>
 					</br>This content is a little bit longer.</p>
 					<p>Last updated 3 mins ago</p>
 				</Card>
-				<Card theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}
+				<Card theme={theme} size={size} gradient={enableGrad} outlined={outlined} enabled={enabled} active={active}
 					header=
 						'Lorem ipsum dolor'
 
@@ -163,20 +163,7 @@ function App() {
 				>
 					<img src='https://picsum.photos/300/200' alt='' />
 				</Card>
-				<Card theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}
-					header=
-						'Lorem ipsum dolor'
-
-					footer=
-						'dolor sit amet'
-				>
-					<img src='https://picsum.photos/300/200' alt='' />
-					<h5>Card title</h5>
-					<p>This is a wider card with supporting text below as a natural lead-in to additional content.<br>
-					</br>This content is a little bit longer.</p>
-					<p>Last updated 3 mins ago</p>
-				</Card>
-				<Card theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}
+				<Card theme={theme} size={size} gradient={enableGrad} outlined={outlined} enabled={enabled} active={active}
 					header=
 						'Lorem ipsum dolor'
 
@@ -188,6 +175,19 @@ function App() {
 					<p>This is a wider card with supporting text below as a natural lead-in to additional content.<br>
 					</br>This content is a little bit longer.</p>
 					<p>Last updated 3 mins ago</p>
+				</Card>
+				<Card theme={theme} size={size} gradient={enableGrad} outlined={outlined} enabled={enabled} active={active}
+					header=
+						'Lorem ipsum dolor'
+
+					footer=
+						'dolor sit amet'
+				>
+					<img src='https://picsum.photos/300/200' alt='' />
+					<h5>Card title</h5>
+					<p>This is a wider card with supporting text below as a natural lead-in to additional content.<br>
+					</br>This content is a little bit longer.</p>
+					<p>Last updated 3 mins ago</p>
 					<img src='https://picsum.photos/300/200' alt='' />
 					<h5>Card title</h5>
 					<p>This is a wider card with supporting text below as a natural lead-in to additional content.<br>
@@ -195,7 +195,7 @@ function App() {
 					<p>Last updated 3 mins ago</p>
 					<img src='https://picsum.photos/300/200' alt='' />
 				</Card>
-				<Card theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}>
+				<Card theme={theme} size={size} gradient={enableGrad} outlined={outlined} enabled={enabled} active={active}>
 					<figure>
 						<img src='https://picsum.photos/300/200' alt='' />
 

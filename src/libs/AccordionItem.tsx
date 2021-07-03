@@ -7,38 +7,40 @@ import {
     JssStyle,
     PropEx,
     ClassList,
-    PropList,
 
     
     // components:
     CssConfig,
-    Element,
 }                           from './nodestrap'   // nodestrap's core
 import {
-    useStateEnableDisable,
-    useStateActivePassive,
-
     useTogglerActive,
     TogglerActiveProps,
 }                           from './Indicator'
 import {
-    PopupStyles,
-}                           from './Popup'
-import {
     ListgroupItemProps,
     ListgroupItem,
 }                           from './ListgroupItem'
+import {
+    PopupStyles,
+    Popup,
+}                           from './Popup'
+import {
+    IContentStyles,
+    contentStyles,
+}                           from './Content'
 
 
 
 // styles:
 
 /*
-    Basic ListgroupItem's styling *was done* by ListGroupStyles.
-    We just add a *popup functionality* to the *body*.
+    AccordionItem is just a composite component made of
+    ListGroupItem
+    and
+    *modified* Popup
 */
 
-export class AccordionItemStyles extends PopupStyles {
+export class AccordionItemStyles extends PopupStyles implements IContentStyles {
     // variants:
     public /*override*/ variants(): ClassList { return [
         ...super.variants(), // copy variants from base
@@ -47,9 +49,6 @@ export class AccordionItemStyles extends PopupStyles {
         
         [ '.inline>*>&', this.inline() ],
     ]}
-    
-    public /*override*/ themes()     : ClassList { return [] } // disabled
-
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
@@ -60,32 +59,15 @@ export class AccordionItemStyles extends PopupStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-
-    public /*override*/ noGradient() : JssStyle { return {} }  // disabled
-    public /*override*/ gradient()   : JssStyle { return {} }  // disabled
-
-    public /*override*/ noOutlined() : JssStyle { return {} }  // disabled
-    public /*override*/ outlined()   : JssStyle { return {} }  // disabled
-
-    public /*override*/ noMild()     : JssStyle { return {} }  // disabled
-    public /*override*/ mild()       : JssStyle { return {} }  // disabled
-
     public /*virtual*/ inline(): JssStyle { return {
         // overwrites propName = propName{Inline}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, 'Inline')),
     }}
+    public /*implement*/ contentSize(size: string): JssStyle { return {} } // not implemented, already belong to ListgroupActionItemStyles
 
 
 
     // states:
-    public /*override*/ themeDefault(theme: string|null = 'secondary') : PropList { return {} } // disabled
-
-    public /*override*/ resetEnableDisable(inherit: boolean) : PropList { return {} } // disabled
-    public /*override*/ enabled()     : JssStyle { return {} } // disabled
-    public /*override*/ enabling()    : JssStyle { return {} } // disabled
-    public /*override*/ disabling()   : JssStyle { return {} } // disabled
-    public /*override*/ disabled()    : JssStyle { return {} } // disabled
-
     public /*override*/ actived()     : JssStyle { return {
         extend: [
             super.actived(), // copy actived from base
@@ -93,7 +75,7 @@ export class AccordionItemStyles extends PopupStyles {
 
 
 
-        [this.decl(this._filterActivePassive)] : 'unset',
+        [this.decl(this._filterActivePassive)] : null,
     }}
     public /*override*/ activating()  : JssStyle { return {
         extend: [
@@ -102,7 +84,7 @@ export class AccordionItemStyles extends PopupStyles {
 
 
 
-        [this.decl(this._filterActivePassive)] : 'unset',
+        [this.decl(this._filterActivePassive)] : null,
         [this.decl(this._animActivePassive)]   : cssProps.animActive,
     }}
     public /*override*/ passivating() : JssStyle { return {
@@ -112,70 +94,28 @@ export class AccordionItemStyles extends PopupStyles {
 
 
 
-        [this.decl(this._filterActivePassive)] : 'unset',
+        [this.decl(this._filterActivePassive)] : null,
         [this.decl(this._animActivePassive)]   : cssProps.animPassive,
-    }}
-    public /*override*/ passived()    : JssStyle { return {
-        extend: [
-            super.passived(), // copy passived from base
-        ] as JssStyle,
-
-
-
-        /* --nothing-- */
-    }}
-
-
-
-    // functions:
-    public /*override*/ propsFn(): PropList { return {
-        ...super.propsFn(), // copy functional props from base
-
-
-
-        //#region nones
-        [this.decl(this._backgNone)]     : null,
-        [this.decl(this._boxShadowNone)] : null,
-        [this.decl(this._filterNone)]    : null,
-        [this.decl(this._animNone)]      : null,
-        //#endregion nones
-
-
-
-        [this.decl(this._foregFn)]          : null,
-        [this.decl(this._backgFn)]          : null,
-        [this.decl(this._borderFn)]         : null,
-
-        [this.decl(this._outlinedForegFn)]  : null,
-        [this.decl(this._outlinedBackgFn)]  : null,
-
-        [this.decl(this._mildForegFn)]      : null,
-        [this.decl(this._mildBackgFn)]      : null,
-
-        [this.decl(this._boxShadowFocusFn)] : null,
-
-
-
-        //#region finals
-        // define a final *foreground* color func:
-     // [this.decl(this._foreg)]     : null, // necessary
-     // [this.decl(this._backgCol)]  : null, // necessary
-     // [this.decl(this._backgSol)]  : null, // necessary
-     // [this.decl(this._backg)]     : null, // necessary
-        [this.decl(this._borderCol)] : null,
-        [this.decl(this._boxShadow)] : null,
-        [this.decl(this._filter)]    : null,
-        [this.decl(this._anim)]      : null,
-        //#endregion finals
     }}
 
 
 
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(), // copy basicStyle from base
+
+            this.contentBasicStyle(),
+        ] as JssStyle,
+
+
+        
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
+    public /*implement*/ contentBasicStyle(): JssStyle {
+        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
+    }
     public /*override*/ compositeStyle(): JssStyle { return {
         '&&': super.compositeStyle(), // makes AccordionItem more specific than ListGroupItem
     }}
@@ -264,20 +204,7 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
     
     
     // states:
-    const stateEnbDis           = useStateEnableDisable(props);
     const [isActive, setActive] = useTogglerActive(props);
-    const stateActPass          = useStateActivePassive({
-        // tag            : props.tag,
-        // ...{
-        //     type       : ((props as any).type,
-        // },
-
-        enabled        : props.enabled,
-        inheritEnabled : props.inheritEnabled,
-
-        active         : props.active,
-        inheritActive  : props.inheritActive,
-    }, /*activeDn: */isActive);
 
     
     
@@ -329,36 +256,27 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
         >
             { label }
         </ListgroupItem>
-        <Element<TElement>
+        <Popup<TElement>
+            // variants:
+            theme={props.theme}
+            size={props.size}
+            gradient={props.gradient}
+            outlined={props.outlined}
+            mild={props.mild}
+
+
+            // accessibility:
+            enabled={props.enabled}
+            inheritEnabled={props.inheritEnabled}
+            active={isActive}
+            inheritActive={props.inheritActive ?? true} // change default value to `true`
+
+            
             // classes:
             mainClass={props.mainClass ?? styles.main}
-            stateClasses={[...(props.stateClasses ?? []),
-                stateEnbDis.class,
-                stateActPass.class,
-            ]}
-
-
-            // Control::disabled:
-            {...stateEnbDis.props}
-
-
-            // Check::checked:
-            {...stateActPass.props}
-
-
-            // events:
-            onAnimationEnd={(e) => {
-                // states:
-                stateEnbDis.handleAnimationEnd(e);
-                stateActPass.handleAnimationEnd(e);
-
-
-                // forwards:
-                props.onAnimationEnd?.(e);
-            }}
         >
             { children }
-        </Element>
+        </Popup>
     </>);
 }
 AccordionItem.prototype = ListgroupItem.prototype; // mark as ListgroupItem compatible

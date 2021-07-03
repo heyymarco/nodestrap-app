@@ -693,8 +693,6 @@ export interface IndicationProps
     extends
         AccessibilityProps
 {
-    // behaviors:
-    actionCtrl? : boolean
 }
 
 export interface TogglerActiveProps

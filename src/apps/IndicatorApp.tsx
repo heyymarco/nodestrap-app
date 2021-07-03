@@ -85,7 +85,7 @@ function App() {
         <div className="App">
             <Container>
                 <Indicator
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -94,7 +94,7 @@ function App() {
 
 					<div style={{display: 'inline-block', background: 'white', border: 'solid 1px black', padding: '10px', margin: '15px'}}>
 						<Indicator
-							theme={theme} size={size} enableGradient={enableGrad}
+							theme={theme} size={size} gradient={enableGrad}
 							outlined={outlined}
 
 							inheritEnabled={false}
@@ -109,7 +109,7 @@ function App() {
 						</Indicator>
 
 						<Indicator
-							theme={theme} size={size} enableGradient={enableGrad}
+							theme={theme} size={size} gradient={enableGrad}
 							outlined={outlined}
 
 							inheritEnabled={true}
@@ -126,7 +126,7 @@ function App() {
 						<Indicator
 							mainClass={styles.main}
 
-							theme={theme} size={size} enableGradient={enableGrad}
+							theme={theme} size={size} gradient={enableGrad}
 							outlined={outlined}
 
 							inheritEnabled={false}
@@ -143,7 +143,7 @@ function App() {
                 </Indicator>
 
 				<Indicator
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -152,7 +152,7 @@ function App() {
 				</Indicator>
 				<Indicator
 					tag='button'
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -162,7 +162,7 @@ function App() {
 				<Indicator
 					tag='input'
 					{...{ type: 'checkbox' }}
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}

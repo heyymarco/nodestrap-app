@@ -72,7 +72,7 @@ function App() {
         <div className="App">
             <Container>
                 <BasicComponent
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 				>
                     basic component

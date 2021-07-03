@@ -59,7 +59,7 @@ function App() {
     return (
         <div className="App">
             <Container
-				theme={theme} size={size} enableGradient={enableGrad}
+				theme={theme} size={size} gradient={enableGrad}
 				outlined={outlined}
 			>
                 I'm inside a container

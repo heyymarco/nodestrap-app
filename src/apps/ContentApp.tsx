@@ -85,7 +85,7 @@ function App() {
         <div className="App">
             <Container>
                 <Indicator
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -93,7 +93,7 @@ function App() {
                     indicator
                 </Indicator>
                 <Content
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -102,7 +102,7 @@ function App() {
 
 					<div style={{display: 'inline-block', background: 'white', border: 'solid 1px black', padding: '10px', margin: '15px'}}>
 						<Content
-							theme={theme} size={size} enableGradient={enableGrad}
+							theme={theme} size={size} gradient={enableGrad}
 							outlined={outlined}
 
 							inheritEnabled={false}
@@ -117,7 +117,7 @@ function App() {
 						</Content>
 
 						<Content
-							theme={theme} size={size} enableGradient={enableGrad}
+							theme={theme} size={size} gradient={enableGrad}
 							outlined={outlined}
 
 							inheritEnabled={true}
@@ -134,7 +134,7 @@ function App() {
 						<Content
 							mainClass={styles.main}
 
-							theme={theme} size={size} enableGradient={enableGrad}
+							theme={theme} size={size} gradient={enableGrad}
 							outlined={outlined}
 
 							inheritEnabled={false}

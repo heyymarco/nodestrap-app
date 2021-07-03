@@ -95,13 +95,13 @@ function App() {
                 </a>
                 <hr style={{flexBasis: '100%'}} />
                 <BasicComponent
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 				>
                         test
                 </BasicComponent>
                 <Indicator
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -109,7 +109,7 @@ function App() {
                         test
                 </Indicator>
                 <Content
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -118,7 +118,7 @@ function App() {
                 </Content>
 				<Button onClick={() => setActive(true)}>Show modal</Button>
 				<ButtonIcon btnStyle='link' theme='secondary' aria-label='Close' icon='close' />
-				<Modal theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} enabled={enabled} active={active}
+				<Modal theme={theme} size={size} gradient={enableGrad} outlined={outlined} enabled={enabled} active={active}
 
 					header=
 					'Lorem ipsum dolor'

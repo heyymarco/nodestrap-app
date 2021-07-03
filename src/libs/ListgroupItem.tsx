@@ -26,6 +26,10 @@ export interface ListgroupItemProps<TElement extends HTMLElement = HTMLElement>
     inheritActive? : boolean
 
 
+    // behaviors:
+    actionCtrl? : boolean
+
+
     // children:
     children?      : React.ReactNode
 }

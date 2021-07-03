@@ -98,13 +98,13 @@ function App() {
                 </a>
                 <hr style={{flexBasis: '100%'}} />
                 <BasicComponent
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 				>
                     element
                 </BasicComponent>
                 <Indicator
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -112,7 +112,7 @@ function App() {
                     indicator
                 </Indicator>
                 <Content
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -120,7 +120,7 @@ function App() {
                     content
                 </Content>
 				<Control
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -128,7 +128,7 @@ function App() {
                     control
                 </Control>
 				<ActionControl
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -136,7 +136,7 @@ function App() {
                     action control
                 </ActionControl>
 				<Listgroup
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active} actionCtrl={actionCtrl}
@@ -177,7 +177,7 @@ function App() {
 					<ListgroupItem theme='success'>i'm fine</ListgroupItem>
 					<ListgroupItem size='sm'>i'm small</ListgroupItem>
 					<ListgroupItem size='lg'>i'm big</ListgroupItem>
-					<ListgroupItem enableGradient={true}>i'm 3d</ListgroupItem>
+					<ListgroupItem gradient={true}>i'm 3d</ListgroupItem>
 					<ListgroupItem outlined={true}>i'm transparent</ListgroupItem>
 					<ListgroupItem actionCtrl={true}>i'm controllable</ListgroupItem>
 					<ListgroupItem actionCtrl={true} active={true}>i'm controllable</ListgroupItem>

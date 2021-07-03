@@ -8,7 +8,6 @@ import {
 import {
     // general types:
     JssStyle,
-    PropList,
 
     
     // components:
@@ -644,7 +643,7 @@ function NavButton(props: NavButtonProps) {
 
             // variants:
             size={props.size ?? 'lg'}
-            enableGradient={props.enableGradient ?? true}
+            gradient={props.gradient ?? true}
             btnStyle={props.btnStyle ?? 'ghost'}
 
 

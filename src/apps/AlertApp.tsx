@@ -63,7 +63,7 @@ function App() {
         <div className="App">
             <Container>
 				<Button onClick={() => setActive(!active)}>Toggle alert</Button>
-				<Alert theme={theme} size={size} enableGradient={enableGrad} outlined={outlined} mild={mild} enabled={enabled}
+				<Alert theme={theme} size={size} gradient={enableGrad} outlined={outlined} mild={mild} enabled={enabled}
 				
 					active={active}
 					onClose={() => setActive(false)}

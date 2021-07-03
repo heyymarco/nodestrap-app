@@ -90,7 +90,7 @@ function App() {
         <div className="App">
             <Container>
                 <Control
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -103,7 +103,7 @@ function App() {
                 <Control
 					tag='button'
 					
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -116,7 +116,7 @@ function App() {
 				<Control
 					tag='textarea'
 					
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -130,7 +130,7 @@ function App() {
 				/>
                 <hr style={{flexBasis: '100%'}} />
                 <ActionControl
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -145,7 +145,7 @@ function App() {
                 <ActionControl
 					tag='button'
 					
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -161,7 +161,7 @@ function App() {
 				<ButtonIcon
 					icon='face'
 
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -179,7 +179,7 @@ function App() {
 				<ButtonIcon
 					icon='instagram'
 					
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
@@ -196,7 +196,7 @@ function App() {
                 </ButtonIcon>
 				<CloseButton
 					// theme={theme}
-					size={size} enableGradient={enableGrad}
+					size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}

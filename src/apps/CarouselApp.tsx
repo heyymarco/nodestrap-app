@@ -85,13 +85,13 @@ function App() {
                 </a>
                 <hr style={{flexBasis: '100%'}} />
                 <BasicComponent
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 				>
                         test
                 </BasicComponent>
                 <Indicator
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -99,14 +99,14 @@ function App() {
                         test
                 </Indicator>
                 <Content
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
 				>
                         test
                 </Content>
-				<Carousel theme={theme} size={size} enableGradient={enableGrad} outlined={outlined}
+				<Carousel theme={theme} size={size} gradient={enableGrad} outlined={outlined}
 				>
 					<CarouselItem><img src='https://picsum.photos/400/600' alt='' /></CarouselItem>
 					<CarouselItem><img src='https://picsum.photos/600/400' alt='' /></CarouselItem>

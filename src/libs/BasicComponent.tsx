@@ -820,11 +820,11 @@ export function useVariantSize(props: VariantSize) {
 }
 
 export interface VariantGradient {
-    enableGradient?: boolean
+    gradient?: boolean
 }
 export function useVariantGradient(props: VariantGradient) {
     return {
-        class: props.enableGradient ? 'gradient' : null,
+        class: props.gradient ? 'gradient' : null,
     };
 }
 

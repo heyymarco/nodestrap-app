@@ -64,7 +64,7 @@ function App() {
         <div className="App">
             <Container>
                 <Masonry
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					orientation={orientation}

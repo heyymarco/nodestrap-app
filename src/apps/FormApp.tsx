@@ -76,7 +76,7 @@ function App() {
     return (
         <div className="App">
             <Form
-				theme={theme} size={size} enableGradient={enableGrad} outlined={outlined}
+				theme={theme} size={size} gradient={enableGrad} outlined={outlined}
 
 				enableValidation={enableVal}
 				isValid={isValid}

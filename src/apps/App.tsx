@@ -101,13 +101,13 @@ function App() {
                 </a>
                 <hr style={{flexBasis: '100%'}} />
                 <BasicComponent
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 				>
                     element
                 </BasicComponent>
                 <Indicator
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -115,7 +115,7 @@ function App() {
                     indicator
                 </Indicator>
                 <Content
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -123,7 +123,7 @@ function App() {
                     content
                 </Content>
                 <Control
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -133,7 +133,7 @@ function App() {
                     control
                 </Control>
                 <ActionControl
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -143,7 +143,7 @@ function App() {
                     action control
                 </ActionControl>
                 <Button
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -159,7 +159,7 @@ function App() {
 					button
                 </Button>
 				<ButtonIcon
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -173,7 +173,7 @@ function App() {
                     <span>M</span>
                 </ButtonIcon>
 				<ButtonIcon
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -187,7 +187,7 @@ function App() {
                     <span>My instagram</span>
                 </ButtonIcon>
 				<CloseButton
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -197,7 +197,7 @@ function App() {
 					btnStyle={btnStyle}
 				/>
 				<TogglerMenuButton
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -205,7 +205,7 @@ function App() {
 					focus={focus}
 				/>
 				<Check
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -216,7 +216,7 @@ function App() {
                 </Check>
 				<span>My text</span>
                 <EditableControl
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -229,7 +229,7 @@ function App() {
                         editable control
                 </EditableControl>
                 <EditableTextControl
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -242,7 +242,7 @@ function App() {
                         editable text control
                 </EditableTextControl>
                 <Input
-					theme={theme} size={size} enableGradient={enableGrad}
+					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined}
 
 					enabled={enabled} active={active}
@@ -258,11 +258,11 @@ function App() {
 				<hr style={{flexBasis: '100%'}} />
 				<p>
 					<Icon
-						theme={theme} size={size} enableGradient={enableGrad}
+						theme={theme} size={size} gradient={enableGrad}
 						icon='face'
 					/>
 					<Icon
-						theme={theme} size={size} enableGradient={enableGrad}
+						theme={theme} size={size} gradient={enableGrad}
 						icon='instagram'
 					/>
 					<span>Test</span>
