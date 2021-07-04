@@ -1,20 +1,29 @@
 // react (builds html using javascript):
-import
-    React, {
-    useEffect,
+import {
+    default as React,
     useReducer,
+    useEffect,
 }                           from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
 import {
+    // utils:
     isTypeOf,
 }                           from './nodestrap'  // nodestrap's core
 import {
-    default  as Listgroup,
+    OrientationStyle,
+    VariantOrientation,
+
+    ListStyle,
+    VariantList,
+
+    ListgroupProps,
+    Listgroup,
+
+    ListgroupItemProps,
     ListgroupItem,
+    ListgroupItems,
 }                           from './Listgroup'
-import type * as Listgroups from './Listgroup'
-import type { Items }       from './Listgroup'
 
 // other supports:
 import deepEqual            from 'deep-equal'
@@ -357,25 +366,22 @@ const findLast  = <T,R>(array: T[], predicate: (value: T) => R|null): [R, number
 
 // react components:
 
-// Navscroll is just a Listgroup with dynamic :active on its children
+// Navscroll is just a Listgroup with *manipulated active* on its items
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface NavscrollProps<TElement extends HTMLElement = HTMLElement>
     extends
-        Listgroups.ListgroupProps<TElement>
+        ListgroupProps<TElement>
 {
     // scrolls:
-    targetRef?       : React.MutableRefObject<HTMLElement|null>
+    targetRef?       : React.RefObject<HTMLElement> // getter ref
     targetFilter?    : (e: HTMLElement) => boolean
     interpolation?   : boolean
-
-
-    // accessibility:
-    readOnly?        : boolean
 }
-export default function Navscroll<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function Navscroll<TElement extends HTMLElement = HTMLElement>(props: NavscrollProps<TElement>) {
     // states:
     const [activeIndices, setActiveIndices] = useReducer((indices: number[], newIndices: number[]): number[] => {
         if (deepEqual(newIndices, indices)) return indices; // already the same, use the old as by-reference
+
         return newIndices; // update with the new one
     }, []);
 
@@ -384,12 +390,12 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
     // dom effects:
     useEffect(() => {
         const target = props.targetRef?.current;
-        const handleScroll = () => {
-            const parent = target;
-            if (!parent) return;
+        if (!target) return;
 
 
 
+        // functions:
+        const handleUpdate = () => {
             const getVisibleChildIndices = (viewport: Viewport, accumResults: number[] = []): number[] => {
                 const children = viewport.children(props.targetFilter);
                 const visibleChild = ((): [Dimension, number]|null => {
@@ -441,61 +447,108 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
                 return visibleChild ? getVisibleChildIndices(visibleChild[0].toViewport(), [...accumResults, visibleChild[1]]) : accumResults;
             }
-            const visibleChildIndices = getVisibleChildIndices(Viewport.from(/*element: */parent));
+            const visibleChildIndices = getVisibleChildIndices(Viewport.from(/*element: */target));
 
 
 
             setActiveIndices(visibleChildIndices);
         };
-        if (target) {
-            handleScroll(); // trigger for the first time
-            target.addEventListener('scroll', handleScroll);
-            window.addEventListener('resize', handleScroll);
-
-            
-            
-            const attachDescendants = (): (() => void) => {
-                const descendants = ((): HTMLElement[] => {
-                    const descendants = Array.from(target.querySelectorAll('*')) as HTMLElement[];
-                    if (props.targetFilter) return descendants.filter(props.targetFilter);
-                    return descendants;
-                })();
-                descendants.forEach((d) => d.addEventListener('scroll', handleScroll));
 
 
 
-                // cleanups:
-                return () => {
-                    descendants.forEach((d) => d.removeEventListener('scroll', handleScroll));
-                }
+        // update for the first time:
+        handleUpdate();
+
+
+
+        //#region update in the future
+        //#region when descendants resized
+        const resizeObserver = ResizeObserver ? new ResizeObserver((entries) => {
+            // filter only the existing descendants
+            const descendants = entries.map((e) => e.target as HTMLElement).filter((descendant) => {
+                if (target.parentElement) { // target is still exist on the document
+                    // check if the descendant is target itself or the descendant of target
+                    let parent: HTMLElement|null = descendant;
+                    do {
+                        if (parent === target) return true; // confirmed
+
+                        // let's try again:
+                        parent = parent.parentElement;
+                    } while (parent)
+                } // if
+
+                
+                
+                resizeObserver?.unobserve(descendant); // no longer exist => remove from observer
+                return false; // not the descendant of target
+            });
+            if (!descendants.length) return; // no existing descendants => nothing to do
+
+
+
+            // update after resized:
+            handleUpdate();
+        }) : null;
+        //#endregion when descendants resized
+
+        
+        
+        //#region when descendants added/removed
+        const attachDescendants = (): (() => void) => {
+            const descendants = ((): HTMLElement[] => {
+                const descendants = Array.from(target.querySelectorAll('*')) as HTMLElement[];
+                if (props.targetFilter) return [target, ...descendants.filter(props.targetFilter)];
+                return [target, ...descendants];
+            })();
+            descendants.forEach((descendant) => {
+                // update in the future:
+                descendant.addEventListener('scroll', handleUpdate);
+                resizeObserver?.observe(descendant, { box: 'border-box' });
+            });
+
+
+
+            // cleanups:
+            return () => {
+                descendants.forEach((descendant) => {
+                    // stop updating in the future:
+                    descendant.removeEventListener('scroll', handleUpdate);
+                    resizeObserver?.unobserve(descendant);
+                });
             }
-            let detachDescendants: (() => void)|null = null;
-            const reAttachDescendants = (): void => {
-                detachDescendants?.(); // detach
-                detachDescendants = attachDescendants(); // (re)attach
-            }
+        }
+        let detachDescendants: (() => void)|null = null;
+        const reAttachDescendants = (): void => {
+            detachDescendants?.(); // detach
+            detachDescendants = attachDescendants(); // (re)attach
+        }
+        reAttachDescendants();
+        const mutationObserver = MutationObserver ? new MutationObserver(() => {
+            // update now:
+            handleUpdate();
+
+            // update in the future:
             reAttachDescendants();
-            const mutationObserver = new MutationObserver(reAttachDescendants);
+        }) : null;
+        if (mutationObserver) {
             mutationObserver.observe(target, { // watch for DOM structure changes
                 childList  : true,  // watch for child's DOM structure changes
                 subtree    : true,  // watch for grandchild's DOM structure changes
 
                 attributes : false, // don't care for any attribute changes
             });
-            
-            
-                    
-            // cleanups:
-            return () => {
-                target.removeEventListener('scroll', handleScroll);
-                window.removeEventListener('resize', handleScroll);
-
-                
-                
-                mutationObserver.disconnect();
-                detachDescendants?.(); // detach
-            };
         } // if
+        //#endregion when descendants added/removed
+        //#endregion update in the future
+        
+        
+                
+        // cleanups:
+        return () => {
+            resizeObserver?.disconnect();
+            mutationObserver?.disconnect();
+            detachDescendants?.(); // detach
+        };
     }, [props.targetRef, props.targetFilter, props.interpolation]);
 
 
@@ -592,7 +645,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
     // jsx functions:
-    function mutateNestedNavscroll(nestNavProps: Props, key: React.Key|null, deepLevelsParent: number[]) { return (
+    function mutateNestedNavscroll(nestNavProps: NavscrollProps, key: React.Key|null, deepLevelsParent: number[]) { return (
         <Listgroup
             // other props:
             {...((): {} => {
@@ -685,11 +738,12 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
         </Listgroup>
     );
 }
+Navscroll.prototype = Listgroup.prototype; // mark as Listgroup compatible
+export { Navscroll }
 
-type OrientationStyle   = Listgroups.OrientationStyle
-type VariantOrientation = Listgroups.VariantOrientation
-type ListStyle          = Listgroups.ListStyle
-export type { OrientationStyle, VariantOrientation, ListStyle }
+export type { OrientationStyle, VariantOrientation }
+export type { ListStyle, VariantList }
 
+export type { ListgroupItemProps, ListgroupItemProps as NavscrollItemProps, ListgroupItemProps as ItemProps }
+export type { ListgroupItems, ListgroupItems as NavscrollItems, ListgroupItems as Items }
 export { ListgroupItem, ListgroupItem as NavscrollItem, ListgroupItem as Item }
-export type { Items }

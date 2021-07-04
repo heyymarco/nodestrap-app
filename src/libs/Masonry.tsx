@@ -203,13 +203,14 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
     
     
     // dom effects:
-    const masonryRef      = useRef<TElement>(null);
+    const masonryRef      = useRef<TElement|null>(null);
     useEffect(() => {
         const masonry = masonryRef.current;
         if (!masonry) return;
 
 
 
+        // fn props:
         const isBlockStyle   = props.orientation !== 'inline'; // default is block if inline was not specified
         const itemsRaiseSize = Math.max(1, // limits the precision to 1px, any value less than 1px will be scaled up to 1px
             (
@@ -225,6 +226,8 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
         
         
+        // functions:
+
         const delay = (interval: number = 1) => new Promise<void>((resolve) => setTimeout(() => resolve(), interval));
         
         const handleResize = async (item: HTMLElement) => { // keeps the UI responsive (not blocking) while handling the event
@@ -310,42 +313,40 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
 
 
-        // update all items now:
-        updateFirstRowItems(); // need to be called first before handleResize, because the item's margin affected the resizing calculation
+        // update for the first time:
+        updateFirstRowItems(); // needs to be called first before handleResize, because the item's margin affected the resizing calculation
         (Array.from(masonry.children) as HTMLElement[]).forEach((item) => handleResize(item));
 
 
 
         //#region update in the future
         //#region when items resized
-        const itemsResizeObserver = ResizeObserver ? new ResizeObserver((entries) => {
-            // filter only the existing entries
-            entries = entries.filter((entry) => {
-                const item = entry.target as HTMLElement;
+        const resizeObserver = ResizeObserver ? new ResizeObserver((entries) => {
+            // filter only the existing items
+            const items = entries.map((e) => e.target as HTMLElement).filter((item) => {
+                if (masonry.parentElement) { // masonry is still exist on the document
+                    // check if the item is the child of masonry
+                    if (item.parentElement === masonry) return true; // confirmed
+                } // if
 
-                if (item.parentElement !== masonry) return false; // not exist => item was removed from the masonry
-                if (masonry.parentElement === null) return false; // not exist => masonry was removed from the document
-                return true; // exist
+                
+                
+                resizeObserver?.unobserve(item); // no longer exist => remove from observer
+                return false; // not the child of masonry
             });
-            if (!entries.length) return;
+            if (!items.length) return; // no existing items => nothing to do
 
 
 
-            // any resizing of items causing the first_row_items need to be recalculated:
-            updateFirstRowItems(); // need to be called first before handleResize, because the item's margin affected the resizing calculation
-            
-            
-            
-            for (const entry of entries) {
-                // resizing detected => update:
-                handleResize(entry.target as HTMLElement);
-            } // for
+            // update after resized:
+            updateFirstRowItems(); // needs to be called first before handleResize, because the item's margin affected the resizing calculation
+            items.forEach((item) => handleResize(item));
         }) : null;
-        if (itemsResizeObserver) {
-            for (const item of (Array.from(masonry.children) as HTMLElement[])) {
+        if (resizeObserver) {
+            (Array.from(masonry.children) as HTMLElement[]).forEach((item) => {
                 // update in the future:
-                itemsResizeObserver.observe(item);
-            } // for
+                resizeObserver.observe(item, { box: 'border-box' });
+            });
         } // if
         //#endregion when items resized
 
@@ -354,28 +355,28 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
         //#region when items added/removed
         const mutationObserver = MutationObserver ? new MutationObserver((entries) => {
             // any adding/removing of items causing the first_row_items need to be recalculated:
-            updateFirstRowItems(); // need to be called first before handleResize, because the item's margin affected the resizing calculation
+            updateFirstRowItems(); // needs to be called first before handleResize, because the item's margin affected the resizing calculation
 
 
             
             for (const entry of entries) {
                 // added items:
-                for (const item of (Array.from(entry.addedNodes) as HTMLElement[])) {
+                (Array.from(entry.addedNodes) as HTMLElement[]).forEach((item) => {
                     // update now:
                     handleResize(item);
 
                     // update in the future:
-                    itemsResizeObserver?.observe(item);
-                } // for
+                    resizeObserver?.observe(item, { box: 'border-box' });
+                });
 
                 
                 
                 // removed items:
-                if (itemsResizeObserver) {
-                    for (const item of (Array.from(entry.removedNodes) as HTMLElement[])) {
+                if (resizeObserver) {
+                    (Array.from(entry.removedNodes) as HTMLElement[]).forEach((item) => {
                         // stop updating in the future:
-                        itemsResizeObserver.unobserve(item);
-                    } // for
+                        resizeObserver.unobserve(item);
+                    });
                 } // if
             } // for
         }) : null;
@@ -394,7 +395,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
         
         // cleanups:
         return () => {
-            itemsResizeObserver?.disconnect();
+            resizeObserver?.disconnect();
             mutationObserver?.disconnect();
             firstRowItems.forEach((firstRowItem) => firstRowItem.classList.remove('firstRow'));
         };
@@ -411,7 +412,6 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
             // essentials:
             elmRef={(elm) => {
-                // @ts-ignore
                 masonryRef.current = elm;
 
 
@@ -422,8 +422,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
                         elmRef(elm);
                     }
                     else {
-                        // @ts-ignore
-                        elmRef.current = elm;
+                        (elmRef as React.MutableRefObject<TElement|null>).current = elm;
                     } // if
                 } // if
             }}

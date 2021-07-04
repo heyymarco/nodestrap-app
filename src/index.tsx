@@ -10,7 +10,6 @@ import ModalApp from './apps/ModalApp';
 import FormApp from './apps/FormApp';
 import NavbarApp from './apps/NavbarApp';
 import CarouselApp from './apps/CarouselApp';
-import NavscrollApp from './apps/NavscrollApp';
 
 
 import BasicComponentApp                    from './apps/BasicComponentApp';
@@ -19,6 +18,7 @@ import BasicComponentApp                    from './apps/BasicComponentApp';
         import ContentApp                   from './apps/ContentApp';
             import ListgroupApp             from './apps/ListgroupApp';
                 import AccordionApp         from './apps/AccordionApp';
+                import NavscrollApp         from './apps/NavscrollApp';
         import PopupApp                     from './apps/PopupApp';
             import AlertApp                 from './apps/AlertApp';
         import ControlApp                   from './apps/ControlApp';
@@ -34,7 +34,7 @@ import MasonryApp           from './apps/MasonryApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <AccordionApp />
+        <NavscrollApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

@@ -6,7 +6,6 @@ import
 import {
     jss as jssDefault,
 }                          from 'react-jss'         // base technology of our nodestrap components
-import logo from './logo.svg';
 import './App.css';
 import './NavscrollApp.css'
 

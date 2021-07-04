@@ -74,7 +74,7 @@ BasicComponent<TElement>^
 	Indicator<TElement>^
 		Content<TElement>^
 			Listgroup<TElement>^
-				Navscroll<TElement>@
+				Navscroll<TElement>^
 				Accordion<TElement>^
 			ListgroupItem<TElement>^
 				AccordionItem<TElement>^

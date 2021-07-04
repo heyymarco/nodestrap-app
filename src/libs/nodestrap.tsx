@@ -644,7 +644,7 @@ export interface ElementProps<TElement extends HTMLElement = HTMLElement>
     // essentials:
     tag?            : keyof JSX.IntrinsicElements
     style?          : React.CSSProperties
-    elmRef?         : React.Ref<TElement>
+    elmRef?         : React.Ref<TElement> // setter ref
 
 
     // accessibility:

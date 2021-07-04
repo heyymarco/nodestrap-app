@@ -32,11 +32,11 @@ import CarouselItem         from './CarouselItem'
 import Button               from './ButtonIcon'
 import type * as Buttons    from './ButtonIcon'
 import {
+    NavscrollProps,
     default as Navscroll,
     NavscrollItem,
     Dimension,
 }                           from './Navscroll'
-import type * as Navscrolls from './Navscroll'
 
 
 
@@ -580,7 +580,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                             // TODO:
                             // @ts-ignore
                             targetRef : nav.props.targetRef ?? listRef,
-                        } as Navscrolls.Props) : {})}
+                        } as NavscrollProps) : {})}
                     />
                     :
                     nav
