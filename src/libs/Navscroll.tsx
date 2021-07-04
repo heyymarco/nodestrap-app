@@ -395,7 +395,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
         // functions:
-        const handleUpdate = () => {
+        const handleUpdate = async () => {
             const getVisibleChildIndices = (viewport: Viewport, accumResults: number[] = []): number[] => {
                 const children = viewport.children(props.targetFilter);
                 const visibleChild = ((): [Dimension, number]|null => {
@@ -457,13 +457,15 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
         // update for the first time:
-        handleUpdate();
+        (async () => {
+            await handleUpdate();
+        })();
 
 
 
         //#region update in the future
         //#region when descendants resized
-        const resizeObserver = ResizeObserver ? new ResizeObserver((entries) => {
+        const resizeObserver = ResizeObserver ? new ResizeObserver(async (entries) => {
             // filter only the existing descendants
             const descendants = entries.map((e) => e.target as HTMLElement).filter((descendant) => {
                 if (target.parentElement) { // target is still exist on the document
@@ -486,8 +488,8 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
-            // update after resized:
-            handleUpdate();
+            // update after being resized:
+            await handleUpdate();
         }) : null;
         //#endregion when descendants resized
 
@@ -523,9 +525,9 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
             detachDescendants = attachDescendants(); // (re)attach
         }
         reAttachDescendants();
-        const mutationObserver = MutationObserver ? new MutationObserver(() => {
-            // update now:
-            handleUpdate();
+        const mutationObserver = MutationObserver ? new MutationObserver(async () => {
+            // update after being added/removed:
+            await handleUpdate();
 
             // update in the future:
             reAttachDescendants();

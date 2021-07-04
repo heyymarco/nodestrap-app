@@ -34,7 +34,7 @@ import BasicComponentApp                    from './apps/BasicComponentApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <MasonryApp />
+        <NavscrollApp />
     </React.StrictMode>,
     document.getElementById('root')
 );
