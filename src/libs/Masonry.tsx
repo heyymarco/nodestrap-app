@@ -10,7 +10,6 @@ import {
     // general types:
     JssStyle,
     ClassList,
-    PropList,
 
     
     // components:

@@ -26,9 +26,9 @@ import BasicComponentApp                    from './apps/BasicComponentApp';
                 import ButtonApp            from './apps/ButtonApp';
                     import ButtonIconApp    from './apps/ButtonIconApp';
     import IconApp                          from './apps/IconApp';
+    import MasonryApp                       from './apps/MasonryApp';
     
 
-import MasonryApp           from './apps/MasonryApp';
 
 
 
