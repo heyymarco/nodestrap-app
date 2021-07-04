@@ -70,7 +70,7 @@ BasicComponent<TElement>^
 	Container<TElement>^
 	Icon<TElement>^
 	Carousel<TElement>@
-	CarouselItem<TElement>@
+	CarouselItem<TElement>^
 	Indicator<TElement>^
 		Content<TElement>^
 			Listgroup<TElement>^

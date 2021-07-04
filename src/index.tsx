@@ -9,7 +9,6 @@ import CardApp from './apps/CardApp';
 import ModalApp from './apps/ModalApp';
 import FormApp from './apps/FormApp';
 import NavbarApp from './apps/NavbarApp';
-import CarouselApp from './apps/CarouselApp';
 
 
 import BasicComponentApp                    from './apps/BasicComponentApp';
@@ -27,6 +26,7 @@ import BasicComponentApp                    from './apps/BasicComponentApp';
                     import ButtonIconApp    from './apps/ButtonIconApp';
     import IconApp                          from './apps/IconApp';
     import MasonryApp                       from './apps/MasonryApp';
+    import CarouselApp                      from './apps/CarouselApp';
     
 
 

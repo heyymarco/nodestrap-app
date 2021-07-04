@@ -402,7 +402,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                     if (props.interpolation ?? true) {
                         return (
                             // at the end of scroll, the last section always win:
-                            (viewport.isLastScroll ? findLast( children, (child) => child.isPartiallyVisible(viewport)) : null)
+                            (viewport.isLastScroll ? findLast(children, (child) => child.isPartiallyVisible(viewport)) : null)
     
                             ??
     
@@ -413,16 +413,25 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
     
                             // the biggest cropped section always win:
                             children
-                            .map((child, index) => ({
-                                child : child,
-                                index : index, // add index, so we can track the original index after sorted
-                            }))
-                            .filter((item) => item.child.isPartiallyVisible(viewport)) // only visible children
-                            .map((item) => ({...item,
-                                area  : item.child.offsetWidth * item.child.offsetHeight, // calculates the visible area,
-                            }))
-                            .sort((a, b) => b.area - a.area) // sort from biggest to smallest
-                            .map((item): [Dimension, number] => [item.child, item.index])
+                            .map((child, index) => {
+                                const partialVisible = child.isPartiallyVisible(viewport);
+
+                                return {
+                                    partialVisible : partialVisible,
+
+                                    visibleArea    : partialVisible
+                                                     ?
+                                                     (partialVisible.offsetWidth * partialVisible.offsetHeight) // calculates the visible area
+                                                     :
+                                                     0
+                                                     ,
+
+                                    index          : index, // add index, so we can track the original index after sorted
+                                };
+                            })
+                            .filter((item) => item.partialVisible) // only visible children
+                            .sort((a, b) => b.visibleArea - a.visibleArea) // sort from biggest to smallest
+                            .map((item): [Dimension, number] => [item.partialVisible!, item.index])
                             [0] // find the biggest one
     
                             ??
@@ -434,7 +443,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                     else {
                         return (
                             // at the end of scroll, the last section always win:
-                            (viewport.isLastScroll ? findLast( children, (child) => child.isPartiallyVisible(viewport)) : null)
+                            (viewport.isLastScroll ? findLast(children, (child) => child.isPartiallyVisible(viewport)) : null)
 
                             ??
 

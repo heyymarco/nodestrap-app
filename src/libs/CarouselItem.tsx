@@ -11,12 +11,12 @@ import {
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLDivElement>
+export interface CarouselItemProps<TElement extends HTMLElement = HTMLDivElement>
     extends
         ElementProps<TElement>
 {
 }
-export default function CarouselItem<TElement extends HTMLElement = HTMLDivElement>(props: Props<TElement>) {
+export default function CarouselItem<TElement extends HTMLElement = HTMLDivElement>(props: CarouselItemProps<TElement>) {
     // jsx:
     return (
         <Element<TElement>
@@ -33,3 +33,4 @@ export default function CarouselItem<TElement extends HTMLElement = HTMLDivEleme
         />
     );
 }
+export { CarouselItem }

@@ -17,7 +17,7 @@ import {
 
     // utils:
     isTypeOf,
-}                           from './nodestrap'   // nodestrap's core
+}                           from './nodestrap'  // nodestrap's core
 import * as stripOuts       from './strip-outs'
 import {
     BasicComponentStyles,
@@ -28,14 +28,22 @@ import {
     IContentStyles,
     contentStyles,
 }                           from './Content'
-import CarouselItem         from './CarouselItem'
-import Button               from './ButtonIcon'
-import type * as Buttons    from './ButtonIcon'
 import {
-    NavscrollProps,
-    default as Navscroll,
-    NavscrollItem,
+    CarouselItemProps,
+    CarouselItem,
+}                           from './CarouselItem'
+import * as CarouselItems   from './CarouselItem'
+import {
+    ButtonIconProps,
+    ButtonIcon,
+}                           from './ButtonIcon'
+import {
     Dimension,
+    
+    NavscrollProps,
+    Navscroll,
+
+    NavscrollItem,
 }                           from './Navscroll'
 
 
@@ -48,7 +56,7 @@ const navElm     = '&>.nav';
 const prevBtnElm = '&>.prevBtn';
 const nextBtnElm = '&>.nextBtn';
 
-export class CarouselStylesBuilder extends BasicComponentStyles implements IContentStyles {
+export class CarouselStyles extends BasicComponentStyles implements IContentStyles {
     // variants:
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -86,15 +94,15 @@ export class CarouselStylesBuilder extends BasicComponentStyles implements ICont
             '1fr',
             'min-content',
         ]],
-        gridTemplateColumns : [['15%', 'auto', '15%']],
+        gridTemplateColumns : [['15%', '1fr', '15%']],
         gridTemplateAreas   : [[
             '"prevBtn main nextBtn"',
             '"prevBtn nav  nextBtn"',
         ]],
 
         // child alignments:
-        justifyItems        : 'stretch', // each section fill the entire area's width
-        alignItems          : 'stretch', // each section fill the entire area's height
+        justifyItems        : 'stretch', // each section fills the entire area's width
+        alignItems          : 'stretch', // each section fills the entire area's height
 
 
 
@@ -132,11 +140,12 @@ export class CarouselStylesBuilder extends BasicComponentStyles implements ICont
             //#region clear browser's default styles
             (() => {
                 const style = stripOuts.list;
-                delete style.marginBlockStart;
-                delete style.marginBlockEnd;
-                delete style.marginInlineStart;
-                delete style.marginInlineEnd;
-                delete (style as any)['&>li'].display;
+
+                delete style.marginBlockStart;         // marginBlock  is already handled
+                delete style.marginBlockEnd;           // marginBlock  is already handled
+                delete style.marginInlineStart;        // marginInline is already handled
+                delete style.marginInlineEnd;          // marginInline is already handled
+                delete (style as any)['&>li'].display; // li's display is already handled
 
                 return style;
             })(),
@@ -159,7 +168,7 @@ export class CarouselStylesBuilder extends BasicComponentStyles implements ICont
 
 
         // positions:
-        position       : [['relative'], '!important'], // (optional) makes calculating slide's offsetLeft/offsetTop faster
+        position       : 'relative', // (optional) makes calculating slide's offsetLeft/offsetTop faster
 
 
 
@@ -191,7 +200,7 @@ export class CarouselStylesBuilder extends BasicComponentStyles implements ICont
 
 
         // sizes:
-        boxSizing       : 'border-box', // the final size is including borders & paddings
+        boxSizing       : 'border-box',     // the final size is including borders & paddings
         inlineSize      : '100%',           // fill the entire parent's width
         flex            : [[0, 0, '100%']], // not growing, not shrinking, fill the entire parent's width
 
@@ -214,16 +223,6 @@ export class CarouselStylesBuilder extends BasicComponentStyles implements ICont
 
                 // layout:
                 display   : 'block',   // fill the entire parent's width
-
-
-
-                // sizes:
-                // alignSelf : 'stretch', // fill the entire flex's cross-axis (full height)
-
-
-
-                // backgrounds:
-                // objectFit : 'contain',
             },
         },
 
@@ -266,22 +265,13 @@ export class CarouselStylesBuilder extends BasicComponentStyles implements ICont
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'nav')), // apply *general* cssProps starting with nav***
     }}
 }
-export const styles = new CarouselStylesBuilder();
+export const carouselStyles = new CarouselStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     return {
         //#region spacings
         paddingInline      : 0,
@@ -300,7 +290,7 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface CarouselProps<TElement extends HTMLElement = HTMLElement>
     extends
         BasicComponentProps<TElement>
 {
@@ -316,9 +306,9 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     nextBtn?  : React.ReactChild | boolean
     nav?      : React.ReactChild | boolean
 }
-export default function Carousel<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function Carousel<TElement extends HTMLElement = HTMLElement>(props: CarouselProps<TElement>) {
     // styles:
-    const crslStyles = styles.useStyles();
+    const styles    = carouselStyles.useStyles();
 
 
 
@@ -340,8 +330,8 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
 
     // fn props:
-    const itemsTag2 = itemsTag ?? 'ul';
-    const itemTag2  = itemTag  ?? ['ul', 'ol'].includes(itemsTag2) ? 'li' : 'div';
+    const itemsTagFn = itemsTag ?? 'ul';
+    const itemTagFn  = itemTag  ?? ['ul', 'ol'].includes(itemsTagFn) ? 'li' : 'div';
 
 
 
@@ -412,12 +402,16 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
             {...restProps}
 
 
+            // variants:
+            mild={props.mild ?? true}
+
+
             // classes:
-            mainClass={props.mainClass ?? crslStyles.main}
+            mainClass={props.mainClass ?? styles.main}
         >
             { children && <Element<TElement>
                     // essentials:
-                    tag={itemsTag2}
+                    tag={itemsTagFn}
                     elmRef={(elm) => {
                         // @ts-ignore
                         listRef.current = elm;
@@ -449,13 +443,13 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
                         // essentials:
                         key={child.key ?? index}
-                        tag={child.props.tag ?? itemTag2}
+                        tag={child.props.tag ?? itemTagFn}
                     />
                     :
                     <CarouselItem
                         // essentials:
                         key={index}
-                        tag={itemTag2}
+                        tag={itemTagFn}
                     >
                         { child }
                     </CarouselItem>
@@ -577,9 +571,8 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
                         {...(isTypeOf(nav, Navscroll) ? ({
                             // scrolls:
-                            // TODO:
-                            // @ts-ignore
-                            targetRef : nav.props.targetRef ?? listRef,
+                            targetRef     : (nav.props as NavscrollProps).targetRef ?? listRef,
+                            interpolation : (nav.props as NavscrollProps).interpolation ?? true,
                         } as NavscrollProps) : {})}
                     />
                     :
@@ -626,17 +619,24 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
         </BasicComponent>
     );
 }
+export { Carousel }
+
+export type { CarouselItemProps, CarouselItemProps as ItemProps }
+export type { CarouselItems, CarouselItems as Items }
+export { CarouselItem, CarouselItem as Item }
+
+
 
 interface NavButtonProps
     extends
-        Buttons.ButtonIconProps
+        ButtonIconProps
 {
     id? : string
 }
 function NavButton(props: NavButtonProps) {
     // jsx:
     return (
-        <Button
+        <ButtonIcon
             // other props:
             {...props}
 
@@ -655,5 +655,3 @@ function NavButton(props: NavButtonProps) {
         />
     );
 }
-
-export { CarouselItem, CarouselItem as Item }
