@@ -66,8 +66,8 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
         gridAutoFlow        : 'row', // masonry's direction is to row
         gridAutoRows        : cssProps.itemsRaiseSize,
         gridTemplateColumns : `repeat(auto-fill, minmax(${cssProps.itemsMinColumnSize}, 1fr))`,
-        // alignItems          : 'stretch', // distorting the item's height a bit for consistent multiplies of `itemsRaiseSize`
-        alignItems          : 'start', // let's the item to resize so we can reconstruct the masonry's layout
+     // alignItems          : 'stretch', // distorting the item's height a bit for consistent multiplies of `itemsRaiseSize` // causing the ResizeObserver doesn't work
+        alignItems          : 'start',   // let's the item to resize so the esizeObserver will work
 
 
 
@@ -75,9 +75,9 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
         '&>*': {
             '&:not(.firstRow)': {
                 /*
-                * use `marginBlockStart` as the replacement of the stripped out `rowGap`
+                * we use `marginBlockStart` as the replacement of the stripped out `rowGap`
                 * we use `marginBlockStart` instead of `marginBlockEnd`
-                * because finding grid's items at the begining is much easier than at the end
+                * because finding grid's items at the first row is much easier than at the last row
                 * (we don't need to count the number of grid's item)
                 */
                 marginBlockStart : cssProps.rowGap,
@@ -93,7 +93,7 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
 
-        rowGap    : [[0], '!important'], // strip out the `rowGap` because it conflicts with masonry's direction
+        rowGap    : [[0], '!important'], // strip out the `rowGap` because it will conflict with masonry's direction
     }}
     public /*virtual*/ inline(): JssStyle { return {
         // layout:
@@ -101,8 +101,8 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
         gridAutoFlow        : 'column', // masonry's direction is to column
         gridAutoColumns     : cssProps.itemsRaiseSize,
         gridTemplateRows    : `repeat(auto-fill, minmax(${cssProps.itemsMinColumnSize}, 1fr))`,
-        // justifyItems        : 'stretch', // distorting the item's width a bit for consistent multiplies of `itemsRaiseSize`
-        justifyItems        : 'start', // let's the item to resize so we can reconstruct the masonry's layout
+     // justifyItems        : 'stretch', // distorting the item's width a bit for consistent multiplies of `itemsRaiseSize` // causing the ResizeObserver doesn't work
+        justifyItems        : 'start',   // let's the item to resize so the esizeObserver will work
 
 
 
@@ -110,9 +110,9 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
         '&>*': {
             '&:not(.firstRow)': {
                 /*
-                * use `marginInlineStart` as the replacement of the stripped out `rowGap`
+                * we use `marginInlineStart` as the replacement of the stripped out `columnGap`
                 * we use `marginInlineStart` instead of `marginInlineEnd`
-                * because finding grid's items at the begining is much easier than at the end
+                * because finding grid's items at the first row is much easier than at the last row
                 * (we don't need to count the number of grid's item)
                 */
                 marginInlineStart : cssProps.rowGap,
@@ -128,7 +128,7 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
 
-        columnGap : [[0], '!important'], // strip out the `columnGap` because it conflicts with masonry's direction
+        columnGap : [[0], '!important'], // strip out the `columnGap` because it will conflict with masonry's direction
     }}
 
 
@@ -185,6 +185,7 @@ export const cssDecls = cssConfig.decls;
 export interface MasonryProps<TElement extends HTMLElement = HTMLElement>
     extends
         BasicComponentProps<TElement>,
+
         VariantOrientation
 {
     // children:
@@ -313,14 +314,16 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
 
         // update for the first time:
-        updateFirstRowItems(); // needs to be called first before handleResize, because the item's margin affected the resizing calculation
-        (Array.from(masonry.children) as HTMLElement[]).forEach((item) => handleResize(item));
+        (async () => {
+            await updateFirstRowItems(); // needs to be called first before handleResize, because the item's margin affected the resizing calculation
+            for (const item of (Array.from(masonry.children) as HTMLElement[])) await handleResize(item);
+        })();
 
 
 
         //#region update in the future
         //#region when items resized
-        const resizeObserver = ResizeObserver ? new ResizeObserver((entries) => {
+        const resizeObserver = ResizeObserver ? new ResizeObserver(async (entries) => {
             // filter only the existing items
             const items = entries.map((e) => e.target as HTMLElement).filter((item) => {
                 if (masonry.parentElement) { // masonry is still exist on the document
@@ -337,9 +340,9 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
 
 
-            // update after resized:
-            updateFirstRowItems(); // needs to be called first before handleResize, because the item's margin affected the resizing calculation
-            items.forEach((item) => handleResize(item));
+            // update after being resized:
+            await updateFirstRowItems(); // needs to be called first before handleResize, because the item's margin affected the resizing calculation
+            for (const item of items) await handleResize(item);
         }) : null;
         if (resizeObserver) {
             (Array.from(masonry.children) as HTMLElement[]).forEach((item) => {
@@ -352,21 +355,22 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
         
         
         //#region when items added/removed
-        const mutationObserver = MutationObserver ? new MutationObserver((entries) => {
+        const mutationObserver = MutationObserver ? new MutationObserver(async (entries) => {
+            // update after being added/removed:
             // any adding/removing of items causing the first_row_items need to be recalculated:
-            updateFirstRowItems(); // needs to be called first before handleResize, because the item's margin affected the resizing calculation
+            await updateFirstRowItems(); // needs to be called first before handleResize, because the item's margin affected the resizing calculation
 
 
             
             for (const entry of entries) {
                 // added items:
-                (Array.from(entry.addedNodes) as HTMLElement[]).forEach((item) => {
-                    // update now:
-                    handleResize(item);
+                for (const item of (Array.from(entry.addedNodes) as HTMLElement[])) {
+                    // update after being added/removed:
+                    await handleResize(item);
 
                     // update in the future:
                     resizeObserver?.observe(item, { box: 'border-box' });
-                });
+                } // for
 
                 
                 

@@ -86,7 +86,7 @@ BasicComponent<TElement>^
 				EditableTextControl<TElement>#
 		Popup<TElement>^
 			Alert<TElement>^
-	Masonry<TElement>$
+	Masonry<TElement>^
 
 
 
