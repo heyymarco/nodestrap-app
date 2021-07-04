@@ -34,7 +34,7 @@ import BasicComponentApp                    from './apps/BasicComponentApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <NavscrollApp />
+        <CarouselApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

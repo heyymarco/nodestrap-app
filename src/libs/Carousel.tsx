@@ -336,7 +336,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
 
 
     // dom effects:
-    const listRef   = useRef<HTMLElement>(null);
+    const listRef   = useRef<HTMLElement|null>(null);
 
 
 
@@ -413,7 +413,6 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                     // essentials:
                     tag={itemsTagFn}
                     elmRef={(elm) => {
-                        // @ts-ignore
                         listRef.current = elm;
         
         
@@ -423,8 +422,7 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                                 elmRef(elm);
                             }
                             else {
-                                // @ts-ignore
-                                elmRef.current = elm;
+                                (elmRef as React.MutableRefObject<TElement|null>).current = elm;
                             } // if
                         } // if
                     }}

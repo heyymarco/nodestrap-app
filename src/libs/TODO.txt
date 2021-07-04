@@ -69,7 +69,7 @@ fin comp (14) (generic):
 BasicComponent<TElement>^
 	Container<TElement>^
 	Icon<TElement>^
-	Carousel<TElement>@
+	Carousel<TElement>^
 	CarouselItem<TElement>^
 	Indicator<TElement>^
 		Content<TElement>^
