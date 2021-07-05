@@ -226,15 +226,15 @@ export class ButtonStyles extends ActionControlStyles {
 
 
         // layout:
-        display        : 'inline-flex',        // use flexbox as the layout
-     // flexDirection  : 'row',                // customizable orientation // already defined in inline()
-        justifyContent : 'center',             // center items horizontally
-        alignItems     : 'center',             // center items vertically
+        display        : 'inline-flex', // use flexbox as the layout
+     // flexDirection  : 'row',         // customizable orientation // already defined in inline()/block()
+        justifyContent : 'center',      // center items horizontally
+        alignItems     : 'center',      // center items vertically
 
         
 
         // positions:
-        verticalAlign  : 'baseline', // button's text should be aligned with sibling text, so the button behave like <span> wrapper
+        verticalAlign  : 'baseline',    // button's text should be aligned with sibling text, so the button behave like <span> wrapper
 
 
 

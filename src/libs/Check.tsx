@@ -398,12 +398,12 @@ export class CheckStylesBuilder extends EditableControlStylesBuilder {
 
             // layout:
             content   : '""',
-            display   : 'block', // fill the entire parent's width
+            display   : 'block', // fills the entire parent's width
 
 
 
             // sizes:
-            // fill the entire parent:
+            // fills the entire parent:
             boxSizing : 'border-box', // the final size is including borders & paddings
             blockSize : '100%',
             

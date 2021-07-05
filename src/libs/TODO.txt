@@ -78,7 +78,7 @@ BasicComponent<TElement>^
 				Accordion<TElement>^
 			ListgroupItem<TElement>^
 				AccordionItem<TElement>^
-			Card<TElement>@
+			Card<TElement>^
 				Modal<TElement>#
 		Control<TElement>^
 			ActionControl<TElement>^

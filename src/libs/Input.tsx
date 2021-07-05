@@ -85,7 +85,7 @@ export class InputStylesBuilder extends EditableTextControlStylesBuilder {
 
 
             // layout:
-            display        : 'block', // fill the entire parent's width
+            display        : 'block', // fills the entire parent's width
     
     
 

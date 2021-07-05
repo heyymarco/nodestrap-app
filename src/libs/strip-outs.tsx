@@ -132,7 +132,7 @@ export const focusableElement : JssStyle = {
  */
 export const image : JssStyle = {
     // layout:
-    display: 'block', // fill the entire parent's width
+    display: 'block', // fills the entire parent's width
 
 
 

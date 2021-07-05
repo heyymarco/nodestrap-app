@@ -65,7 +65,7 @@ export class ButtonIconStyles extends ButtonStyles {
 
 
         //#region Icon
-        // fill the entire parent text's height:
+        // fills the entire parent text's height:
         [icssDecls.size]  : [['calc(1em *',
             `var(${bcssDecls.lineHeight},${typos.lineHeight})`,
         ')']],

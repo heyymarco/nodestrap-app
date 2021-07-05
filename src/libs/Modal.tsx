@@ -220,7 +220,7 @@ export class ModalStylesBuilder extends PopupStyles {
 
 
         // sizes:
-        // fill the entire screen:
+        // fills the entire screen:
         boxSizing : 'border-box', // the final size is including borders & paddings
         position  : 'fixed',
         left      : 0,
@@ -318,7 +318,7 @@ export class ModalStylesBuilder extends PopupStyles {
 
 
             // sizes:
-            // fill the entire grid area:
+            // fills the entire grid area:
             justifySelf : 'stretch',
             alignSelf   : 'stretch',
 
@@ -458,7 +458,7 @@ export function useAlignModal(props: AlignModal) {
 export type CloseType = 'ui' | 'overlay' | 'shortcut';
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Cards.Props<TElement>,
+        Cards.CardProps<TElement>,
         VariantModal,
         AlignModal
 {

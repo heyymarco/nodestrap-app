@@ -359,7 +359,7 @@ export class NavbarStylesBuilder extends ControlStyles {
         display        : 'flex',    // use flexbox to place the menus sequentially
         flexDirection  : 'row',     // place the menus horizontally
         justifyContent : 'start',   // place the menus from the begining, leave a free space (if any) at the end
-        alignItems     : 'stretch', // each menu fill the entire section's height
+        alignItems     : 'stretch', // each menu fills the entire section's height
 
 
 
@@ -438,8 +438,8 @@ export class NavbarStylesBuilder extends ControlStyles {
         // default placement for each navbar's sections:
 
         // child alignments:
-        justifyItems        : 'stretch', // each section fill the entire area's width
-        alignItems          : 'stretch', // each section fill the entire area's height (the shorter sections follow the tallest one)
+        justifyItems        : 'stretch', // each section fills the entire area's width
+        alignItems          : 'stretch', // each section fills the entire area's height (the shorter sections follow the tallest one)
 
 
 

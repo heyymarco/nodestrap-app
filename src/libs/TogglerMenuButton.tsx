@@ -154,7 +154,7 @@ export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
     protected /*virtual*/ togglerBasicStyle(): JssStyle { return {
         '&>svg': {
             // sizes:
-            // fill the entire parent text's height:
+            // fills the entire parent text's height:
             blockSize  : [['calc(1em *',
                 `var(${ecssDecls.lineHeight},${typos.lineHeight})`,
             ')']],

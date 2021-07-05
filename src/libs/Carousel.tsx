@@ -158,7 +158,7 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
 
 
         // layout:
-        gridArea       : '1 / 1 / -1 / -1', // fill the entire grid areas, from the first row/column to the last row/column
+        gridArea       : '1 / 1 / -1 / -1', // fills the entire grid areas, from the first row/column to the last row/column
         display        : 'flex',    // use flexbox as the layout
         flexDirection  : 'row',     // items are stacked horizontally
         justifyContent : 'start',   // items are placed starting from the left
@@ -201,8 +201,8 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
 
         // sizes:
         boxSizing       : 'border-box',     // the final size is including borders & paddings
-        inlineSize      : '100%',           // fill the entire parent's width
-        flex            : [[0, 0, '100%']], // not growing, not shrinking, fill the entire parent's width
+        inlineSize      : '100%',           // fills the entire parent's width
+        flex            : [[0, 0, '100%']], // not growing, not shrinking, fills the entire parent's width
 
 
 
@@ -222,7 +222,7 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
 
 
                 // layout:
-                display   : 'block',   // fill the entire parent's width
+                display   : 'block',   // fills the entire parent's width
             },
         },
 

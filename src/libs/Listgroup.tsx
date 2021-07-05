@@ -80,7 +80,7 @@ class ListgroupItemStyles extends ContentStyles {
     }
     public /*virtual*/ block(): JssStyle { return {
         // borders:
-        //#region strip out borders almost completely
+        //#region strip out borders partially
         /*
             border & borderRadius are moved from here to parent,
             for making consistent border color when the element's color are filtered.
@@ -100,16 +100,16 @@ class ListgroupItemStyles extends ContentStyles {
             the top-border separating the header & body is also hidden
         */
 
-        borderInlineWidth         : 0, // remove (left|right)-border for all-items
+        borderInlineWidth          : 0, // remove (left|right)-border for all-items
 
         // remove bottom-border at the last-item, so that it wouldn't collide with the wrapper's bottom-border
         // and
         // remove double border by removing bottom-border starting from the second-last-item to the first-item
-        borderBlockEndWidth       : 0,
+        borderBlockEndWidth        : 0,
 
         // remove top-border at the first-item, so that it wouldn't collide with the wrapper's top-border
         '&:first-child': {
-            borderBlockStartWidth : 0,
+            borderBlockStartWidth  : 0,
         },
         //#endregion border-strokes as a separator
 
@@ -117,11 +117,11 @@ class ListgroupItemStyles extends ContentStyles {
 
         // border radiuses:
         borderRadius : 0, // strip out border radius
-        //#endregion strip out borders almost completely
+        //#endregion strip out borders partially
     }}
     public /*virtual*/ inline(): JssStyle { return {
         // borders:
-        //#region strip out borders almost completely
+        //#region strip out borders partially
         /*
             border & borderRadius are moved from here to parent,
             for making consistent border color when the element's color are filtered.
@@ -158,7 +158,7 @@ class ListgroupItemStyles extends ContentStyles {
 
         // border radiuses:
         borderRadius : 0, // strip out border radius
-        //#endregion strip out borders almost completely
+        //#endregion strip out borders partially
     }}
 
 
@@ -172,12 +172,12 @@ class ListgroupItemStyles extends ContentStyles {
 
         
         // layout:
-        display   : 'block',  // fills the wrapper's width
+        display   : 'block',  // fills the entire wrapper's width
 
 
 
         // sizes:
-        flex      : [[1, 1]], // growable & shrinkable, fills the wrapper's height
+        flex      : [[1, 1]], // growable & shrinkable, fills the entire wrapper's height
 
 
 
@@ -314,8 +314,8 @@ export class ListgroupStyles extends ContentStyles {
 
     public /*virtual*/ block(): JssStyle { return {
         // layout:
-        display           : 'flex',   // use flexbox as the layout
-        flexDirection     : 'column', // items are stacked vertically
+        display           : 'flex',        // use flexbox as the layout
+        flexDirection     : 'column',      // items are stacked vertically
 
 
 
@@ -469,8 +469,10 @@ export class ListgroupStyles extends ContentStyles {
 
 
         // layout:
-        justifyContent : 'center',  // items are placed starting from the center and then spread to both sides
-        alignItems     : 'stretch', // items width are 100% of the parent
+     // display        : 'flex',           // customizable orientation // already defined in block()/inline()
+     // flexDirection  : 'column',         // customizable orientation // already defined in block()/inline()
+        justifyContent : 'center',         // items are placed starting from the center and then spread to both sides
+        alignItems     : 'stretch',        // items width are 100% of the parent
 
 
 
@@ -512,7 +514,7 @@ export class ListgroupStyles extends ContentStyles {
         // children:
         [wrapperElm]: {
             // layout:
-            display        : 'flex',    // use flexbox as the layout, fills the Listgroup's width
+            display        : 'flex',    // use flexbox as the layout, fills the entire Listgroup's width
             justifyContent : 'stretch', // listItems height are 100% of the wrapper (the listItems also need to have growable & shrinkable)
             alignItems     : 'stretch', // listItems width  are 100% of the wrapper
         } as JssStyle,

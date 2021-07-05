@@ -1,32 +1,48 @@
 // react (builds html using javascript):
 import React                from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-
 // nodestrap (modular web components):
-import * as stripOuts       from './strip-outs'
-import spacers              from './spacers'    // configurable spaces defs
 import {
-    cssProps as ecssProps,
+    // general types:
+    JssStyle,
+    ClassList,
+
+    
+    // components:
+    CssConfig,
+}                           from './nodestrap'  // nodestrap's core
+import spacers              from './spacers'    // configurable spaces defs
+import * as stripOuts       from './strip-outs'
+import {
+    OrientationStyle,
+    VariantOrientation,
+    useVariantOrientation,
+
+    cssProps as bcssProps,
 }                           from './BasicComponent'
 import {
-    default  as Content,
     ContentStyles,
     cssProps as ccssProps,
+    ContentProps,
+    Content,
 }                           from './Content'
-import type * as Contents   from './Content'
 import Button               from './Button'
 
 
 
 // styles:
 
-export class CardStylesBuilder extends ContentStyles {
+export class CardStyles extends ContentStyles {
     // variants:
+    public /*override*/ variants(): ClassList { return [
+        ...super.variants(), // copy variants from base
+
+
+
+        [ ':not(.inline)', this.block()  ],
+        [      '.inline' , this.inline() ],
+    ]}
+
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
@@ -38,23 +54,271 @@ export class CardStylesBuilder extends ContentStyles {
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
+    public /*virtual*/ block(): JssStyle { return {
+        // layout:
+        display        : 'flex',        // use flexbox as the layout
+        flexDirection  : 'column',      // items are stacked vertically
 
 
-    // states:
-    /* -- same as parent -- */
+
+        // children:
+        '&>header, &>.body, &>footer': {
+            // borders:
+            //#region strip out borders partially
+            /*
+                border & borderRadius are moved from here to parent,
+                for making consistent border color when the element's color are filtered.
+                so we need to disable the border & borderRadius here.
+            */
+
+        
+
+            //#region border-strokes as a separator
+            borderInlineWidth          : 0, // remove (left|right)-border for all-items
+
+            // assumes the card *always* have a body, so the second-last-item is always a body
+            // remove bottom-border at the last-item, so that it wouldn't collide with the Card's bottom-border
+            // and
+            // remove double border by removing bottom-border starting from the third-last-item to the first-item
+            // and
+            // an *exception* for the second-last-item (the body), do not remove the bottom-border, we need it for the replacement of the footer's top-border
+            '&:not(:nth-last-child(2))': {
+                borderBlockEndWidth    : 0,
+            },
+
+            // remove top-border at the header, so that it wouldn't collide with the Card's top-border
+            // remove top-border at the footer, as the replacement => use second-last-item bottom-border (from the body)
+            '&:first-child, &:last-child': {
+                borderBlockStartWidth  : 0,
+            },
+            //#endregion border-strokes as a separator
+
+
+
+            // border radiuses:
+            borderRadius : 0, // strip out border radius
+            //#endregion strip out borders partially
+        } as JssStyle,
+    }}
+    public /*virtual*/ inline(): JssStyle { return {
+        // layout:
+        display        : 'inline-flex', // use flexbox as the layout
+        flexDirection  : 'row',         // items are stacked horizontally
+
+
+
+        // children:
+        '&>header, &>.body, &>footer': {
+            // borders:
+            //#region strip out borders partially
+            /*
+                border & borderRadius are moved from here to parent,
+                for making consistent border color when the element's color are filtered.
+                so we need to disable the border & borderRadius here.
+            */
+
+        
+
+            //#region border-strokes as a separator
+            borderBlockWidth           : 0, // remove (top|bottom)-border for all-items
+
+            // assumes the card *always* have a body, so the second-last-item is always a body
+            // remove right-border at the last-item, so that it wouldn't collide with the Card's right-border
+            // and
+            // remove double border by removing right-border starting from the third-last-item to the first-item
+            // and
+            // an *exception* for the second-last-item (the body), do not remove the right-border, we need it for the replacement of the footer's left-border
+            '&:not(:nth-last-child(2))': {
+                borderInlineEndWidth   : 0,
+            },
+
+            // remove left-border at the header, so that it wouldn't collide with the Card's left-border
+            // remove left-border at the footer, as the replacement => use second-last-item right-border (from the body)
+            '&:first-child, &:last-child': {
+                borderInlineStartWidth : 0,
+            },
+            //#endregion border-strokes as a separator
+
+
+
+            // border radiuses:
+            borderRadius : 0, // strip out border radius
+            //#endregion strip out borders partially
+        } as JssStyle,
+    }}
 
 
 
     // styles:
-    protected /*virtual*/ imageBasicStyle(): JssStyle { return {
+    public /*override*/ basicStyle(): JssStyle { return {
+        // layout:
+     // display        : 'flex',        // customizable orientation // already defined in block()/inline()
+     // flexDirection  : 'column',      // customizable orientation // already defined in block()/inline()
+        justifyContent : 'start',       // items are placed starting from the top
+        alignItems     : 'stretch',     // items width are 100% of the parent
+
+
+
+        // sizes:
+        minInlineSize  : 0, // See https://github.com/twbs/bootstrap/pull/22740#issuecomment-305868106
+        
+
+
+        // borders:
+        //#region make a nicely rounded corners
+        /*
+            border & borderRadius are moved from children to here,
+            for making consistent border color when the children's color are filtered.
+            so we need to reconstruct the border & borderRadius here.
+        */
+
+
+
+        //#region border-strokes
+        border       : bcssProps.border,          // moved in from children
+        borderColor  : this.ref(this._borderCol), // moved in from children
+        //#endregion border-strokes
+
+
+
+        //#region border radiuses
+        borderRadius : bcssProps.borderRadius, // moved in from children
+        overflow     : 'hidden',               // clip the children at the rounded corners
+        //#endregion border radiuses
+        //#endregion make a nicely rounded corners
+
+
+
+        // shadows:
+        boxShadow    : bcssProps.boxShadow, // moved in from children
+
+
+
+        // children:
+        '&>header, &>.body, &>footer' : this.cardItemBasicStyle(),
+        '&>header, &>footer'          : this.cardCaptionBasicStyle(),
+        '&>header'                    : this.cardHeaderBasicStyle(),
+        '&>footer'                    : this.cardFooterBasicStyle(),
+        '&>.body'                     : this.cardBodyBasicStyle(),
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    protected /*virtual*/ cardItemBasicStyle(): JssStyle { return {
         extend: [
-            stripOuts.image, // removes browser's default styling on image
+            super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
 
 
 
         // layout:
-        display: 'block', // fill the entire parent's width
+        display   : 'block', // fills the entire parent's width
+
+
+
+        // strip out shadows:
+        // moved from here to parent,
+        boxShadow : undefined,
+
+
+
+        //#region children
+        //#region links
+        // handle <a> as card-link:
+        '&>a': {
+            '&+a': { // following by another <a>
+                // spacings:
+                // add a space between links:
+                marginInlineStart: cssProps.linkSpacing,
+            } as JssStyle,
+
+
+
+            // customize:
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'link')), // apply *general* cssProps starting with link***
+        } as JssStyle,
+        //#endregion links
+        
+
+
+        //#region images
+        // handle <figure> & <img> as card-image:
+
+        
+        
+        //#region first: reset top_level <figure> and inner <img>
+        '&>figure': {
+            extend: [
+                stripOuts.figure, // clear browser's default styling on figure
+            ] as JssStyle,
+
+
+
+            // children:
+            '&>img': {
+                extend: [
+                    stripOuts.image, // clear browser's default styling on image
+                ] as JssStyle,
+
+
+
+                // layout:
+                display: 'block', // fills the entire parent's width
+            },
+        },
+        //#endregion first: reset top_level <figure> and inner <img>
+
+
+
+        // then: styling top_level <figure> & top_level <img>:
+        '&>figure, &>img': this.imageBasicStyle(),
+        //#endregion images
+        //#endregion children
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
+    }}
+    protected /*virtual*/ cardCaptionBasicStyle(): JssStyle { return {
+        // sizes:
+        // default card's items height are unresizeable (excepts for the card's body):
+        flex: [[0, 0]], // not growing, not shrinking
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'caption')), // apply *general* cssProps starting with caption***
+    }}
+    protected /*virtual*/ cardHeaderBasicStyle(): JssStyle { return {
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'header')), // apply *general* cssProps starting with header***
+    }}
+    protected /*virtual*/ cardFooterBasicStyle(): JssStyle { return {
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'footer')), // apply *general* cssProps starting with footer***
+    }}
+    protected /*virtual*/ cardBodyBasicStyle(): JssStyle { return {
+        // sizes:
+        // default card's body height is resizeable, ensuring footers are aligned to the bottom:
+        flex: [[1, 1]], // allows growing, allows shrinking
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'body')), // apply *general* cssProps starting with body***
+    }}
+    protected /*virtual*/ imageBasicStyle(): JssStyle { return {
+        extend: [
+            stripOuts.image, // clear browser's default styling on image
+        ] as JssStyle,
+
+
+
+        // layout:
+        display: 'block', // fills the entire parent's width
 
 
 
@@ -87,246 +351,53 @@ export class CardStylesBuilder extends ContentStyles {
 
         // borders:
         //#region border-strokes as a separator
-        border       : ecssProps.border,          // copy from children (can't inherit because border(Inline|Block)Width might have been modified)
+        border       : bcssProps.border,          // copy from children (can't inherit because border(Inline|Block)Width might have been modified)
         borderColor  : this.ref(this._borderCol), // copy from children (can't inherit because border(Inline|Block)Width might have been modified)
 
-        borderInlineWidth         : 0,  // remove (left|right)-border for all-children
+        borderInlineWidth         : 0, // remove (left|right)-border for all-images
 
-        // remove top-border at the first-child, so that it wouldn't collide with the (header|body|footer)'s top-border
+        // remove top-border at the first-image, so that it wouldn't collide with the (header|body|footer)'s top-border
         '&:first-child': {
             borderBlockStartWidth : 0,
         },
 
-        // remove bottom-border at the last-child, so that it wouldn't collide with the (header|body|footer)'s bottom-border
+        // remove bottom-border at the last-image, so that it wouldn't collide with the (header|body|footer)'s bottom-border
         '&:last-child': {
             borderBlockEndWidth   : 0,
         },
         //#endregion border-strokes as a separator
-    }}
-    protected /*virtual*/ cardItemBasicStyle(): JssStyle { return {
-        extend: [
-            super.basicStyle(), // copy basicStyle from base
-        ] as JssStyle,
-
-
-
-        // layout:
-        display: 'block',
-
-
-
-        // borders:
-        //#region strip out borders partially
-        /*
-            border & borderRadius are moved from here to parent,
-            for making consistent border color when the element's color are filtered.
-            so we need to disable the border & borderRadius here.
-        */
-
-       
-
-        //#region border-strokes as a separator
-        borderInlineWidth         : 0,  // remove (left|right)-border for all-children
-
-        // remove bottom-border at the last-child, so that it wouldn't collide with the Card's bottom-border
-        // and
-        // remove double border by removing bottom-border starting from the third-last-child to the first-child
-        // and
-        // *exception* for the second-last-child, do not remove the bottom-border, we need it as the replacement for the footer's top-border
-        // assumes the card *always* have a body, so the second-last-child always a body
-        // a rare case the card only have a header & a footer, so the separator is from header (might affected by header's css filter)
-        '&:not(:nth-last-child(2))': {
-            borderBlockEndWidth   : 0,
-        },
-
-        // remove top-border at the first-child, so that it wouldn't collide with the Card's top-border
-        // remove top-border at the footer, as the replacement => use second-last-child bottom-border
-        '&:first-child, &:last-child': {
-            borderBlockStartWidth : 0,
-        },
-        //#endregion border-strokes as a separator
-
-
-
-        //#region border radiuses
-        borderRadius : 0,
-        //#endregion border radiuses
-        //#endregion strip out borders partially
-
-
-
-        // strip out shadows:
-        // moved from here to parent,
-        boxShadow : undefined,
-
-
-
-        //#region children
-        //#region links
-        // handle <a> as card-link:
-        '&>a': {
-            '&+a': {
-                // spacings:
-                // add a space between links:
-                marginInlineStart: cssProps.linkSpacing,
-            },
-
-
-
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'link')), // apply *general* cssProps starting with link***
-        },
-        //#endregion links
-        
-
-
-        //#region images
-        // handle <figure> & <img> as card-image:
-        '&>figure': {
-            extend: [
-                stripOuts.figure, // clear browser's default styles
-            ] as JssStyle,
-
-
-
-            // children:
-            '&>img': {
-                extend: [
-                    stripOuts.image, // removes browser's default styling on image
-                ] as JssStyle,
-
-
-
-                // layout:
-                display: 'block', // fill the entire parent's width
-            },
-        },
-        '&>figure, &>img': this.imageBasicStyle(), // figure & img are special content
-        '&>figure>img, &>img': {
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'img')), // apply *general* cssProps starting with img***
-        },
-        //#endregion images
-        //#endregion children
 
 
 
         // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
-    }}
-    protected /*virtual*/ cardCaptionBasicStyle(): JssStyle { return {
-        // sizes:
-        // default card items' height are unresizeable (excepts for card's body):
-        flex: [[0, 0]], // not growing, not shrinking
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'caption')), // apply *general* cssProps starting with caption***
-    }}
-    protected /*virtual*/ cardHeaderBasicStyle(): JssStyle { return {
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'header')), // apply *general* cssProps starting with header***
-    }}
-    protected /*virtual*/ cardFooterBasicStyle(): JssStyle { return {
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'footer')), // apply *general* cssProps starting with footer***
-    }}
-    protected /*virtual*/ cardBodyBasicStyle(): JssStyle { return {
-        // sizes:
-        // Enable `flex-grow: 1` for decks and groups so that card blocks take up
-        // as much space as possible, ensuring footers are aligned to the bottom.
-        flex: [[1, 1]], // allows growing, allows shrinking
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'body')), // apply *general* cssProps starting with body***
-    }}
-    public /*override*/ basicStyle(): JssStyle { return {
-        // layout:
-        display        : 'flex',    // use flexbox as the layout
-        flexDirection  : 'column',  // items are stacked vertically
-        justifyContent : 'start',   // items are placed starting from the top
-        alignItems     : 'stretch', // items width are 100% of the parent
-
-
-
-        // sizes:
-        minInlineSize  : 0, // See https://github.com/twbs/bootstrap/pull/22740#issuecomment-305868106
-        
-
-
-        // borders:
-        //#region make a nicely rounded corners
-        /*
-            border & borderRadius are moved from children to here,
-            for making consistent border color when the children's color are filtered.
-            so we need to reconstruct the border & borderRadius here.
-        */
-
-
-
-        //#region border-strokes
-        border       : ecssProps.border,          // moved in from children
-        borderColor  : this.ref(this._borderCol), // moved in from children
-        //#endregion border-strokes
-
-
-
-        //#region border radiuses
-        borderRadius : ecssProps.borderRadius, // moved in from children
-        overflow     : 'hidden',               // clip the children at the rounded corners
-        //#endregion border radiuses
-        //#endregion make a nicely rounded corners
-
-
-
-        // shadows:
-        boxShadow    : ecssProps.boxShadow,      // moved in from children
-
-
-
-        // children:
-        '&>header, &>.body, &>footer' : this.cardItemBasicStyle(),
-        '&>header, &>footer'          : this.cardCaptionBasicStyle(),
-        '&>header'                    : this.cardHeaderBasicStyle(),
-        '&>footer'                    : this.cardFooterBasicStyle(),
-        '&>.body'                     : this.cardBodyBasicStyle(),
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'img')), // apply *general* cssProps starting with img***
     }}
 }
-export const styles = new CardStylesBuilder();
+export const cardStyles = new CardStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     return {
-        boxSizing     : 'border-box', // the final size is including borders & paddings
-        blockSize     : '100%',       // set height to maximum if parent container has specific height, otherwise no effect
-
         // typos:
         wordWrap      : 'break-word',
 
+
+
+        // sizes:
+        boxSizing     : 'border-box', // the final size is including borders & paddings
+        blockSize     : '100%',       // set height to maximum if parent container has specific height, otherwise no effect
+
+        
+        
+        // captions:
         captionFilter : [['brightness(70%)', 'contrast(140%)']],
 
 
 
+        // links:
         linkSpacing   : spacers.sm,
     };
 }, /*prefix: */'crd');
@@ -337,17 +408,24 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+export interface CardProps<TElement extends HTMLElement = HTMLElement>
     extends
-        Contents.ContentProps<TElement>
+        ContentProps<TElement>,
+
+        VariantOrientation
 {
     // children:
     header? : React.ReactNode
     footer? : React.ReactNode
 }
-export default function Card<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function Card<TElement extends HTMLElement = HTMLElement>(props: CardProps<TElement>) {
     // styles:
-    const crdStyles = styles.useStyles();
+    const styles = cardStyles.useStyles();
+
+
+
+    // variants:
+    const variOrientation = useVariantOrientation(props);
 
 
 
@@ -381,7 +459,10 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
 
 
             // classes:
-            mainClass={props.mainClass ?? crdStyles.main}
+            mainClass={props.mainClass ?? styles.main}
+            variantClasses={[...(props.variantClasses ?? []),
+                variOrientation.class,
+            ]}
         >
             { header && <header
                 // triggers Card's onAnimationEnd event
@@ -422,3 +503,6 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
         </Content>
     );
 }
+export { Card }
+
+export type { OrientationStyle, VariantOrientation }

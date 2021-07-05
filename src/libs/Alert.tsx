@@ -85,8 +85,8 @@ export class AlertStyles extends PopupStyles implements IContentStyles {
         gridAutoColumns     : 'min-content',
 
         // child alignments:
-        justifyItems        : 'stretch', // each section fill the entire area's width
-        alignItems          : 'stretch', // each section fill the entire area's height
+        justifyItems        : 'stretch', // each section fills the entire area's width
+        alignItems          : 'stretch', // each section fills the entire area's height
 
 
 
