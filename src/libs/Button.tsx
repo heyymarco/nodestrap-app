@@ -34,21 +34,21 @@ import {
 
 class GhostStyles extends ControlStyles {
     // variants:
-    public /*override*/ themes()                     : ClassList { return [] } // disabled
+    public /*override*/ themes()                    : ClassList { return [] } // disabled
 
-    public /*override*/ sizes()                      : ClassList { return [] } // disabled
+    public /*override*/ sizes()                     : ClassList { return [] } // disabled
 
-    public /*override*/ noGradient(inherit = false)  : JssStyle  { return {} } // disabled
-    public /*override*/ gradient()                   : JssStyle  { return {} } // disabled
+    public /*override*/ noGradient(inherit = false) : JssStyle  { return {} } // disabled
+    public /*override*/ gradient()                  : JssStyle  { return {} } // disabled
 
-    public /*override*/ noOutlined(inherit = false)  : JssStyle  { return {
+    public /*override*/ noOutlined(inherit = false) : JssStyle  { return {
         // borders:
         border : 'none', // no_border if no_outlined
     }}
-    public /*override*/ outlined()                   : JssStyle  { return {} } // disabled
+    public /*override*/ outlined()                  : JssStyle  { return {} } // disabled
 
-    public /*override*/ noMild(inherit = false)      : JssStyle  { return {} } // disabled
-    public /*override*/ mild()                       : JssStyle  { return {} } // disabled
+    public /*override*/ noMild(inherit = false)     : JssStyle  { return {} } // disabled
+    public /*override*/ mild()                      : JssStyle  { return {} } // disabled
 
 
 

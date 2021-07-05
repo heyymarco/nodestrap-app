@@ -5,7 +5,6 @@ import reportWebVitals from './reportWebVitals';
 
 import App from './apps/App';
 import CheckApp from './apps/CheckApp';
-import ModalApp from './apps/ModalApp';
 import FormApp from './apps/FormApp';
 import NavbarApp from './apps/NavbarApp';
 
@@ -18,6 +17,7 @@ import BasicComponentApp                    from './apps/BasicComponentApp';
                 import AccordionApp         from './apps/AccordionApp';
                 import NavscrollApp         from './apps/NavscrollApp';
             import CardApp                  from './apps/CardApp';
+                import ModalApp             from './apps/ModalApp';
         import PopupApp                     from './apps/PopupApp';
             import AlertApp                 from './apps/AlertApp';
         import ControlApp                   from './apps/ControlApp';
@@ -34,7 +34,7 @@ import BasicComponentApp                    from './apps/BasicComponentApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <CardApp />
+        <ModalApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

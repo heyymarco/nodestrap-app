@@ -64,11 +64,6 @@ export class BasicComponentStyles extends ElementStyles {
 
     //#region background
     /**
-     * none background.
-     */
-    protected readonly _backgNone          = 'backgNone'
-
-    /**
      * themed background.
      */
     protected readonly _backgTh            = 'backgTh'
@@ -288,6 +283,11 @@ export class BasicComponentStyles extends ElementStyles {
 
 
     //#region animations
+    /**
+     * none background.
+     */
+    public readonly _backgNone             = 'backgNone'
+
     /**
      * none box shadow.
      */
