@@ -9,7 +9,6 @@ import {
 import {
     // general types:
     JssStyle,
-    Styles,
     Classes,
     Prop,
     PropEx,
@@ -213,6 +212,18 @@ export class ModalStyles extends PopupStyles {
 
 
     // styles:
+    public /*override*/ useStyles(): Classes<'main'|'body'|'actionBar'> {
+        return super.useStyles() as Classes<'main'|'body'|'actionBar'>;
+    }
+    protected /*override*/ styles(): ClassList { return [
+        ...super.styles(),
+
+        
+        
+        [ 'body'     , this.bodyStyle()      ],
+        [ 'actionBar', this.actionBarStyle() ],
+    ]}
+
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             containerStyles.useContainerGrid(), // apply responsive container functionality using css grid
@@ -369,17 +380,6 @@ export class ModalStyles extends PopupStyles {
             marginInlineStart: 'auto',
         },
     }}
-    protected /*override*/ styles(): Styles<'main'|'@global'|'body'|'actionBar'> { return {
-        ...super.styles(),
-
-        
-        
-        body      : this.bodyStyle(),
-        actionBar : this.actionBarStyle(),
-    }}
-    public /*override*/ useStyles(): Classes<'main'|'body'|'actionBar'> {
-        return super.useStyles() as Classes<'main'|'body'|'actionBar'>;
-    }
 }
 export const modalStyles = new ModalStyles();
 

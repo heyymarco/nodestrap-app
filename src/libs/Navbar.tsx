@@ -9,7 +9,6 @@ import {
 // jss   (builds css  using javascript):
 import type {
     JssStyle,
-    Styles,
 }                           from 'jss'          // ts defs support for jss
 import {
     PropEx,
@@ -485,7 +484,7 @@ export class NavbarStylesBuilder extends ControlStyles {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected /*override*/ styles(): Styles<'main'|'@global'> {
+    protected /*override*/ stylesOld() {
         return {
             // TODO: use compositeStyle
             main: {

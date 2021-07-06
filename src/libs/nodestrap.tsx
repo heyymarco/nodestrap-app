@@ -9,7 +9,6 @@ import {
 import type {
     JssStyle,
     JssValue,
-    Styles,
     Classes,
 }                           from 'jss'           // ts defs support for jss
 import {
@@ -39,7 +38,7 @@ import { camelCase }        from 'camel-case'    // camel-case  support for jss
 
 // general types:
 
-export type { JssStyle, Styles, Classes }
+export type { JssStyle, Classes }
 export type { Prop, PropEx, Cust }
 export type { Dictionary, ValueOf, DictionaryOf }
 export type ClassEntry = [string|null, JssStyle]
@@ -373,11 +372,53 @@ export class ElementStyles {
 
 
     // styles:
+    protected _useStylesCache : ((() => Classes<'main'>)|null) = null;
+    
     /**
-     * Creates a basic style of a component *without* any variants nor states applied.
-     * @returns A `JssStyle` represents a basic style definition.
+     * Returns a jss stylesheet for styling dom.
+     * @returns A jss stylesheet instance.
      */
-    public /*virtual*/ basicStyle(): JssStyle { return {} }
+    public /*virtual*/ useStyles(): Classes<'main'> {
+        // hack: wrap with function twice and then unwrap twice:
+        // so we can use *react hook* here:
+        return (() => // wrap-1
+            () => { // wrap-2
+                const jssContext = useContext(JssContext);
+
+                if (!this._useStylesCache) {
+                    // console.log('creating style...');
+
+                    const jss = jssContext.jss ?? jssDefault;
+                    jss.use(
+                        jssPluginGlobal(),
+                        jssPluginNormalizeShorthands()
+                    );
+
+                    this._useStylesCache = createUseStyles(
+                        Object.assign({},
+                            ...this.styles().map((style) => ({ [style[0] ?? '@global']: style[1] }))
+                        )
+                    );
+                }
+                // else {
+                //     console.log('use cached style');
+                // }
+                return this._useStylesCache();
+            }
+        )()(); // unwrap-1 & unwrap-2
+    }
+
+
+    /**
+     * Creates one/more composite styles, with the themes & states applied.
+     * @returns A `Styles` represents the composite style definitions.
+     */
+    protected /*virtual*/ styles(): ClassList { return [
+        [ 'main', this.compositeStyle() ],
+
+        [ null  , this.globalStyle()    ],
+    ]}
+
 
     /**
      * Creates a composite style made up from basicStyle + variants + states + functions.
@@ -401,54 +442,17 @@ export class ElementStyles {
     }}
 
     /**
+     * Creates a basic style of a component *without* any variants nor states applied.
+     * @returns A `JssStyle` represents a basic style definition.
+     */
+    public /*virtual*/ basicStyle(): JssStyle { return {} }
+
+
+    /**
      * Creates a global style applied to a whole document.
      * @returns A `JssStyle` represents a global style definition.
      */
     public /*virtual*/ globalStyle(): JssStyle { return {} }
-
-    /**
-     * Creates one/more composite styles, with the themes & states applied.
-     * @returns A `Styles` represents the composite style definitions.
-     */
-    protected /*virtual*/ styles(): Styles<'main'|'@global'> {
-        return {
-            main      : this.compositeStyle(),
-
-            '@global' : this.globalStyle(),
-        };
-    }
-
-    protected _useStylesCache : ((() => Classes<'main'>)|null) = null;
-
-    /**
-     * Returns a jss stylesheet for styling dom.
-     * @returns A jss stylesheet instance.
-     */
-    public /*virtual*/ useStyles(): Classes<'main'> {
-        // hack: wrap with function twice and then unwrap twice:
-        // so we can use *react hook* here:
-        return (() => // wrap-1
-            () => { // wrap-2
-                const jssContext = useContext(JssContext);
-
-                if (!this._useStylesCache) {
-                    // console.log('creating style...');
-
-                    const jss = jssContext.jss ?? jssDefault;
-                    jss.use(
-                        jssPluginGlobal(),
-                        jssPluginNormalizeShorthands()
-                    );
-
-                    this._useStylesCache = createUseStyles(this.styles());
-                }
-                // else {
-                //     console.log('use cached style');
-                // }
-                return this._useStylesCache();
-            }
-        )()(); // unwrap-1 & unwrap-2
-    }
 
 
 
