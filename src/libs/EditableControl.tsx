@@ -5,32 +5,34 @@ import {
     useEffect,
 }                           from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-import {
-    PropEx,
-}                           from './Css'        // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-
 // nodestrap (modular web components):
+import {
+    // general types:
+    JssStyle,
+    PropEx,
+    Cust,
+    ClassList,
+    PropList,
+
+    
+    // components:
+    CssConfig,
+}                           from './nodestrap'  // nodestrap's core
 import colors               from './colors'     // configurable colors & theming defs
 import {
-    cssProps as ecssProps,
-}                           from './BasicComponent'
-import {
-    default  as Control,
-    ControlStyles,
-}                           from './Control'
-import type * as Controls   from './Control'
-import {
+    Result as ValResult,
     usePropValidation,
-}                           from './validations'
-import type * as Val        from './validations'
-import type {
+    
     ValidationProps,
 }                           from './validations'
+import {
+    cssProps as bcssProps,
+}                           from './BasicComponent'
+import {
+    ControlStyles,
+    ControlProps,
+    Control,
+}                           from './Control'
 
 
 
@@ -47,7 +49,7 @@ export interface IValidationStylesBuilder {
     validationPropsFn(): JssStyle
     validationAnimFn(): JssStyle
 }
-export class EditableControlStylesBuilder extends ControlStyles implements IValidationStylesBuilder {
+export class EditableControlStyles extends ControlStyles implements IValidationStylesBuilder {
     //#region scoped css props
     /**
      * valid-state foreground color.
@@ -232,8 +234,8 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
         extend: [
             this.iif(!inherit, {
                 //#region all initial states are none
-                [this.decl(this._animValUnval)] : ecssProps.animNone,
-                [this.decl(this._animInvUninv)] : ecssProps.animNone,
+                [this.decl(this._animValUnval)] : bcssProps.animNone,
+                [this.decl(this._animInvUninv)] : bcssProps.animNone,
                 //#endregion all initial states are none
             }),
 
@@ -289,7 +291,7 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
         ...this.stateValid({
             // define an *animations* func:
             [this.decl(this._animFnOld)]: [
-                ecssProps.anim,
+                bcssProps.anim,
                 this.ref(this._animValUnval), // 2nd : ctrl already validated, move to the least priority
                 this.ref(this._animInvUninv), // 1st : rarely triggered => low probability
             ],
@@ -297,7 +299,7 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
 
         // define an *animations* func:
         [this.decl(this._animFnOld)]: [
-            ecssProps.anim,
+            bcssProps.anim,
             this.ref(this._animInvUninv),
             this.ref(this._animValUnval),
         ],
@@ -318,7 +320,7 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
                 ...this.stateValid({
                     // define an *animations* func:
                     [this.decl(this._animFnOld)]: [
-                        ecssProps.anim,
+                        bcssProps.anim,
                         this.ref(this._animActivePassive), // 6th : ctrl already pressed, move to the least priority
                         this.ref(this._animValUnval),      // 5th : ctrl already validated, move to the least priority
                         this.ref(this._animInvUninv),      // 4th : rarely triggered => low probability
@@ -329,7 +331,7 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
                 }),
                 // define an *animations* func:
                 [this.decl(this._animFnOld)]: [
-                    ecssProps.anim,
+                    bcssProps.anim,
                     this.ref(this._animActivePassive), // 6th : ctrl already pressed, move to the least priority
                     this.ref(this._animInvUninv),      // 5th : rarely triggered => low probability
                     this.ref(this._animValUnval),      // 4th : rarely triggered => low probability
@@ -342,7 +344,7 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
         ...this.stateValid({
             // define an *animations* func:
             [this.decl(this._animFnOld)]: [
-                ecssProps.anim,
+                bcssProps.anim,
                 this.ref(this._animValUnval),      // 6th : ctrl already validated, move to the least priority
                 this.ref(this._animInvUninv),      // 5th : rarely triggered => low probability
                 this.ref(this._animEnableDisable), // 4th : ctrl must be enabled
@@ -353,7 +355,7 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
         }),
         // define an *animations* func:
         [this.decl(this._animFnOld)]: [
-            ecssProps.anim,
+            bcssProps.anim,
             this.ref(this._animInvUninv),      // 6th : rarely triggered => low probability
             this.ref(this._animValUnval),      // 5th : rarely triggered => low probability
             this.ref(this._animEnableDisable), // 4th : ctrl must be enabled
@@ -378,28 +380,19 @@ export class EditableControlStylesBuilder extends ControlStyles implements IVali
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
-export const styles = new EditableControlStylesBuilder();
+export const editableControlStyles = new EditableControlStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     const keyframesValid     : PropEx.Keyframes = {
         from: {
             backg: colors.success,
         },
         to: {
-            backg: styles.ref(styles._backg),
+            backg: editableControlStyles.ref(editableControlStyles._backg),
         },
     };
     const keyframesUnvalid   : PropEx.Keyframes = {};
@@ -409,12 +402,13 @@ const cssConfig = new CssConfig(() => {
             backg: colors.danger,
         },
         to: {
-            backg: styles.ref(styles._backg),
+            backg: editableControlStyles.ref(editableControlStyles._backg),
         },
     };
     const keyframesUninvalid : PropEx.Keyframes = {};
 
 
+    
     return {
         // anim props:
     
@@ -436,11 +430,11 @@ export const cssDecls = cssConfig.decls;
 // hooks:
 
 type EditableControlElement        = HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement
-export type ValidatorHandler       = () => Val.Result
-export type CustomValidatorHandler = (state: ValidityState, value: string) => Val.Result
+export type ValidatorHandler       = () => ValResult
+export type CustomValidatorHandler = (state: ValidityState, value: string) => ValResult
 export function useInputValidator(customValidator?: CustomValidatorHandler) {
     // states:
-    let [isValid, setIsValid] = useState<Val.Result>(null);
+    let [isValid, setIsValid] = useState<ValResult>(null);
 
 
     
@@ -486,7 +480,7 @@ export function useInputValidator(customValidator?: CustomValidatorHandler) {
          * `true`  = valid.  
          * `false` = invalid.
          */
-        validator    : ((): Val.Result => isValid) as ValidatorHandler,
+        validator    : ((): ValResult => isValid) as ValidatorHandler,
 
         handleInit   : handleInit,
         handleChange : handleChange,
@@ -499,12 +493,12 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
 
 
     // defaults:
-    const defaultValided: Val.Result        = null; // if [isValid] was not specified => the default value is [isValid=null] (neither error nor success)
+    const defaultValided: ValResult         = null; // if [isValid] was not specified => the default value is [isValid=null] (neither error nor success)
 
 
     
     // states:
-    const [valided,       setValided      ] = useState<Val.Result|undefined>((): (Val.Result|undefined) => {
+    const [valided,       setValided      ] = useState<ValResult|undefined>((): (ValResult|undefined) => {
         // use prop as the primary validator:
         if (propValidation.isValid !== undefined) return propValidation.isValid; // validity is set => set state to uncheck/valid/invalid
 
@@ -529,7 +523,7 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
      * state is set as validator                       if [validator's validation is enabled] && [validator's validity is set]
      * otherwise return undefined (represents no change needed)
      */
-    const validFn = ((): (Val.Result|undefined) => {
+    const validFn = ((): (ValResult|undefined) => {
         // use prop as the primary validator:
         if (propValidation.isValid !== undefined) return propValidation.isValid; // validity is set => set state to uncheck/valid/invalid
 
@@ -604,7 +598,7 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
          * `false` : invalidating/invalid
          * `null`  : uncheck/unvalidating/uninvalidating
         */
-        valid: (valided ?? null) as Val.Result,
+        valid: (valided ?? null) as ValResult,
         valDisabled: valDisabled,
         class: [
             ((): string|null => {
@@ -648,9 +642,10 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
 
 // react components:
 
-export interface Props<TElement extends EditableControlElement = EditableControlElement>
+export interface EditableControlProps<TElement extends EditableControlElement = EditableControlElement>
     extends
-        Controls.ControlProps<TElement>,
+        ControlProps<TElement>,
+
         ValidationProps
 {
     // accessibility:
@@ -667,9 +662,9 @@ export interface Props<TElement extends EditableControlElement = EditableControl
     customValidator? : CustomValidatorHandler
     required?        : boolean
 }
-export default function EditableControl<TElement extends EditableControlElement = EditableControlElement>(props: Props<TElement>) {
+export default function EditableControl<TElement extends EditableControlElement = EditableControlElement>(props: EditableControlProps<TElement>) {
     // styles:
-    const ectrlStyles    = styles.useStyles();
+    const styles         = editableControlStyles.useStyles();
 
     
     
@@ -680,7 +675,7 @@ export default function EditableControl<TElement extends EditableControlElement 
     
 
     // fn props:
-    const htmlEditCtrls   = [
+    const htmlEditCtrls  = [
         'input',
         'select',
         'textarea',
@@ -696,7 +691,7 @@ export default function EditableControl<TElement extends EditableControlElement 
 
 
             // classes:
-            mainClass={props.mainClass ?? ectrlStyles.main}
+            mainClass={props.mainClass ?? styles.main}
             stateClasses={[...(props.stateClasses ?? []),
                 stateValInval.class,
             ]}
@@ -749,3 +744,4 @@ export default function EditableControl<TElement extends EditableControlElement 
         />
     );
 }
+export { EditableControl }

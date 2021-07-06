@@ -24,6 +24,7 @@ import BasicComponentApp                    from './apps/BasicComponentApp';
             import ActionControlApp         from './apps/ActionControlApp';
                 import ButtonApp            from './apps/ButtonApp';
                     import ButtonIconApp    from './apps/ButtonIconApp';
+            import EditableControlApp       from './apps/EditableControlApp';
     import IconApp                          from './apps/IconApp';
     import MasonryApp                       from './apps/MasonryApp';
     import CarouselApp                      from './apps/CarouselApp';
@@ -34,7 +35,7 @@ import BasicComponentApp                    from './apps/BasicComponentApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <ModalApp />
+        <EditableControlApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

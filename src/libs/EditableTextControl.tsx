@@ -14,8 +14,8 @@ import {
 }                           from './nodestrap'  // nodestrap's core
 import colors               from './colors'     // configurable colors & theming defs
 import {
-    EditableControlStylesBuilder as EditableControlStyles,
-    Props   as EditableControlProps,
+    EditableControlStyles as EditableControlStyles,
+    EditableControlProps   as EditableControlProps,
     default as EditableControl,
 }                           from './EditableControl'
 import {

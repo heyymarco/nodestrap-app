@@ -25,7 +25,7 @@ import {
 }                           from './Indicator'
 import {
     default  as EditableControl,
-    EditableControlStylesBuilder,
+    EditableControlStyles,
 }                           from './EditableControl'
 import type * as EditableControls   from './EditableControl'
 import {
@@ -46,7 +46,7 @@ const chkElm   = '&>:first-child';
 const iconElm  = '&::before';
 const labelElm = '&>:nth-child(1n+2)';
 
-export class CheckStylesBuilder extends EditableControlStylesBuilder {
+export class CheckStylesBuilder extends EditableControlStyles {
     //#region scoped css props
     /**
      * functional animations for the icon.
@@ -708,7 +708,7 @@ export function useVariantCheck(props: VariantCheck, styles: Record<string, stri
 
 export interface Props
     extends
-        EditableControls.Props<HTMLInputElement>,
+        EditableControls.EditableControlProps<HTMLInputElement>,
         VariantCheck
 {
     // values:
