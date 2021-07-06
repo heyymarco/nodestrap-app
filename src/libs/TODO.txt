@@ -79,7 +79,7 @@ BasicComponent<TElement>^
 			ListgroupItem<TElement>^
 				AccordionItem<TElement>^
 			Card<TElement>^
-				Modal<TElement>#
+				Modal<TElement>^
 		Control<TElement>^
 			ActionControl<TElement>^
 			EditableControl<TElement>@

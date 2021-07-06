@@ -23,7 +23,6 @@ import {
 import * as stripOuts       from './strip-outs'
 import typos                from './typos/index' // configurable typography (texting) defs
 import {
-    cssProps as bcssProps,
     cssDecls as bcssDecls,
 }                           from './BasicComponent'
 import {
@@ -57,8 +56,9 @@ import CloseButton          from './CloseButton'
 
 // styles:
 
-const cardElm        = '&>*';
-const cardItemsElm   = '&>*';
+const cardElm      = '&>*';
+const cardItemsElm = '&>*';
+const cardBodyElm  = '&>.body';
 
 export class ModalStyles extends PopupStyles {
     //#region props
@@ -94,7 +94,8 @@ export class ModalStyles extends PopupStyles {
 
 
         
-        [ 'scrollable', this.scrollable() ],
+        [ ':not(.scrollable)', this.notScrollable() ],
+        [      '.scrollable' , this.scrollable()    ],
     ]}
 
     public /*override*/ themes()                    : ClassList { return [] } // disabled
@@ -113,20 +114,43 @@ export class ModalStyles extends PopupStyles {
     public /*override*/ noMild(inherit = false)     : JssStyle  { return {} } // disabled
     public /*override*/ mild()                      : JssStyle  { return {} } // disabled
 
+    public /*virtual*/ notScrollable()  : JssStyle { return {
+        // scrolls:
+        // scroller at Modal's layer (for the `.scrollable` turned off)
+        overflow : 'auto', // enable horz & vert scrolling
+
+
+
+        [cardElm]: { // Card's layer
+            // sizes:
+            boxSizing  : 'content-box', // the final size is excluding borders & paddings
+            inlineSize : 'max-content', // forcing the Card's width follows the Card's items width
+            blockSize  : 'max-content', // forcing the Card's height follows the Card's items height
+
+            // fix bug on firefox.
+            // setting *(inline|block)Size:max-content* guarantes the scrolling effect never occured (the *scrolling prop* will be ignored).
+            // but on firefox if the *scrolling prop* is not turned off => causing the element clipped off at the top.
+         // overflow   : 'visible', // turn off the scrolling; side effect the rounded corners won't be clipped
+         // overflow   : '-moz-hidden-unscrollable', // not working; use JS solution
+        } as JssStyle,
+    }}
     public /*virtual*/ scrollable()  : JssStyle { return {
         [cardElm]: { // Card's layer
-            '&:not(._)': { // force overwrite
-                // sizes:
-                inlineSize    : 'auto', // follows the content's width, but
-                maxInlineSize : '100%', // up to the maximum available parent's width
-                blockSize     : 'auto', // follows the content's height, but
-                maxBlockSize  : '100%', // up to the maximum available parent's height
+            // sizes:
+            boxSizing     : 'border-box', // the final size is including borders & paddings
+            inlineSize    : 'auto',       // follows the content's width, but
+            maxInlineSize : '100%',       // up to the maximum available parent's width
+            blockSize     : 'auto',       // follows the content's height, but
+            maxBlockSize  : '100%',       // up to the maximum available parent's height
 
-                // this prop is not actually makes Card scrollable,
-                // but makes Card's body scrollable (indirect effect)
-                overflow      : 'auto', // turn on the scrolling
-            },
-        },
+
+
+            [cardBodyElm]: { // Card's body layer
+                // scrolls:
+                // scroller at Card's body layer (for the `.scrollable` turned on)
+                overflow : 'auto', // enable horz & vert scrolling
+            } as JssStyle,
+        } as JssStyle,
     }}
 
 
@@ -195,8 +219,8 @@ export class ModalStyles extends PopupStyles {
         //#endregion finals
     }}
     /**
-     * Creates a composite filter definition for the Modal's overlay in which the filters *depends on* the variants and/or the states.
-     * @returns A `Cust.Ref[]` represents the composite filter definition for the Modal's overlay.
+     * Creates a composite backgrounds definition for the Modal's overlay in which the backgrounds *depends on* the variants and/or the states.
+     * @returns A `Cust.Ref[]` represents the composite backgrounds definition for the Modal's overlay.
      */
     public /*virtual*/ overlayBackgFn(): Cust.Ref[] { return [
         this.ref(this._overlayBackgActivePassive, this._backgNone),
@@ -226,13 +250,13 @@ export class ModalStyles extends PopupStyles {
 
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
-            containerStyles.useContainerGrid(), // apply responsive container functionality using css grid
+            containerStyles.useContainerGrid(), // applies responsive container functionality using css grid
         ] as JssStyle,
 
 
 
         // layout:
-     // display      : 'grid',             // already defined in containerStyles. we use grid, so we can align the Card both horizontally & vertically
+     // display      : 'grid',             // already defined in `useContainerGrid()`. We use a grid for the layout, so we can align the Card both horizontally & vertically
         justifyItems : cssProps.horzAlign, // align (default center) horizontally
         alignItems   : cssProps.vertAlign, // align (default center) vertically
 
@@ -242,26 +266,19 @@ export class ModalStyles extends PopupStyles {
         // fills the entire screen:
         boxSizing : 'border-box', // the final size is including borders & paddings
         position  : 'fixed',
-        left      : 0,
-        top       : 0,
+        inset     : 0,
         width     : '100vw',
         height    : '100vh',
      // maxWidth  : 'fill-available', // hack to excluding scrollbar // not needed since all html pages are virtually full width
      // maxHeight : 'fill-available', // hack to excluding scrollbar // will be handle by javascript soon
-
-            
-        // scrollers:
-        // scroller at Modal's layer & at Card's body layer:
-        '&, &>*>.body': {
-            overflow : 'auto', // enable horz & vert scrolling
-        },
-
-
-
+        
+        
+        
         // apply final props:
         backg                     : this.ref(this._overlayBackg),
         anim                      : this.ref(this._overlayAnim),
-        [this.decl(this._animFw)] : this.ref(this._anim),
+
+        [this.decl(this._animFw)] : this.ref(this._anim), // store _anim into _animFw for overwriting Card's _anim
 
 
 
@@ -271,6 +288,7 @@ export class ModalStyles extends PopupStyles {
             const newCardProps = this.overwriteParentProps(
                 this.filterGeneralProps(cssProps), // apply *general* cssProps
 
+                // parents:
                 rcssDecls, // Card
                 ccssDecls, // Content
                 icssDecls, // Indicator
@@ -280,7 +298,7 @@ export class ModalStyles extends PopupStyles {
 
 
             return {
-                ...this.backupProps(newCardProps), // backup cardProps
+                ...this.backupProps(newCardProps), // backup Card's cssProps before overwriting
 
 
 
@@ -294,36 +312,30 @@ export class ModalStyles extends PopupStyles {
                     '&:not(._)': { // force overwrite
                         // layout:
                         gridArea : 'content',
-
-
-
-                        // sizes:
-                        boxSizing  : 'border-box',  // the final size is including borders & paddings
-                        inlineSize : 'max-content', // follows the content's width
-                        blockSize  : 'max-content', // follows the content's height
-
-                        // fix bug on firefox.
-                        // setting *(inline|block)Size:max-content* guarantes the scrolling effect never occured (the *scrolling prop* will be ignored).
-                        // but on firefox if the *scrolling prop* is not turned off => causing the element clipped off at the top.
-                     // overflow   : 'visible', // turn off the scrolling; side effect the rounded corners won't be clipped
-                     // overflow   : '-moz-hidden-unscrollable', // not working; use JS solution
-
-
-
+                        
+                        
+                        
                         // apply fn props:
-                        anim       : this.ref(this._animFw),
-
-
-
+                        anim     : this.ref(this._animFw),
+                        
+                        
+                        
                         // customize:
-                        ...newCardProps, // overwrite cardProps
-                    },
+                        ...newCardProps, // overwrite Card's cssProps
+                    } as JssStyle,
     
     
 
                     // Card's items:
-                    [cardItemsElm] : this.restoreProps(newCardProps), // restore cardProps
-                },
+                    [cardItemsElm] : this.restoreProps(newCardProps), // restore Card's cssProps
+
+
+                        
+                    // special conditions:
+                    '&.outlined': {
+                        [cssDecls.backg]: 'none',
+                    } as JssStyle,
+                } as JssStyle,
             };
         })(),
         //#endregion Card
@@ -345,15 +357,15 @@ export class ModalStyles extends PopupStyles {
 
             // appearances:
             visibility  : 'hidden',
-        },
+        } as JssStyle,
         '&::before': {
             // layout:
             gridArea    : 'inlineEnd',
-        },
+        } as JssStyle,
         '&::after': {
             // layout:
             gridArea    : 'blockEnd',
-        },
+        } as JssStyle,
         //#endregion psedudo elm for filling the end of horz & vert scroll
         //#endregion children
 
@@ -368,7 +380,7 @@ export class ModalStyles extends PopupStyles {
     }}
     public /*virtual*/ actionBarStyle(): JssStyle { return {
         // layout:
-        display        : 'flex',
+        display        : 'flex',          // use flexbox as the layout
         flexDirection  : 'row',           // items are stacked horizontally
         justifyContent : 'space-between', // items are separated horizontally
         alignItems     : 'center',        // items are centered vertically
@@ -376,7 +388,7 @@ export class ModalStyles extends PopupStyles {
 
 
         // children:
-        '&>:first-child:last-child': {
+        '&>:first-child:last-child': { // only one child
             marginInlineStart: 'auto',
         },
     }}
@@ -505,7 +517,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
     // states:
     const stateActPass = useStateActivePassive(props);
-    const isActive     = stateActPass.active || (!!stateActPass.class);
+    const isVisible    = stateActPass.active || (!!stateActPass.class);
 
 
 
@@ -539,7 +551,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
     // dom effects:
     const cardRef      = useRef<TElement>(null);
     useEffect(() => {
-        if (isActive) {
+        if (isVisible) {
             if (cardRef.current && navigator.userAgent.toLowerCase().includes('firefox')) {
                 cardRef.current.style.overflow = (modalStyle === 'scrollable') ? '' : 'visible';
 
@@ -560,7 +572,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
             document.body.classList.remove(styles.body);
         } // if
-    }, [isActive, styles.body, modalStyle]);
+    }, [isVisible, styles.body, modalStyle]);
     
 
 
@@ -636,6 +648,11 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
             // watch left click on the overlay only (not at the Card):
             onClick={(e) => {
                 if ((e.target === e.currentTarget) && (e.type === 'click')) props.onClose?.('overlay');
+            }}
+
+            onAnimationEnd={(e) => {
+                // states:
+                stateActPass.handleAnimationEnd(e);
             }}
         >
             <Card<TElement>
