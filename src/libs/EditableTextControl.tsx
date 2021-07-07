@@ -78,46 +78,46 @@ export class EditableTextControlStylesBuilder extends EditableControlStyles {
         // [this.decl(this._backgIf)] : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]),
     }}
 
-    public /*override*/ validationThemesIf(): JssStyle { return {
-        extend: [
-            super.validationThemesIf(), // copy validationThemesIf from base
-        ] as JssStyle,
+    // public /*override*/ validationThemesIf(): JssStyle { return {
+    //     extend: [
+    //         super.validationThemesIf(), // copy validationThemesIf from base
+    //     ] as JssStyle,
 
 
 
-        // overwrite some valid's theme color with *softer* colors:
-        // define a *valid* color theme:
-        [this.decl(this._foregIfVal)] : colors.successCont,
-        [this.decl(this._backgIfVal)] : this.solidBackg(colors.successThin),
+    //     // overwrite some valid's theme color with *softer* colors:
+    //     // define a *valid* color theme:
+    //     [this.decl(this._foregIfVal)] : colors.successCont,
+    //     [this.decl(this._backgIfVal)] : this.solidBackg(colors.successThin),
 
-        // overwrite some invalid's theme color with *softer* colors:
-        [this.decl(this._foregIfInv)] : colors.dangerCont,
-        [this.decl(this._backgIfInv)] : this.solidBackg(colors.dangerThin),
-    }}
-    public /*override*/ validationStates(inherit = false): JssStyle { return {
-        extend: [
-            super.validationStates(inherit), // copy validationStates from base
+    //     // overwrite some invalid's theme color with *softer* colors:
+    //     [this.decl(this._foregIfInv)] : colors.dangerCont,
+    //     [this.decl(this._backgIfInv)] : this.solidBackg(colors.dangerThin),
+    // }}
+    // public /*override*/ validationStates(inherit = false): JssStyle { return {
+    //     extend: [
+    //         super.validationStates(inherit), // copy validationStates from base
 
 
 
-            this.iif(!inherit, {
-                //#region all initial states are none
-                [this.decl(this._iconValInv)] : this.ref(this._backgNone),
-                //#endregion all initial states are none
-            }),
+    //         this.iif(!inherit, {
+    //             //#region all initial states are none
+    //             [this.decl(this._iconValInv)] : this.ref(this._backgNone),
+    //             //#endregion all initial states are none
+    //         }),
             
             
             
-            //#region specific states
-            this.stateValid({
-                [this.decl(this._iconValInv)] : cssProps.iconValid,   // apply a *valid* icon indicator
-            }),
-            this.stateInvalid({
-                [this.decl(this._iconValInv)] : cssProps.iconInvalid, // apply an *invalid* icon indicator
-            }),
-            //#endregion specific states
-        ] as JssStyle,
-    }}
+    //         //#region specific states
+    //         this.stateValid({
+    //             [this.decl(this._iconValInv)] : cssProps.iconValid,   // apply a *valid* icon indicator
+    //         }),
+    //         this.stateInvalid({
+    //             [this.decl(this._iconValInv)] : cssProps.iconInvalid, // apply an *invalid* icon indicator
+    //         }),
+    //         //#endregion specific states
+    //     ] as JssStyle,
+    // }}
 
 
 

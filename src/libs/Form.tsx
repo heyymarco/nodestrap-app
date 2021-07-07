@@ -17,7 +17,7 @@ import {
 import {
     Result as ValResult,
     usePropValidation,
-    
+
     ValidationProps,
     ValidationProvider,
 }                           from './validations'
@@ -63,48 +63,10 @@ export class FormStyles extends BasicComponentStyles implements IContentStyles, 
 
 
     // states:
-    public /*implement*/ validationThemesIf(): JssStyle {
-        return editableTextControlStyles.validationThemesIf(); // copy themes from EditableTextControl
-    }
-    public /*implement*/ validationStates(inherit = false): JssStyle {
-        return editableTextControlStyles.validationStates(inherit); // copy states from EditableTextControl
-    }
-
-    public /*override*/ themesIfOld(): JssStyle { return {
-        extend: [
-            super.themesIfOld(), // copy themes from base
-
-            this.validationThemesIf(),
-        ] as JssStyle,
-    }}
-    public /*override*/ statesOld(inherit = false): JssStyle { return {
-        extend: [
-            super.statesOld(inherit), // copy states from base
-
-            this.validationStates(inherit),
-        ] as JssStyle,
-    }}
 
 
 
     // functions:
-    public /*implement*/ validationPropsFn(): JssStyle {
-        return editableTextControlStyles.validationPropsFn(); // copy functional props from EditableTextControl
-    }
-    public /*implement*/ validationAnimFn(): JssStyle {
-        return editableTextControlStyles.validationAnimFn(); // copy functional anim from EditableTextControl
-    }
-
-    public /*override*/ propsFnOld(): JssStyle { return {
-        extend: [
-            super.propsFnOld(), // copy functional props from base
-
-            this.validationPropsFn(),
-        ] as JssStyle,
-    }}
-    public /*override*/ animFnOld(): JssStyle {
-        return this.validationAnimFn();
-    }
 
 
 
