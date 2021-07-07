@@ -232,6 +232,23 @@ export class EditableControlStyles extends ControlStyles implements IValidationS
         // optionally use .valdis to kill pseudo :valid
         [ '&:not(.vald):not(.val):not(:valid):not(.unval),' +
           '&.valdis'                                          , this.unvalided()    ],
+
+
+
+        // .invd will be added after invalidating-animation done
+        [ '&.invd'                                            , this.invalided()      ],
+
+        // .inv = programatically invalid, :invalid = user invalid
+        [ '&.inv,' +
+          '&:invalid:not(.invd):not(.uninv):not(.valdis)'     , this.invalidating()   ],
+
+        // .uninv will be added after loosing invalid and will be removed after uninvalidating-animation done
+        [ '&.uninv'                                           , this.uninvalidating() ],
+
+        // if all above are not set => uninvalided
+        // optionally use .valdis to kill pseudo :invalid
+        [ '&:not(.invd):not(.inv):not(:invalid):not(.uninv),' +
+          '&.valdis'                                          , this.uninvalided()    ],
     ]}
 
     public /*virtual*/ valided()        : JssStyle { return {} }
