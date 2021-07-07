@@ -64,7 +64,7 @@ function App() {
 	const [focus,       setFocus    ] = useState<boolean|undefined>(undefined);
 
 	const isValids = [undefined, false, null, true];
-	const [enableVal, setEnableVal  ] = useState(false);
+	const [enableVal, setEnableVal  ] = useState(true);
 	const [isValid,   setIsValid    ] = useState<boolean|null|undefined>(undefined);
 
 
