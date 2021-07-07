@@ -213,6 +213,42 @@ export class EditableControlStyles extends ControlStyles implements IValidationS
 
 
     // states:
+    public /*override*/ states(inherit: boolean): ClassList { return [
+        ...super.states(inherit), // copy states from base
+
+
+
+        // .vald will be added after validating-animation done
+        [ '&.vald'                                            , this.valided()      ],
+
+        // .val = programatically valid, :valid = user valid
+        [ '&.val,' +
+          '&:valid:not(.vald):not(.unval):not(.valdis)'       , this.validating()   ],
+
+        // .unval will be added after loosing valid and will be removed after unvalidating-animation done
+        [ '&.unval'                                           , this.unvalidating() ],
+
+        // if all above are not set => unvalided
+        // optionally use .valdis to kill pseudo :valid
+        [ '&:not(.vald):not(.val):not(:valid):not(.unval),' +
+          '&.valdis'                                          , this.unvalided()    ],
+    ]}
+
+    public /*virtual*/ valided()        : JssStyle { return {} }
+    public /*virtual*/ validating()     : JssStyle { return {} }
+    public /*virtual*/ unvalidating()   : JssStyle { return {} }
+    public /*virtual*/ unvalided()      : JssStyle { return {} }
+    public /*virtual*/ valid()          : JssStyle { return {} }
+    public /*virtual*/ unvalid()        : JssStyle { return {} }
+
+    public /*virtual*/ invalided()      : JssStyle { return {} }
+    public /*virtual*/ invalidating()   : JssStyle { return {} }
+    public /*virtual*/ uninvalidating() : JssStyle { return {} }
+    public /*virtual*/ uninvalided()    : JssStyle { return {} }
+    public /*virtual*/ invalid()        : JssStyle { return {} }
+    public /*virtual*/ uninvalid()      : JssStyle { return {} }
+
+
     public /*virtual*/ validationThemesIf(): JssStyle { return {
         //TODO: update....
         // define a *valid* color theme:
@@ -263,25 +299,6 @@ export class EditableControlStyles extends ControlStyles implements IValidationS
         ] as JssStyle,
     }}
 
-    public /*override*/ themesIfOld(): JssStyle { return {
-        extend: [
-            super.themesIfOld(),          // copy themes from base
-
-
-
-            this.validationThemesIf(), // copy themes from validation
-        ] as JssStyle,
-    }}
-    public /*override*/ statesOld(inherit = false): JssStyle { return {
-        extend: [
-            super.statesOld(inherit),          // copy states from base
-
-
-
-            this.validationStates(inherit), // copy states from validation
-        ] as JssStyle,
-    }}
-
 
 
     // functions:
@@ -304,6 +321,42 @@ export class EditableControlStyles extends ControlStyles implements IValidationS
             this.ref(this._animValUnval),
         ],
         //#endregion re-arrange the animFn at different states
+    }}
+
+
+
+    // styles:
+    public /*override*/ basicStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(), // copy basicStyle from base
+        ] as JssStyle,
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+
+
+
+    // old:
+    public /*override*/ themesIfOld(): JssStyle { return {
+        extend: [
+            super.themesIfOld(),          // copy themes from base
+
+
+
+            this.validationThemesIf(), // copy themes from validation
+        ] as JssStyle,
+    }}
+    public /*override*/ statesOld(inherit = false): JssStyle { return {
+        extend: [
+            super.statesOld(inherit),          // copy states from base
+
+
+
+            this.validationStates(inherit), // copy states from validation
+        ] as JssStyle,
     }}
 
     public /*override*/ propsFnOld(): JssStyle { return {
@@ -364,20 +417,6 @@ export class EditableControlStyles extends ControlStyles implements IValidationS
             this.ref(this._animActivePassive), // 1st : ctrl got pressed (can interrupt focus/blur)
         ],
         //#endregion re-arrange the animFn at different states
-    }}
-
-
-
-    // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
-        extend: [
-            super.basicStyle(), // copy basicStyle from base
-        ] as JssStyle,
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
 export const editableControlStyles = new EditableControlStyles();
