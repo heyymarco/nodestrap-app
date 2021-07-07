@@ -219,36 +219,36 @@ export class EditableControlStyles extends ControlStyles implements IValidationS
 
 
         // .vald will be added after validating-animation done
-        [ '&.vald'                                            , this.valided()      ],
+        [ '&.vald'                                              , this.valided()        ],
 
         // .val = programatically valid, :valid = user valid
         [ '&.val,' +
-          '&:valid:not(.vald):not(.unval):not(.valdis)'       , this.validating()   ],
+          '&:valid:not(.vald):not(.unval):not(.valdis)'         , this.validating()     ],
 
         // .unval will be added after loosing valid and will be removed after unvalidating-animation done
-        [ '&.unval'                                           , this.unvalidating() ],
+        [ '&.unval'                                             , this.unvalidating()   ],
 
         // if all above are not set => unvalided
         // optionally use .valdis to kill pseudo :valid
         [ '&:not(.vald):not(.val):not(:valid):not(.unval),' +
-          '&.valdis'                                          , this.unvalided()    ],
+          '&.valdis'                                            , this.unvalided()      ],
 
 
 
         // .invd will be added after invalidating-animation done
-        [ '&.invd'                                            , this.invalided()      ],
+        [ '&.invd'                                              , this.invalided()      ],
 
         // .inv = programatically invalid, :invalid = user invalid
         [ '&.inv,' +
-          '&:invalid:not(.invd):not(.uninv):not(.valdis)'     , this.invalidating()   ],
+          '&:invalid:not(.invd):not(.uninv):not(.valdis)'       , this.invalidating()   ],
 
         // .uninv will be added after loosing invalid and will be removed after uninvalidating-animation done
-        [ '&.uninv'                                           , this.uninvalidating() ],
+        [ '&.uninv'                                             , this.uninvalidating() ],
 
         // if all above are not set => uninvalided
         // optionally use .valdis to kill pseudo :invalid
         [ '&:not(.invd):not(.inv):not(:invalid):not(.uninv),' +
-          '&.valdis'                                          , this.uninvalided()    ],
+          '&.valdis'                                            , this.uninvalided()    ],
     ]}
 
     public /*virtual*/ valided()        : JssStyle { return {} }
