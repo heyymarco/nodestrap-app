@@ -143,7 +143,7 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
-export type InputTextLike = 'text'|'number'|'email'|'tel'|'password'|'search'|'url'|'date'|'time'|'datetime-local'|'week'|'month'
+export type InputTextLike = 'text'|'search'|'password'|'email'|'tel'|'url'|'number'|'time'|'week'|'date'|'datetime-local'|'month'
 export type InputType     = InputTextLike | 'color'|'file'|'range'
 
 export interface Props

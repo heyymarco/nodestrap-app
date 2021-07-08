@@ -224,6 +224,14 @@ export default function EditableTextControl<TElement extends EditableTextControl
             {...props}
 
 
+            // essentials:
+            tag={props.tag ?? 'input'}
+
+
+            // variants:
+            mild={props.mild ?? true}
+
+
             // classes:
             mainClass={props.mainClass ?? etctrlStyles.main}
         />
