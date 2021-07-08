@@ -3,34 +3,37 @@ import {
     default as React,
 }                           from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-
 // nodestrap (modular web components):
+import {
+    // general types:
+    JssStyle,
+    PropList,
+
+    
+    // components:
+    CssConfig,
+}                           from './nodestrap'  // nodestrap's core
 import * as stripOuts       from './strip-outs'
-import {
-    cssProps as ecssProps,
-    cssDecls as ecssDecls,
-}                           from './BasicComponent'
-import {
-    default  as EditableTextControl,
-    EditableTextControlStyles,
-}                           from './EditableTextControl'
-import type * as EditableTextControls   from './EditableTextControl'
 import {
     usePropEnabled,
 }                           from './accessibilities'
+import {
+    cssProps as bcssProps,
+    cssDecls as bcssDecls,
+}                           from './BasicComponent'
+import {
+    EditableTextControlStyles,
+    EditableTextControlProps,
+    EditableTextControl,
+}                           from './EditableTextControl'
 
 
 
 // styles:
 
-const inpElm  = '&>:first-child';
+const inputElm = '&>:first-child';
 
-export class InputStylesBuilder extends EditableTextControlStyles {
+export class InputStyles extends EditableTextControlStyles {
     // variants:
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -42,11 +45,6 @@ export class InputStylesBuilder extends EditableTextControlStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-
-
-
-    // states:
-    /* -- same as parent -- */
 
 
 
@@ -72,12 +70,12 @@ export class InputStylesBuilder extends EditableTextControlStyles {
 
 
         // backgrounds:
-        [ecssDecls.backgGrad]: cssProps.backgGrad, // overwrite base's backGrad
+        [bcssDecls.backgGrad]: cssProps.backgGrad, // overwrite base's backGrad
 
 
 
         // children:
-        [inpElm]: {
+        [inputElm]: {
             extend: [
                 stripOuts.textbox, // clear browser's default styles
             ] as JssStyle,
@@ -95,19 +93,19 @@ export class InputStylesBuilder extends EditableTextControlStyles {
             boxSizing      : 'border-box', // the final size is including borders & paddings
             inlineSize     : 'fill-available',
             fallbacks      : {
-                inlineSize : [['calc(100% + (', ecssProps.paddingInline, ' * 2))']],
+                inlineSize : [['calc(100% + (', bcssProps.paddingInline, ' * 2))']],
             },
 
 
             
             // spacings:
             // cancel-out parent's padding with negative margin:
-            marginInline  : [['calc(0px -', ecssProps.paddingInline, ')']],
-            marginBlock   : [['calc(0px -', ecssProps.paddingBlock,  ')']],
+            marginInline  : [['calc(0px -', bcssProps.paddingInline, ')']],
+            marginBlock   : [['calc(0px -', bcssProps.paddingBlock,  ')']],
 
             // copy parent's paddings:
-            paddingInline : ecssProps.paddingInline,
-            paddingBlock  : ecssProps.paddingBlock,
+            paddingInline : bcssProps.paddingInline,
+            paddingBlock  : bcssProps.paddingBlock,
         },
 
 
@@ -116,7 +114,7 @@ export class InputStylesBuilder extends EditableTextControlStyles {
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
-export const styles = new InputStylesBuilder();
+export const inputStyles = new InputStyles();
 
 
 
@@ -146,9 +144,9 @@ export const cssDecls = cssConfig.decls;
 export type InputTextLike = 'text'|'search'|'password'|'email'|'tel'|'url'|'number'|'time'|'week'|'date'|'datetime-local'|'month'
 export type InputType     = InputTextLike | 'color'|'file'|'range'
 
-export interface Props
+export interface InputProps
     extends
-        EditableTextControls.EditableTextControlProps<HTMLInputElement>
+        EditableTextControlProps<HTMLInputElement>
 {
     // validations:
     min? : string | number
@@ -159,9 +157,9 @@ export interface Props
     type          : InputType
     placeholder?  : string
 }
-export default function Input(props: Props) {
+export default function Input(props: InputProps) {
     // styles:
-    const inpStyles   = styles.useStyles();
+    const inpStyles   = inputStyles.useStyles();
 
     
 
@@ -258,3 +256,4 @@ export default function Input(props: Props) {
         </EditableTextControl>
     );
 }
+export { Input }
