@@ -411,6 +411,7 @@ const cssConfig = new CssConfig(() => {
     
     
     return {
+        // accessibility:
         cursor              : 'pointer',
         cursorDisable       : 'not-allowed',
     

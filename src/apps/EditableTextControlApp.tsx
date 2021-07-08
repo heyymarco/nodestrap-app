@@ -9,6 +9,7 @@ import './App.css';
 
 import Container from '../libs/Container';
 import EditableTextControl from '../libs/EditableTextControl';
+import Input from '../libs/Input';
 
 
 
@@ -93,6 +94,21 @@ function App() {
 					{...{
 						type: 'email',
 					}}
+					defaultValue='yourname@'
+					
+					theme={theme} size={size} gradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+
+					enableValidation={enableVal}
+					isValid={isValid}
+				/>
+                <Input
+					type='email'
 					defaultValue='yourname@'
 					
 					theme={theme} size={size} gradient={enableGrad}

@@ -289,6 +289,7 @@ export class IndicatorStyles extends BasicComponentStyles {
     public /*virtual*/ markActive()  : JssStyle { return {
         ...this.noOutlined(),
         ...this.noMild(),
+        
         ...this.themeActive(),
     }}
     public /*virtual*/ themeActive(theme = 'secondary'): PropList {
@@ -373,9 +374,9 @@ const cssConfig = new CssConfig(() => {
     
     const keyframesActive  : PropEx.Keyframes = {
         from: {
-            foreg       : indicatorStyles.ref(indicatorStyles._outlinedForegTg, indicatorStyles._mildForegTg, indicatorStyles._foregFn),
-            backg       : indicatorStyles.ref(indicatorStyles._outlinedBackgTg, indicatorStyles._mildBackgTg, indicatorStyles._backgFn),
-            borderColor : indicatorStyles.ref(indicatorStyles._outlinedForegTg,                               indicatorStyles._borderFn),
+            // foreg       : indicatorStyles.ref(indicatorStyles._outlinedForegTg, indicatorStyles._mildForegTg, indicatorStyles._foregFn),
+            // backg       : indicatorStyles.ref(indicatorStyles._outlinedBackgTg, indicatorStyles._mildBackgTg, indicatorStyles._backgFn),
+            // borderColor : indicatorStyles.ref(indicatorStyles._outlinedForegTg,                               indicatorStyles._borderFn),
 
             filter: [[ // double array => makes the JSS treat as space separated values
                 ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterActivePassive, indicatorStyles._filterNone)),
@@ -384,9 +385,9 @@ const cssConfig = new CssConfig(() => {
             ]],
         },
         to: {
-            foreg       : indicatorStyles.ref(indicatorStyles._foregFn),
-            backg       : indicatorStyles.ref(indicatorStyles._backgFn),
-            borderColor : indicatorStyles.ref(indicatorStyles._borderFn),
+            // foreg       : indicatorStyles.ref(indicatorStyles._foregFn),
+            // backg       : indicatorStyles.ref(indicatorStyles._backgFn),
+            // borderColor : indicatorStyles.ref(indicatorStyles._borderFn),
 
             filter: [[ // double array => makes the JSS treat as space separated values
                 ...indicatorStyles.filterFn().filter((f) => f !== indicatorStyles.ref(indicatorStyles._filterActivePassive, indicatorStyles._filterNone)),

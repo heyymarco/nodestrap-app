@@ -5,18 +5,16 @@ import React                from 'react'        // base technology of our nodest
 import {
     // general types:
     JssStyle,
-    DictionaryOf,
     PropList,
 
     
     // components:
     CssConfig,
 }                           from './nodestrap'  // nodestrap's core
-import colors               from './colors'     // configurable colors & theming defs
 import {
-    EditableControlStyles as EditableControlStyles,
-    EditableControlProps   as EditableControlProps,
-    default as EditableControl,
+    EditableControlStyles,
+    EditableControlProps,
+    EditableControl,
 }                           from './EditableControl'
 import {
     iconStyles,
@@ -29,12 +27,32 @@ import {
 const iconElm = '&::after';
 
 export class EditableTextControlStyles extends EditableControlStyles {
-    //#region scoped css props
+    //#region props
+    //#region mild - icon
     /**
-     * Icon for indicating valid/invalid state.
+     * toggles *on* icon color - at mild variant.
+     */
+    public    readonly _mildIconTg = 'mildIconTg'
+    //#endregion mild - icon
+
+
+
+    //#region finals
+    /**
+     * final icon color.
+     */
+    public    readonly _iconCol    = 'iconCol'
+    //#endregion finals
+
+
+
+    //#region animations
+    /**
+     * an icon url for indicating valid/invalid state.
      */
     protected readonly _iconValInv = 'iconValInv'
-    //#endregion scoped css props
+    //#endregion animations
+    //#endregion props
 
 
 
@@ -50,37 +68,93 @@ export class EditableTextControlStyles extends EditableControlStyles {
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
+    public /*override*/ noMild(inherit = false): JssStyle { return {
+        extend: [
+            super.noMild(inherit), // copy noMild from base
+        ] as JssStyle,
+
+
+
+        // *toggle off* the mild props:
+        [this.decl(this._mildIconTg)] : inherit ? 'unset' : 'initial',
+    }}
+    public /*override*/ mild(): JssStyle { return {
+        extend: [
+            super.mild(), // copy mild from base
+        ] as JssStyle,
+
+
+
+        // *toggle on* the mild props:
+        [this.decl(this._mildIconTg)] : this.ref(this._outlinedForegFn),
+    }}
+
 
 
     // states:
-    public /*override*/ markActive()  : JssStyle { return {
+    public /*override*/ markActive()   : JssStyle { return {
         ...this.noOutlined(),
+
         ...this.themeActive(),
     }}
-    // public /*override*/ validationStates(inherit = false): JssStyle { return {
-    //     extend: [
-    //         super.validationStates(inherit), // copy validationStates from base
+
+    public /*override*/ resetValidUnvalid(inherit: boolean) : PropList { return {
+        ...super.resetValidUnvalid(inherit), // copy resetValidUnvalid from base
 
 
 
-    //         this.iif(!inherit, {
-    //             //#region all initial states are none
-    //             [this.decl(this._iconValInv)] : this.ref(this._backgNone),
-    //             //#endregion all initial states are none
-    //         }),
-            
-            
-            
-    //         //#region specific states
-    //         this.stateValid({
-    //             [this.decl(this._iconValInv)] : cssProps.iconValid,   // apply a *valid* icon indicator
-    //         }),
-    //         this.stateInvalid({
-    //             [this.decl(this._iconValInv)] : cssProps.iconInvalid, // apply an *invalid* icon indicator
-    //         }),
-    //         //#endregion specific states
-    //     ] as JssStyle,
-    // }}
+        [this.decl(this._iconValInv)] : inherit ? 'unset' : 'initial',
+    }}
+    public /*override*/ valid()        : JssStyle { return {
+        extend: [
+            super.valid(), // copy valid from base
+        ] as JssStyle,
+
+
+
+        // apply a *valid* icon indicator:
+        [this.decl(this._iconValInv)] : cssProps.iconValid,
+    }}
+    public /*override*/ invalid()      : JssStyle { return {
+        extend: [
+            super.invalid(), // copy invalid from base
+        ] as JssStyle,
+
+
+
+        // apply an *invalid* icon indicator:
+        [this.decl(this._iconValInv)] : cssProps.iconInvalid,
+    }}
+    public /*override*/ noValidation() : JssStyle { return {
+        extend: [
+            super.noValidation(), // copy noValidation from base
+        ] as JssStyle,
+
+
+
+        // children:
+        [iconElm]: {
+            display: 'none',
+        } as JssStyle,
+    }}
+
+
+
+    // functions:
+    public /*override*/ propsFn(): PropList { return {
+        ...super.propsFn(), // copy functional props from base
+
+
+
+        //#region finals
+        // define a final *icon* color func:
+        [this.decl(this._iconCol)] : this.ref(
+            this._outlinedForegTg, // toggle outlined
+            this._mildIconTg,      // toggle mild
+            this._foregFn,
+        ),
+        //#endregion finals
+    }}
 
 
 
@@ -92,41 +166,46 @@ export class EditableTextControlStyles extends EditableControlStyles {
 
 
 
-        //#region children
-        [iconElm]: {
-            extend: [
-                iconStyles.useIcon( // apply icon
-                    /*img   :*/ this.ref(this._iconValInv),
-                    /*foreg :*/ this.ref(this._foreg)
-                ),
-            ] as JssStyle,
-    
-
-
-            // layout:
-            content : '""',
-            display : 'inline-block',
-    
-            // sizes:
-            boxSizing              : 'border-box', // the final size is including borders & paddings
-            blockSize              :            cssProps.iconSize,
-            inlineSize             : [['calc(', cssProps.iconSize, '* 1.25)']],  // make sure the icon's image ratio is 1.25 or less
-            marginInlineStart      : [['calc(', cssProps.iconSize, '* -1.25)']], // sizeless (ghost): cancel-out icon's width with negative margin, so it doen't take up space
-
-            // accessibility:
-            pointerEvents          : 'none', // just an overlayed element, no mouse interaction
-
-
-
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'icon')), // apply *general* cssProps starting with icon***
-        },
-        //#endregion children
+        // children:
+        [iconElm]: this.iconBasicStyle(),
 
 
 
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    protected /*virtual*/ iconBasicStyle(): JssStyle { return {
+        extend: [
+            iconStyles.useIcon( // apply icon
+                /*img   :*/ this.ref(this._iconValInv),
+                /*foreg :*/ this.ref(this._iconCol)
+            ),
+        ] as JssStyle,
+
+
+
+        // layout:
+        content : '""',
+        display : 'inline-block', // use inline-block, so it takes the width & height as we set
+
+        
+        
+        // sizes:
+        boxSizing         : 'border-box', // the final size is including borders & paddings
+        blockSize         :            cssProps.iconSize,
+        inlineSize        : [['calc(', cssProps.iconSize,  '* 1.25)']], // make sure the icon's image ratio is 1.25 or less
+        marginInlineStart : [['calc(', cssProps.iconSize, '* -1.25)']], // sizeless (ghost): cancel-out icon's width with negative margin, so it doen't take up space
+        maskPosition      : 'right', // align icon to the right
+
+        
+        
+        // accessibility:
+        pointerEvents     : 'none', // just an overlayed element, no mouse interaction
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'icon')), // apply *general* cssProps starting with icon***
     }}
 }
 export const editableTextControlStyles = new EditableTextControlStyles();
@@ -137,6 +216,7 @@ export const editableTextControlStyles = new EditableTextControlStyles();
 
 const cssConfig = new CssConfig(() => {
     return {
+        // accessibility:
         cursor       : 'text',
 
 

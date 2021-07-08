@@ -104,6 +104,14 @@ export class EditableControlStyles extends ControlStyles {
         // optionally use .valdis to kill pseudo :invalid
         [ '&:not(.invd):not(.inv):not(:invalid):not(.uninv),' +
           '&.valdis'                                                           , this.uninvalided()    ],
+        
+        
+        
+        // if all above are not set => noValidation
+        // optionally use .valdis to kill pseudo :valid & :invalid
+        [ '&:not(.vald):not(.val):not(:valid):not(.unval)' +
+           ':not(.invd):not(.inv):not(:invalid):not(.uninv),' +
+          '&.valdis'                                                           , this.noValidation()   ],
     ]}
 
     public /*virtual*/ resetValidUnvalid(inherit: boolean) : PropList { return {
@@ -215,6 +223,11 @@ export class EditableControlStyles extends ControlStyles {
     public /*virtual*/ themeInvalid(theme = 'danger'): PropList {
         return this.themeIfIf(theme);
     }
+
+
+
+    public /*virtual*/ noValidation()   : JssStyle { return {
+    }}
 
 
 
