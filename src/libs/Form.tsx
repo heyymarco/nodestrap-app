@@ -30,7 +30,7 @@ import {
     useStateValidInvalid,
 }                           from './EditableControl'
 import {
-    styles as editableTextControlStyles,
+    editableTextControlStyles as editableTextControlStyles,
 }                           from './EditableTextControl'
 import {
     IContentStyles,

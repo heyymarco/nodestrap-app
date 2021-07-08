@@ -36,7 +36,7 @@ import BasicComponentApp                        from './apps/BasicComponentApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <EditableTextControlApp />
+        <ButtonApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

@@ -228,8 +228,6 @@ class ListgroupActionItemStyles extends ActionControlStyles implements IContentS
     public /*override*/ activating()  : JssStyle { return {} } // disabled
     public /*override*/ passivating() : JssStyle { return {} } // disabled
     public /*override*/ passived()    : JssStyle { return {} } // disabled
-    public /*override*/ toggleOffActive(inherit = false) : PropList { return {} } // disabled
-    public /*override*/ toggleOnActive()                 : PropList { return {} } // disabled
     public /*override*/ themeActive(theme = 'primary')   : PropList { return {} } // disabled
     
     

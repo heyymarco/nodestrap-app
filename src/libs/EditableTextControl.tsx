@@ -28,19 +28,13 @@ import {
 
 const iconElm = '&::after';
 
-export class EditableTextControlStylesBuilder extends EditableControlStyles {
+export class EditableTextControlStyles extends EditableControlStyles {
     //#region scoped css props
     /**
      * Icon for indicating valid/invalid state.
      */
     protected readonly _iconValInv = 'iconValInv'
     //#endregion scoped css props
-
-
-
-    //#region mixins
-    protected /*override*/ actionCtrl() { return false; }
-    //#endregion mixins
 
 
 
@@ -59,41 +53,10 @@ export class EditableTextControlStylesBuilder extends EditableControlStyles {
 
 
     // states:
-    public /*override*/ themeDefault(theme: string|null = 'secondary'): PropList { return {
-        ...super.themeDefault(theme), // copy default theme from base
-
-
-
-        // overwrite some default's theme color with *softer* colors:
-        // [this.decl(this._foregIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
-        // [this.decl(this._backgIf)] : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]),
+    public /*override*/ markActive()  : JssStyle { return {
+        ...this.noOutlined(),
+        ...this.themeActive(),
     }}
-    public /*override*/ themeActive(theme = 'primary'): PropList { return {
-        ...super.themeActive(theme), // copy active theme from base
-
-
-
-        // overwrite some active's theme color with *softer* colors:
-        // [this.decl(this._foregIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],
-        // [this.decl(this._backgIf)] : this.solidBackg((colors as DictionaryOf<typeof colors>)[`${theme}Thin`]),
-    }}
-
-    // public /*override*/ validationThemesIf(): JssStyle { return {
-    //     extend: [
-    //         super.validationThemesIf(), // copy validationThemesIf from base
-    //     ] as JssStyle,
-
-
-
-    //     // overwrite some valid's theme color with *softer* colors:
-    //     // define a *valid* color theme:
-    //     [this.decl(this._foregIfVal)] : colors.successCont,
-    //     [this.decl(this._backgIfVal)] : this.solidBackg(colors.successThin),
-
-    //     // overwrite some invalid's theme color with *softer* colors:
-    //     [this.decl(this._foregIfInv)] : colors.dangerCont,
-    //     [this.decl(this._backgIfInv)] : this.solidBackg(colors.dangerThin),
-    // }}
     // public /*override*/ validationStates(inherit = false): JssStyle { return {
     //     extend: [
     //         super.validationStates(inherit), // copy validationStates from base
@@ -166,31 +129,23 @@ export class EditableTextControlStylesBuilder extends EditableControlStyles {
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
-export const styles = new EditableTextControlStylesBuilder();
+export const editableTextControlStyles = new EditableTextControlStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     return {
         cursor       : 'text',
 
 
-        // anim props:
-
+        
+        //#region animations
         iconSize     : '1em',
-        iconValid    : `url("data:image/svg+xml,${styles.escapeSvg("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='#000' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/></svg>")}")`,
-        iconInvalid  : `url("data:image/svg+xml,${styles.escapeSvg("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='#000' d='M7.3,6.31,5,4,7.28,1.71a.7.7,0,1,0-1-1L4,3,1.71.72a.7.7,0,1,0-1,1L3,4,.7,6.31a.7.7,0,0,0,1,1L4,5,6.31,7.3A.7.7,0,0,0,7.3,6.31Z'/></svg>")}")`,
+        iconValid    : `url("data:image/svg+xml,${editableTextControlStyles.escapeSvg("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='#000' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/></svg>")}")`,
+        iconInvalid  : `url("data:image/svg+xml,${editableTextControlStyles.escapeSvg("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='#000' d='M7.3,6.31,5,4,7.28,1.71a.7.7,0,1,0-1-1L4,3,1.71.72a.7.7,0,1,0-1,1L3,4,.7,6.31a.7.7,0,0,0,1,1L4,5,6.31,7.3A.7.7,0,0,0,7.3,6.31Z'/></svg>")}")`,
+        //#endregion animations
     };
 }, /*prefix: */'etctrl');
 export const cssProps = cssConfig.refs;
@@ -202,7 +157,7 @@ export const cssDecls = cssConfig.decls;
 
 type EditableTextControlElement = HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement
 
-export interface Props<TElement extends EditableTextControlElement = EditableTextControlElement>
+export interface EditableTextControlProps<TElement extends EditableTextControlElement = EditableTextControlElement>
     extends
         EditableControlProps<TElement>
 {
@@ -211,9 +166,9 @@ export interface Props<TElement extends EditableTextControlElement = EditableTex
     maxLength? : number
     pattern?   : string
 }
-export default function EditableTextControl<TElement extends EditableTextControlElement = EditableTextControlElement>(props: Props<TElement>) {
+export default function EditableTextControl<TElement extends EditableTextControlElement = EditableTextControlElement>(props: EditableTextControlProps<TElement>) {
     // styles:
-    const etctrlStyles = styles.useStyles();
+    const styles = editableTextControlStyles.useStyles();
 
     
 
@@ -233,7 +188,8 @@ export default function EditableTextControl<TElement extends EditableTextControl
 
 
             // classes:
-            mainClass={props.mainClass ?? etctrlStyles.main}
+            mainClass={props.mainClass ?? styles.main}
         />
     );
 }
+export { EditableTextControl }

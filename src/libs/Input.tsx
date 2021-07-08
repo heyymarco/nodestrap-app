@@ -17,7 +17,7 @@ import {
 }                           from './BasicComponent'
 import {
     default  as EditableTextControl,
-    EditableTextControlStylesBuilder,
+    EditableTextControlStyles,
 }                           from './EditableTextControl'
 import type * as EditableTextControls   from './EditableTextControl'
 import {
@@ -30,7 +30,7 @@ import {
 
 const inpElm  = '&>:first-child';
 
-export class InputStylesBuilder extends EditableTextControlStylesBuilder {
+export class InputStylesBuilder extends EditableTextControlStyles {
     // variants:
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -148,7 +148,7 @@ export type InputType     = InputTextLike | 'color'|'file'|'range'
 
 export interface Props
     extends
-        EditableTextControls.Props<HTMLInputElement>
+        EditableTextControls.EditableTextControlProps<HTMLInputElement>
 {
     // validations:
     min? : string | number

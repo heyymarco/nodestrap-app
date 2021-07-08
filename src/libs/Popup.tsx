@@ -64,14 +64,7 @@ export class PopupStyles extends IndicatorStyles {
 
         display: 'none', // hide the popup
     }}
-    public /*override*/ toggleOffActive(inherit = false) : PropList { return {} } // disabled
-    public /*override*/ toggleOnActive()                 : PropList { return {} } // disabled
     public /*override*/ themeActive(theme = 'secondary') : PropList { return {} } // disabled
-
-
-
-    // functions:
-    public /*override*/ activePropsFn(): PropList { return {} } // no active colors func
 }
 export const popupStyles = new PopupStyles();
 

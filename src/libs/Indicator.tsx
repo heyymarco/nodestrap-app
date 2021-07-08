@@ -38,25 +38,6 @@ import {
 
 export class IndicatorStyles extends BasicComponentStyles {
     //#region props
-    //#region active theme
-    /**
-     * toggles *on* foreground color - at active state.
-     */
-    public    readonly _activeForegTg       = 'activeForegTg'
-
-    /**
-     * toggles *on* backgrounds - at active state.
-     */
-    public    readonly _activeBackgTg       = 'activeBackgTg'
-
-    /**
-     * toggles *on* border color - at active state.
-     */
-    public    readonly _activeBorderTg      = 'activeBorderTg'
-    //#endregion active theme
-
-
-
     //#region animations
     public    readonly _filterEnableDisable = 'filterEnableDisable'
     protected readonly _animEnableDisable   = 'animEnableDisable'
@@ -173,7 +154,6 @@ export class IndicatorStyles extends BasicComponentStyles {
             ...this.resetArriveLeave(inherit),
             ...this.resetActivePassive(inherit),
             ...this.resetPressRelease(inherit),
-            ...this.toggleOffActive(inherit),
         }],
 
 
@@ -307,19 +287,9 @@ export class IndicatorStyles extends BasicComponentStyles {
     }}
 
     public /*virtual*/ markActive()  : JssStyle { return {
-        ...this.toggleOnActive(),
+        ...this.noOutlined(),
+        ...this.noMild(),
         ...this.themeActive(),
-    }}
-    public /*virtual*/ toggleOffActive(inherit = false): PropList { return {
-        [this.decl(this._activeForegTg)]  : inherit ? 'unset' : 'initial',
-        [this.decl(this._activeBackgTg)]  : inherit ? 'unset' : 'initial',
-        [this.decl(this._activeBorderTg)] : inherit ? 'unset' : 'initial',
-    }}
-    public /*virtual*/ toggleOnActive(): PropList { return {
-        // _foregFn & _backgFn => requires usePropsFn() => use it at states()
-        [this.decl(this._activeForegTg)]  : this.ref(this._foregFn),
-        [this.decl(this._activeBackgTg)]  : this.ref(this._backgFn),
-        [this.decl(this._activeBorderTg)] : this.ref(this._borderFn),
     }}
     public /*virtual*/ themeActive(theme = 'secondary'): PropList {
         return this.themeIf(theme);
@@ -332,37 +302,6 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
     // functions:
-    public /*override*/ propsFn(): PropList { return {
-        ...super.propsFn(), // copy functional props from base
-        
-        ...this.activePropsFn(),
-    }}
-    public /*virtual*/ activePropsFn(): PropList { return {
-        //#region finals
-        // define a final *foreground* color func:
-        [this.decl(this._foreg)]     : this.ref(
-            this._activeForegTg,   // toggle active (if actived, _activeForegTg === _foregFn)
-            this._outlinedForegTg, // toggle outlined
-            this._mildForegTg,     // toggle mild
-            this._foregFn,
-        ),
-
-        // define a final *background* color func:
-        [this.decl(this._backgCol)]  : this.ref(
-            this._activeBackgTg,   // toggle active (if actived, _activeBackgTg === _backgFn)
-            this._outlinedBackgTg, // toggle outlined
-            this._mildBackgTg,     // toggle mild
-            this._backgFn,
-        ),
-
-        // define a final *border* color func:
-        [this.decl(this._borderCol)] : this.ref(
-            this._activeBorderTg,  // toggle active (if actived, _activeBorderTg === _borderFn)
-            this._outlinedForegTg, // toggle outlined
-            this._borderFn
-        ),
-        //#endregion finals
-    }}
     public /*override*/ filterFn(): Cust.Ref[] { return [
         ...super.filterFn(),
 

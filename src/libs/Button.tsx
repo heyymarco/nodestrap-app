@@ -66,8 +66,6 @@ class GhostStyles extends ControlStyles {
     public /*override*/ activating()  : JssStyle { return {} } // disabled
     public /*override*/ passivating() : JssStyle { return {} } // disabled
     public /*override*/ passived()    : JssStyle { return {} } // disabled
-    public /*override*/ toggleOffActive(inherit = false) : PropList { return {} } // disabled
-    public /*override*/ toggleOnActive()                 : PropList { return {} } // disabled
     public /*override*/ themeActive(theme = 'primary')   : PropList { return {} } // disabled
 
     public /*override*/ resetFocusBlur(inherit: boolean)     : PropList { return {} } // disabled
@@ -100,21 +98,18 @@ class GhostStyles extends ControlStyles {
 
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
-        extend: [
-            super.outlined(),
-        ] as JssStyle,
+        // extend: [
+        //     super.outlined(),
+        // ] as JssStyle,
+
+        // always *toggle on* the outlined props:
+        [this.decl(this._outlinedForegTg)] : [[this.ref(this._outlinedForegFn)], '!important'],
+        [this.decl(this._outlinedBackgTg)] : [[this.ref(this._outlinedBackgFn)], '!important'],
 
 
 
         // borders:
         boxShadow : 'none !important', // no focus animation
-
-
-
-        // no switch active:
-        [this.decl(this._activeForegTg)]  : 'initial !important',
-        [this.decl(this._activeBackgTg)]  : 'initial !important',
-        [this.decl(this._activeBorderTg)] : 'initial !important',
 
 
 
@@ -158,9 +153,13 @@ export class ButtonStyles extends ActionControlStyles {
     }}
 
     public /*virtual*/ link(): JssStyle { return {
-        extend: [
-            this.outlined(),
-        ] as JssStyle,
+        // extend: [
+        //     this.outlined(),
+        // ] as JssStyle,
+
+        // always *toggle on* the outlined props:
+        [this.decl(this._outlinedForegTg)] : [[this.ref(this._outlinedForegFn)], '!important'],
+        [this.decl(this._outlinedBackgTg)] : [[this.ref(this._outlinedBackgFn)], '!important'],
 
 
 
@@ -199,11 +198,6 @@ export class ButtonStyles extends ActionControlStyles {
 
         // set the active theme as the default theme:
         ...this.themeActive(),
-
-        // no switch active:
-        [this.decl(this._activeForegTg)]  : 'initial !important',
-        [this.decl(this._activeBackgTg)]  : 'initial !important',
-        [this.decl(this._activeBorderTg)] : 'initial !important',
         //#endregion link styles
 
 
