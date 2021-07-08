@@ -26,9 +26,6 @@ import {
     ValidationProps,
 }                           from './validations'
 import {
-    cssProps as bcssProps,
-}                           from './BasicComponent'
-import {
     ControlStyles,
     ControlProps,
     Control,
@@ -38,9 +35,7 @@ import {
 
 // styles:
 
-export interface IValidationStylesBuilder {
-}
-export class EditableControlStyles extends ControlStyles implements IValidationStylesBuilder {
+export class EditableControlStyles extends ControlStyles {
     //#region props
     //#region animations
     protected readonly _animValUnval = 'animValUnval'
@@ -264,6 +259,8 @@ const cssConfig = new CssConfig(() => {
     };
     const keyframesUnvalid   : PropEx.Keyframes = {};
 
+    
+    
     const keyframesInvalid   : PropEx.Keyframes = {
         from: {
             backg: colors.danger,
@@ -282,7 +279,7 @@ const cssConfig = new CssConfig(() => {
         '@keyframes unvalid'   : keyframesUnvalid,
         '@keyframes invalid'   : keyframesInvalid,
         '@keyframes uninvalid' : keyframesUninvalid,
-        animValid              : [[ '500ms', 'ease-out', 'both', keyframesValid    ]],
+        animValid              : [['1000ms', 'ease-out', 'both', keyframesValid    ]],
         animUnvalid            : [[ '100ms', 'ease-out', 'both', keyframesUnvalid  ]],
         animInvalid            : [['1000ms', 'ease-out', 'both', keyframesInvalid  ]],
         animUninvalid          : [[ '100ms', 'ease-out', 'both', keyframesUninvalid]],
@@ -305,13 +302,15 @@ export function useInputValidator(customValidator?: CustomValidatorHandler) {
 
 
     
-    const handleVals = (target: EditableControlElement, immediately = false) => {
+    const handleValidation = (target: EditableControlElement, immediately = false) => {
         const update = (validity: ValidityState, valuePrev?: string) => {
             const valueNow = target.value;
-            if ((valuePrev !== undefined) && (valuePrev !== valueNow)) return; // has been modified during waiting => abort further validating
+            if ((valuePrev !== undefined) && (valuePrev !== valueNow)) return; // the value has been modified during waiting => abort further validating
             
 
             
+            // instantly update variable `isValid` without waiting state to refresh (re-render)
+            // because the value is needed immediately by `useStateValidInvalid` at startup
             isValid = (customValidator ? customValidator(validity, valueNow) : validity.valid);
             setIsValid(isValid);
         };
@@ -323,21 +322,21 @@ export function useInputValidator(customValidator?: CustomValidatorHandler) {
             update(target.validity);
         }
         else {
-            const valuePrev = target.value;
             const validity  = target.validity;
+            const valuePrev = target.value;
         
-            // delay a while for the further validating, to avoid unpleasant effect
+            // delay a while for the further validating, to avoid unpleasant splash effect
             setTimeout(
                 () => update(validity, valuePrev),
                 (validity.valid !== false) ? 100 : 500
             );
         } // if
     }
-    const handleInit = (target: EditableControlElement | null) => {
-        if (target) handleVals(target, /*immediately =*/true);
+    const handleInit = (target: EditableControlElement) => {
+        handleValidation(target, /*immediately =*/true);
     }
     const handleChange = ({target}: React.ChangeEvent<EditableControlElement>) => {
-        handleVals(target);
+        handleValidation(target);
     }
     return {
         /**
@@ -360,7 +359,7 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
 
 
     // defaults:
-    const defaultValided: ValResult         = null; // if [isValid] was not specified => the default value is [isValid=null] (neither error nor success)
+    const defaultValided: ValResult         = null; // if [isValid] was not specified => the default value is [isValid=null] (neither valid nor invalid)
 
 
     
@@ -386,8 +385,8 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
     
     
     /*
-     * state is set as [context and / or controllable] if [            validation is enabled] && [            validity is set]
-     * state is set as validator                       if [validator's validation is enabled] && [validator's validity is set]
+     * state is set as [context and / or controllable] if [            validation is enabled] && [validity is set]
+     * state is set as validator                       if [validator's validation is enabled] && [validator has loaded]
      * otherwise return undefined (represents no change needed)
      */
     const validFn = ((): (ValResult|undefined) => {
@@ -397,7 +396,7 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
         
         
         // use input validator as secondary:
-        if ((valided !== undefined) && validator) return validator(); // now validator has been loaded => evaluate the validator *now*
+        if ((valided !== undefined)) return (validator ? validator() : defaultValided); // if validator has loaded => evaluate the validator *now*
 
         
         
@@ -456,19 +455,21 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
 
         setErrAnimating(null);  // stop err-animation/unerr-animation
     }
-    const valDisabled = // causing the validator() not evaluated (disabled):
-        (propValidation.isValid === null) ||
+    const valDisabled = // causing the validFn *always* `null`:
+        (propValidation.isValid === null)
+        ||
         (!validator);
     return {
         /**
-         * `true`  : validating/valid
-         * `false` : invalidating/invalid
+         * `true`  : validating/valided
+         * `false` : invalidating/invalided
          * `null`  : uncheck/unvalidating/uninvalidating
         */
         valid: (valided ?? null) as ValResult,
         valDisabled: valDisabled,
 
         class: [
+            // valid classes:
             ((): string|null => {
                 if (succAnimating === true)  return   'val';
                 if (succAnimating === false) return 'unval';
@@ -478,6 +479,9 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
                 return null;
             })(),
 
+
+
+            // invalid classes:
             ((): string|null => {
                 if (errAnimating === true)   return   'inv';
                 if (errAnimating === false)  return 'uninv';
@@ -487,8 +491,20 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
                 return null;
             })(),
 
+
+
+            // neutral classes:
             ((): string|null => {
-                if ((valided === null) && valDisabled) return 'valdis';
+                if (valided === null) {
+                    // if (valDisabled) {
+                    //     return 'valdis'; // validation_disabled by controllable prop => use class .valdis to kill [:valid || :invalid]
+                    // }
+                    // else {
+                    //     return null; // discard all classes above
+                    // } // if
+
+                    return 'valdis';
+                } // if
     
                 return null;
             })(),
@@ -541,15 +557,6 @@ export default function EditableControl<TElement extends EditableControlElement 
     const inputValidator = useInputValidator(props.customValidator);
     const stateValInval  = useStateValidInvalid(props, inputValidator.validator);
 
-    
-
-    // fn props:
-    const htmlEditCtrls  = [
-        'input',
-        'select',
-        'textarea',
-    ];
-
 
     
     // jsx:
@@ -573,7 +580,7 @@ export default function EditableControl<TElement extends EditableControlElement 
                         inputValidator.handleInit(elm);
                     }
                     else {
-                        const firstChild = elm.querySelector(htmlEditCtrls.join(','));
+                        const firstChild = elm.querySelector('input,select,textarea');
                         if (firstChild) inputValidator.handleInit(firstChild as TElement);
                     } // if
                 } // if
@@ -586,8 +593,7 @@ export default function EditableControl<TElement extends EditableControlElement 
                         elmRef(elm);
                     }
                     else {
-                        // @ts-ignore
-                        elmRef.current = elm;
+                        (elmRef as React.MutableRefObject<TElement|null>).current = elm;
                     } // if
                 } // if
             }}

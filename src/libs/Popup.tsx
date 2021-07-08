@@ -103,7 +103,7 @@ const cssConfig = new CssConfig(() => {
     
     return {
         //#endregion animations
-        filterActive         : 'unset',
+        filterActive         : 'initial',
 
         '@keyframes active'  : keyframesActive,
         '@keyframes passive' : keyframesPassive,

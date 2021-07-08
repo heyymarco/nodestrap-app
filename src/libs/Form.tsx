@@ -28,7 +28,6 @@ import {
 }                           from './BasicComponent'
 import {
     useStateValidInvalid,
-    IValidationStylesBuilder as ValidationStyles,
 }                           from './EditableControl'
 import {
     styles as editableTextControlStyles,
@@ -42,7 +41,7 @@ import {
 
 // styles:
 
-export class FormStyles extends BasicComponentStyles implements IContentStyles, ValidationStyles {
+export class FormStyles extends BasicComponentStyles implements IContentStyles {
     // variants:
     public /*override*/ size(size: string): JssStyle { return {
         extend: [

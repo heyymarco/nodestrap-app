@@ -243,7 +243,7 @@ export class NavbarStylesBuilder extends ControlStyles {
 
             //#region active, passive
             this.stateActivePassivating({ // [activating, actived, passivating]
-                [this.decl(this._filterActivePassive)] : cssProps.filterActive, // override Indicator's filter active
+                // [this.decl(this._filterActivePassive)] : cssProps.filterActive, // override Indicator's filter active
             }, /*actionCtrl =*/false),
             //#endregion active, passive
             //#endregion specific states

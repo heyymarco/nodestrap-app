@@ -5,8 +5,8 @@ Alert CloseButton imperfect
 ecssProps => bcssProps
 scoped css props => props
 
-.*(FocusBlur|Focus|Blur).*
-(?!:not|:disabled):\w+
+filter*** = 'unset'
+filter*** = 'initial'
 
 
 readonly
@@ -82,7 +82,7 @@ BasicComponent<TElement>^
 				Modal<TElement>^
 		Control<TElement>^
 			ActionControl<TElement>^
-			EditableControl<TElement>@
+			EditableControl<TElement>^
 				EditableTextControl<TElement>#
 		Popup<TElement>^
 			Alert<TElement>^

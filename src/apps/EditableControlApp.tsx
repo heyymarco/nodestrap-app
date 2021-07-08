@@ -87,7 +87,8 @@ function App() {
                     editable control
                 </EditableControl>
                 <EditableControl
-					tag='button'
+					tag='input'
+					{...{type: 'email', defaultValue: 'yourname@'}}
 					
 					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
@@ -99,9 +100,7 @@ function App() {
 
 					enableValidation={enableVal}
 					isValid={isValid}
-				>
-                    editable control
-                </EditableControl>
+				/>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:

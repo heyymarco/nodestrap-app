@@ -274,7 +274,7 @@ export class CheckStylesBuilder extends EditableControlStyles {
             //#region check, clear => label active, passive
             this.stateCheckClearing({ // [checking, checked, clearing] => label [activating, actived, passivating]
                 [labelElm]: {
-                    [this.decl(this._filterActivePassive)] : icssProps.filterActive,
+                    // [this.decl(this._filterActivePassive)] : icssProps.filterActive,
                 },
             }),
             this.stateCheck({ // [checking, checked] => label [activating, actived]

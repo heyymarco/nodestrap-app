@@ -22,7 +22,7 @@ import {
     usePropAccessibility,
     usePropEnabled,
     usePropActive,
-    
+
     AccessibilityProps,
     AccessibilityProvider,
 }                           from './accessibilities'
@@ -466,7 +466,7 @@ const cssConfig = new CssConfig(() => {
     return {
         //#region animations
         filterDisable        : [['grayscale(50%)',  'opacity(50%)'  ]],
-        filterActive         : 'unset',
+        filterActive         : 'initial',
 
         '@keyframes enable'  : keyframesEnable,
         '@keyframes disable' : keyframesDisable,

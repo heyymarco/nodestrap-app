@@ -549,7 +549,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
 
     // dom effects:
-    const cardRef      = useRef<TElement>(null);
+    const cardRef      = useRef<TElement|null>(null);
     useEffect(() => {
         if (isVisible) {
             if (cardRef.current && navigator.userAgent.toLowerCase().includes('firefox')) {
@@ -662,7 +662,6 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
                 
                 // essentials:
                 elmRef={(elm) => {
-                    // @ts-ignore
                     cardRef.current = elm;
 
 
@@ -672,8 +671,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
                             elmRef(elm);
                         }
                         else {
-                            // @ts-ignore
-                            elmRef.current = elm;
+                            (elmRef as React.MutableRefObject<TElement|null>).current = elm;
                         } // if
                     } // if
                 }}
