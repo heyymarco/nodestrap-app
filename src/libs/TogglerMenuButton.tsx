@@ -17,7 +17,7 @@ import {
 }                           from './BasicComponent'
 import {
     default  as Check,
-    CheckStylesBuilder,
+    CheckStyles,
 }                           from './Check'
 import type * as Checks     from './Check'
 import typos                from './typos/index' // configurable typography (texting) defs
@@ -28,7 +28,7 @@ import typos                from './typos/index' // configurable typography (tex
 
 const btnElm = '&>:nth-child(1n+2)';
 
-export class TogglerMenuButtonStylesBuilder extends CheckStylesBuilder {
+export class TogglerMenuButtonStylesBuilder extends CheckStyles {
     //#region scoped css props
     /**
      * functional animations for the toggler top.
@@ -319,7 +319,7 @@ export const cssDecls = cssConfig.decls;
 
 export interface Props
     extends
-        Checks.Props
+        Checks.CheckProps
 {
 }
 export default function TogglerMenuButton(props: Props) {

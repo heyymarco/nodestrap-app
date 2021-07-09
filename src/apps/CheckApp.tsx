@@ -10,6 +10,7 @@ import './App.css';
 
 import Container from '../libs/Container';
 import Check, * as Checks   from '../libs/Check';
+import EditableControl from '../libs/EditableControl';
 
 
 
@@ -84,6 +85,33 @@ function App() {
                     Learn React
                 </a>
                 <hr style={{flexBasis: '100%'}} />
+				<EditableControl
+					theme='primary' size={size} gradient={enableGrad}
+					outlined={outlined}
+
+					enabled={enabled} active={active}
+
+					focus={focus}
+
+					enableValidation={enableVal}
+					isValid={isValid}
+				>
+                    editable control
+                </EditableControl>
+				<EditableControl
+					theme='primary' size={size} gradient={enableGrad}
+					outlined={outlined} mild={false}
+
+					enabled={enabled} active={active}
+
+					focus={focus}
+
+					enableValidation={enableVal}
+					isValid={isValid}
+				>
+                    editable control
+                </EditableControl>
+				<hr style={{flexBasis: '100%'}} />
 				{
 					themes.map(theme =>
 						<Check

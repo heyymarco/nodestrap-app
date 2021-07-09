@@ -4,50 +4,50 @@ import {
     useState,
 }                           from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-import {
-    PropEx,
-}                           from './Css'        // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-
 // nodestrap (modular web components):
 import {
+    // general types:
+    JssStyle,
+    PropEx,
+    Cust,
     ClassList,
+    PropList,
+
+    
+    // components:
+    CssConfig,
 }                           from './nodestrap'  // nodestrap's core
 import {
-    cssProps as ecssProps,
+    usePropEnabled,
+}                           from './accessibilities'
+import {
+    cssProps as bcssProps,
 }                           from './BasicComponent'
 import {
     cssProps as icssProps,
 }                           from './Indicator'
 import {
-    default  as EditableControl,
     EditableControlStyles,
+    EditableControlProps,
+    EditableControl,
 }                           from './EditableControl'
-import type * as EditableControls   from './EditableControl'
 import {
     iconStyles,
 }                           from './Icon'
 import {
     buttonStyles as buttonStyles,
 }                           from './Button'
-import {
-    usePropEnabled,
-}                           from './accessibilities'
 
 
 
 // styles:
 
-const chkElm   = '&>:first-child';
+const checkElm = '&>:first-child';
 const iconElm  = '&::before';
 const labelElm = '&>:nth-child(1n+2)';
 
-export class CheckStylesBuilder extends EditableControlStyles {
-    //#region scoped css props
+export class CheckStyles extends EditableControlStyles {
+    //#region props
     /**
      * functional animations for the icon.
      */
@@ -55,15 +55,15 @@ export class CheckStylesBuilder extends EditableControlStyles {
 
 
 
-    // anim props:
-
+    //#region animations
     public    readonly _switchTransfIn      = 'switchTransfIn'
     public    readonly _switchTransfOut     = 'switchTransfOut'
 
     public    readonly _filterCheckClearIn  = 'filterCheckClearIn'
     public    readonly _filterCheckClearOut = 'filterCheckClearOut'
     protected readonly _animCheckClear      = 'animCheckClear'
-    //#endregion scoped css props
+    //#endregion animations
+    //#endregion props
 
 
 
@@ -133,7 +133,7 @@ export class CheckStylesBuilder extends EditableControlStyles {
     public /*virtual*/ button(): JssStyle { return {
         // children:
 
-        [chkElm]   : {
+        [checkElm] : {
             //#region hides the checkbox while still preserving animation & focus working
             // appearances:
             opacity    : 0,
@@ -200,7 +200,7 @@ export class CheckStylesBuilder extends EditableControlStyles {
 
 
         // children:
-        [chkElm]: {
+        [checkElm] : {
             // sizes:
             inlineSize   : '2em',   // makes the width twice the height
 
@@ -231,7 +231,7 @@ export class CheckStylesBuilder extends EditableControlStyles {
         extend: [
             this.iif(!inherit, {
                 //#region all initial states are none
-                [this.decl(this._animCheckClear)]      : ecssProps.animNone,
+                [this.decl(this._animCheckClear)]      : bcssProps.animNone,
                 //#endregion all initial states are none
             }),
 
@@ -292,7 +292,7 @@ export class CheckStylesBuilder extends EditableControlStyles {
             {
                 // [cleared] => label [actived]
                 '&.checked,&:checked:not(.check)': { // if ctrl was fully checked, disable the animation
-                    /* IF */[chkElm]: this.stateNotFocusingBlurring({ // but still transfering the focus state to the "sibling" element(s):
+                    /* IF */[checkElm]: this.stateNotFocusingBlurring({ // but still transfering the focus state to the "sibling" element(s):
                         /* THEN [labelElm] */'&~*':
                             super.applyStateNoAnimStartupOld(),
                     }),
@@ -300,23 +300,6 @@ export class CheckStylesBuilder extends EditableControlStyles {
             },
             //#endregion check, clear => label active, passive
             //#endregion specific states
-        ] as JssStyle,
-    }}
-
-    public /*override*/ themesIfOld(): JssStyle { return {
-        extend: [
-            super.themesIfOld(), // copy themes from base
-
-            this.checkThemesIf(),
-            this.labelThemesIf(),
-        ] as JssStyle,
-    }}
-    public /*override*/ statesOld(inherit = false): JssStyle { return {
-        extend: [
-            super.statesOld(inherit), // copy states from base
-
-            this.checkStates(inherit),
-            this.labelStates(inherit),
         ] as JssStyle,
     }}
 
@@ -334,15 +317,6 @@ export class CheckStylesBuilder extends EditableControlStyles {
     }}
 
     protected /*virtual*/ labelPropsFn(): JssStyle { return {} }
-
-    public /*override*/ propsFnOld(): JssStyle { return {
-        extend: [
-            super.propsFnOld(), // copy functional props from base
-
-            this.checkPropsFn(),
-            this.labelPropsFn(),
-        ] as JssStyle,
-    }}
 
 
 
@@ -492,9 +466,9 @@ export class CheckStylesBuilder extends EditableControlStyles {
     
     
         // children:
-        [chkElm]       : this.checkBasicStyle(),
-        [labelElm]     : this.labelBasicStyle(),
-        '&:not(.btn)'  : {
+        [checkElm]    : this.checkBasicStyle(),
+        [labelElm]    : this.labelBasicStyle(),
+        '&:not(.btn)' : {
             [labelElm] : {
                 // backgroundless on check/switch mode, but not in btn mode:
                 backg     : [['none'], '!important'], // no valid/invalid animation
@@ -502,32 +476,51 @@ export class CheckStylesBuilder extends EditableControlStyles {
             },
         },
     }}
+
+
+
+    // old:
+    public /*override*/ themesIfOld(): JssStyle { return {
+        extend: [
+            super.themesIfOld(), // copy themes from base
+
+            this.checkThemesIf(),
+            this.labelThemesIf(),
+        ] as JssStyle,
+    }}
+    public /*override*/ statesOld(inherit = false): JssStyle { return {
+        extend: [
+            super.statesOld(inherit), // copy states from base
+
+            this.checkStates(inherit),
+            this.labelStates(inherit),
+        ] as JssStyle,
+    }}
+    public /*override*/ propsFnOld(): JssStyle { return {
+        extend: [
+            super.propsFnOld(), // copy functional props from base
+
+            this.checkPropsFn(),
+            this.labelPropsFn(),
+        ] as JssStyle,
+    }}
 }
-export const styles = new CheckStylesBuilder();
+export const checkStyles = new CheckStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     const keyframesCheck         : PropEx.Keyframes = {
         from: {
             filter: [[
-                styles.ref(styles._filterCheckClearOut),
+                checkStyles.ref(checkStyles._filterCheckClearOut),
             ]],
         },
         to: {
             filter: [[
-                styles.ref(styles._filterCheckClearIn),
+                checkStyles.ref(checkStyles._filterCheckClearIn),
             ]],
         },
     };
@@ -536,70 +529,78 @@ const cssConfig = new CssConfig(() => {
         to   : keyframesCheck.from,
     };
 
+    
+    
     const keyframesSwitchCheck   : PropEx.Keyframes = {
         from: {
             filter: [[
-                styles.ref(styles._filterCheckClearOut),
+                checkStyles.ref(checkStyles._filterCheckClearOut),
             ]],
             transform: [[
-                styles.ref(styles._switchTransfOut),
+                checkStyles.ref(checkStyles._switchTransfOut),
             ]],
         },
         '75%': {
             transformOrigin: 'left', // todo: orientation aware transform => left will be top if the element rotated 90deg clockwise
             transform: [[
                 'scaleX(1.1)',
-                styles.ref(styles._switchTransfIn),
+                checkStyles.ref(checkStyles._switchTransfIn),
             ]],
         },
         to: {
             filter: [[
-                styles.ref(styles._filterCheckClearIn),
+                checkStyles.ref(checkStyles._filterCheckClearIn),
             ]],
             transform: [[
-                styles.ref(styles._switchTransfIn),
+                checkStyles.ref(checkStyles._switchTransfIn),
             ]],
         },
     };
     const keyframesSwitchClear   : PropEx.Keyframes = {
         from: {
             filter: [[
-                styles.ref(styles._filterCheckClearIn),
+                checkStyles.ref(checkStyles._filterCheckClearIn),
             ]],
             transform: [[
-                styles.ref(styles._switchTransfIn),
+                checkStyles.ref(checkStyles._switchTransfIn),
             ]],
         },
         '75%': {
             transformOrigin: 'right', // todo: orientation aware transform => right will be bottom if the element rotated 90deg clockwise
             transform: [[
                 'scaleX(1.1)',
-                styles.ref(styles._switchTransfOut),
+                checkStyles.ref(checkStyles._switchTransfOut),
             ]],
         },
         to: {
             filter: [[
-                styles.ref(styles._filterCheckClearOut),
+                checkStyles.ref(checkStyles._filterCheckClearOut),
             ]],
             transform: [[
-                styles.ref(styles._switchTransfOut),
+                checkStyles.ref(checkStyles._switchTransfOut),
             ]],
         },
     };
 
+    
+    
     return {
+        // spacings:
         spacing                  : '0.3em',
         
+        
+        
+        //#region indicators
         // forked from Bootstrap 5:
-        img                      : `url("data:image/svg+xml,${styles.escapeSvg("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path fill='none' stroke='#000' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3 6-6'/></svg>")}")`,
+        img                      : `url("data:image/svg+xml,${checkStyles.escapeSvg("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path fill='none' stroke='#000' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3 6-6'/></svg>")}")`,
         
         // forked from Bootstrap 5:
-        switchImg                : `url("data:image/svg+xml,${styles.escapeSvg("<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='#000'/></svg>")}")`,
+        switchImg                : `url("data:image/svg+xml,${checkStyles.escapeSvg("<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='#000'/></svg>")}")`,
+        //#endregion indicators
         
         
         
-        // anim props:
-
+        //#region animations
         filterCheck              : [['opacity(100%)']],
         filterClear              : [['opacity(0%)'  ]],
 
@@ -616,6 +617,7 @@ const cssConfig = new CssConfig(() => {
         animClear                : [['150ms', 'ease-out', 'both', keyframesClear      ]],
         switchAnimCheck          : [['200ms', 'ease-out', 'both', keyframesSwitchCheck]],
         switchAnimClear          : [['200ms', 'ease-out', 'both', keyframesSwitchClear]],
+        //#endregion animations
     };
 }, /*prefix: */'chk');
 export const cssProps = cssConfig.refs;
@@ -625,7 +627,7 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export function useStateCheckClear(props: Props) {
+export function useStateCheckClear(props: CheckProps) {
     // defaults:
     const defaultChecked: boolean = false; // true => checked, false => cleared
 
@@ -706,9 +708,10 @@ export function useVariantCheck(props: VariantCheck, styles: Record<string, stri
 
 // react components:
 
-export interface Props
+export interface CheckProps
     extends
-        EditableControls.EditableControlProps<HTMLInputElement>,
+        EditableControlProps<HTMLInputElement>,
+
         VariantCheck
 {
     // values:
@@ -728,14 +731,14 @@ export interface Props
     // children:
     children?       : React.ReactNode
 }
-export default function Check(props: Props) {
+export default function Check(props: CheckProps) {
     // styles:
-    const chkStyles   = styles.useStyles();
+    const styles      = checkStyles.useStyles();
 
     
     
     // variants:
-    const variCheck   = useVariantCheck(props, chkStyles);
+    const variCheck   = useVariantCheck(props, styles);
 
     
     
@@ -795,8 +798,12 @@ export default function Check(props: Props) {
             tabIndex={-1} // [tabIndex] is negative => act as *wrapper* element, if input is :focus (pseudo) => the wrapper is also .focus (synthetic)
 
 
+            // variants:
+            mild={props.mild ?? false}
+
+
             // classes:
-            mainClass={props.mainClass ?? chkStyles.main}
+            mainClass={props.mainClass ?? styles.main}
             variantClasses={[...(props.variantClasses ?? []),
                 variCheck.class,
             ]}
@@ -852,3 +859,4 @@ export default function Check(props: Props) {
         </EditableControl>
     );
 }
+export { Check }

@@ -4,7 +4,6 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 import App from './apps/App';
-import CheckApp from './apps/CheckApp';
 import FormApp from './apps/FormApp';
 import NavbarApp from './apps/NavbarApp';
 
@@ -27,6 +26,7 @@ import BasicComponentApp                        from './apps/BasicComponentApp';
             import EditableControlApp           from './apps/EditableControlApp';
                 import EditableTextControlApp   from './apps/EditableTextControlApp';
                     import InputApp             from './apps/InputApp';
+                import CheckApp                 from './apps/CheckApp';
     import IconApp                              from './apps/IconApp';
     import MasonryApp                           from './apps/MasonryApp';
     import CarouselApp                          from './apps/CarouselApp';
@@ -37,7 +37,7 @@ import BasicComponentApp                        from './apps/BasicComponentApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <InputApp />
+        <CheckApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

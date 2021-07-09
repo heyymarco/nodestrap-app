@@ -869,7 +869,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                     onChange : toggler.props.onChange ?? ((e) => {
                         setActive(e.target.checked);
                     }),
-                } as Checks.Props) : {})}
+                } as Checks.CheckProps) : {})}
             />
         );
 

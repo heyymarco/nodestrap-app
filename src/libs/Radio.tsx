@@ -13,7 +13,7 @@ import type * as Checks     from './Check'
 
 export interface Props
     extends
-        Checks.Props
+        Checks.CheckProps
 {
 }
 export default function Radio(props: Props) {
