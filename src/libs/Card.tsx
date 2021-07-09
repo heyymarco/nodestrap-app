@@ -334,8 +334,8 @@ export class CardStyles extends ContentStyles {
 
         // spacings:
         // cancel-out parent's padding with negative margin:
-        marginInline : [['calc(0px -', ccssProps.paddingInline, ')']],
-        marginBlock  : [['calc(0px -', ccssProps.paddingBlock,  ')']],
+        marginInline   : [['calc(0px -', ccssProps.paddingInline, ')']],
+        marginBlock    : [['calc(0px -', ccssProps.paddingBlock,  ')']],
 
         // kill the top negative margin so the prev sibling can add a bottom space:
         '&:not(:first-child)': {

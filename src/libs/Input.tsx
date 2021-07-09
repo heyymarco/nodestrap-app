@@ -1,13 +1,10 @@
 // react (builds html using javascript):
-import {
-    default as React,
-}                           from 'react'        // base technology of our nodestrap components
+import React                from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
 import {
     // general types:
     JssStyle,
-    PropList,
 
     
     // components:
@@ -75,43 +72,44 @@ export class InputStyles extends EditableTextControlStyles {
 
 
         // children:
-        [inputElm]: {
-            extend: [
-                stripOuts.textbox, // clear browser's default styles
-            ] as JssStyle,
-    
-
-
-            // layout:
-            display        : 'block', // fills the entire parent's width
-    
-    
-
-            // sizes:
-            // strip out input's prop [size]:
-            // span to maximum width including parent's paddings:
-            boxSizing      : 'border-box', // the final size is including borders & paddings
-            inlineSize     : 'fill-available',
-            fallbacks      : {
-                inlineSize : [['calc(100% + (', bcssProps.paddingInline, ' * 2))']],
-            },
-
-
-            
-            // spacings:
-            // cancel-out parent's padding with negative margin:
-            marginInline  : [['calc(0px -', bcssProps.paddingInline, ')']],
-            marginBlock   : [['calc(0px -', bcssProps.paddingBlock,  ')']],
-
-            // copy parent's paddings:
-            paddingInline : bcssProps.paddingInline,
-            paddingBlock  : bcssProps.paddingBlock,
-        },
+        [inputElm]: this.inputBasicStyle(),
 
 
 
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    protected /*virtual*/ inputBasicStyle(): JssStyle { return {
+        extend: [
+            stripOuts.textbox, // clear browser's default styles
+        ] as JssStyle,
+
+
+
+        // layout:
+        display        : 'block', // fills the entire parent's width
+
+
+
+        // sizes:
+        // strip out input's prop [size]:
+        // span to maximum width including parent's paddings:
+        boxSizing      : 'border-box', // the final size is including borders & paddings
+        inlineSize     : 'fill-available',
+        fallbacks      : {
+            inlineSize : [['calc(100% + (', bcssProps.paddingInline, ' * 2))']],
+        },
+
+
+        
+        // spacings:
+        // cancel-out parent's padding with negative margin:
+        marginInline   : [['calc(0px -', bcssProps.paddingInline, ')']],
+        marginBlock    : [['calc(0px -', bcssProps.paddingBlock,  ')']],
+
+        // copy parent's paddings:
+        paddingInline  : bcssProps.paddingInline,
+        paddingBlock   : bcssProps.paddingBlock,
     }}
 }
 export const inputStyles = new InputStyles();
@@ -121,15 +119,6 @@ export const inputStyles = new InputStyles();
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     return {
         backgGrad : [['linear-gradient(180deg, rgba(0,0,0, 0.2), rgba(255,255,255, 0.2))', 'border-box']],
     };
@@ -154,12 +143,12 @@ export interface InputProps
 
 
     // formats:
-    type          : InputType
+    type?         : InputType
     placeholder?  : string
 }
 export default function Input(props: InputProps) {
     // styles:
-    const inpStyles   = inputStyles.useStyles();
+    const styles   = inputStyles.useStyles();
 
     
 
@@ -217,7 +206,7 @@ export default function Input(props: InputProps) {
 
 
             // classes:
-            mainClass={props.mainClass ?? inpStyles.main}
+            mainClass={props.mainClass ?? styles.main}
         >
             <input
                 // essentials:
@@ -257,3 +246,35 @@ export default function Input(props: InputProps) {
     );
 }
 export { Input }
+
+
+
+export function TextInput     (props: InputProps) { return <Input {...props} type='text' />;           }
+export function SearchInput   (props: InputProps) { return <Input {...props} type='search' />;         }
+export function PasswordInput (props: InputProps) { return <Input {...props} type='password' />;       }
+export function EmailInput    (props: InputProps) { return <Input {...props} type='email' />;          }
+export function TelInput      (props: InputProps) { return <Input {...props} type='tel' />;            }
+export function UrlInput      (props: InputProps) { return <Input {...props} type='url' />;            }
+export function NumberInput   (props: InputProps) { return <Input {...props} type='number' />;         }
+export function TimeInput     (props: InputProps) { return <Input {...props} type='time' />;           }
+export function WeekInput     (props: InputProps) { return <Input {...props} type='week' />;           }
+export function DateInput     (props: InputProps) { return <Input {...props} type='date' />;           }
+export function DateTimeInput (props: InputProps) { return <Input {...props} type='datetime-local' />; }
+export function MonthInput    (props: InputProps) { return <Input {...props} type='month' />;          }
+
+
+
+export {
+    TextInput       as Text,
+    SearchInput     as Search,
+    PasswordInput   as Password,
+    EmailInput      as Email,
+    TelInput        as Tel,
+    UrlInput        as Url,
+    NumberInput     as Number,
+    TimeInput       as Time,
+    WeekInput       as Week,
+    DateInput       as Date,
+    DateTimeInput   as DateTime,
+    MonthInput      as Month,
+}

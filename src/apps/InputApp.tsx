@@ -8,7 +8,10 @@ import {
 import './App.css';
 
 import Container from '../libs/Container';
-import Input from '../libs/Input';
+import {
+	Input,
+	DateTime,
+} 				from '../libs/Input';
 
 
 
@@ -110,6 +113,18 @@ function App() {
                 <Input
 					type='time'
 					
+					theme={theme} size={size} gradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+
+					enableValidation={enableVal}
+					isValid={isValid}
+				/>
+                <DateTime
 					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
