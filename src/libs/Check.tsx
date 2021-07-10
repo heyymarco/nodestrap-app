@@ -17,7 +17,6 @@ import {
 import {
     usePropEnabled,
 }                           from './accessibilities'
-import * as stripOuts       from './strip-outs'
 import {
     useTogglerActive,
     TogglerActiveProps,
@@ -51,6 +50,11 @@ export class CheckStyles extends EditableControlStyles {
     public    readonly _checkFilter         = 'checkFilter'
 
     /**
+     * final transform.
+     */
+    public    readonly _checkTransf         = 'checkTransf'
+
+    /**
      * final animation for the check.
      */
     public    readonly _checkAnim           = 'checkAnim'
@@ -61,10 +65,9 @@ export class CheckStyles extends EditableControlStyles {
     //#region animations
     public    readonly _filterCheckClearIn  = 'filterCheckClearIn'
     public    readonly _filterCheckClearOut = 'filterCheckClearOut'
+    public    readonly _transfCheckClearIn  = 'transfCheckClearIn'
+    public    readonly _transfCheckClearOut = 'transfCheckClearOut'
     protected readonly _animCheckClear      = 'animCheckClear'
-
-    public    readonly _switchTransfIn      = 'switchTransfIn'
-    public    readonly _switchTransfOut     = 'switchTransfOut'
     //#endregion animations
     //#endregion props
 
@@ -76,9 +79,8 @@ export class CheckStyles extends EditableControlStyles {
 
 
 
-        [ ':not(.btn)', this.notButton() ],
-        [      '.btn' , this.button()    ],
-        [ '.switch'   , this.switch()    ],
+        [ 'btn'   , this.button() ],
+        [ 'switch', this.switch() ],
     ]}
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -89,13 +91,6 @@ export class CheckStyles extends EditableControlStyles {
 
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
-    }}
-    public /*virtual*/ notButton(): JssStyle { return {
-        // children:
-        [labelElm]: {
-            // no focus animation:
-            [this.decl(this._boxShadowFocusBlur)] : 'initial !important',
-        } as JssStyle,
     }}
     public /*virtual*/ button(): JssStyle { return {
         // children:
@@ -144,50 +139,26 @@ export class CheckStyles extends EditableControlStyles {
         },
     }}
     public /*virtual*/ switch(): JssStyle { return {
-        //#region specific states
-        extend: [
-            //#region check, clear
-            { // [checking, checked, clearing, cleared => all states]
-                [this.decl(this._filterCheckClearIn)]  : cssProps.switchFilterCheck,
-                [this.decl(this._filterCheckClearOut)] : cssProps.switchFilterClear,
-
-                [this.decl(this._switchTransfIn)]      : cssProps.switchTransfCheck,
-                [this.decl(this._switchTransfOut)]     : cssProps.switchTransfClear,
-            },
-            // this.stateCheck({ // [checking, checked]
-            //     [this.decl(this._animCheckClear)]      : cssProps.switchAnimCheck,
-            // }),
-            // this.stateNotCheck({ // [not-checking, not-checked] => [clearing, cleared]
-            //     [this.decl(this._animCheckClear)]      : cssProps.switchAnimClear,
-            // }),
-            //#endregion check, clear
-        ] as JssStyle,
-        //#endregion specific states
-
-
-
         // children:
-        [inputElm] : {
+        [inputElm]: {
             // sizes:
-            inlineSize   : '2em',   // makes the width twice the height
+            inlineSize   : '2em',   // make the width twice the height
 
 
 
             // borders:
-            borderRadius : '0.5em', // makes circle corners
-
-
-
-            // children:
-            [checkElm]: {
-                [iconStyles.decl(iconStyles._img)] : cssProps.switchImg,
-            },
+            borderRadius : '0.5em', // make circle corners
 
 
 
             // customize:
             ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'switch')), // apply *general* cssProps starting with switch***
         },
+
+
+        
+        // overwrites propName = {switch}propName:
+        ...this.overwriteProps(cssDecls, this.filterPrefixProps(cssProps, 'switch')),
     }}
 
 
@@ -210,6 +181,7 @@ export class CheckStyles extends EditableControlStyles {
 
 
         [this.decl(this._filterCheckClearIn)]  : cssProps.filterCheck,
+        [this.decl(this._transfCheckClearIn)]  : cssProps.transfCheck,
     }}
     public /*override*/ activating()  : JssStyle { return {
         extend: [
@@ -220,6 +192,8 @@ export class CheckStyles extends EditableControlStyles {
 
         [this.decl(this._filterCheckClearIn)]  : cssProps.filterCheck,
         [this.decl(this._filterCheckClearOut)] : cssProps.filterClear,
+        [this.decl(this._transfCheckClearIn)]  : cssProps.transfCheck,
+        [this.decl(this._transfCheckClearOut)] : cssProps.transfClear,
         [this.decl(this._animCheckClear)]      : cssProps.animCheck,
     }}
     public /*override*/ passivating() : JssStyle { return {
@@ -231,6 +205,8 @@ export class CheckStyles extends EditableControlStyles {
 
         [this.decl(this._filterCheckClearIn)]  : cssProps.filterCheck,
         [this.decl(this._filterCheckClearOut)] : cssProps.filterClear,
+        [this.decl(this._transfCheckClearIn)]  : cssProps.transfCheck,
+        [this.decl(this._transfCheckClearOut)] : cssProps.transfClear,
         [this.decl(this._animCheckClear)]      : cssProps.animClear,
     }}
     public /*override*/ passived()    : JssStyle { return {
@@ -241,6 +217,7 @@ export class CheckStyles extends EditableControlStyles {
 
 
         [this.decl(this._filterCheckClearOut)] : cssProps.filterClear,
+        [this.decl(this._transfCheckClearOut)] : cssProps.transfClear,
     }}
 
 
@@ -253,15 +230,22 @@ export class CheckStyles extends EditableControlStyles {
         
         //#region finals
         // define a final *filter* func for the icon:
-        [this.decl(this._checkFilter)] : [this.checkFilterFn()],  // double array (including from the returning function) => makes the JSS treat as space separated values
+        [this.decl(this._checkFilter)] : [this.checkFilterFn()], // double array (including from the returning function) => makes the JSS treat as space separated values
+
+        // define a final *transform* func for the icon:
+        [this.decl(this._checkTransf)] : [this.checkTransfFn()], // double array (including from the returning function) => makes the JSS treat as space separated values
 
         // define a final *animation* func for the icon:
-        [this.decl(this._checkAnim)]   : this.checkAnimFn(), // single array (including from the returning function) => makes the JSS treat as comma separated values
+        [this.decl(this._checkAnim)]   : this.checkAnimFn(),     // single array (including from the returning function) => makes the JSS treat as comma separated values
         //#endregion finals
     }}
     public /*virtual*/ checkFilterFn(): Cust.Ref[] { return [
         this.ref(this._filterCheckClearIn,  this._filterNone),
         this.ref(this._filterCheckClearOut, this._filterNone),
+    ]}
+    public /*virtual*/ checkTransfFn(): Cust.Ref[] { return [
+        this.ref(this._transfCheckClearIn,  this._transfNone),
+        this.ref(this._transfCheckClearOut, this._transfNone),
     ]}
     public /*virtual*/ checkAnimFn(): Cust.Ref[] { return [
         this.ref(this._animCheckClear, this._animNone),
@@ -272,7 +256,7 @@ export class CheckStyles extends EditableControlStyles {
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
-            stripOuts.focusableElement, // clear browser's default styles
+            super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
 
 
@@ -288,6 +272,33 @@ export class CheckStyles extends EditableControlStyles {
 
         // positions:
         verticalAlign  : 'baseline', // check's text should be aligned with sibling text, so the check behave like <span> wrapper
+
+
+
+        // foregrounds:
+        foreg         : this.ref(this._mildForegFn),
+        
+        
+        
+        // backgrounds:
+        backg         : 'initial !important', // no valid/invalid animation
+
+
+
+        // borders:
+        border        : undefined as unknown as null, // discard basicStyle's border
+        borderRadius  : undefined as unknown as null, // discard basicStyle's borderRadius
+
+
+
+        // spacings:
+        paddingInline : undefined as unknown as null, // discard basicStyle's paddingInline
+        paddingBlock  : undefined as unknown as null, // discard basicStyle's paddingBlock
+
+
+
+        // states & animations:
+        boxShadow     : 'initial !important', // no focus animation
     
     
     
@@ -390,15 +401,10 @@ export class CheckStyles extends EditableControlStyles {
         
         // states & animations:
         filter    : this.ref(this._checkFilter),
+        transform : this.ref(this._checkTransf),
         anim      : this.ref(this._checkAnim),
     }}
     protected /*virtual*/ labelBasicStyle(): JssStyle { return {
-        extend: [
-            super.basicStyle(), // copy basicStyle from base
-        ] as JssStyle,
-    
-
-
         // layout:
         display       : 'inline', // use inline, so it takes the width & height automatically
 
@@ -406,33 +412,6 @@ export class CheckStyles extends EditableControlStyles {
 
         // positions:
         verticalAlign : 'baseline', // label's text should be aligned with sibling text, so the label behave like <span> wrapper
-
-
-
-        // foregrounds:
-        foreg         : this.ref(this._mildForegFn),
-        
-        
-        
-        // backgrounds:
-        backg         : undefined as unknown as null, // discard basicStyle's background
-
-
-
-        // borders:
-        border        : undefined as unknown as null, // discard basicStyle's border
-        borderRadius  : undefined as unknown as null, // discard basicStyle's borderRadius
-
-
-
-        // spacings:
-        paddingInline : undefined as unknown as null, // discard basicStyle's paddingInline
-        paddingBlock  : undefined as unknown as null, // discard basicStyle's paddingBlock
-
-
-
-        // states & animations:
-        boxShadow     : undefined as unknown as null, // discard basicStyle's boxShadow
 
 
 
@@ -472,14 +451,14 @@ const cssConfig = new CssConfig(() => {
                 checkStyles.ref(checkStyles._filterCheckClearOut),
             ]],
             transform: [[
-                checkStyles.ref(checkStyles._switchTransfOut),
+                checkStyles.ref(checkStyles._transfCheckClearOut),
             ]],
         },
         '75%': {
             transformOrigin: 'left', // todo: orientation aware transform => left will be top if the element rotated 90deg clockwise
             transform: [[
-                'scaleX(1.1)',
-                checkStyles.ref(checkStyles._switchTransfIn),
+                'scaleX(1.2)',
+                checkStyles.ref(checkStyles._transfCheckClearIn),
             ]],
         },
         to: {
@@ -487,7 +466,7 @@ const cssConfig = new CssConfig(() => {
                 checkStyles.ref(checkStyles._filterCheckClearIn),
             ]],
             transform: [[
-                checkStyles.ref(checkStyles._switchTransfIn),
+                checkStyles.ref(checkStyles._transfCheckClearIn),
             ]],
         },
     };
@@ -497,14 +476,14 @@ const cssConfig = new CssConfig(() => {
                 checkStyles.ref(checkStyles._filterCheckClearIn),
             ]],
             transform: [[
-                checkStyles.ref(checkStyles._switchTransfIn),
+                checkStyles.ref(checkStyles._transfCheckClearIn),
             ]],
         },
         '75%': {
             transformOrigin: 'right', // todo: orientation aware transform => right will be bottom if the element rotated 90deg clockwise
             transform: [[
-                'scaleX(1.1)',
-                checkStyles.ref(checkStyles._switchTransfOut),
+                'scaleX(1.2)',
+                checkStyles.ref(checkStyles._transfCheckClearOut),
             ]],
         },
         to: {
@@ -512,7 +491,7 @@ const cssConfig = new CssConfig(() => {
                 checkStyles.ref(checkStyles._filterCheckClearOut),
             ]],
             transform: [[
-                checkStyles.ref(checkStyles._switchTransfOut),
+                checkStyles.ref(checkStyles._transfCheckClearOut),
             ]],
         },
     };
@@ -538,18 +517,23 @@ const cssConfig = new CssConfig(() => {
         //#region animations
         filterCheck              : [['opacity(100%)']],
         filterClear              : [['opacity(0%)'  ]],
+        transfCheck              : 'initial',
+        transfClear              : 'initial',
+
+        '@keyframes check'       : keyframesCheck,
+        '@keyframes clear'       : keyframesClear,
+        animCheck                : [['150ms', 'ease-out', 'both', keyframesCheck      ]],
+        animClear                : [['150ms', 'ease-out', 'both', keyframesClear      ]],
+
+
 
         switchFilterCheck        : [['opacity(100%)'     ]],
         switchFilterClear        : [['opacity(50%)'      ]],
         switchTransfCheck        : [['translateX(0.5em)' ]],
         switchTransfClear        : [['translateX(-0.5em)']],
 
-        '@keyframes check'       : keyframesCheck,
-        '@keyframes clear'       : keyframesClear,
         '@keyframes switchCheck' : keyframesSwitchCheck,
         '@keyframes switchClear' : keyframesSwitchClear,
-        animCheck                : [['150ms', 'ease-out', 'both', keyframesCheck      ]],
-        animClear                : [['150ms', 'ease-out', 'both', keyframesClear      ]],
         switchAnimCheck          : [['200ms', 'ease-out', 'both', keyframesSwitchCheck]],
         switchAnimClear          : [['200ms', 'ease-out', 'both', keyframesSwitchClear]],
         //#endregion animations

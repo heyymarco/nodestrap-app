@@ -299,6 +299,11 @@ export class BasicComponentStyles extends ElementStyles {
     public readonly _filterNone            = 'filterNone'
 
     /**
+     * none transform.
+     */
+    public readonly _transfNone            = 'transfNone'
+
+    /**
      * none animation.
      */
     public readonly _animNone              = 'animNone'
@@ -534,6 +539,9 @@ export class BasicComponentStyles extends ElementStyles {
 
         // define a *none* filter:
         [this.decl(this._filterNone)]    : 'brightness(100%)',
+
+        // define a *none* transform:
+        [this.decl(this._transfNone)]    : 'translate(0)',
 
         // define a *none* animation:
         [this.decl(this._animNone)]      : 'none',
