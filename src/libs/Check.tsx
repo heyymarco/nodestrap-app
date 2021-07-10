@@ -96,35 +96,31 @@ export class CheckStyles extends EditableControlStyles {
         // children:
 
         [inputElm] : {
-            //#region hides the checkbox while still preserving animation & focus working
+            //#region hides the checkbox while still preserving animations
             // appearances:
-            opacity    : 0,
+            visibility : 'hidden', // invisible but still exists
 
 
 
             // sizes:
             boxSizing  : 'border-box', // the final size is including borders & paddings
-            inlineSize : 0,
-            blockSize  : 0,
-
-
-
-            // spacings:
-            padding    : 0,
+            inlineSize : 0, // kill the width
+            blockSize  : 0, // kill the height
 
 
 
             // borders:
-            border     : 0,
-            //#endregion hides the checkbox while still preserving animation & focus working
+            border     : 0, // kill the border
 
 
 
             // spacings:
-            // kill spacing between check & label:
+            padding    : 0, // kill the paddings
+
             '&:not(:last-child)': {
-                marginInlineEnd: 0,
+                marginInlineEnd : 0, // kill the spacing between check & label
             },
+            //#endregion hides the checkbox while still preserving animations
         },
 
         [labelElm] : {
