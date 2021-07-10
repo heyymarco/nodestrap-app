@@ -76,8 +76,9 @@ export class CheckStyles extends EditableControlStyles {
 
 
 
-        [ 'btn'   , this.button() ],
-        [ 'switch', this.switch() ],
+        [ ':not(.btn)', this.notButton() ],
+        [      '.btn' , this.button()    ],
+        [ '.switch'   , this.switch()    ],
     ]}
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -88,6 +89,13 @@ export class CheckStyles extends EditableControlStyles {
 
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
+    }}
+    public /*virtual*/ notButton(): JssStyle { return {
+        // children:
+        [labelElm]: {
+            // no focus animation:
+            [this.decl(this._boxShadowFocusBlur)] : 'initial !important',
+        } as JssStyle,
     }}
     public /*virtual*/ button(): JssStyle { return {
         // children:
@@ -345,7 +353,7 @@ export class CheckStyles extends EditableControlStyles {
 
 
         // accessibility:
-        pointerEvents     : 'none', // just an overlayed element, no mouse interaction, clicking on it will focus on the parent
+        pointerEvents : 'none', // just an overlay element (ghost), no mouse interaction, clicking on it will focus on the parent
     
         
         
@@ -424,7 +432,7 @@ export class CheckStyles extends EditableControlStyles {
 
 
         // states & animations:
-        // boxShadow     : undefined as unknown as null, // discard basicStyle's boxShadow
+        boxShadow     : undefined as unknown as null, // discard basicStyle's boxShadow
 
 
 
@@ -604,7 +612,12 @@ export default function Check(props: CheckProps) {
     
     
     // states:
-    const [isActive, setActive] = useTogglerActive(props);
+    const [isActive, setActive] = useTogglerActive({
+        ...props,
+
+        defaultActive : props.defaultActive ?? props.defaultChecked,
+        active        : props.active        ?? props.active,
+    });
 
     
 
@@ -682,6 +695,16 @@ export default function Check(props: CheckProps) {
                 
                 
                 if (!e.defaultPrevented) setActive(!isActive); // toggle active
+            }}
+            onKeyUp={(e) => {
+                // backwards:
+                props.onKeyUp?.(e);
+
+
+
+                if (!e.defaultPrevented) {
+                    if ((e.code === ' ') || (e.key === ' ')) setActive(!isActive); // toggle active
+                } // if
             }}
         >
             <input

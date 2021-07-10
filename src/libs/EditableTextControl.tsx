@@ -200,7 +200,7 @@ export class EditableTextControlStyles extends EditableControlStyles {
         
         
         // accessibility:
-        pointerEvents     : 'none', // just an overlayed element, no mouse interaction
+        pointerEvents     : 'none', // just an overlay element (ghost), no mouse interaction, clicking on it will focus on the parent
 
 
 
