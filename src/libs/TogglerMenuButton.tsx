@@ -84,21 +84,21 @@ export class TogglerMenuButtonStylesBuilder extends CheckStyles {
 
             //#region specific states
             //#region check, clear
-            this.stateCheck({ // [checking, checked]
-                [this.decl(this._togglerTopAnimOnOff)] : cssProps.togglerTopAnimOn,
-                [this.decl(this._togglerMidAnimOnOff)] : cssProps.togglerMidAnimOn,
-                [this.decl(this._togglerBtmAnimOnOff)] : cssProps.togglerBtmAnimOn,
-            }),
-            this.stateNotCheck({ // [not-checking, not-checked] => [clearing, cleared]
-                [this.decl(this._togglerTopAnimOnOff)] : cssProps.togglerTopAnimOff,
-                [this.decl(this._togglerMidAnimOnOff)] : cssProps.togglerMidAnimOff,
-                [this.decl(this._togglerBtmAnimOnOff)] : cssProps.togglerBtmAnimOff,
-            }),
-            this.stateNotCheckingClearing({ // if ctrl was fully checked/unchecked, disable the animation
-                [btnElm]: {
-                    '&>svg>*': super.applyStateNoAnimStartupOld(),
-                },
-            }),
+            // this.stateCheck({ // [checking, checked]
+            //     [this.decl(this._togglerTopAnimOnOff)] : cssProps.togglerTopAnimOn,
+            //     [this.decl(this._togglerMidAnimOnOff)] : cssProps.togglerMidAnimOn,
+            //     [this.decl(this._togglerBtmAnimOnOff)] : cssProps.togglerBtmAnimOn,
+            // }),
+            // this.stateNotCheck({ // [not-checking, not-checked] => [clearing, cleared]
+            //     [this.decl(this._togglerTopAnimOnOff)] : cssProps.togglerTopAnimOff,
+            //     [this.decl(this._togglerMidAnimOnOff)] : cssProps.togglerMidAnimOff,
+            //     [this.decl(this._togglerBtmAnimOnOff)] : cssProps.togglerBtmAnimOff,
+            // }),
+            // this.stateNotCheckingClearing({ // if ctrl was fully checked/unchecked, disable the animation
+            //     [btnElm]: {
+            //         '&>svg>*': super.applyStateNoAnimStartupOld(),
+            //     },
+            // }),
             //#endregion check, clear
             //#endregion specific states
         ] as JssStyle,

@@ -274,10 +274,13 @@ export class ModalStyles extends PopupStyles {
         
         
         
-        // apply final props:
+        // backgrounds:
         backg                     : this.ref(this._overlayBackg),
-        anim                      : this.ref(this._overlayAnim),
 
+
+
+        // states & animations:
+        anim                      : this.ref(this._overlayAnim),
         [this.decl(this._animFw)] : this.ref(this._anim), // store _anim into _animFw for overwriting Card's _anim
 
 

@@ -686,10 +686,22 @@ export class BasicComponentStyles extends ElementStyles {
     
     
     
-        // apply final props:
+        // foregrounds:
         foreg       : this.ref(this._foreg),
+
+
+
+        // backgrounds:
         backg       : this.ref(this._backg),
+        
+        
+        
+        // borders:
         borderColor : this.ref(this._borderCol),
+
+
+
+        // states & animations:
         boxShadow   : this.ref(this._boxShadow),
         filter      : this.ref(this._filter),
         anim        : this.ref(this._anim),

@@ -119,7 +119,10 @@ function App() {
 
 							theme={theme} size={size} gradient={enableGrad} outlined={outlined}
 		
-							enabled={enabled} active={active}
+							enabled={enabled}
+							
+							active={active}
+							onActiveChange={(act) => setActive(act)}
 		
 							focus={focus}
 		

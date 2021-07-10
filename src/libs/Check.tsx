@@ -1,8 +1,5 @@
 // react (builds html using javascript):
-import {
-    default as React,
-    useState,
-}                           from 'react'        // base technology of our nodestrap components
+import React                from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
 import {
@@ -20,11 +17,10 @@ import {
 import {
     usePropEnabled,
 }                           from './accessibilities'
+import * as stripOuts       from './strip-outs'
 import {
-    cssProps as bcssProps,
-}                           from './BasicComponent'
-import {
-    cssProps as icssProps,
+    useTogglerActive,
+    TogglerActiveProps,
 }                           from './Indicator'
 import {
     EditableControlStyles,
@@ -42,72 +38,35 @@ import {
 
 // styles:
 
-const checkElm = '&>:first-child';
-const iconElm  = '&::before';
+const inputElm = '&>:first-child';
+const checkElm = '&::before';
 const labelElm = '&>:nth-child(1n+2)';
 
 export class CheckStyles extends EditableControlStyles {
     //#region props
+    //#region finals
     /**
-     * functional animations for the icon.
+     * final filter.
      */
-    public    readonly _iconAnimFn          = 'iconAnimFn'
+    public    readonly _checkFilter         = 'checkFilter'
+
+    /**
+     * final animation for the check.
+     */
+    public    readonly _checkAnim           = 'checkAnim'
+    //#endregion finals
 
 
 
     //#region animations
-    public    readonly _switchTransfIn      = 'switchTransfIn'
-    public    readonly _switchTransfOut     = 'switchTransfOut'
-
     public    readonly _filterCheckClearIn  = 'filterCheckClearIn'
     public    readonly _filterCheckClearOut = 'filterCheckClearOut'
     protected readonly _animCheckClear      = 'animCheckClear'
+
+    public    readonly _switchTransfIn      = 'switchTransfIn'
+    public    readonly _switchTransfOut     = 'switchTransfOut'
     //#endregion animations
     //#endregion props
-
-
-
-    //#region mixins
-    protected stateChecking(content: JssStyle): JssStyle { return {
-        '&.check': content,
-    }}
-    protected stateCheck(content: JssStyle): JssStyle { return {
-        '&.check,&.checked,&:checked': content,
-    }}
-    protected stateNotCheck(content: JssStyle): JssStyle { return {
-        '&:not(.check):not(.checked):not(:checked)': content,
-    }}
-    protected stateClearing(content: JssStyle): JssStyle { return {
-        '&.clear': content,
-    }}
-    protected stateNotClearing(content: JssStyle): JssStyle { return {
-        '&:not(.clear)': content,
-    }}
-    protected stateNotChecked(content: JssStyle): JssStyle { return {
-        // not fully checked
-        '&:not(.checked):not(:checked),&:not(.checked):checked.check': content,
-    }}
-    protected stateCheckClearing(content: JssStyle): JssStyle { return {
-        '&.check,&.checked,&:checked,&.clear': content,
-    }}
-    protected stateNotCheckClearing(content: JssStyle): JssStyle { return {
-        '&:not(.check):not(.checked):not(:checked):not(.clear)': content,
-    }}
-    protected stateNotCheckingClearing(content: JssStyle): JssStyle { return {
-        '&:not(.check):not(.clear)': content,
-    }}
-
-
-    
-    protected /*override*/ applyStateNoAnimStartupOld(): JssStyle {
-        return this.stateNotCheckingClearing(
-            super.applyStateNoAnimStartupOld()
-        );
-    }
-    protected /*virtual*/ applyStateCheck(): JssStyle { return {
-        ...this.noOutlined(), // *toggle off* the outlined
-    }}
-    //#endregion mixins
 
 
 
@@ -133,7 +92,7 @@ export class CheckStyles extends EditableControlStyles {
     public /*virtual*/ button(): JssStyle { return {
         // children:
 
-        [checkElm] : {
+        [inputElm] : {
             //#region hides the checkbox while still preserving animation & focus working
             // appearances:
             opacity    : 0,
@@ -187,12 +146,12 @@ export class CheckStyles extends EditableControlStyles {
                 [this.decl(this._switchTransfIn)]      : cssProps.switchTransfCheck,
                 [this.decl(this._switchTransfOut)]     : cssProps.switchTransfClear,
             },
-            this.stateCheck({ // [checking, checked]
-                [this.decl(this._animCheckClear)]      : cssProps.switchAnimCheck,
-            }),
-            this.stateNotCheck({ // [not-checking, not-checked] => [clearing, cleared]
-                [this.decl(this._animCheckClear)]      : cssProps.switchAnimClear,
-            }),
+            // this.stateCheck({ // [checking, checked]
+            //     [this.decl(this._animCheckClear)]      : cssProps.switchAnimCheck,
+            // }),
+            // this.stateNotCheck({ // [not-checking, not-checked] => [clearing, cleared]
+            //     [this.decl(this._animCheckClear)]      : cssProps.switchAnimClear,
+            // }),
             //#endregion check, clear
         ] as JssStyle,
         //#endregion specific states
@@ -200,7 +159,7 @@ export class CheckStyles extends EditableControlStyles {
 
 
         // children:
-        [checkElm] : {
+        [inputElm] : {
             // sizes:
             inlineSize   : '2em',   // makes the width twice the height
 
@@ -212,7 +171,7 @@ export class CheckStyles extends EditableControlStyles {
 
 
             // children:
-            [iconElm]: {
+            [checkElm]: {
                 [iconStyles.decl(iconStyles._img)] : cssProps.switchImg,
             },
 
@@ -226,216 +185,96 @@ export class CheckStyles extends EditableControlStyles {
 
 
     // states:
-    protected /*virtual*/ checkThemesIf(): JssStyle { return {} }
-    protected /*virtual*/ checkStates(inherit = false): JssStyle { return {
-        extend: [
-            this.iif(!inherit, {
-                //#region all initial states are none
-                [this.decl(this._animCheckClear)]      : bcssProps.animNone,
-                //#endregion all initial states are none
-            }),
+    public /*override*/ resetActivePassive(inherit: boolean) : PropList { return {
+        ...super.resetActivePassive(inherit), // copy resetActivePassive from base
 
 
 
-            //#region specific states
-            //#region check, clear
-            { // [checking, checked, clearing, cleared => all states]
-                [this.decl(this._filterCheckClearIn)]  : cssProps.filterCheck,
-                [this.decl(this._filterCheckClearOut)] : cssProps.filterClear,
-            },
-            this.stateCheck({ // [checking, checked]
-                [this.decl(this._animCheckClear)]      : cssProps.animCheck,
-
-                extend: [
-                    this.applyStateCheck(),
-                ] as JssStyle,
-            }),
-            this.stateNotCheck({ // [not-checking, not-checked] => [clearing, cleared]
-                [this.decl(this._animCheckClear)]      : cssProps.animClear,
-            }),
-            this.stateNotCheckingClearing( // [not-checking, not-clearing]
-                this.applyStateNoAnimStartupOld()
-            ),
-            //#endregion check, clear
-            //#endregion specific states
-        ] as JssStyle,
+        [this.decl(this._filterCheckClearIn)]  : inherit ? 'unset' : 'initial',
+        [this.decl(this._filterCheckClearOut)] : inherit ? 'unset' : 'initial',
+        [this.decl(this._animCheckClear)]      : inherit ? 'unset' : 'initial',
     }}
-
-    protected /*virtual*/ labelThemesIf(): JssStyle { return {} }
-    protected /*virtual*/ labelStates(inherit = false): JssStyle { return {
-        /*
-            watch state on current element but forward the action to sibling element (label)
-        */
-        
-        
-        
+    public /*override*/ actived()     : JssStyle { return {
         extend: [
-            //#region specific states
-            //#region check, clear => label active, passive
-            this.stateCheckClearing({ // [checking, checked, clearing] => label [activating, actived, passivating]
-                [labelElm]: {
-                    // [this.decl(this._filterActivePassive)] : icssProps.filterActive,
-                },
-            }),
-            this.stateCheck({ // [checking, checked] => label [activating, actived]
-                [labelElm]: {
-                    [this.decl(this._animActivePassive)]   : icssProps.animActive,
-                },
-
-                ...this.themeActive(),
-            }),
-            this.stateClearing({ // [clearing] => label [passivating]
-                [labelElm]: {
-                    [this.decl(this._animActivePassive)]   : icssProps.animPassive,
-                },
-            }),
-            {
-                // [cleared] => label [actived]
-                '&.checked,&:checked:not(.check)': { // if ctrl was fully checked, disable the animation
-                    /* IF */[checkElm]: this.stateNotFocusingBlurring({ // but still transfering the focus state to the "sibling" element(s):
-                        /* THEN [labelElm] */'&~*':
-                            super.applyStateNoAnimStartupOld(),
-                    }),
-                },
-            },
-            //#endregion check, clear => label active, passive
-            //#endregion specific states
+            super.actived(), // copy actived from base
         ] as JssStyle,
+
+
+
+        [this.decl(this._filterCheckClearIn)]  : cssProps.filterCheck,
+    }}
+    public /*override*/ activating()  : JssStyle { return {
+        extend: [
+            super.activating(), // copy activating from base
+        ] as JssStyle,
+
+
+
+        [this.decl(this._filterCheckClearIn)]  : cssProps.filterCheck,
+        [this.decl(this._filterCheckClearOut)] : cssProps.filterClear,
+        [this.decl(this._animCheckClear)]      : cssProps.animCheck,
+    }}
+    public /*override*/ passivating() : JssStyle { return {
+        extend: [
+            super.passivating(), // copy passivating from base
+        ] as JssStyle,
+
+
+
+        [this.decl(this._filterCheckClearIn)]  : cssProps.filterCheck,
+        [this.decl(this._filterCheckClearOut)] : cssProps.filterClear,
+        [this.decl(this._animCheckClear)]      : cssProps.animClear,
+    }}
+    public /*override*/ passived()    : JssStyle { return {
+        extend: [
+            super.passived(), // copy passived from base
+        ] as JssStyle,
+
+
+
+        [this.decl(this._filterCheckClearOut)] : cssProps.filterClear,
     }}
 
 
 
     // functions:
-    protected /*virtual*/ checkPropsFn(): JssStyle { return {
-        ...this.checkAnimFn(),
-    }}
-    protected /*virtual*/ checkAnimFn(): JssStyle { return {
-        // define an *animations* func for the icon:
-        [this.decl(this._iconAnimFn)]: [
-            this.ref(this._animCheckClear),
-        ],
-    }}
+    public /*override*/ propsFn(): PropList { return {
+        ...super.propsFn(), // copy functional props from base
+        
+        
+        
+        //#region finals
+        // define a final *filter* func for the icon:
+        [this.decl(this._checkFilter)] : [this.checkFilterFn()],  // double array (including from the returning function) => makes the JSS treat as space separated values
 
-    protected /*virtual*/ labelPropsFn(): JssStyle { return {} }
+        // define a final *animation* func for the icon:
+        [this.decl(this._checkAnim)]   : this.checkAnimFn(), // single array (including from the returning function) => makes the JSS treat as comma separated values
+        //#endregion finals
+    }}
+    public /*virtual*/ checkFilterFn(): Cust.Ref[] { return [
+        this.ref(this._filterCheckClearIn,  this._filterNone),
+        this.ref(this._filterCheckClearOut, this._filterNone),
+    ]}
+    public /*virtual*/ checkAnimFn(): Cust.Ref[] { return [
+        this.ref(this._animCheckClear, this._animNone),
+    ]}
 
 
 
     // styles:
-    protected /*virtual*/ checkBasicStyle(): JssStyle { return {
-        extend: [
-            super.basicStyle(), // copy basicStyle from base
-        ] as JssStyle,
-    
-
-
-        // layout:
-        display       : 'inline-block',
-
-
-
-        // positions:
-        verticalAlign : 'baseline', // check's icon should be aligned with sibling text, so the check behave like <span> wrapper
-    
-
-
-        // sizes:
-        boxSizing     : 'border-box', // the final size is including borders & paddings
-        /* the size is exactly the same as current font size */
-        inlineSize    : '1em',
-        blockSize     : '1em',
-
-
-
-        // spacings:
-        paddingInline : undefined as unknown as null,
-        paddingBlock  : undefined as unknown as null,
-
-        // spacing between check & label:
-        '&:not(:last-child)': {
-            marginInlineEnd : cssProps.spacing,
-        },
-    
-    
-    
-        overflow      : 'hidden', // clip the icon at borderRadius
-    
-        // children:
-        [iconElm]: {
-            extend: [
-                iconStyles.useIcon( // apply icon
-                    /*img   :*/ cssProps.img,
-                    /*foreg :*/ this.ref(this._foreg)
-                ),
-            ] as JssStyle,
-
-
-
-            // layout:
-            content   : '""',
-            display   : 'block', // fills the entire parent's width
-
-
-
-            // sizes:
-            // fills the entire parent:
-            boxSizing : 'border-box', // the final size is including borders & paddings
-            blockSize : '100%',
-            
-            
-            
-            // apply fn props:
-            anim      : this.ref(this._iconAnimFn),
-        },
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
-    protected /*virtual*/ labelBasicStyle(): JssStyle { return {
-        extend: [
-            super.basicStyle(), // copy basicStyle from base
-        ] as JssStyle,
-    
-
-
-        // layout:
-        display       : 'inline',
-
-
-
-        // positions:
-        verticalAlign : 'baseline', // check's text should be aligned with sibling text, so the check behave like <span> wrapper
-
-
-
-        // borders:
-        border        : undefined as unknown as null,
-        borderRadius  : undefined as unknown as null,
-
-
-
-        // spacings:
-        paddingInline : undefined as unknown as null,
-        paddingBlock  : undefined as unknown as null,
-        
-    
-        
-        // apply fn props:
-        foreg         : this.ref(this._mildForegFn),
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'label')), // apply *general* cssProps starting with label***
-    }}
     public /*override*/ basicStyle(): JssStyle { return {
+        extend: [
+            stripOuts.focusableElement, // clear browser's default styles
+        ] as JssStyle,
+
+
+
         // layout:
-        display        : 'inline-flex', // use flexbox as the layout
-        flexDirection  : 'row',         // items are stacked horizontally
+        display        : 'inline-flex', // use inline flexbox, so it takes the width & height as we set
+        flexDirection  : 'row',         // flow to the document's writting flow
         justifyContent : 'start',       // items are placed starting from the left
-        alignItems     : 'center',      // items are placed at the middle vertically
-        flexWrap       : 'wrap',
+        alignItems     : 'center',      // center items vertically
+        flexWrap       : 'wrap',        // allows the children to wrap to the next row
 
 
 
@@ -444,19 +283,19 @@ export class CheckStyles extends EditableControlStyles {
     
     
     
-        // the dummy text content, for making parent's height as tall as line-height
-        // the flex's first-child is used for calibrating the flex's vertical position
+        // a dummy text content, for making parent's height as tall as line-height
+        // the dummy is also used for calibrating the flex's vertical position
         '&::before': {
             // layout:
-            content    : '"\xa0"', // &nbsp;
+            content    : '"\xa0"',       // &nbsp;
             display    : 'inline-block', // use inline-block, so we can kill the width
             
 
 
             // appearances:
-            overflow   : 'hidden', // crop the text (&nbsp;)
-            visibility : 'hidden', // hide the element, but still consume the dimension
-            
+            overflow   : 'hidden', // crop the text width (&nbsp;)
+            visibility : 'hidden', // hide the element, but still consumes the dimension
+
             
             
             // sizes:
@@ -466,43 +305,131 @@ export class CheckStyles extends EditableControlStyles {
     
     
         // children:
-        [checkElm]    : this.checkBasicStyle(),
-        [labelElm]    : this.labelBasicStyle(),
-        '&:not(.btn)' : {
-            [labelElm] : {
-                // backgroundless on check/switch mode, but not in btn mode:
-                backg     : [['none'], '!important'], // no valid/invalid animation
-                boxShadow : [['none'], '!important'], // no focus animation
-            },
+        [inputElm]     : this.inputBasicStyle(),
+        [labelElm]     : this.labelBasicStyle(),
+    }}
+    protected /*virtual*/ inputBasicStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(), // copy basicStyle from base
+        ] as JssStyle,
+    
+
+
+        // layout:
+        display       : 'inline-block', // use inline-block, so it takes the width & height as we set
+
+
+
+        // sizes:
+        boxSizing     : 'border-box', // the final size is including borders & paddings
+        // the size is exactly the same as current font size:
+        inlineSize    : '1em',
+        blockSize     : '1em',
+
+
+
+        // spacings:
+        paddingInline : undefined as unknown as null, // discard basicStyle's paddingInline
+        paddingBlock  : undefined as unknown as null, // discard basicStyle's paddingBlock
+
+        // spacing between check & label:
+        '&:not(:last-child)': {
+            marginInlineEnd : cssProps.spacing,
         },
+    
+    
+    
+        // borders:
+        overflow      : 'hidden', // clip the icon at borderRadius
+
+
+
+        // accessibility:
+        pointerEvents     : 'none', // just an overlayed element, no mouse interaction, clicking on it will focus on the parent
+    
+        
+        
+        // children:
+        [checkElm]    : this.checkBasicStyle(),
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-
-
-
-    // old:
-    public /*override*/ themesIfOld(): JssStyle { return {
+    protected /*virtual*/ checkBasicStyle(): JssStyle { return {
         extend: [
-            super.themesIfOld(), // copy themes from base
-
-            this.checkThemesIf(),
-            this.labelThemesIf(),
+            iconStyles.useIcon( // apply icon
+                /*img   :*/ cssProps.img,
+                /*foreg :*/ this.ref(this._foreg)
+            ),
         ] as JssStyle,
+
+
+
+        // layout:
+        content   : '""',
+        display   : 'block', // fills the entire parent's width
+
+
+
+        // sizes:
+        // fills the entire parent:
+        boxSizing : 'border-box', // the final size is including borders & paddings
+        blockSize : '100%', // fills the entire parent's height
+        
+        
+        
+        // states & animations:
+        filter    : this.ref(this._checkFilter),
+        anim      : this.ref(this._checkAnim),
     }}
-    public /*override*/ statesOld(inherit = false): JssStyle { return {
+    protected /*virtual*/ labelBasicStyle(): JssStyle { return {
         extend: [
-            super.statesOld(inherit), // copy states from base
-
-            this.checkStates(inherit),
-            this.labelStates(inherit),
+            super.basicStyle(), // copy basicStyle from base
         ] as JssStyle,
-    }}
-    public /*override*/ propsFnOld(): JssStyle { return {
-        extend: [
-            super.propsFnOld(), // copy functional props from base
+    
 
-            this.checkPropsFn(),
-            this.labelPropsFn(),
-        ] as JssStyle,
+
+        // layout:
+        display       : 'inline', // use inline, so it takes the width & height automatically
+
+
+
+        // positions:
+        verticalAlign : 'baseline', // label's text should be aligned with sibling text, so the label behave like <span> wrapper
+
+
+
+        // foregrounds:
+        foreg         : this.ref(this._mildForegFn),
+        
+        
+        
+        // backgrounds:
+        backg         : undefined as unknown as null, // discard basicStyle's background
+
+
+
+        // borders:
+        border        : undefined as unknown as null, // discard basicStyle's border
+        borderRadius  : undefined as unknown as null, // discard basicStyle's borderRadius
+
+
+
+        // spacings:
+        paddingInline : undefined as unknown as null, // discard basicStyle's paddingInline
+        paddingBlock  : undefined as unknown as null, // discard basicStyle's paddingBlock
+
+
+
+        // states & animations:
+        // boxShadow     : undefined as unknown as null, // discard basicStyle's boxShadow
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'label')), // apply *general* cssProps starting with label***
     }}
 }
 export const checkStyles = new CheckStyles();
@@ -627,73 +554,6 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export function useStateCheckClear(props: CheckProps) {
-    // defaults:
-    const defaultChecked: boolean = false; // true => checked, false => cleared
-
-
-    
-    // states:
-    const [checked,   setChecked  ] = useState<boolean>(props.checked        ?? defaultChecked); // true => checked, false => cleared
-    const [animating, setAnimating] = useState<boolean|null>(null);                              // null => no-animation, true => checking-animation, false => clearing-animation
-
-    const [checkedDn, setCheckedDn] = useState<boolean>(props.defaultChecked ?? defaultChecked); // uncontrollable (dynamic) state: true => user checked, false => user cleared
-
-
-
-    /*
-     * state is checked/cleared based on [controllable checked] (if set) and fallback to [uncontrollable checked]
-     */
-    const checkedFn: boolean = props.checked /*controllable*/ ?? checkedDn /*uncontrollable*/;
-
-    if (checked !== checkedFn) { // change detected => apply the change & start animating
-        setChecked(checkedFn);   // remember the last change
-        setAnimating(checkedFn); // start checking-animation/clearing-animation
-    }
-
-    
-    
-    const handleChange = ({target}: React.ChangeEvent<HTMLInputElement>) => {
-        if (props.checked !== undefined) return; // controllable [checked] is set => no uncontrollable required
-
-        
-        
-        setCheckedDn(target.checked);
-    }
-    const handleIdle = () => {
-        // clean up finished animation
-
-        setAnimating(null); // stop checking-animation/clearing-animation
-    }
-    return {
-        /**
-         * partially/fully checked
-        */
-        checked :  checked,
-
-        /**
-         * partially/fully cleared
-         */
-        cleared : !checked,
-
-        class   : ((): string|null => {
-            if (animating === true)  return 'check';
-            if (animating === false) return 'clear';
-
-         // if (checked) return 'checked'; // use pseudo :checked
-
-            return null;
-        })(),
-        handleChange: handleChange,
-        handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
-            if (e.target !== e.currentTarget) return; // no bubbling
-            if (/((?<![a-z])(check|clear)|(?<=[a-z])(Check|Clear))(?![a-z])/.test(e.animationName)) {
-                handleIdle();
-            }
-        },
-    };
-}
-
 export type ChkStyle = 'btn' | 'switch' // might be added more styles in the future
 export interface VariantCheck {
     chkStyle?: ChkStyle
@@ -711,6 +571,7 @@ export function useVariantCheck(props: VariantCheck, styles: Record<string, stri
 export interface CheckProps
     extends
         EditableControlProps<HTMLInputElement>,
+        TogglerActiveProps,
 
         VariantCheck
 {
@@ -743,7 +604,7 @@ export default function Check(props: CheckProps) {
     
     
     // states:
-    const stateChkClr = useStateCheckClear(props);
+    const [isActive, setActive] = useTogglerActive(props);
 
     
 
@@ -754,16 +615,20 @@ export default function Check(props: CheckProps) {
 
 
         // accessibility:
-        tabIndex,
         readOnly,
+
+        defaultActive,  // delete, already handled by useTogglerActive
+        onActiveChange, // delete, already handled by useTogglerActive
+        active,         // delete, already handled by useTogglerActive
+
+        defaultChecked,
+        // onChange, // let's bubbling to parent handle onChange
+        checked,
 
 
         // values:
         defaultValue,
         value,
-        defaultChecked,
-        checked,
-        // onChange, // let's bubbling to parent handle onChange
 
 
         // validations:
@@ -790,12 +655,12 @@ export default function Check(props: CheckProps) {
 
 
             // essentials:
-            tag={props.tag ?? 'label'}
+            tag={props.tag ?? 'span'}
 
 
             // accessibility:
             aria-label={props.label}
-            tabIndex={-1} // [tabIndex] is negative => act as *wrapper* element, if input is :focus (pseudo) => the wrapper is also .focus (synthetic)
+            active={isActive}
 
 
             // variants:
@@ -807,9 +672,17 @@ export default function Check(props: CheckProps) {
             variantClasses={[...(props.variantClasses ?? []),
                 variCheck.class,
             ]}
-            stateClasses={[...(props.stateClasses ?? []),
-                stateChkClr.class ?? (stateChkClr.checked ? 'checked' : null),
-            ]}
+
+
+            // events:
+            onClick={(e) => {
+                // backwards:
+                props.onClick?.(e);
+                
+                
+                
+                if (!e.defaultPrevented) setActive(!isActive); // toggle active
+            }}
         >
             <input
                 // essentials:
@@ -819,7 +692,7 @@ export default function Check(props: CheckProps) {
                 // accessibility:
                 aria-hidden={isBtnStyle} // if btnStyle => hides the check
                 disabled={!propEnabled}
-                tabIndex={tabIndex}
+                tabIndex={-1}
                 readOnly={readOnly}
 
 
@@ -828,7 +701,7 @@ export default function Check(props: CheckProps) {
                 value={value}
                 defaultChecked={defaultChecked}
                 checked={checked}
-                onChange={stateChkClr.handleChange} // let's bubbling to parent handle onChange
+                onChange={({target}) => setActive(target.checked)} // let's bubbling to parent handle onChange
 
 
                 // validations:
@@ -842,16 +715,19 @@ export default function Check(props: CheckProps) {
                 // events:
                 // onFocus, onBlur // bubble to parent (unlike on native DOM that doesn't bubble, on react *do* bubbling)
                 onAnimationEnd={(e) => {
-                    // states:
-                    stateChkClr.handleAnimationEnd(e);
-
-
-                    // triggers Listgroup's onAnimationEnd event
+                    // triggers parent's onAnimationEnd event
                     e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
                 }}
             />
             { (props.text || props.children) &&
-                <span>
+                <span
+                    // events:
+                    // listening input's onAnimationEnd is enough
+                    // onAnimationEnd={(e) => {
+                    //     // triggers parent's onAnimationEnd event
+                    //     e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
+                    // }}
+                >
                     { props.text }
                     { props.children }
                 </span>

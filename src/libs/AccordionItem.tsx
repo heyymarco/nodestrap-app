@@ -251,7 +251,7 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
                 
                 
                 
-                if (!e.defaultPrevented) setActive(!isActive);
+                if (!e.defaultPrevented) setActive(!isActive); // toggle active
             }}
         >
             { label }

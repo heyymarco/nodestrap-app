@@ -388,7 +388,7 @@ const cssConfig = new CssConfig(() => {
 
         // sizes:
         boxSizing     : 'border-box', // the final size is including borders & paddings
-        blockSize     : '100%',       // set height to maximum if parent container has specific height, otherwise no effect
+        blockSize     : '100%',       // fills the entire parent's height if the parent has a specific height, otherwise no effect
 
         
         

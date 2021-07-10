@@ -317,7 +317,8 @@ export class IconStyles extends BasicComponentStyles {
 
 
         // a dummy text content, for making parent's height as tall as line-height
-        '&::before'   : {
+        // the dummy is also used for calibrating the flex's vertical position
+        '&::before': {
             // layout:
             content    : '"\xa0"',       // &nbsp;
             display    : 'inline-block', // use inline-block, so we can kill the width
