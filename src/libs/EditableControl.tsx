@@ -11,7 +11,7 @@ import {
     JssStyle,
     PropEx,
     Cust,
-    ClassList,
+    StateList,
     PropList,
 
     
@@ -60,8 +60,8 @@ export class EditableControlStyles extends ControlStyles {
 
 
     // states:
-    public /*override*/ states(inherit: boolean): ClassList { return [
-        ...super.states(inherit), // copy states from base
+    public /*override*/ statess(inherit: boolean): StateList { return [
+        ...super.statess(inherit), // copy states from base
 
 
 
@@ -74,44 +74,44 @@ export class EditableControlStyles extends ControlStyles {
 
 
         // .vald will be added after validating-animation done
-        [ '&.vald'                                                             , this.valided()        ],
+        [  '.vald'                                                              , [this.valid()     , this.valided()       ] ],
 
         // .val = programatically valid, :valid = user valid
-        [ '&.val,' +
-          '&:valid:not(.vald):not(.unval):not(.valdis):not(.invd):not(.inv)'   , this.validating()     ],
+        [ ['.val',
+           ':valid:not(.vald):not(.unval):not(.noval):not(.invd):not(.inv)']    , [this.valid()     , this.validating()    ] ],
 
         // .unval will be added after loosing valid and will be removed after unvalidating-animation done
-        [ '&.unval'                                                            , this.unvalidating()   ],
+        [  '.unval'                                                             , [this.unvalid()   , this.unvalidating()  ] ],
 
         // if all above are not set => unvalided
-        // optionally use .valdis to kill pseudo :valid
-        [ '&:not(.vald):not(.val):not(:valid):not(.unval),' +
-          '&.valdis'                                                           , this.unvalided()      ],
+        // optionally use .noval to kill pseudo :valid
+        [ [':not(.vald):not(.val):not(:valid):not(.unval)',
+           '.noval']                                                            , [this.unvalid()   , this.unvalided()     ] ],
 
 
 
         // .invd will be added after invalidating-animation done
-        [ '&.invd'                                                             , this.invalided()      ],
+        [  '.invd'                                                              , [this.invalid()   , this.invalided()     ] ],
 
         // .inv = programatically invalid, :invalid = user invalid
-        [ '&.inv,' +
-          '&:invalid:not(.invd):not(.uninv):not(.valdis):not(.vald):not(.val)' , this.invalidating()   ],
+        [ ['.inv',
+           ':invalid:not(.invd):not(.uninv):not(.noval):not(.vald):not(.val)']  , [this.invalid()   , this.invalidating()  ] ],
 
         // .uninv will be added after loosing invalid and will be removed after uninvalidating-animation done
-        [ '&.uninv'                                                            , this.uninvalidating() ],
+        [  '.uninv'                                                             , [this.uninvalid() , this.uninvalidating()] ],
 
         // if all above are not set => uninvalided
-        // optionally use .valdis to kill pseudo :invalid
-        [ '&:not(.invd):not(.inv):not(:invalid):not(.uninv),' +
-          '&.valdis'                                                           , this.uninvalided()    ],
+        // optionally use .noval to kill pseudo :invalid
+        [ [':not(.invd):not(.inv):not(:invalid):not(.uninv)',
+           '.noval']                                                            , [this.uninvalid() , this.uninvalided()   ] ],
         
         
         
         // if all above are not set => noValidation
-        // optionally use .valdis to kill pseudo :valid & :invalid
-        [ '&:not(.vald):not(.val):not(:valid):not(.unval)' +
-           ':not(.invd):not(.inv):not(:invalid):not(.uninv),' +
-          '&.valdis'                                                           , this.noValidation()   ],
+        // optionally use .noval to kill pseudo :valid & :invalid
+        [ [':not(.vald):not(.val):not(:valid):not(.unval)' +
+           ':not(.invd):not(.inv):not(:invalid):not(.uninv)',
+           '.noval']                                                            , this.noValidation()                        ],
     ]}
 
     public /*virtual*/ resetValidUnvalid(inherit: boolean) : PropList { return {
@@ -119,39 +119,15 @@ export class EditableControlStyles extends ControlStyles {
     }}
     public /*virtual*/ valided()        : JssStyle { return {
         /* --nothing-- */
-
-
-
-        extend: [
-            this.valid(),
-        ] as JssStyle,
     }}
     public /*virtual*/ validating()     : JssStyle { return {
         [this.decl(this._animValUnval)] : cssProps.animValid,
-
-
-
-        extend: [
-            this.valid(),
-        ] as JssStyle,
     }}
     public /*virtual*/ unvalidating()   : JssStyle { return {
         [this.decl(this._animValUnval)] : cssProps.animUnvalid,
-
-
-
-        extend: [
-            this.unvalid(),
-        ] as JssStyle,
     }}
     public /*virtual*/ unvalided()      : JssStyle { return {
         /* --nothing-- */
-
-
-
-        extend: [
-            this.unvalid(),
-        ] as JssStyle,
     }}
     public /*virtual*/ valid()          : JssStyle { return {
         extend: [
@@ -175,39 +151,15 @@ export class EditableControlStyles extends ControlStyles {
     }}
     public /*virtual*/ invalided()      : JssStyle { return {
         /* --nothing-- */
-
-
-
-        extend: [
-            this.invalid(),
-        ] as JssStyle,
     }}
     public /*virtual*/ invalidating()   : JssStyle { return {
         [this.decl(this._animInvUninv)] : cssProps.animInvalid,
-
-
-
-        extend: [
-            this.invalid(),
-        ] as JssStyle,
     }}
     public /*virtual*/ uninvalidating() : JssStyle { return {
         [this.decl(this._animInvUninv)] : cssProps.animUninvalid,
-
-
-
-        extend: [
-            this.uninvalid(),
-        ] as JssStyle,
     }}
     public /*virtual*/ uninvalided()    : JssStyle { return {
         /* --nothing-- */
-
-
-
-        extend: [
-            this.uninvalid(),
-        ] as JssStyle,
     }}
     public /*virtual*/ invalid()        : JssStyle { return {
         extend: [
@@ -468,7 +420,7 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
 
         setErrAnimating(null);  // stop err-animation/unerr-animation
     }
-    const valDisabled = // causing the validFn *always* `null`:
+    const noValidation = // causing the validFn *always* `null`:
         (propValidation.isValid === null)
         ||
         (!validator);
@@ -478,8 +430,8 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
          * `false` : invalidating/invalided
          * `null`  : uncheck/unvalidating/uninvalidating
         */
-        valid: (valided ?? null) as ValResult,
-        valDisabled: valDisabled,
+        valid        : (valided ?? null) as ValResult,
+        noValidation : noValidation,
 
         class: [
             // valid classes:
@@ -509,14 +461,14 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
             // neutral classes:
             ((): string|null => {
                 if (valided === null) {
-                    // if (valDisabled) {
-                    //     return 'valdis'; // validation_disabled by controllable prop => use class .valdis to kill [:valid || :invalid]
+                    // if (noValidation) {
+                    //     return 'noval'; // validation_disabled by controllable prop => use class .noval to kill [:valid || :invalid]
                     // }
                     // else {
                     //     return null; // discard all classes above
                     // } // if
 
-                    return 'valdis';
+                    return 'noval';
                 } // if
     
                 return null;

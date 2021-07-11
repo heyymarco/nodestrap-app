@@ -18,9 +18,6 @@ import jssPluginExpand              from 'jss-plugin-expand'
 // import jssPluginPropsSort        from 'jss-plugin-props-sort'
 import jssPluginNormalizeShorthands from './jss-plugin-normalize-shorthands'
 
-// other supports:
-import deepEqual                    from 'deep-equal'
-
 
 
 // ts defs:
@@ -495,13 +492,49 @@ export default class CssConfig<TProps, TProp extends ValueOf<TProps>> {
                 return (srcName === refName);
             };
 
+            const isKeyframes = <TTRefProp,>(refProp: TTRefProp): boolean => {
+                if (typeof refProp !== 'object') return false;
+                if (Array.isArray(refProp))      return false;
+                
+                
+                
+                return Object.values(genKeyframes).some((kf) => ((kf as Object) === (refProp as Object)));
+            };
+
+            const deepEquals = (srcProp: Object, refProp: Object): boolean => {
+                if (Object.is(srcProp, refProp)) return true;
+
+
+
+                if (isKeyframes(refProp)) return false; // @keyframes must be compared by reference, no deep equal
+
+
+
+                if (typeof srcProp !== 'object') return false;
+                if (typeof refProp !== 'object') return false;
+                if (Array.isArray(srcProp) !== Array.isArray(refProp)) return false; // both must be an array -or- both must not be an array
+
+
+
+                if (Object.keys(srcProp).length !== Object.keys(refProp).length) return false; // items count are different => false
+                for (const [name, prop] of Object.entries(srcProp)) {
+                    if (!deepEquals(prop, (refProp as any)[name])) return false; // the same prop name with different values => false
+                } // for
+
+
+
+                return true; // no differences detected => true
+            };
+
             /**
              * Determines if the specified `srcProp` and `refProp` are deeply the same by value.
              * @param srcProp The first value to test.
              * @param refProp The second value to test.
              * @returns 
              */
-            const isEqualProp = <TTSrcProp, TTRefProp>(srcProp: TTSrcProp, refProp: TTRefProp) => deepEqual(srcProp, refProp, {strict: true});
+            const isEqualProp = <TTSrcProp, TTRefProp>(srcProp: TTSrcProp, refProp: TTRefProp) => {
+                return deepEquals(srcProp, refProp);
+            };
 
             /**
              * Determines if the specified prop [key = `srcName` : value = `srcProp`] has the equivalent prop previously.
@@ -561,20 +594,22 @@ export default class CssConfig<TProps, TProp extends ValueOf<TProps>> {
     
                         
     
-                        /**
-                         * Determines if the current `srcKeyframeProp` has the equivalent stored `@keyframes`.  
-                         * value:  
-                         * `undefined` => *no* equivalent `@keyframes` found.  
-                         * `string`    => represents the name of the equivalent `@keyframes`.
-                         */
-                        const equalKfName = Object.entries(genKeyframes).find(entry => isEqualProp(entry[1], srcKeyframeProp))?.[0];
-                        if (equalKfName) {
-                            // found => use existing @keyframes name:
+                        /* -- treats @keyframes *always unique* -- */
+                        // /**
+                        //  * Determines if the current `srcKeyframeProp` has the equivalent stored `@keyframes`.  
+                        //  * value:  
+                        //  * `undefined` => *no* equivalent `@keyframes` found.  
+                        //  * `string`    => represents the name of the equivalent `@keyframes`.
+                        //  */
+                        // const equalKfName = Object.entries(genKeyframes).find(entry => isEqualProp(entry[1], srcKeyframeProp))?.[0];
+                        // if (equalKfName) {
+                        //     // found => use existing @keyframes name:
     
-                            // replace with the equivalent `@keyframes` name:
-                            modifSrcProps[propRename?.(srcName) ?? srcName] = equalKfName;
-                        }
-                        else {
+                        //     // replace with the equivalent `@keyframes` name:
+                        //     modifSrcProps[propRename?.(srcName) ?? srcName] = equalKfName;
+                        // }
+                        // else
+                        {
                             // not found => create a @keyframes name:
                             const newKfName = this.getGenKeyframesName(kfName);
     
@@ -637,7 +672,7 @@ export default class CssConfig<TProps, TProp extends ValueOf<TProps>> {
                     if (equalLiteral) {
                         // convert the literal object back to array:
                         const arrayProp: ValueOf<typeof equalLiteral>[] = [];
-                        Object.assign(arrayProp, equalLiteral);
+                        Object.assign(arrayProp, equalLiteral); // convert literal object to array
 
 
 
@@ -702,66 +737,67 @@ export default class CssConfig<TProps, TProp extends ValueOf<TProps>> {
         
 
 
+        /* -- treats @keyframes *always unique* -- */
         //#region transform the keyframes
-        /*
-            kfName            : kfProp
-            ------------------:---------------------------
-            string            : Dict<  Dict<Cust.Expr>   >
-            ------------------:---------------------------
-            '@keyframes foo'  : {     {'opacity': 0.5}  },
-            '@keyframes dude' : {            ...        },
-        */
-        for (const [name, kfProp] of Object.entries(genKeyframes)) {
-            if ((kfProp === undefined) || (kfProp === null)) continue; // skip empty keyframes
+        // /*
+        //     kfName            : kfProp
+        //     ------------------:---------------------------
+        //     string            : Dict<  Dict<Cust.Expr>   >
+        //     ------------------:---------------------------
+        //     '@keyframes foo'  : {     {'opacity': 0.5}  },
+        //     '@keyframes dude' : {            ...        },
+        // */
+        // for (const [name, kfProp] of Object.entries(genKeyframes)) {
+        //     if ((kfProp === undefined) || (kfProp === null)) continue; // skip empty keyframes
 
 
 
-            type TKeyframes      = typeof kfProp // keyframes = (key:string : frame:Dict<Expr>)*
-            type TFrame          = ValueOf<TKeyframes>
-            type TModifFrame     = Dictionary<ValueOf<TFrame> | Cust.Ref>
-            type TmodifKeyframes = Dictionary<TModifFrame>
-            /**
-             * Stores the modified props in `kfProp`.
-             */
-            const modifKfProp: TmodifKeyframes = {}; // initially empty (no modification)
+        //     type TKeyframes      = typeof kfProp // keyframes = (key:string : frame:Dict<Expr>)*
+        //     type TFrame          = ValueOf<TKeyframes>
+        //     type TModifFrame     = Dictionary<ValueOf<TFrame> | Cust.Ref>
+        //     type TmodifKeyframes = Dictionary<TModifFrame>
+        //     /**
+        //      * Stores the modified props in `kfProp`.
+        //      */
+        //     const modifKfProp: TmodifKeyframes = {}; // initially empty (no modification)
 
 
 
-            /*
-                key    : frameProp
-                -------:---------------
-                string : Dict<Cust.Expr>
-                -------:---------------
-                '12%'  : {
-                            'opacity' : 0.5,
-                            'color'   : 'red',
-                            'some'    : Cust.Expr,
-                         }
-            */
-            for (const [key, frameProp] of Object.entries(kfProp)) {
-                if ((frameProp === undefined) || (frameProp === null)) continue; // skip empty frames
+        //     /*
+        //         key    : frameProp
+        //         -------:---------------
+        //         string : Dict<Cust.Expr>
+        //         -------:---------------
+        //         '12%'  : {
+        //                     'opacity' : 0.5,
+        //                     'color'   : 'red',
+        //                     'some'    : Cust.Expr,
+        //                  }
+        //     */
+        //     for (const [key, frameProp] of Object.entries(kfProp)) {
+        //         if ((frameProp === undefined) || (frameProp === null)) continue; // skip empty frames
 
 
-                /**
-                 * Determines if the current `frameProp` has the equivalent literal object,  
-                 * in which some values has been partially/fully *transformed*.  
-                 * The duplicate values has been replaced with the *'var(...)'* linked to the existing props in `props`.  
-                 * value:  
-                 * `undefined` => *no* transformation was performed.  
-                 * -or-  
-                 * A copy *transformed* literal object.
-                 */
-                const equalFrameProp = transformDuplicates(frameProp as DictionaryOf<typeof frameProp>, this._props);
+        //         /**
+        //          * Determines if the current `frameProp` has the equivalent literal object,  
+        //          * in which some values has been partially/fully *transformed*.  
+        //          * The duplicate values has been replaced with the *'var(...)'* linked to the existing props in `props`.  
+        //          * value:  
+        //          * `undefined` => *no* transformation was performed.  
+        //          * -or-  
+        //          * A copy *transformed* literal object.
+        //          */
+        //         const equalFrameProp = transformDuplicates(frameProp as DictionaryOf<typeof frameProp>, this._props);
 
-                // if transformed (modified) => store the modified:
-                if (equalFrameProp) modifKfProp[key] = equalFrameProp;
-            } // for
+        //         // if transformed (modified) => store the modified:
+        //         if (equalFrameProp) modifKfProp[key] = equalFrameProp;
+        //     } // for
 
             
 
-            // if the modifKfProp is not empty (has any modifications) => replace with the (original + modified):
-            if (Object.keys(modifKfProp).length) genKeyframes[name] = {...kfProp, ...modifKfProp};
-        } // for
+        //     // if the modifKfProp is not empty (has any modifications) => replace with the (original + modified):
+        //     if (Object.keys(modifKfProp).length) genKeyframes[name] = {...kfProp, ...modifKfProp};
+        // } // for
         //#endregion transform the keyframes
 
 

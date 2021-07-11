@@ -37,7 +37,7 @@ import BasicComponentApp                        from './apps/BasicComponentApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <ControlApp />
+        <EditableControlApp />
     </React.StrictMode>,
     document.getElementById('root')
 );
