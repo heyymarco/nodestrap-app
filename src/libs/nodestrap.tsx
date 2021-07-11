@@ -43,6 +43,8 @@ export type { Prop, PropEx, Cust }
 export type { Dictionary, ValueOf, DictionaryOf }
 export type ClassEntry = [string|null, JssStyle]
 export type ClassList  = ClassEntry[]
+export type StateEntry = [((string|null)|(string|null)[]), (JssStyle|JssStyle[])]
+export type StateList  = StateEntry[]
 export type PropList   = { [name: string]: JssValue }
 
 
@@ -339,6 +341,26 @@ export class ElementStyles {
 
                 return `&.${state}`;
             })() : '&'] : style })),
+
+            ...this.statess(inherit).map(([states, styles]): JssStyle => ({
+                [
+                    (Array.isArray(states) ? states : [states])
+                    .map((state): string => {
+                        if (!state) return '&';
+
+                        if (state.includes('&')) return state;
+
+                        if (state.includes('.') || state.includes(':')) return `&${state}`;
+
+                        return `&.${state}`;
+                    })
+                    .join(',')
+                ]: {
+                    extend: [
+                        ...(Array.isArray(styles) ? styles : [styles]),
+                    ] as JssStyle,
+                } as JssStyle,
+            }))
         ] as JssStyle,
     }}
 
@@ -348,6 +370,12 @@ export class ElementStyles {
      * @returns A `ClassList` represents the css rule definitions for all states.
      */
     public /*virtual*/ states(inherit: boolean): ClassList { return [] }
+    /**
+     * Creates css rule definitions for all states by manipulating some props.
+     * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
+     * @returns A `StateList` represents the css rule definitions for all states.
+     */
+    public /*virtual*/ statess(inherit: boolean): StateList { return [] }
 
 
 

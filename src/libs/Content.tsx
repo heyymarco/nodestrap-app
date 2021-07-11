@@ -23,12 +23,12 @@ import {
 
 export interface IContentStyles {
     // variants:
-    contentSize(size: string)   : JssStyle
+    contentSize(size: string) : JssStyle
 
 
 
     // styles:
-    contentBasicStyle(): JssStyle
+    contentBasicStyle()       : JssStyle
 }
 export class ContentStyles extends IndicatorStyles implements IContentStyles {
     // variants:

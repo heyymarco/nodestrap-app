@@ -12,6 +12,7 @@ import {
     DictionaryOf,
     ClassEntry,
     ClassList,
+    StateList,
     PropList,
 
     
@@ -465,8 +466,8 @@ export class BasicComponentStyles extends ElementStyles {
 
 
     // states:
-    public /*override*/ states(inherit: boolean): ClassList { return [
-        ...super.states(inherit), // copy states from base
+    public /*override*/ statess(inherit: boolean): StateList { return [
+        ...super.statess(inherit), // copy states from base
 
 
 

@@ -10,7 +10,7 @@ import {
     JssStyle,
     PropEx,
     Cust,
-    ClassList,
+    StateList,
     PropList,
 
 
@@ -137,18 +137,12 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
     // states:
-    public /*override*/ states(inherit: boolean): ClassList { return [
-        ...super.states(inherit), // copy states from base
+    public /*override*/ statess(inherit: boolean): StateList { return [
+        ...super.statess(inherit), // copy states from base
 
 
 
         [ null, {
-            // requires usePropsFn() for using _foregFn & _backgFn in the actived() & activating() => active() => markActive() => toggleOnActive()
-            // the code below causing useStates() implicitly includes usePropsFn()
-            ...this.usePropsFn(),
-
-
-
             // reset filters/anims/toggles to initial/inherit state:
             ...this.resetEnableDisable(inherit),
             ...this.resetArriveLeave(inherit),
@@ -159,30 +153,30 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
         // if all below are not set => enabled
-        [ '&:not(.disabled):not(.disable):not(:disabled):not(.enable)' , this.enabled()     ],
+        [  ':not(.enable):not(.disabled):not(.disable):not(:disabled)' , [this.enable()  , this.enabled()    ] ],
 
         // .enable will be added after loosing disable and will be removed after enabling-animation done
-        [ '&.enable'                                                   , this.enabling()    ],
+        [  '.enable'                                                   , [this.enable()  , this.enabling()   ] ],
 
         // .disable = styled disable, :disabled = real disable
-        [ '&.disable,&:disabled:not(.disabled)'                        , this.disabling()   ],
+        [ ['.disable', ':disabled:not(.disabled)']                     , [this.disable() , this.disabling()  ] ],
 
         // .disabled will be added after disabling-animation done
-        [ '&.disabled'                                                 , this.disabled()    ],
+        [  '.disabled'                                                 , [this.disable() , this.disabled()   ] ],
 
         
 
         // .actived will be added after activating-animation done
-        [ '&.actived'                                                  , this.actived()     ],
+        [  '.actived'                                                  , [this.active()  , this.actived()    ] ],
 
         // .active = programatically active, :checked = user active
-        [ '&.active,&:checked:not(.actived)'                           , this.activating()  ],
+        [ ['.active', ':checked:not(.actived)']                        , [this.active()  , this.activating() ] ],
 
         // .passive will be added after loosing active and will be removed after deactivating-animation done
-        [ '&.passive'                                                  , this.passivating() ],
+        [  '.passive'                                                  , [this.passive() , this.passivating()] ],
 
         // if all above are not set => passived
-        [ '&:not(.actived):not(.active):not(:checked):not(.passive)'   , this.passived()    ],
+        [  ':not(.actived):not(.active):not(:checked):not(.passive)'   , [this.passive() , this.passived()   ] ],
     ]}
     
     public /*virtual*/ resetEnableDisable(inherit: boolean) : PropList { return {
@@ -191,41 +185,17 @@ export class IndicatorStyles extends BasicComponentStyles {
     }}
     public /*virtual*/ enabled()     : JssStyle { return {
         /* --nothing-- */
-
-
-
-        extend: [
-            this.enable(),
-        ] as JssStyle,
     }}
     public /*virtual*/ enabling()    : JssStyle { return {
         [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
         [this.decl(this._animEnableDisable)]   : cssProps.animEnable,
-
-
-
-        extend: [
-            this.enable(),
-        ] as JssStyle,
     }}
     public /*virtual*/ disabling()   : JssStyle { return {
         [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
         [this.decl(this._animEnableDisable)]   : cssProps.animDisable,
-
-
-
-        extend: [
-            this.disable(),
-        ] as JssStyle,
     }}
     public /*virtual*/ disabled()    : JssStyle { return {
         [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
-
-
-
-        extend: [
-            this.disable(),
-        ] as JssStyle,
     }}
     public /*virtual*/ enable()      : JssStyle { return {
     }}
@@ -242,41 +212,17 @@ export class IndicatorStyles extends BasicComponentStyles {
     }}
     public /*virtual*/ actived()     : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-
-        
-        
-        extend: [
-            this.active(),
-        ] as JssStyle,
     }}
     public /*virtual*/ activating()  : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
         [this.decl(this._animActivePassive)]   : cssProps.animActive,
-
-        
-        
-        extend: [
-            this.active(),
-        ] as JssStyle,
     }}
     public /*virtual*/ passivating() : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
         [this.decl(this._animActivePassive)]   : cssProps.animPassive,
-
-
-
-        extend: [
-            this.passive(),
-        ] as JssStyle,
     }}
     public /*virtual*/ passived()    : JssStyle { return {
         /* --nothing-- */
-
-
-
-        extend: [
-            this.passive(),
-        ] as JssStyle,
     }}
     public /*virtual*/ active()      : JssStyle { return {
         extend: [
@@ -289,7 +235,7 @@ export class IndicatorStyles extends BasicComponentStyles {
     public /*virtual*/ markActive()  : JssStyle { return {
         ...this.noOutlined(),
         ...this.noMild(),
-        
+
         ...this.themeActive(),
     }}
     public /*virtual*/ themeActive(theme = 'secondary'): PropList {

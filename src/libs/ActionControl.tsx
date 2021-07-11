@@ -34,7 +34,24 @@ import {
 
 // styles:
 
-export class ActionControlStyles extends ControlStyles {
+export interface IActionControlStyles {
+    // variants:
+    actionControlSize(size: string): JssStyle
+
+
+
+    // states:
+    actionControlStates(inherit: boolean, actionControl: IActionControlStyles): ClassList
+    resetPressRelease(inherit: boolean): PropList
+    pressed()   : JssStyle
+    pressing()  : JssStyle
+    releasing() : JssStyle
+    released()  : JssStyle
+    press()     : JssStyle
+    release()   : JssStyle
+}
+
+export class ActionControlStyles extends ControlStyles implements IActionControlStyles {
     //#region props
     //#region animations
  // public    readonly _filterPressRelease  = 'filterPressRelease' // already defined in Indicator
@@ -44,60 +61,15 @@ export class ActionControlStyles extends ControlStyles {
 
 
 
-    //#region mixins
-    // turn off default actionCtrl behavior, use a new actionCtrl implementation
-    protected /*override*/ actionCtrl() { return false; }
-
-
-
-    protected statePressing(content: JssStyle): JssStyle { return {
-        '&.press,&:active:not(.disable):not(.disabled):not(:disabled)': content,
-    }}
-    protected statePress(content: JssStyle): JssStyle { return {
-        '&.press,&.pressed,&:active:not(.disable):not(.disabled):not(:disabled)': content,
-    }}
-    protected stateNotPress(content: JssStyle): JssStyle { return {
-        '&:not(.press):not(.pressed):not(:active), &:not(.press):not(.pressed).disable, &:not(.press):not(.pressed).disabled, &:not(.press):not(.pressed):disabled': content,
-    }}
-    protected stateNotPressed(content: JssStyle): JssStyle { return {
-        // not fully pressed
-        '&:not(.pressed)': content,
-    }}
-    protected stateReleasing(content: JssStyle): JssStyle { return {
-        '&.release': content,
-    }}
-    protected stateNotReleasing(content: JssStyle): JssStyle { return {
-        '&:not(.release)': content,
-    }}
-    protected statePressReleasing(content: JssStyle): JssStyle { return {
-        '&.press,&.pressed,&:active:not(.disable):not(.disabled):not(:disabled),&.release': content,
-    }}
-    protected stateNotPressReleasing(content: JssStyle): JssStyle { return {
-        '&:not(.press):not(.pressed):not(:active):not(.release), &:not(.press):not(.pressed).disable:not(.release), &:not(.press):not(.pressed).disabled:not(.release), &:not(.press):not(.pressed):disabled:not(.release)': content,
-    }}
-    protected stateNotPressingReleasing(content: JssStyle): JssStyle { return {
-        '&:not(.press):not(:active):not(.release), &:not(.press).disable:not(.release), &:not(.press).disabled:not(.release), &:not(.press):disabled:not(.release)': content,
-    }}
-
-
-
-    protected /*override*/ applyStateNoAnimStartupOld(): JssStyle {
-        return this.stateNotPressingReleasing(
-            super.applyStateNoAnimStartupOld(),
-        );
-    }
-    //#endregion mixins
-
-
-
     // variants:
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
+
+            this.actionControlSize(size),
         ] as JssStyle,
-
-
-
+    }}
+    public /*virtual*/ actionControlSize(size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
@@ -108,24 +80,25 @@ export class ActionControlStyles extends ControlStyles {
     public /*override*/ states(inherit: boolean): ClassList { return [
         ...super.states(inherit), // copy states from base
 
-
-
+        ...this.actionControlStates(inherit),
+    ]}
+    public /*virtual*/ actionControlStates(inherit: boolean, actionControl: IActionControlStyles = this): ClassList { return [
         [ null, {
             // reset filters/anims/toggles to initial/inherit state:
-            ...this.resetPressRelease(inherit),
+            ...actionControl.resetPressRelease(inherit),
         }],
 
 
 
         // .pressed will be added after pressing-animation done
-        [ '&.pressed'                                                                                      , this.pressed()   ],
+        [ '&.pressed'                                                                                      , actionControl.pressed()   ],
 
         // .press = programatically press, :active = user press
         [ '&.press,' +
-          '&:active:not(.disabled):not(.disable):not(:disabled):not(.pressed):not(.release):not(.released)', this.pressing()  ],
+          '&:active:not(.disabled):not(.disable):not(:disabled):not(.pressed):not(.release):not(.released)', actionControl.pressing()  ],
 
         // .release will be added after loosing press and will be removed after releasing-animation done
-        [ '&.release'                                                                                      , this.releasing() ],
+        [ '&.release'                                                                                      , actionControl.releasing() ],
 
         // if all above are not set => released
         // optionally use .released to kill pseudo :active
@@ -133,10 +106,10 @@ export class ActionControlStyles extends ControlStyles {
           '&:not(.pressed):not(.press).disabled:not(.release),'     +
           '&:not(.pressed):not(.press).disable:not(.release),'      +
           '&:not(.pressed):not(.press):disabled:not(.release),'     +
-          '&.released'                                                                                     , this.released()  ],
+          '&.released'                                                                                     , actionControl.released()  ],
     ]}
 
-    public /*override*/ resetPressRelease(inherit: boolean) : PropList { return {
+    public /*virtual*/ resetPressRelease(inherit: boolean) : PropList { return {
         [this.decl(this._filterPressRelease)] : inherit ? 'unset' : 'initial',
         [this.decl(this._animPressRelease)]   : inherit ? 'unset' : 'initial',
     }}
