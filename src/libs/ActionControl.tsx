@@ -22,9 +22,6 @@ import {
     usePropEnabled,
 }                           from './accessibilities'
 import {
-    useStateActivePassive,
-}                           from './Indicator'
-import {
     ControlStyles,
     ControlProps,
     Control,
@@ -49,6 +46,16 @@ export interface IActionControlStyles {
     released()  : JssStyle
     press()     : JssStyle
     release()   : JssStyle
+
+
+
+    // functions:
+    actionControlAnimFn(): Cust.Ref[]
+
+
+
+    // styles:
+    actionControlBasicStyle(): JssStyle
 }
 
 export class ActionControlStyles extends ControlStyles implements IActionControlStyles {
@@ -139,11 +146,12 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
 
     // functions:
     public /*override*/ animFn(): Cust.Ref[] { return [
-        ...super.animFn(),
+        ...super.animFn(), // copy functional animations from base
 
-
-
-        this.ref(this._animPressRelease, this._animNone), // 1st : ctrl got pressed
+        ...this.actionControlAnimFn(),
+    ]}
+    public /*virtual*/ actionControlAnimFn(): Cust.Ref[] { return [
+        this.ref(this._animPressRelease, this._animNone),
     ]}
 
 
@@ -152,10 +160,11 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
+
+            this.actionControlBasicStyle(),
         ] as JssStyle,
-
-
-
+    }}
+    public /*virtual*/ actionControlBasicStyle(): JssStyle { return {
         // accessibility:
         userSelect : 'none', // disable selecting text (double clicking not causing selecting text)
 
@@ -213,67 +222,106 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export function useStatePressRelease(props: ActionControlProps, classes = { active: 'press' as (string|null), actived: 'pressed' as (string|null), passive: 'release' as (string|null) }, mouses: number[]|null = [0], keys: string[]|null = ['space']) {
+export function useStatePressRelease(props: ActionControlProps, mouses: number[]|null = [0], keys: string[]|null = ['space']) {
     // fn props:
     const propEnabled = usePropEnabled(props);
 
 
 
     // states:
-    const [activeDn, setActiveDn] = useState<boolean>(false); // uncontrollable (dynamic) state: true => user press, false => user release
+    const [pressed,   setPressed  ] = useState<boolean>(props.press ?? false); // true => press, false => release
+    const [animating, setAnimating] = useState<boolean|null>(null); // null => no-animation, true => pressing-animation, false => releasing-animation
 
-    const stateActPass = useStateActivePassive({
-        // other props:
-        ...props,
+    const [pressDn,   setPressDn  ] = useState<boolean>(false);     // uncontrollable (dynamic) state: true => user press, false => user release
 
 
-        // accessibility:
-        active        : props.press, // controllable active => controllable press
-        inheritActive : false,       // do not `.press`/`.release` when parent [active]
-    }, activeDn, classes);
+
+    /*
+     * state is always released if disabled
+     * state is press/release based on [controllable press] (if set) and fallback to [uncontrollable press]
+     */
+    const pressFn: boolean = propEnabled && (props.press /*controllable*/ ?? pressDn /*uncontrollable*/);
+
+    if (pressed !== pressFn) { // change detected => apply the change & start animating
+        setPressed(pressFn);   // remember the last change
+        setAnimating(pressFn); // start pressing-animation/releasing-animation
+    }
 
 
     
     useEffect(() => {
-        if (!propEnabled) return;    // control is disabled => no response required
+        if (!propEnabled)              return; // control is disabled => no response required
+        if (props.press !== undefined) return; // controllable [press] is set => no uncontrollable required
 
 
 
-        const handleReleasing = () => {
-            setActiveDn(false);
+        const handleRelease = () => {
+            setPressDn(false);
         }
-        window.addEventListener('mouseup', handleReleasing);
-        window.addEventListener('keyup',   handleReleasing);
+        window.addEventListener('mouseup', handleRelease);
+        window.addEventListener('keyup',   handleRelease);
         return () => {
-            window.removeEventListener('mouseup', handleReleasing);
-            window.removeEventListener('keyup',   handleReleasing);
+            window.removeEventListener('mouseup', handleRelease);
+            window.removeEventListener('keyup',   handleRelease);
         }
-    }, [propEnabled]);
+    }, [propEnabled, props.press]);
 
 
 
-    const handlePressing = () => {
-        if (!propEnabled) return; // control is disabled => no response required
+    const handlePress = () => {
+        if (!propEnabled)              return; // control is disabled => no response required
+        if (props.press !== undefined) return; // controllable [press] is set => no uncontrollable required
 
 
 
-        setActiveDn(true);
+        setPressDn(true);
+    }
+    const handleIdle = () => {
+        // clean up finished animation
+
+        setAnimating(null); // stop pressing-animation/releasing-animation
     }
     return {
-        ...stateActPass,
+        /**
+         * partially/fully press
+        */
+        press : pressed,
 
+        class : ((): string|null => {
+            // pressing:
+            if (animating === true) {
+                // pressing by controllable prop => use class .press
+                if (props.press !== undefined) return 'press';
+
+                // otherwise use pseudo :active
+                return null;
+            } // if
+
+            // releasing:
+            if (animating === false) return 'release';
+
+            // fully pressed:
+            if (pressed) return 'pressed';
+
+            // fully released:
+            if (props.press !== undefined) {
+                return 'released'; // releasing by controllable prop => use class .released to kill pseudo :active
+            }
+            else {
+                return null; // discard all classes above
+            } // if
+        })(),
         
-        handleMouseDown : ((e) => { // for ActionControl
-            if (!mouses || mouses.includes(e.button)) handlePressing();
+        handleMouseDown    : ((e) => {
+            if (!mouses || mouses.includes(e.button)) handlePress();
         }) as React.MouseEventHandler<HTMLElement>,
-        handleKeyDown   : ((e) => { // for ActionControl
-            if (!keys || keys.includes(e.code.toLowerCase()) || keys.includes(e.key.toLowerCase())) handlePressing();
+        handleKeyDown      : ((e) => {
+            if (!keys || keys.includes(e.code.toLowerCase()) || keys.includes(e.key.toLowerCase())) handlePress();
         }) as React.KeyboardEventHandler<HTMLElement>,
-
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
             if (/((?<![a-z])(press|release)|(?<=[a-z])(Press|Release))(?![a-z])/.test(e.animationName)) {
-                stateActPass.handleIdle();
+                handleIdle();
             }
         },
     };

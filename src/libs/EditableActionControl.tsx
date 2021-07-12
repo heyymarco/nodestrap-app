@@ -5,39 +5,31 @@ import React                from 'react'        // base technology of our nodest
 import {
     // general types:
     JssStyle,
-    PropEx,
     Cust,
     StateList,
     PropList,
-
-    
-    // components:
-    CssConfig,
 }                           from './nodestrap'  // nodestrap's core
 import {
+    EditableControlElement,
+
     EditableControlStyles,
     EditableControlProps,
     EditableControl,
 }                           from './EditableControl'
 import {
+    useStatePressRelease,
+
     IActionControlStyles,
     actionControlStyles,
 
-    ActionControlStyles,
     ActionControlProps,
-    ActionControl,
 }                           from './ActionControl'
-import {
-    iconStyles,
-}                           from './Icon'
 
 
 
 // styles:
 
-const iconElm = '&::after';
-
-export class EditableTextControlStyles extends EditableControlStyles implements IActionControlStyles {
+export class EditableActionControlStyles extends EditableControlStyles implements IActionControlStyles {
     //#region props
     //#region animations
  // public    readonly _filterPressRelease  = 'filterPressRelease' // already defined in Indicator
@@ -75,60 +67,70 @@ export class EditableTextControlStyles extends EditableControlStyles implements 
         return actionControlStyles.resetPressRelease(inherit); // copy resetPressRelease from actionControl
     }
     public /*implement*/ pressed()   : JssStyle {
-        return actionControlStyles.pressed(); // copy pressed from actionControl
+        return actionControlStyles.pressed();   // copy pressed   from actionControl
     }
-    public /*implement*/ pressing()  : JssStyle { return {
+    public /*implement*/ pressing()  : JssStyle {
+        return actionControlStyles.pressing();  // copy pressing  from actionControl
+    }
+    public /*implement*/ releasing() : JssStyle {
+        return actionControlStyles.releasing(); // copy releasing from actionControl
+    }
+    public /*implement*/ released()  : JssStyle {
+        return actionControlStyles.released();  // copy released  from actionControl
+    }
+    public /*implement*/ press()     : JssStyle {
+        return actionControlStyles.press();     // copy press     from actionControl
+    }
+    public /*implement*/ release()   : JssStyle {
+        return actionControlStyles.release();   // copy release   from actionControl
+    }
+
+
+
+    // functions:
+    public /*override*/ animFn(): Cust.Ref[] { return [
+        ...super.animFn(), // copy functional animations from base
+
+        ...this.actionControlAnimFn(),
+    ]}
+    public /*implement*/ actionControlAnimFn(): Cust.Ref[] {
+        return actionControlStyles.actionControlAnimFn(); // copy functional animations from actionControl
+    }
+
+
+
+    // styles:
+    public /*override*/ basicStyle(): JssStyle { return {
+        extend: [
+            super.basicStyle(), // copy basicStyle from base
+
+            this.actionControlBasicStyle(),
+        ] as JssStyle,
     }}
-    public /*implement*/ releasing() : JssStyle { return {
-    }}
-    public /*implement*/ released()  : JssStyle { return {
-    }}
-    public /*implement*/ press()     : JssStyle { return {
-    }}
-    public /*implement*/ release()   : JssStyle { return {
-    }}
+    public /*implement*/ actionControlBasicStyle(): JssStyle {
+        return actionControlStyles.actionControlBasicStyle(); // copy basicStyle from actionControl
+    }
 }
-export const editableTextControlStyles = new EditableTextControlStyles();
-
-
-
-// configs:
-
-const cssConfig = new CssConfig(() => {
-    return {
-        // accessibility:
-        cursor       : 'text',
-
-
-        
-        //#region animations
-        iconSize     : '1em',
-        iconValid    : `url("data:image/svg+xml,${editableTextControlStyles.escapeSvg("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='#000' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/></svg>")}")`,
-        iconInvalid  : `url("data:image/svg+xml,${editableTextControlStyles.escapeSvg("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='#000' d='M7.3,6.31,5,4,7.28,1.71a.7.7,0,1,0-1-1L4,3,1.71.72a.7.7,0,1,0-1,1L3,4,.7,6.31a.7.7,0,0,0,1,1L4,5,6.31,7.3A.7.7,0,0,0,7.3,6.31Z'/></svg>")}")`,
-        //#endregion animations
-    };
-}, /*prefix: */'etctrl');
-export const cssProps = cssConfig.refs;
-export const cssDecls = cssConfig.decls;
+export const editableActionControlStyles = new EditableActionControlStyles();
 
 
 
 // react components:
 
-type EditableTextControlElement = HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement
-
-export interface EditableTextControlProps<TElement extends EditableTextControlElement = EditableTextControlElement>
+export interface EditableActionControlProps<TElement extends EditableControlElement = EditableControlElement>
     extends
-        EditableControlProps<TElement>
+        EditableControlProps<TElement>,
+        ActionControlProps<TElement>
 {
-    // validations:
-    minLength? : number
-    maxLength? : number
-    pattern?   : string
 }
-export default function EditableTextControl<TElement extends EditableTextControlElement = EditableTextControlElement>(props: EditableTextControlProps<TElement>) {
+export default function EditableActionControl<TElement extends EditableControlElement = EditableControlElement>(props: EditableActionControlProps<TElement>) {
     // styles:
-    const styles = editableTextControlStyles.useStyles();
+    const styles       = editableActionControlStyles.useStyles();
+
+
+
+    // states:
+    const statePrssRls = useStatePressRelease(props);
 
     
 
@@ -139,17 +141,25 @@ export default function EditableTextControl<TElement extends EditableTextControl
             {...props}
 
 
-            // essentials:
-            tag={props.tag ?? 'input'}
-
-
-            // variants:
-            mild={props.mild ?? true}
-
-
             // classes:
             mainClass={props.mainClass ?? styles.main}
+            stateClasses={[...(props.stateClasses ?? []),
+                statePrssRls.class,
+            ]}
+
+
+            // events:
+            onMouseDown={(e) => { statePrssRls.handleMouseDown(e); props.onMouseDown?.(e); }}
+            onKeyDown=  {(e) => { statePrssRls.handleKeyDown(e);   props.onKeyDown?.(e);   }}
+            onAnimationEnd={(e) => {
+                // states:
+                statePrssRls.handleAnimationEnd(e);
+
+
+                // forwards:
+                props.onAnimationEnd?.(e);
+            }}
         />
     );
 }
-export { EditableTextControl }
+export { EditableActionControl }

@@ -252,7 +252,7 @@ export class IndicatorStyles extends BasicComponentStyles {
 
     // functions:
     public /*override*/ filterFn(): Cust.Ref[] { return [
-        ...super.filterFn(),
+        ...super.filterFn(), // copy functional filters from base
 
 
 
@@ -262,7 +262,7 @@ export class IndicatorStyles extends BasicComponentStyles {
         this.ref(this._filterArriveLeave,   this._filterNone), // will be used in Control, so we can re-use our animations (enable, disable, active, passive) in the Control
     ]}
     public /*override*/ animFn(): Cust.Ref[] { return [
-        ...super.animFn(),
+        ...super.animFn(), // copy functional animations from base
 
 
 
@@ -456,7 +456,7 @@ export function useStateEnableDisable(props: IndicationProps & ElementProps) {
     };
 }
 
-export function useStateActivePassive(props: IndicationProps & ElementProps, activeDn?: boolean, classes = { active: 'active' as (string|null), actived: 'actived' as (string|null), passive: 'passive' as (string|null) }) {
+export function useStateActivePassive(props: IndicationProps & ElementProps, activeDn?: boolean) {
     // fn props:
     const propActive = usePropActive(props, null);
     const isCheckbox = (props.tag === 'input') && ((props as any).type === 'checkbox');
@@ -502,15 +502,15 @@ export function useStateActivePassive(props: IndicationProps & ElementProps, act
                 }
                 else {
                     // a generic_element uses class .active for activating
-                    return classes.active;
+                    return 'active';
                 } // if
             } // if
 
             // passivating:
-            if (animating === false) return classes.passive;
+            if (animating === false) return 'passive';
 
             // fully actived:
-            if (actived) return classes.actived;
+            if (actived) return 'actived';
 
             // fully passived:
             return null;
@@ -521,7 +521,6 @@ export function useStateActivePassive(props: IndicationProps & ElementProps, act
             checked: actived,
         } : {}),
 
-        handleIdle         : handleIdle,
         handleAnimationEnd : (e: React.AnimationEvent<HTMLElement>) => {
             if (e.target !== e.currentTarget) return; // no bubbling
             if (/((?<![a-z])(active|passive)|(?<=[a-z])(Active|Passive))(?![a-z])/.test(e.animationName)) {

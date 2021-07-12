@@ -845,9 +845,9 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
 
                 // values:
-                checked={isActive}
-                onChange={(e) => {
-                    setActive(e.target.checked);
+                active={isActive}
+                onActiveChange={(newActive) => {
+                    setActive(newActive);
                 }}
             />
         );
@@ -865,9 +865,9 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
                 {...(isTypeOf(toggler, Check) ? ({
                     // values:
-                    checked  : toggler.props.checked  ?? isActive,
-                    onChange : toggler.props.onChange ?? ((e) => {
-                        setActive(e.target.checked);
+                    active         : toggler.props.checked  ?? isActive,
+                    onActiveChange : toggler.props.onActiveChange ?? ((newActive) => {
+                        setActive(newActive);
                     }),
                 } as Checks.CheckProps) : {})}
             />

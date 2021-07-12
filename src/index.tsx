@@ -26,6 +26,7 @@ import BasicComponentApp                        from './apps/BasicComponentApp';
             import EditableControlApp           from './apps/EditableControlApp';
                 import EditableTextControlApp   from './apps/EditableTextControlApp';
                     import InputApp             from './apps/InputApp';
+                import EditableActionControlApp from './apps/EditableActionControlApp';
                 import CheckApp                 from './apps/CheckApp';
     import IconApp                              from './apps/IconApp';
     import MasonryApp                           from './apps/MasonryApp';

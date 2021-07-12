@@ -235,7 +235,7 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
-type EditableTextControlElement = HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement
+export type EditableTextControlElement = HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement
 
 export interface EditableTextControlProps<TElement extends EditableTextControlElement = EditableTextControlElement>
     extends

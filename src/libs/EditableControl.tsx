@@ -185,7 +185,7 @@ export class EditableControlStyles extends ControlStyles {
 
     // functions:
     public /*override*/ animFn(): Cust.Ref[] { return [
-        ...super.animFn(),
+        ...super.animFn(), // copy functional animations from base
 
 
 
@@ -258,7 +258,7 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-type EditableControlElement        = HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement
+export type EditableControlElement = HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement
 export type ValidatorHandler       = () => ValResult
 export type CustomValidatorHandler = (state: ValidityState, value: string) => ValResult
 export function useInputValidator(customValidator?: CustomValidatorHandler) {
@@ -505,7 +505,8 @@ export interface EditableControlProps<TElement extends EditableControlElement = 
     // values:
     defaultValue?    : string | number | ReadonlyArray<string>
     value?           : string | number | ReadonlyArray<string>
-    onChange?        : React.ChangeEventHandler<TElement>
+    // onChange?        : React.ChangeEventHandler<TElement>
+    // onChange?        : React.FormEventHandler<TElement>
     
 
     // validations:

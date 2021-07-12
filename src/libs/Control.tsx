@@ -272,14 +272,14 @@ export class ControlStyles extends IndicatorStyles {
 
     // functions:
     public /*override*/ boxShadowFn(): Cust.Ref[] { return [
-        ...super.boxShadowFn(),
+        ...super.boxShadowFn(), // copy functional boxShadows from base
 
 
 
         this.ref(this._boxShadowFocusBlur, this._boxShadowNone),
     ]}
     public /*override*/ animFn(): Cust.Ref[] { return [
-        ...super.animFn(),
+        ...super.animFn(), // copy functional animations from base
 
 
 
@@ -434,7 +434,6 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
     }
     return {
         focus    : focused,
-        blurring : (animating === false),
 
         class    : ((): string|null => {
             // focusing:
