@@ -7,7 +7,7 @@ import {
     JssStyle,
     PropEx,
     Cust,
-    ClassList,
+    StateList,
     PropList,
 
     
@@ -62,12 +62,12 @@ export class EditableTextControlStyles extends EditableControlStyles implements 
 
 
     // states:
-    public /*override*/ states(inherit: boolean): ClassList { return [
-        ...super.states(inherit), // copy states from base
+    public /*override*/ statess(inherit: boolean): StateList { return [
+        ...super.statess(inherit), // copy states from base
 
         ...this.actionControlStates(inherit),
     ]}
-    public /*implement*/ actionControlStates(inherit: boolean, actionControl: IActionControlStyles = this): ClassList {
+    public /*implement*/ actionControlStates(inherit: boolean, actionControl: IActionControlStyles = this): StateList {
         return actionControlStyles.actionControlStates(inherit, actionControl); // copy states from actionControl
     }
 

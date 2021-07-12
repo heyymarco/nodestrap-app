@@ -159,7 +159,8 @@ export class IndicatorStyles extends BasicComponentStyles {
         [  '.enable'                                                   , [this.enable()  , this.enabling()   ] ],
 
         // .disable = styled disable, :disabled = real disable
-        [ ['.disable', ':disabled:not(.disabled)']                     , [this.disable() , this.disabling()  ] ],
+        [ ['.disable' ,
+           ':disabled:not(.disabled)']                                 , [this.disable() , this.disabling()  ] ],
 
         // .disabled will be added after disabling-animation done
         [  '.disabled'                                                 , [this.disable() , this.disabled()   ] ],
@@ -170,7 +171,8 @@ export class IndicatorStyles extends BasicComponentStyles {
         [  '.actived'                                                  , [this.active()  , this.actived()    ] ],
 
         // .active = programatically active, :checked = user active
-        [ ['.active', ':checked:not(.actived)']                        , [this.active()  , this.activating() ] ],
+        [ ['.active' ,
+           ':checked:not(.actived)']                                   , [this.active()  , this.activating() ] ],
 
         // .passive will be added after loosing active and will be removed after deactivating-animation done
         [  '.passive'                                                  , [this.passive() , this.passivating()] ],

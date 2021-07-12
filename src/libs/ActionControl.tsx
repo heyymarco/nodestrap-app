@@ -11,7 +11,7 @@ import {
     JssStyle,
     PropEx,
     Cust,
-    ClassList,
+    StateList,
     PropList,
 
 
@@ -41,7 +41,7 @@ export interface IActionControlStyles {
 
 
     // states:
-    actionControlStates(inherit: boolean, actionControl: IActionControlStyles): ClassList
+    actionControlStates(inherit: boolean, actionControl: IActionControlStyles): StateList
     resetPressRelease(inherit: boolean): PropList
     pressed()   : JssStyle
     pressing()  : JssStyle
@@ -77,12 +77,12 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
 
 
     // states:
-    public /*override*/ states(inherit: boolean): ClassList { return [
-        ...super.states(inherit), // copy states from base
+    public /*override*/ statess(inherit: boolean): StateList { return [
+        ...super.statess(inherit), // copy states from base
 
         ...this.actionControlStates(inherit),
     ]}
-    public /*virtual*/ actionControlStates(inherit: boolean, actionControl: IActionControlStyles = this): ClassList { return [
+    public /*virtual*/ actionControlStates(inherit: boolean, actionControl: IActionControlStyles = this): StateList { return [
         [ null, {
             // reset filters/anims/toggles to initial/inherit state:
             ...actionControl.resetPressRelease(inherit),
@@ -91,22 +91,22 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
 
 
         // .pressed will be added after pressing-animation done
-        [ '&.pressed'                                                                                      , actionControl.pressed()   ],
+        [  '.pressed'                                                                                        , [actionControl.press()   , actionControl.pressed()  ] ],
 
         // .press = programatically press, :active = user press
-        [ '&.press,' +
-          '&:active:not(.disabled):not(.disable):not(:disabled):not(.pressed):not(.release):not(.released)', actionControl.pressing()  ],
+        [ ['.press' ,
+           ':active:not(.disabled):not(.disable):not(:disabled):not(.pressed):not(.release):not(.released)'] , [actionControl.press()   , actionControl.pressing() ] ],
 
         // .release will be added after loosing press and will be removed after releasing-animation done
-        [ '&.release'                                                                                      , actionControl.releasing() ],
+        [  '.release'                                                                                        , [actionControl.release() , actionControl.releasing()] ],
 
         // if all above are not set => released
         // optionally use .released to kill pseudo :active
-        [ '&:not(.pressed):not(.press):not(:active):not(.release),' +
-          '&:not(.pressed):not(.press).disabled:not(.release),'     +
-          '&:not(.pressed):not(.press).disable:not(.release),'      +
-          '&:not(.pressed):not(.press):disabled:not(.release),'     +
-          '&.released'                                                                                     , actionControl.released()  ],
+        [ [':not(.pressed):not(.press):not(:active):not(.release)' ,
+           ':not(.pressed):not(.press).disabled:not(.release)'     ,
+           ':not(.pressed):not(.press).disable:not(.release)'      ,
+           ':not(.pressed):not(.press):disabled:not(.release)'     ,
+           '.released']                                                                                      , [actionControl.release() , actionControl.released() ] ],
     ]}
 
     public /*virtual*/ resetPressRelease(inherit: boolean) : PropList { return {
@@ -115,41 +115,17 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
     }}
     public /*virtual*/ pressed()   : JssStyle { return {
         [this.decl(this._filterPressRelease)] : cssProps.filterPress,
-
-
-
-        extend: [
-            this.press(),
-        ] as JssStyle,
     }}
     public /*virtual*/ pressing()  : JssStyle { return {
         [this.decl(this._filterPressRelease)] : cssProps.filterPress,
         [this.decl(this._animPressRelease)]   : cssProps.animPress,
-
-
-
-        extend: [
-            this.press(),
-        ] as JssStyle,
     }}
     public /*virtual*/ releasing() : JssStyle { return {
         [this.decl(this._filterPressRelease)] : cssProps.filterPress,
         [this.decl(this._animPressRelease)]   : cssProps.animRelease,
-
-
-
-        extend: [
-            this.release(),
-        ] as JssStyle,
     }}
     public /*virtual*/ released()  : JssStyle { return {
         /* --nothing-- */
-
-
-
-        extend: [
-            this.release(),
-        ] as JssStyle,
     }}
     public /*virtual*/ press()     : JssStyle { return {
         extend: [
