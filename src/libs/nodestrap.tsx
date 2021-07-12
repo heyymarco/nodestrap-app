@@ -334,15 +334,7 @@ export class ElementStyles {
     public /*virtual*/ useStates(inherit = false): JssStyle { return {
         extend: [
             // state rules:
-            ...this.states(inherit).map(([state, style]) => ({ [state ? (() => {
-                if (state.includes('&')) return state;
-
-                if (state.includes('.') || state.includes(':')) return `&${state}`;
-
-                return `&.${state}`;
-            })() : '&'] : style })),
-
-            ...this.statess(inherit).map(([states, styles]): JssStyle => ({
+            ...this.states(inherit).map(([states, styles]): JssStyle => ({
                 [
                     (Array.isArray(states) ? states : [states])
                     .map((state): string => {
@@ -367,15 +359,9 @@ export class ElementStyles {
     /**
      * Creates css rule definitions for all states by manipulating some props.
      * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
-     * @returns A `ClassList` represents the css rule definitions for all states.
-     */
-    public /*virtual*/ states(inherit: boolean): ClassList { return [] }
-    /**
-     * Creates css rule definitions for all states by manipulating some props.
-     * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
      * @returns A `StateList` represents the css rule definitions for all states.
      */
-    public /*virtual*/ statess(inherit: boolean): StateList { return [] }
+    public /*virtual*/ states(inherit: boolean): StateList { return [] }
 
 
 

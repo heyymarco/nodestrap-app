@@ -77,8 +77,8 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
 
 
     // states:
-    public /*override*/ statess(inherit: boolean): StateList { return [
-        ...super.statess(inherit), // copy states from base
+    public /*override*/ states(inherit: boolean): StateList { return [
+        ...super.states(inherit), // copy states from base
 
         ...this.actionControlStates(inherit),
     ]}
