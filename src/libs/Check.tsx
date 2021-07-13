@@ -596,7 +596,7 @@ export default function Check(props: CheckProps) {
         ...props,
 
         defaultActive : props.defaultActive ?? props.defaultChecked,
-        active        : props.active        ?? props.active,
+        active        : props.active        ?? props.checked,
     });
 
     
@@ -614,9 +614,9 @@ export default function Check(props: CheckProps) {
         onActiveChange, // delete, already handled by useTogglerActive
         active,         // delete, already handled by useTogglerActive
 
-        defaultChecked,
-        // onChange, // let's bubbling to parent handle onChange
-        checked,
+        defaultChecked, // delete, already handled by useTogglerActive
+        onChange,       // todo: handle onChange
+        checked,        // delete, already handled by useTogglerActive
 
 
         // values:
@@ -696,15 +696,16 @@ export default function Check(props: CheckProps) {
                 aria-hidden={isBtnStyle} // if btnStyle => hides the check
                 disabled={!propEnabled}
                 tabIndex={-1}
-                readOnly={readOnly}
+                // readOnly={readOnly} // todo: handle readonly
 
 
                 // values:
                 defaultValue={defaultValue}
                 value={value}
-                defaultChecked={defaultChecked}
-                checked={checked}
-                onChange={({target}) => setActive(target.checked)} // let's bubbling to parent handle onChange
+                // defaultChecked={isActive}
+                checked={isActive}
+                readOnly={true}
+                // onChange={({target}) => setActive(target.checked)} // let's bubbling to parent handle onChange
 
 
                 // validations:

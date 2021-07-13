@@ -58,7 +58,7 @@ function App() {
 	const [mild,       setMild      ] = useState<boolean|undefined>(undefined);
 
 	const [enabled,    setEnabled   ] = useState(true);
-	const [active,      setActive   ] = useState(false);
+	const [active,      setActive   ] = useState(true);
 
 	const arrives = [false, undefined, true];
 	const [arrive,       setArrive    ] = useState<boolean|undefined>(undefined);
@@ -118,6 +118,26 @@ function App() {
 					outlined={outlined} mild={mild}
 
 					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+
+					enableValidation={enableVal}
+					isValid={isValid}
+					required={true}
+					
+					press={press}
+				>
+                    check
+                </Check>
+				<Check
+					theme={theme} size={size} gradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled}
+					
+					defaultActive={active}
+					onActiveChange={(newActive) => setActive(newActive)}
 
 					arrive={arrive}
 					focus={focus}

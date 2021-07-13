@@ -7,17 +7,29 @@ import {
 
 
 
+// defaults:
+const _defaultEnabled         = true;
+const _defaultReadonly        = false;
+const _defaultActive          = false;
+
+const _defaultInheritEnabled  = true;
+const _defaultInheritReadonly = true;
+const _defaultInheritActive   = false;
+
+
+
 // contexts:
 
-export interface TAccessibility<TDefaultEnabled = boolean, TDefaultActive = boolean> {
+export interface TAccessibility<TDefaultEnabled = boolean, TDefaultReadonly = boolean, TDefaultActive = boolean> {
     enabled  : boolean|TDefaultEnabled
+    readonly : boolean|TDefaultReadonly
     active   : boolean|TDefaultActive
 }
 
 /**
  * Contains accessibility props.
  */
-export interface Accessibility {
+export interface Accessibility extends TAccessibility {
     /**
      * `true`      : component is enabled  - responses any user interaction.  
      * `false`     : component is disabled - ignores any user interaction.
@@ -25,8 +37,14 @@ export interface Accessibility {
     enabled  : boolean
 
     /**
+     * `true`      : component is readonly - ignores any user editing.  
+     * `false`     : component is editable - responses any user editing.
+     */
+    readonly : boolean
+
+    /**
      * `true`      : component is in active state.  
-     * `false`     : component is in passive state.
+     * `false`     : component is in normal state.
      */
     active   : boolean
 }
@@ -34,16 +52,17 @@ export interface Accessibility {
 /**
  * A react context for accessibility stuff.
  */
-export const Context = createContext<Accessibility>(/*defaultValue =*/{
-    enabled  : true,
-    active   : false,
+export const Context = createContext<Accessibility>(/*defaultValue :*/{
+    enabled  : _defaultEnabled,
+    readonly : _defaultReadonly,
+    active   : _defaultActive,
 });
 Context.displayName  = 'Accessibility';
 
 
 
 // hooks:
-export function usePropAccessibility<TDefaultEnabled = boolean, TDefaultActive = boolean>(props: AccessibilityProps, defaultEnabled: boolean|TDefaultEnabled = true, defaultActive: boolean|TDefaultActive = false): Accessibility|TAccessibility<TDefaultEnabled, TDefaultActive> {
+export function usePropAccessibility<TDefaultEnabled = boolean, TDefaultReadonly = boolean, TDefaultActive = boolean>(props: AccessibilityProps, defaultEnabled: boolean|TDefaultEnabled = _defaultEnabled, defaultReadonly: boolean|TDefaultReadonly = _defaultReadonly, defaultActive: boolean|TDefaultActive = _defaultActive): Accessibility|TAccessibility<TDefaultEnabled, TDefaultReadonly, TDefaultActive> {
     // contexts:
     const accessContext = useContext(Context);
 
@@ -52,30 +71,41 @@ export function usePropAccessibility<TDefaultEnabled = boolean, TDefaultActive =
     return {
         enabled: (
             (
-                (props.inheritEnabled ?? true) // if [is inheritEnabled] (default is enabled)
+                (props.inheritEnabled ?? _defaultInheritEnabled)
                 ?
-                accessContext.enabled          // => if parent is enabled => current component is *might* enabled too, otherwise *always* disabled
+                accessContext.enabled  // inherit
                 :
-                true                           // otherwise => treat parent as enabled
+                true                   // independent
             )
             &&
-            (props.enabled ?? defaultEnabled)  // if [enabled] was not specified => the default value is [enabled=true]
+            (props.enabled ?? defaultEnabled)
+        ),
+        readonly: (
+            (
+                (props.inheritReadonly ?? _defaultInheritReadonly)
+                ?
+                accessContext.readonly // inherit
+                :
+                false                  // independent
+            )
+            ||
+            (props.readonly ?? defaultReadonly)
         ),
         active: (
             (
-                (props.inheritActive ?? false) // if [is inheritActive] (default is disabled)
+                (props.inheritActive ?? _defaultInheritActive)
                 ?
-                accessContext.active           // => if parent is active => current component is *always* active too, otherwise *might* active
+                accessContext.active   // inherit
                 :
-                false                          // otherwise => treat parent as passive
+                false                  // independent
             )
             ||
-            (props.active ?? defaultActive)    // if [active] was not specified => the default value is [active=false]
+            (props.active ?? defaultActive)
         ),
     };
 }
 
-export function usePropEnabled<TDefaultEnabled = boolean>(props: AccessibilityProps, defaultEnabled: boolean|TDefaultEnabled = true): boolean|TDefaultEnabled {
+export function usePropEnabled<TDefaultEnabled = boolean>(props: AccessibilityProps, defaultEnabled: boolean|TDefaultEnabled = _defaultEnabled): boolean|TDefaultEnabled {
     // contexts:
     const accessContext = useContext(Context);
 
@@ -83,18 +113,18 @@ export function usePropEnabled<TDefaultEnabled = boolean>(props: AccessibilityPr
 
     return (
         (
-            (props.inheritEnabled ?? true) // if [is inheritEnabled] (default is enabled)
+            (props.inheritEnabled ?? _defaultInheritEnabled)
             ?
-            accessContext.enabled          // => if parent is enabled => current component is *might* enabled too, otherwise *always* disabled
+            accessContext.enabled  // inherit
             :
-            true                           // otherwise => treat parent as enabled
+            true                   // independent
         )
         &&
-        (props.enabled ?? defaultEnabled)  // if [enabled] was not specified => the default value is [enabled=true]
+        (props.enabled ?? defaultEnabled)
     );
 }
 
-export function usePropActive<TDefaultActive = boolean>(props: AccessibilityProps, defaultActive: boolean|TDefaultActive = false): boolean|TDefaultActive {
+export function usePropActive<TDefaultActive = boolean>(props: AccessibilityProps, defaultActive: boolean|TDefaultActive = _defaultActive): boolean|TDefaultActive {
     // contexts:
     const accessContext = useContext(Context);
 
@@ -102,14 +132,14 @@ export function usePropActive<TDefaultActive = boolean>(props: AccessibilityProp
 
     return (
         (
-            (props.inheritActive ?? false) // if [is inheritActive] (default is disabled)
+            (props.inheritActive ?? _defaultInheritActive)
             ?
-            accessContext.active           // => if parent is active => current component is *always* active too, otherwise *might* active
+            accessContext.active   // inherit
             :
-            false                          // otherwise => treat parent as passive
+            false                  // independent
         )
         ||
-        (props.active ?? defaultActive)    // if [active] was not specified => the default value is [active=false]
+        (props.active ?? defaultActive)
     );
 }
 
@@ -124,14 +154,30 @@ export interface AccessibilityProps
      * `true`      : component is enabled  - responses any user interaction.  
      * `false`     : component is disabled - ignores any user interaction.
      */
-    enabled?        : boolean
+    enabled?         : boolean
 
     /**
      * `undefined` : same as `true`.  
      * `true`      : inherits `enabled` from parent (`AccessibilityProvider` context).  
      * `false`     : independent `enabled`.
      */
-    inheritEnabled? : boolean
+    inheritEnabled?  : boolean
+
+
+
+    /**
+     * `undefined` : same as `false`.  
+     * `true`      : component is readonly - ignores any user editing.  
+     * `false`     : component is editable - responses any user editing.
+     */
+    readonly?        : boolean
+
+    /**
+     * `undefined` : same as `true`.  
+     * `true`      : inherits `readonly` from parent (`AccessibilityProvider` context).  
+     * `false`     : independent `readonly`.
+     */
+    inheritReadonly? : boolean
 
     
     
@@ -140,25 +186,26 @@ export interface AccessibilityProps
      * `true`      : component is in active state.  
      * `false`     : component is in normal state.
      */
-    active?         : boolean
+    active?          : boolean
 
     /**
      * `undefined` : same as `false`.  
      * `true`      : inherits `active` from parent (`AccessibilityProvider` context).  
      * `false`     : independent `active`.
      */
-    inheritActive?  : boolean
+    inheritActive?   : boolean
 
 
 
     // children:
-    children?       : React.ReactNode
+    children?        : React.ReactNode
 }
 export default function AccessibilityProvider(props: AccessibilityProps) {
     return (
         <Context.Provider value={{
-            enabled  : props.enabled ?? true,
-            active   : props.active  ?? false,
+            enabled  : props.enabled  ?? _defaultEnabled,
+            readonly : props.readonly ?? _defaultReadonly,
+            active   : props.active   ?? _defaultActive,
         }}>
             {props.children}
         </Context.Provider>

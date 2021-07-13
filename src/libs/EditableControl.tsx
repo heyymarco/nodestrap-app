@@ -3,6 +3,7 @@ import {
     default as React,
     useState,
     useEffect,
+    useRef,
 }                           from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
@@ -300,7 +301,7 @@ export function useInputValidator(customValidator?: CustomValidatorHandler) {
     const handleInit = (target: EditableControlElement) => {
         handleValidation(target, /*immediately =*/true);
     }
-    const handleChange = ({target}: React.ChangeEvent<EditableControlElement>) => {
+    const handleChange = (target: EditableControlElement) => {
         handleValidation(target);
     }
     return {
@@ -526,6 +527,7 @@ export default function EditableControl<TElement extends EditableControlElement 
 
     
     // jsx:
+    const inputRef       = useRef<TElement|null>(null);
     return (
         <Control<TElement>
             // other props:
@@ -543,12 +545,14 @@ export default function EditableControl<TElement extends EditableControlElement 
             elmRef={(elm) => {
                 if (elm) {
                     if (elm.validity) {
-                        inputValidator.handleInit(elm);
+                        inputRef.current = elm;
                     }
                     else {
                         const firstChild = elm.querySelector('input,select,textarea');
-                        if (firstChild) inputValidator.handleInit(firstChild as TElement);
+                        if (firstChild) inputRef.current = firstChild as TElement;
                     } // if
+
+                    if (inputRef.current) inputValidator.handleInit(inputRef.current);
                 } // if
 
 
@@ -565,7 +569,7 @@ export default function EditableControl<TElement extends EditableControlElement 
             }}
             onChange={(e: React.ChangeEvent<TElement>) => { // watch change event from current element or bubbling from children
                 // validations:
-                inputValidator.handleChange(e);
+                if (inputRef.current) inputValidator.handleChange(inputRef.current);
 
 
                 // forwards:

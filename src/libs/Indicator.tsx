@@ -532,9 +532,10 @@ export function useStateActivePassive(props: IndicationProps & ElementProps, act
 
 export function useTogglerActive(props: TogglerActiveProps): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
     // fn props:
-    const propAccess  = usePropAccessibility<boolean, null>(props, undefined, null);
-    const propEnabled = propAccess.enabled;
-    const propActive  = propAccess.active;
+    const propAccess   = usePropAccessibility<boolean, boolean, null>(props, undefined, undefined, null);
+    const propEnabled  = propAccess.enabled;
+    const propReadonly = propAccess.readonly;
+    const propActive   = propAccess.active;
 
 
 
@@ -552,7 +553,10 @@ export function useTogglerActive(props: TogglerActiveProps): [boolean, React.Dis
 
     const setActive: React.Dispatch<React.SetStateAction<boolean>> = (newActive) => {
         if (!propEnabled) return; // control is disabled => no response required
+        if (propReadonly) return; // control is readonly => no response required
 
+        
+        
         const newActiveValue = (typeof newActive === 'function') ? newActive(activeFn) : newActive;
         if (newActiveValue === activeFn) return; // no change needed
 
