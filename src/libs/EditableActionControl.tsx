@@ -117,6 +117,8 @@ export const editableActionControlStyles = new EditableActionControlStyles();
 
 // react components:
 
+export type { EditableControlElement }
+
 export interface EditableActionControlProps<TElement extends EditableControlElement = EditableControlElement>
     extends
         EditableControlProps<TElement>,

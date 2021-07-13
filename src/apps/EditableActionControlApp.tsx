@@ -9,6 +9,7 @@ import './App.css';
 
 import Container from '../libs/Container';
 import EditableActionControl from '../libs/EditableActionControl';
+import Check			from '../libs/Check';
 
 
 
@@ -52,7 +53,9 @@ function App() {
 
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
-	const [mild,       setMild      ] = useState(false);
+	
+	const milds = [false, undefined, true];
+	const [mild,       setMild      ] = useState<boolean|undefined>(undefined);
 
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
@@ -89,11 +92,11 @@ function App() {
 
 					press={press}
 				>
-                    editable control
+                    editable action control
                 </EditableActionControl>
                 <EditableActionControl
 					tag='input'
-					{...{type: 'email', defaultValue: 'yourname@'}}
+					{...{type: 'checkbox'}}
 					
 					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
@@ -105,9 +108,28 @@ function App() {
 
 					enableValidation={enableVal}
 					isValid={isValid}
+					required={true}
 
 					press={press}
 				/>
+				<hr style={{flexBasis: '100%'}} />
+				<Check
+					theme={theme} size={size} gradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+
+					enableValidation={enableVal}
+					isValid={isValid}
+					required={true}
+					
+					press={press}
+				>
+                    check
+                </Check>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:
@@ -158,13 +180,27 @@ function App() {
 					</label>
 				</p>
 				<p>
-					<label>
-						<input type='checkbox'
-							checked={mild}
-							onChange={(e) => setMild(e.target.checked)}
-						/>
-						mild
-					</label>
+					Mild:
+					{
+						milds.map(mi =>
+							<label key={`${mi}`}>
+								<input type='radio'
+									value={`${mi}`}
+									checked={mild===mi}
+									onChange={(e) => setMild((() => {
+										const value = e.target.value;
+										if (!value) return undefined;
+										switch (value) {
+											case 'true' : return true;
+											case 'false': return false;
+											default     : return undefined;
+										} // switch
+									})())}
+								/>
+								{`${mi ?? 'unset'}`}
+							</label>
+						)
+					}
 				</p>
 				<p>
 					<label>

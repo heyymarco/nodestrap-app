@@ -27,7 +27,7 @@ import BasicComponentApp                        from './apps/BasicComponentApp';
                 import EditableTextControlApp   from './apps/EditableTextControlApp';
                     import InputApp             from './apps/InputApp';
                 import EditableActionControlApp from './apps/EditableActionControlApp';
-                import CheckApp                 from './apps/CheckApp';
+                    import CheckApp             from './apps/CheckApp';
     import IconApp                              from './apps/IconApp';
     import MasonryApp                           from './apps/MasonryApp';
     import CarouselApp                          from './apps/CarouselApp';
@@ -38,7 +38,7 @@ import BasicComponentApp                        from './apps/BasicComponentApp';
 
 ReactDOM.render(
     <React.StrictMode>
-        <ActionControlApp />
+        <EditableActionControlApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

@@ -22,10 +22,10 @@ import {
     TogglerActiveProps,
 }                           from './Indicator'
 import {
-    EditableControlStyles,
-    EditableControlProps,
-    EditableControl,
-}                           from './EditableControl'
+    EditableActionControlStyles,
+    EditableActionControlProps,
+    EditableActionControl,
+}                           from './EditableActionControl'
 import {
     iconStyles,
 }                           from './Icon'
@@ -41,7 +41,7 @@ const inputElm = '&>:first-child';
 const checkElm = '&::before';
 const labelElm = '&>:nth-child(1n+2)';
 
-export class CheckStyles extends EditableControlStyles {
+export class CheckStyles extends EditableActionControlStyles {
     //#region props
     //#region finals
     /**
@@ -558,7 +558,7 @@ export function useVariantCheck(props: VariantCheck, styles: Record<string, stri
 
 export interface CheckProps
     extends
-        EditableControlProps<HTMLInputElement>,
+        EditableActionControlProps<HTMLInputElement>,
         TogglerActiveProps,
 
         VariantCheck
@@ -642,7 +642,7 @@ export default function Check(props: CheckProps) {
     
     // jsx:
     return (
-        <EditableControl<HTMLInputElement>
+        <EditableActionControl<HTMLInputElement>
             // other props:
             {...restProps}
 
@@ -735,7 +735,7 @@ export default function Check(props: CheckProps) {
                     { props.children }
                 </span>
             }
-        </EditableControl>
+        </EditableActionControl>
     );
 }
 export { Check }

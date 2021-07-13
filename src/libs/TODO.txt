@@ -84,6 +84,7 @@ BasicComponent<TElement>^
 			ActionControl<TElement>^
 			EditableControl<TElement>^
 				EditableTextControl<TElement>^
+				EditableActionControl<TElement>^
 		Popup<TElement>^
 			Alert<TElement>^
 	Masonry<TElement>^
