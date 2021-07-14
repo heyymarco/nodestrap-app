@@ -21,6 +21,10 @@ import {
 }                           from './nodestrap'  // nodestrap's core
 import colors               from './colors'     // configurable colors & theming defs
 import {
+    usePropEnabled,
+    usePropReadOnly,
+}                           from './accessibilities'
+import {
     Result as ValResult,
     usePropValidation,
     
@@ -321,6 +325,8 @@ export function useInputValidator(customValidator?: CustomValidatorHandler) {
 export function useStateValidInvalid(props: ValidationProps, validator?: ValidatorHandler) {
     // fn props:
     const propValidation = usePropValidation(props);
+    const propEnabled    = usePropEnabled(props);
+    const propReadOnly   = usePropReadOnly(props);
 
 
 
@@ -331,6 +337,11 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
     
     // states:
     const [valided,       setValided      ] = useState<ValResult|undefined>((): (ValResult|undefined) => {
+        // if disabled or readOnly => no validation
+        if (!propEnabled || propReadOnly)         return null;
+
+
+
         // use prop as the primary validator:
         if (propValidation.isValid !== undefined) return propValidation.isValid; // validity is set => set state to uncheck/valid/invalid
 
@@ -356,6 +367,11 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
      * otherwise return undefined (represents no change needed)
      */
     const validFn = ((): (ValResult|undefined) => {
+        // if disabled or readOnly => no validation
+        if (!propEnabled || propReadOnly)         return null;
+
+
+
         // use prop as the primary validator:
         if (propValidation.isValid !== undefined) return propValidation.isValid; // validity is set => set state to uncheck/valid/invalid
 
@@ -422,6 +438,8 @@ export function useStateValidInvalid(props: ValidationProps, validator?: Validat
         setErrAnimating(null);  // stop err-animation/unerr-animation
     }
     const noValidation = // causing the validFn *always* `null`:
+        (!propEnabled || propReadOnly)
+        ||
         (propValidation.isValid === null)
         ||
         (!validator);
@@ -499,10 +517,6 @@ export interface EditableControlProps<TElement extends EditableControlElement = 
 
         ValidationProps
 {
-    // accessibility:
-    readOnly?        : boolean
-
-
     // values:
     defaultValue?    : string | number | ReadonlyArray<string>
     value?           : string | number | ReadonlyArray<string>
