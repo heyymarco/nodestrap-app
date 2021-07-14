@@ -78,6 +78,7 @@ function App() {
     return (
         <div className="App">
             <Container>
+				<form onChange={() => console.log('form changed!')}>
                 <EditableActionControl
 					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
@@ -117,7 +118,7 @@ function App() {
 					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
-					enabled={enabled} active={active}
+					enabled={enabled}
 
 					arrive={arrive}
 					focus={focus}
@@ -127,17 +128,24 @@ function App() {
 					required={true}
 					
 					press={press}
+					
+					active={active}
+					readOnly={true}
 				>
-                    check
+                    readonly check
                 </Check>
+				<input
+					type='checkbox'
+					
+					checked={active}
+					readOnly={true}
+				/>
+				<br />
 				<Check
 					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
 
 					enabled={enabled}
-					
-					defaultActive={active}
-					onActiveChange={(newActive) => setActive(newActive)}
 
 					arrive={arrive}
 					focus={focus}
@@ -147,9 +155,70 @@ function App() {
 					required={true}
 					
 					press={press}
+					
+					defaultActive={active}
+					onActiveChange={(newActive) => setActive(newActive)}
 				>
-                    check
+                    uncontrollable check
                 </Check>
+				<input
+					type='checkbox'
+					
+					defaultChecked={active}
+					onChange={(e) => setActive(e.target.checked)}
+				/>
+				<br />
+				<Check
+					theme={theme} size={size} gradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled}
+
+					arrive={arrive}
+					focus={focus}
+
+					enableValidation={enableVal}
+					isValid={isValid}
+					required={true}
+					
+					press={press}
+					
+					active={active}
+					onActiveChange={(newActive) => setActive(newActive)}
+				>
+                    controllable check
+                </Check>
+				<input
+					type='checkbox'
+					
+					checked={active}
+					onChange={(e) => setActive(e.target.checked)}
+				/>
+				<Check
+					theme={theme} size={size} gradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled}
+
+					arrive={arrive}
+					focus={focus}
+
+					enableValidation={enableVal}
+					isValid={isValid}
+					required={true}
+					
+					press={press}
+					
+					checked={active}
+					onChange={(e) => {
+						console.log('onChange!');
+						setActive((e as any).checked);
+					}}
+				>
+                    controllable check
+                </Check>
+				</form>
+				<br />
                 <hr style={{flexBasis: '100%'}} />
 				<p>
 					Theme:

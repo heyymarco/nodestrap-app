@@ -1,5 +1,8 @@
 // react (builds html using javascript):
-import React                from 'react'        // base technology of our nodestrap components
+import {
+    default as React,
+    useRef,
+}                           from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
 import {
@@ -30,7 +33,7 @@ import {
     iconStyles,
 }                           from './Icon'
 import {
-    buttonStyles as buttonStyles,
+    buttonStyles,
 }                           from './Button'
 
 
@@ -592,12 +595,13 @@ export default function Check(props: CheckProps) {
     
     
     // states:
+    const inputRef = useRef<HTMLInputElement|null>(null);
     const [isActive, setActive] = useTogglerActive({
         ...props,
 
         defaultActive : props.defaultActive ?? props.defaultChecked,
         active        : props.active        ?? props.checked,
-    });
+    }, /*changeEventTarget :*/inputRef);
 
     
 
@@ -608,15 +612,13 @@ export default function Check(props: CheckProps) {
 
 
         // accessibility:
-        readOnly,
-
         defaultActive,  // delete, already handled by useTogglerActive
-        onActiveChange, // delete, already handled by useTogglerActive
         active,         // delete, already handled by useTogglerActive
+        onActiveChange, // delete, already handled by useTogglerActive
 
-        defaultChecked, // delete, already handled by useTogglerActive
+        defaultChecked, // delete, already forwarded to `defaultActive`
+        checked,        // delete, already forwarded to `active`
         onChange,       // todo: handle onChange
-        checked,        // delete, already handled by useTogglerActive
 
 
         // values:
@@ -634,9 +636,15 @@ export default function Check(props: CheckProps) {
 
 
 
+    // handlers:
+    const handleToggleActive = () => {
+        setActive(!isActive); // toggle active
+    }
+
+
+
     // fn props:
     const propEnabled = usePropEnabled(props);
-    const isBtnStyle  = props.chkStyle?.startsWith('btn') ?? false;
 
     
     
@@ -652,6 +660,8 @@ export default function Check(props: CheckProps) {
 
 
             // accessibility:
+            role='checkbox'
+            aria-checked={isActive}
             aria-label={props.label}
             active={isActive}
 
@@ -674,7 +684,7 @@ export default function Check(props: CheckProps) {
                 
                 
                 
-                if (!e.defaultPrevented) setActive(!isActive); // toggle active
+                if (!e.defaultPrevented) handleToggleActive();
             }}
             onKeyUp={(e) => {
                 // backwards:
@@ -683,29 +693,40 @@ export default function Check(props: CheckProps) {
 
 
                 if (!e.defaultPrevented) {
-                    if ((e.code === ' ') || (e.key === ' ')) setActive(!isActive); // toggle active
+                    if ((e.code === ' ') || (e.key === ' ')) handleToggleActive();
                 } // if
             }}
         >
             <input
                 // essentials:
-                ref={elmRef}
+                ref={(elm) => {
+                    inputRef.current = elm;
+    
+    
+                    // forwards:
+                    if (elmRef) {
+                        if (typeof(elmRef) === 'function') {
+                            elmRef(elm);
+                        }
+                        else {
+                            (elmRef as React.MutableRefObject<HTMLInputElement|null>).current = elm;
+                        } // if
+                    } // if
+                }}
 
 
                 // accessibility:
-                aria-hidden={isBtnStyle} // if btnStyle => hides the check
+                aria-hidden={true} // the input just for check indicator & storing value
+                tabIndex={-1} // non focusable
+                
                 disabled={!propEnabled}
-                tabIndex={-1}
-                // readOnly={readOnly} // todo: handle readonly
+                readOnly={true} // for satisfying React of readOnly check
+                checked={isActive}
 
 
                 // values:
                 defaultValue={defaultValue}
                 value={value}
-                // defaultChecked={isActive}
-                checked={isActive}
-                readOnly={true}
-                // onChange={({target}) => setActive(target.checked)} // let's bubbling to parent handle onChange
 
 
                 // validations:
@@ -717,11 +738,11 @@ export default function Check(props: CheckProps) {
 
 
                 // events:
-                // onFocus, onBlur // bubble to parent (unlike on native DOM that doesn't bubble, on react *do* bubbling)
                 onAnimationEnd={(e) => {
                     // triggers parent's onAnimationEnd event
                     e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
                 }}
+                onChange={onChange}
             />
             { (props.text || props.children) &&
                 <span
