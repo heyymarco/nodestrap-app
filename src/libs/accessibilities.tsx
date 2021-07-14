@@ -9,20 +9,20 @@ import {
 
 // defaults:
 const _defaultEnabled         = true;
-const _defaultReadonly        = false;
+const _defaultReadOnly        = false;
 const _defaultActive          = false;
 
 const _defaultInheritEnabled  = true;
-const _defaultInheritReadonly = true;
+const _defaultInheritReadOnly = true;
 const _defaultInheritActive   = false;
 
 
 
 // contexts:
 
-export interface TAccessibility<TDefaultEnabled = boolean, TDefaultReadonly = boolean, TDefaultActive = boolean> {
+export interface TAccessibility<TDefaultEnabled = boolean, TDefaultReadOnly = boolean, TDefaultActive = boolean> {
     enabled  : boolean|TDefaultEnabled
-    readonly : boolean|TDefaultReadonly
+    readOnly : boolean|TDefaultReadOnly
     active   : boolean|TDefaultActive
 }
 
@@ -37,10 +37,10 @@ export interface Accessibility extends TAccessibility {
     enabled  : boolean
 
     /**
-     * `true`      : component is readonly - ignores any user editing.  
+     * `true`      : component is readOnly - ignores any user editing.  
      * `false`     : component is editable - responses any user editing.
      */
-    readonly : boolean
+    readOnly : boolean
 
     /**
      * `true`      : component is in active state.  
@@ -54,7 +54,7 @@ export interface Accessibility extends TAccessibility {
  */
 export const Context = createContext<Accessibility>(/*defaultValue :*/{
     enabled  : _defaultEnabled,
-    readonly : _defaultReadonly,
+    readOnly : _defaultReadOnly,
     active   : _defaultActive,
 });
 Context.displayName  = 'Accessibility';
@@ -62,7 +62,7 @@ Context.displayName  = 'Accessibility';
 
 
 // hooks:
-export function usePropAccessibility<TDefaultEnabled = boolean, TDefaultReadonly = boolean, TDefaultActive = boolean>(props: AccessibilityProps, defaultEnabled: boolean|TDefaultEnabled = _defaultEnabled, defaultReadonly: boolean|TDefaultReadonly = _defaultReadonly, defaultActive: boolean|TDefaultActive = _defaultActive): Accessibility|TAccessibility<TDefaultEnabled, TDefaultReadonly, TDefaultActive> {
+export function usePropAccessibility<TDefaultEnabled = boolean, TDefaultReadOnly = boolean, TDefaultActive = boolean>(props: AccessibilityProps, defaultEnabled: boolean|TDefaultEnabled = _defaultEnabled, defaultReadOnly: boolean|TDefaultReadOnly = _defaultReadOnly, defaultActive: boolean|TDefaultActive = _defaultActive): Accessibility|TAccessibility<TDefaultEnabled, TDefaultReadOnly, TDefaultActive> {
     // contexts:
     const accessContext = useContext(Context);
 
@@ -80,16 +80,16 @@ export function usePropAccessibility<TDefaultEnabled = boolean, TDefaultReadonly
             &&
             (props.enabled ?? defaultEnabled)
         ),
-        readonly: (
+        readOnly: (
             (
-                (props.inheritReadonly ?? _defaultInheritReadonly)
+                (props.inheritReadOnly ?? _defaultInheritReadOnly)
                 ?
-                accessContext.readonly // inherit
+                accessContext.readOnly // inherit
                 :
                 false                  // independent
             )
             ||
-            (props.readonly ?? defaultReadonly)
+            (props.readOnly ?? defaultReadOnly)
         ),
         active: (
             (
@@ -121,6 +121,25 @@ export function usePropEnabled<TDefaultEnabled = boolean>(props: AccessibilityPr
         )
         &&
         (props.enabled ?? defaultEnabled)
+    );
+}
+
+export function usePropReadOnly<TDefaultReadOnly = boolean>(props: AccessibilityProps, defaultReadOnly: boolean|TDefaultReadOnly = _defaultReadOnly): boolean|TDefaultReadOnly {
+    // contexts:
+    const accessContext = useContext(Context);
+
+
+
+    return (
+        (
+            (props.inheritReadOnly ?? _defaultInheritReadOnly)
+            ?
+            accessContext.readOnly // inherit
+            :
+            false                  // independent
+        )
+        ||
+        (props.readOnly ?? defaultReadOnly)
     );
 }
 
@@ -167,17 +186,17 @@ export interface AccessibilityProps
 
     /**
      * `undefined` : same as `false`.  
-     * `true`      : component is readonly - ignores any user editing.  
+     * `true`      : component is readOnly - ignores any user editing.  
      * `false`     : component is editable - responses any user editing.
      */
-    readonly?        : boolean
+    readOnly?        : boolean
 
     /**
      * `undefined` : same as `true`.  
-     * `true`      : inherits `readonly` from parent (`AccessibilityProvider` context).  
-     * `false`     : independent `readonly`.
+     * `true`      : inherits `readOnly` from parent (`AccessibilityProvider` context).  
+     * `false`     : independent `readOnly`.
      */
-    inheritReadonly? : boolean
+    inheritReadOnly? : boolean
 
     
     
@@ -204,7 +223,7 @@ export default function AccessibilityProvider(props: AccessibilityProps) {
     return (
         <Context.Provider value={{
             enabled  : props.enabled  ?? _defaultEnabled,
-            readonly : props.readonly ?? _defaultReadonly,
+            readOnly : props.readOnly ?? _defaultReadOnly,
             active   : props.active   ?? _defaultActive,
         }}>
             {props.children}
