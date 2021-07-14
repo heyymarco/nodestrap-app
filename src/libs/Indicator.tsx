@@ -530,11 +530,11 @@ export function useStateActivePassive(props: IndicationProps & ElementProps, act
     };
 }
 
-export function useTogglerActive(props: TogglerActiveProps): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
+export function useTogglerActive(props: TogglerActiveProps, changeEventTarget?: (React.RefObject<EventTarget>|null)): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
     // fn props:
     const propAccess   = usePropAccessibility<boolean, boolean, null>(props, undefined, undefined, null);
     const propEnabled  = propAccess.enabled;
-    const propReadonly = propAccess.readonly;
+    const propReadOnly = propAccess.readOnly;
     const propActive   = propAccess.active;
 
 
@@ -553,7 +553,7 @@ export function useTogglerActive(props: TogglerActiveProps): [boolean, React.Dis
 
     const setActive: React.Dispatch<React.SetStateAction<boolean>> = (newActive) => {
         if (!propEnabled) return; // control is disabled => no response required
-        if (propReadonly) return; // control is readonly => no response required
+        if (propReadOnly) return; // control is readOnly => no response required
 
         
         
@@ -568,8 +568,14 @@ export function useTogglerActive(props: TogglerActiveProps): [boolean, React.Dis
         
         
         
-        // forwards:
+        // fire change event:
         props.onActiveChange?.(newActiveValue); // notify changed -or- request to change
+        
+        
+        
+        // fire change event:
+        // TODO doesn't work
+        changeEventTarget?.current?.dispatchEvent(new Event('change', { bubbles: true, cancelable: false }));
     };
     return [
         activeFn,
