@@ -20,6 +20,7 @@ import {
 }                           from './nodestrap'  // nodestrap's core
 import {
     usePropEnabled,
+    usePropReadOnly,
 }                           from './accessibilities'
 import {
     ControlStyles,
@@ -224,7 +225,8 @@ export const cssDecls = cssConfig.decls;
 
 export function useStatePressRelease(props: ActionControlProps, mouses: number[]|null = [0], keys: string[]|null = ['space']) {
     // fn props:
-    const propEnabled = usePropEnabled(props);
+    const propEnabled  = usePropEnabled(props);
+    const propReadOnly = usePropReadOnly(props);
 
 
 
@@ -237,10 +239,10 @@ export function useStatePressRelease(props: ActionControlProps, mouses: number[]
 
 
     /*
-     * state is always released if disabled
+     * state is always released if (disabled || readOnly)
      * state is press/release based on [controllable press] (if set) and fallback to [uncontrollable press]
      */
-    const pressFn: boolean = propEnabled && (props.press /*controllable*/ ?? pressDn /*uncontrollable*/);
+    const pressFn: boolean = (propEnabled && !propReadOnly) && (props.press /*controllable*/ ?? pressDn /*uncontrollable*/);
 
     if (pressed !== pressFn) { // change detected => apply the change & start animating
         setPressed(pressFn);   // remember the last change
@@ -251,6 +253,7 @@ export function useStatePressRelease(props: ActionControlProps, mouses: number[]
     
     useEffect(() => {
         if (!propEnabled)              return; // control is disabled => no response required
+        if (propReadOnly)              return; // control is readOnly => no response required
         if (props.press !== undefined) return; // controllable [press] is set => no uncontrollable required
 
 
@@ -264,12 +267,13 @@ export function useStatePressRelease(props: ActionControlProps, mouses: number[]
             window.removeEventListener('mouseup', handleRelease);
             window.removeEventListener('keyup',   handleRelease);
         }
-    }, [propEnabled, props.press]);
+    }, [propEnabled, propReadOnly, props.press]);
 
 
 
     const handlePress = () => {
         if (!propEnabled)              return; // control is disabled => no response required
+        if (propReadOnly)              return; // control is readOnly => no response required
         if (props.press !== undefined) return; // controllable [press] is set => no uncontrollable required
 
 
@@ -304,7 +308,7 @@ export function useStatePressRelease(props: ActionControlProps, mouses: number[]
             if (pressed) return 'pressed';
 
             // fully released:
-            if (props.press !== undefined) {
+            if ((props.press !== undefined) || propReadOnly) {
                 return 'released'; // releasing by controllable prop => use class .released to kill pseudo :active
             }
             else {
