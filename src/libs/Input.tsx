@@ -166,7 +166,7 @@ export default function Input(props: InputProps) {
         // values:
         defaultValue,
         value,
-        // onChange, // let's bubbling to parent handle onChange
+        onChange,
 
 
         // validations:
@@ -222,7 +222,7 @@ export default function Input(props: InputProps) {
                 // values:
                 defaultValue={defaultValue}
                 value={value}
-             // onChange={onChange} // let's bubbling to parent handle onChange
+                onChange={onChange} // for satisfying React of readOnly check
 
 
                 // validations:

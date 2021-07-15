@@ -645,7 +645,7 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
             // events:
             // watch [escape key] on the whole Modal, including Card & Card's children:
             onKeyDown={(e) => {
-                if ((e.code === 'Escape') || (e.key === 'Escape')) props.onClose?.('shortcut');
+                if ((e.key === 'Escape') || (e.code === 'Escape')) props.onClose?.('shortcut');
             }}
 
             // watch left click on the overlay only (not at the Card):

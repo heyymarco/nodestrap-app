@@ -520,8 +520,6 @@ export interface EditableControlProps<TElement extends EditableControlElement = 
     // values:
     defaultValue?    : string | number | ReadonlyArray<string>
     value?           : string | number | ReadonlyArray<string>
-    // onChange?        : React.ChangeEventHandler<TElement>
-    // onChange?        : React.FormEventHandler<TElement>
     
 
     // validations:

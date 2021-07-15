@@ -13,7 +13,7 @@ import {
     ClassList,
     PropList,
 
-    
+
     // components:
     CssConfig,
 }                           from './nodestrap'  // nodestrap's core
@@ -48,12 +48,12 @@ export class CheckStyles extends EditableActionControlStyles {
     //#region props
     //#region finals
     /**
-     * final filter.
+     * final filter for the check.
      */
     public    readonly _checkFilter         = 'checkFilter'
 
     /**
-     * final transform.
+     * final transform for the check.
      */
     public    readonly _checkTransf         = 'checkTransf'
 
@@ -121,7 +121,7 @@ export class CheckStyles extends EditableActionControlStyles {
             padding    : 0, // kill the paddings
 
             '&:not(:last-child)': {
-                marginInlineEnd : 0, // kill the spacing between check & label
+                marginInlineEnd : 0, // kill the spacing between input & label
             },
             //#endregion hides the checkbox while still preserving animations
         },
@@ -170,6 +170,8 @@ export class CheckStyles extends EditableActionControlStyles {
 
         [this.decl(this._filterCheckClearIn)]  : inherit ? 'unset' : 'initial',
         [this.decl(this._filterCheckClearOut)] : inherit ? 'unset' : 'initial',
+        [this.decl(this._transfCheckClearIn)]  : inherit ? 'unset' : 'initial',
+        [this.decl(this._transfCheckClearOut)] : inherit ? 'unset' : 'initial',
         [this.decl(this._animCheckClear)]      : inherit ? 'unset' : 'initial',
     }}
     public /*override*/ actived()     : JssStyle { return {
@@ -275,29 +277,29 @@ export class CheckStyles extends EditableActionControlStyles {
 
 
         // foregrounds:
-        foreg         : this.ref(this._mildForegFn),
+        foreg          : this.ref(this._mildForegFn),
         
         
         
         // backgrounds:
-        backg         : 'initial !important', // no valid/invalid animation
+        backg          : 'initial !important', // no valid/invalid animation
 
 
 
         // borders:
-        border        : undefined as unknown as null, // discard basicStyle's border
-        borderRadius  : undefined as unknown as null, // discard basicStyle's borderRadius
+        border         : undefined as unknown as null, // discard basicStyle's border
+        borderRadius   : undefined as unknown as null, // discard basicStyle's borderRadius
 
 
 
         // spacings:
-        paddingInline : undefined as unknown as null, // discard basicStyle's paddingInline
-        paddingBlock  : undefined as unknown as null, // discard basicStyle's paddingBlock
+        paddingInline  : undefined as unknown as null, // discard basicStyle's paddingInline
+        paddingBlock   : undefined as unknown as null, // discard basicStyle's paddingBlock
 
 
 
         // states & animations:
-        boxShadow     : 'initial !important', // no focus animation
+        boxShadow      : 'initial !important', // no focus animation
     
     
     
@@ -350,7 +352,7 @@ export class CheckStyles extends EditableActionControlStyles {
         paddingInline : undefined as unknown as null, // discard basicStyle's paddingInline
         paddingBlock  : undefined as unknown as null, // discard basicStyle's paddingBlock
 
-        // spacing between check & label:
+        // spacing between input & label:
         '&:not(:last-child)': {
             marginInlineEnd : cssProps.spacing,
         },
@@ -430,10 +432,16 @@ const cssConfig = new CssConfig(() => {
             filter: [[
                 checkStyles.ref(checkStyles._filterCheckClearOut),
             ]],
+            transform: [[
+                checkStyles.ref(checkStyles._transfCheckClearOut),
+            ]],
         },
         to: {
             filter: [[
                 checkStyles.ref(checkStyles._filterCheckClearIn),
+            ]],
+            transform: [[
+                checkStyles.ref(checkStyles._transfCheckClearIn),
             ]],
         },
     };
@@ -445,54 +453,26 @@ const cssConfig = new CssConfig(() => {
     
     
     const keyframesSwitchCheck   : PropEx.Keyframes = {
-        from: {
-            filter: [[
-                checkStyles.ref(checkStyles._filterCheckClearOut),
-            ]],
-            transform: [[
-                checkStyles.ref(checkStyles._transfCheckClearOut),
-            ]],
-        },
+        from : keyframesCheck.from,
         '75%': {
             transformOrigin: 'left', // todo: orientation aware transform => left will be top if the element rotated 90deg clockwise
             transform: [[
-                'scaleX(1.2)',
+                'scaleX(1.2)', // add a bumpy effect
                 checkStyles.ref(checkStyles._transfCheckClearIn),
             ]],
         },
-        to: {
-            filter: [[
-                checkStyles.ref(checkStyles._filterCheckClearIn),
-            ]],
-            transform: [[
-                checkStyles.ref(checkStyles._transfCheckClearIn),
-            ]],
-        },
+        to   : keyframesCheck.to,
     };
     const keyframesSwitchClear   : PropEx.Keyframes = {
-        from: {
-            filter: [[
-                checkStyles.ref(checkStyles._filterCheckClearIn),
-            ]],
-            transform: [[
-                checkStyles.ref(checkStyles._transfCheckClearIn),
-            ]],
-        },
+        from : keyframesSwitchCheck.to,
         '75%': {
             transformOrigin: 'right', // todo: orientation aware transform => right will be bottom if the element rotated 90deg clockwise
             transform: [[
-                'scaleX(1.2)',
+                'scaleX(1.2)', // add a bumpy effect
                 checkStyles.ref(checkStyles._transfCheckClearOut),
             ]],
         },
-        to: {
-            filter: [[
-                checkStyles.ref(checkStyles._filterCheckClearOut),
-            ]],
-            transform: [[
-                checkStyles.ref(checkStyles._transfCheckClearOut),
-            ]],
-        },
+        to   : keyframesSwitchCheck.from,
     };
 
     
@@ -580,27 +560,31 @@ export interface CheckProps
     text?           : string
 
 
+    // events:
+    onChange?       : React.ChangeEventHandler<HTMLInputElement>
+
+
     // children:
     children?       : React.ReactNode
 }
 export default function Check(props: CheckProps) {
     // styles:
-    const styles      = checkStyles.useStyles();
+    const styles    = checkStyles.useStyles();
 
     
     
     // variants:
-    const variCheck   = useVariantCheck(props, styles);
+    const variCheck = useVariantCheck(props, styles);
 
     
     
     // states:
-    const inputRef = useRef<HTMLInputElement|null>(null);
+    const inputRef  = useRef<HTMLInputElement|null>(null);
     const [isActive, setActive] = useTogglerActive({
         ...props,
 
-        defaultActive : props.defaultActive ?? props.defaultChecked,
-        active        : props.active        ?? props.checked,
+        defaultActive : props.defaultActive ?? props.defaultChecked, // forwards `defaultChecked` to `defaultActive`
+        active        : props.active        ?? props.checked,        // forwards `checked`        to `active`
     }, /*changeEventTarget :*/inputRef);
 
     
@@ -612,13 +596,13 @@ export default function Check(props: CheckProps) {
 
 
         // accessibility:
-        defaultActive,  // delete, already handled by useTogglerActive
-        active,         // delete, already handled by useTogglerActive
-        onActiveChange, // delete, already handled by useTogglerActive
+        defaultActive,  // delete, already handled by `useTogglerActive`
+        active,         // delete, already handled by `useTogglerActive`
+        onActiveChange, // delete, already handled by `useTogglerActive`
 
         defaultChecked, // delete, already forwarded to `defaultActive`
         checked,        // delete, already forwarded to `active`
-        onChange,       // todo: handle onChange
+        onChange,       // forwards to `input[type='checkbox']`
 
 
         // values:
@@ -693,7 +677,7 @@ export default function Check(props: CheckProps) {
 
 
                 if (!e.defaultPrevented) {
-                    if ((e.code === ' ') || (e.key === ' ')) handleToggleActive();
+                    if ((e.key === ' ') || (e.code === 'Space')) handleToggleActive();
                 } // if
             }}
         >
@@ -717,11 +701,11 @@ export default function Check(props: CheckProps) {
 
                 // accessibility:
                 aria-hidden={true} // the input just for check indicator & storing value
-                tabIndex={-1} // non focusable
+                tabIndex={-1}      // non focusable
                 
-                disabled={!propEnabled}
-                readOnly={true} // for satisfying React of readOnly check
-                checked={isActive}
+                disabled={!propEnabled} // do not submit the value if disabled
+                readOnly={true}    // for satisfying React of **controllable readOnly check**
+                checked={isActive} // **controllable check**
 
 
                 // values:
@@ -742,7 +726,9 @@ export default function Check(props: CheckProps) {
                     // triggers parent's onAnimationEnd event
                     e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
                 }}
-                onChange={onChange}
+
+                onChange={onChange} // forwards `onChange` event
+                onClick={(e) => e.stopPropagation()} // prevents firing `change` event triggering parent's `onClick`
             />
             { (props.text || props.children) &&
                 <span

@@ -78,7 +78,7 @@ function App() {
     return (
         <div className="App">
             <Container>
-				<form onChange={() => console.log('form changed!')}>
+				<form onChange={(e) => console.log('form changed!')}>
                 <EditableActionControl
 					theme={theme} size={size} gradient={enableGrad}
 					outlined={outlined} mild={mild}
@@ -210,10 +210,7 @@ function App() {
 					press={press}
 					
 					checked={active}
-					onChange={(e) => {
-						console.log('onChange!');
-						setActive((e as any).checked);
-					}}
+					onChange={(e) => setActive(e.target.checked)}
 				>
                     controllable check
                 </Check>

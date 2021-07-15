@@ -25,12 +25,12 @@ import reportWebVitals from './reportWebVitals';
 //                     import ButtonIconApp        from './apps/ButtonIconApp';
 //             import EditableControlApp           from './apps/EditableControlApp';
 //                 import EditableTextControlApp   from './apps/EditableTextControlApp';
-//                     import InputApp             from './apps/InputApp';
+                    import InputApp             from './apps/InputApp';
                 import EditableActionControlApp from './apps/EditableActionControlApp';
-    //                 import CheckApp             from './apps/CheckApp';
-    // import IconApp                              from './apps/IconApp';
-    // import MasonryApp                           from './apps/MasonryApp';
-    // import CarouselApp                          from './apps/CarouselApp';
+                    import CheckApp             from './apps/CheckApp';
+//     import IconApp                              from './apps/IconApp';
+//     import MasonryApp                           from './apps/MasonryApp';
+//     import CarouselApp                          from './apps/CarouselApp';
     
 
 
@@ -38,7 +38,7 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
     <React.StrictMode>
-        <EditableActionControlApp />
+        <CheckApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

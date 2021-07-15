@@ -11,7 +11,9 @@ import Container from '../libs/Container';
 import {
 	Input,
 	DateTime,
+	Text,
 } 				from '../libs/Input';
+import './InputApp.css';
 
 
 
@@ -71,6 +73,8 @@ function App() {
 	const isValids = [undefined, false, null, true];
 	const [enableVal, setEnableVal  ] = useState(true);
 	const [isValid,   setIsValid    ] = useState<boolean|null|undefined>(undefined);
+
+	const [text, setText] = useState<string>('h');
 
 
 
@@ -135,6 +139,49 @@ function App() {
 
 					enableValidation={enableVal}
 					isValid={isValid}
+				/>
+                <hr style={{flexBasis: '100%'}} />
+				<p>controllable:</p>
+				<Text
+					theme={theme} size={size} gradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+
+					enableValidation={enableVal}
+					isValid={isValid}
+
+					required={true}
+					minLength={3}
+					maxLength={8}
+
+					value={text}
+					onChange={(e) => setText(e.target.value)}
+				/>
+                <hr style={{flexBasis: '100%'}} />
+				<input className='txtInp'
+					type='text'
+
+					required={true}
+					minLength={3}
+					maxLength={8}
+
+					value={text}
+					onChange={(e) => setText(e.target.value)}
+				/>
+				<br />
+				<input className='txtInp'
+					type='text'
+
+					required={true}
+					minLength={3}
+					maxLength={8}
+
+					value={text}
+					onChange={(e) => setText(e.target.value)}
 				/>
                 <hr style={{flexBasis: '100%'}} />
 				<p>
