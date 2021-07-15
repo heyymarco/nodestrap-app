@@ -32,6 +32,10 @@ import {
     BasicComponent,
 }                           from './BasicComponent'
 
+// others libs:
+// @ts-ignore
+import triggerChange        from 'react-trigger-change'
+
 
 
 // styles:
@@ -530,7 +534,7 @@ export function useStateActivePassive(props: IndicationProps & ElementProps, act
     };
 }
 
-export function useTogglerActive(props: TogglerActiveProps, changeEventTarget?: (React.RefObject<EventTarget>|null)): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
+export function useTogglerActive(props: TogglerActiveProps, changeEventTarget?: (React.RefObject<HTMLInputElement>|null)): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
     // fn props:
     const propAccess   = usePropAccessibility<boolean, boolean, null>(props, undefined, undefined, null);
     const propEnabled  = propAccess.enabled;
@@ -574,8 +578,10 @@ export function useTogglerActive(props: TogglerActiveProps, changeEventTarget?: 
         
         
         // fire change event:
-        // TODO doesn't work
-        changeEventTarget?.current?.dispatchEvent(new Event('change', { bubbles: true, cancelable: false }));
+        if (changeEventTarget?.current) {
+            changeEventTarget.current.checked = newActiveValue;
+            triggerChange(changeEventTarget.current);
+        } // if
     };
     return [
         activeFn,
