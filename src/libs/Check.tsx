@@ -73,11 +73,12 @@ class BtnStyles extends ActionControlStyles {
     public /*override*/ disabling()                          : JssStyle  { return {} } // disabled
     public /*override*/ disabled()                           : JssStyle  { return {} } // disabled
 
-    public /*override*/ resetActivePassive(inherit: boolean) : PropList  { return super.resetPressRelease(inherit) }
-    public /*override*/ actived()                            : JssStyle  { return super.pressed()                  }
-    public /*override*/ activating()                         : JssStyle  { return super.pressing()                 }
-    public /*override*/ passivating()                        : JssStyle  { return super.releasing()                }
-    public /*override*/ passived()                           : JssStyle  { return super.released()                 }
+    // active/passive => press/release
+    public /*override*/ resetActivePassive(inherit: boolean) : PropList  { return {} } // disabled
+    public /*override*/ actived()                            : JssStyle  { return super.pressed()   }
+    public /*override*/ activating()                         : JssStyle  { return super.pressing()  }
+    public /*override*/ passivating()                        : JssStyle  { return super.releasing() }
+    public /*override*/ passived()                           : JssStyle  { return super.released()  }
     public /*override*/ themeActive(theme = 'primary')       : PropList  { return {} } // disabled
 
     public /*override*/ resetFocusBlur(inherit: boolean)     : PropList  { return {} } // disabled
