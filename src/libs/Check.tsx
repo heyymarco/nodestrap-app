@@ -25,6 +25,9 @@ import {
     TogglerActiveProps,
 }                           from './Indicator'
 import {
+    ActionControlStyles,
+}                           from './ActionControl'
+import {
     EditableActionControlStyles,
     EditableActionControlProps,
     EditableActionControl,
@@ -43,6 +46,79 @@ import {
 const inputElm = '&>:first-child';
 const checkElm = '&::before';
 const labelElm = '&>:nth-child(1n+2)';
+
+class BtnStyles extends ActionControlStyles {
+    // variants:
+    public /*override*/ themes()                             : ClassList { return [] } // disabled
+
+    public /*override*/ sizes()                              : ClassList { return [] } // disabled
+
+    public /*override*/ noGradient(inherit = false)          : JssStyle  { return {} } // disabled
+    public /*override*/ gradient()                           : JssStyle  { return {} } // disabled
+
+    public /*override*/ noOutlined(inherit = false)          : JssStyle  { return {} } // disabled
+    public /*override*/ outlined()                           : JssStyle  { return {} } // disabled
+
+    public /*override*/ noMild(inherit = false)              : JssStyle  { return {} } // disabled
+    public /*override*/ mild()                               : JssStyle  { return {} } // disabled
+
+
+
+    // states:
+    public /*override*/ resetDefaultState(inherit = false)   : PropList  { return {} } // disabled
+
+    public /*override*/ resetEnableDisable(inherit: boolean) : PropList  { return {} } // disabled
+    public /*override*/ enabled()                            : JssStyle  { return {} } // disabled
+    public /*override*/ enabling()                           : JssStyle  { return {} } // disabled
+    public /*override*/ disabling()                          : JssStyle  { return {} } // disabled
+    public /*override*/ disabled()                           : JssStyle  { return {} } // disabled
+
+    public /*override*/ resetActivePassive(inherit: boolean) : PropList  { return super.resetPressRelease(inherit) }
+    public /*override*/ actived()                            : JssStyle  { return super.pressed()                  }
+    public /*override*/ activating()                         : JssStyle  { return super.pressing()                 }
+    public /*override*/ passivating()                        : JssStyle  { return super.releasing()                }
+    public /*override*/ passived()                           : JssStyle  { return super.released()                 }
+    public /*override*/ themeActive(theme = 'primary')       : PropList  { return {} } // disabled
+
+    public /*override*/ resetFocusBlur(inherit: boolean)     : PropList  { return {} } // disabled
+    public /*override*/ focused()                            : JssStyle  { return {} } // disabled
+    public /*override*/ focusing()                           : JssStyle  { return {} } // disabled
+    public /*override*/ blurring()                           : JssStyle  { return {} } // disabled
+    public /*override*/ blurred()                            : JssStyle  { return {} } // disabled
+
+    public /*override*/ resetArriveLeave(inherit: boolean)   : PropList  { return {} } // disabled
+    public /*override*/ arrived()                            : JssStyle  { return {} } // disabled
+    public /*override*/ arriving()                           : JssStyle  { return {} } // disabled
+    public /*override*/ leaving()                            : JssStyle  { return {} } // disabled
+    public /*override*/ left()                               : JssStyle  { return {} } // disabled
+
+    public /*override*/ resetPressRelease(inherit: boolean)  : PropList  { return {} } // disabled
+    public /*override*/ pressed()                            : JssStyle  { return {} } // disabled
+    public /*override*/ pressing()                           : JssStyle  { return {} } // disabled
+    public /*override*/ releasing()                          : JssStyle  { return {} } // disabled
+    public /*override*/ released()                           : JssStyle  { return {} } // disabled
+
+
+
+    // functions:
+    public /*override*/ propsFn()                            : PropList { return {} }  // disabled
+
+
+
+    // styles:
+    public /*override*/ basicStyle(): JssStyle { return {
+        [labelElm]: {
+            extend: [
+                buttonStyles.basicStyle(),
+            ] as JssStyle,
+    
+    
+    
+            // customize:
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'btn')), // apply *general* cssProps starting with btn***
+        } as JssStyle,
+    }}
+}
 
 export class CheckStyles extends EditableActionControlStyles {
     //#region props
@@ -96,6 +172,12 @@ export class CheckStyles extends EditableActionControlStyles {
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
     public /*virtual*/ button(): JssStyle { return {
+        extend: [
+            (new BtnStyles()).compositeStyle(),
+        ] as JssStyle,
+
+
+
         // children:
 
         [inputElm] : {
@@ -124,17 +206,6 @@ export class CheckStyles extends EditableActionControlStyles {
                 marginInlineEnd : 0, // kill the spacing between input & label
             },
             //#endregion hides the checkbox while still preserving animations
-        },
-
-        [labelElm] : {
-            extend: [
-                buttonStyles.basicStyle(),
-            ] as JssStyle,
-
-
-
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'btn')), // apply *general* cssProps starting with btn***
         },
     }}
     public /*virtual*/ switch(): JssStyle { return {

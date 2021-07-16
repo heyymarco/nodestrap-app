@@ -34,65 +34,65 @@ import {
 
 class GhostStyles extends ControlStyles {
     // variants:
-    public /*override*/ themes()                    : ClassList { return [] } // disabled
+    public /*override*/ themes()                             : ClassList { return [] } // disabled
 
-    public /*override*/ sizes()                     : ClassList { return [] } // disabled
+    public /*override*/ sizes()                              : ClassList { return [] } // disabled
 
-    public /*override*/ noGradient(inherit = false) : JssStyle  { return {} } // disabled
-    public /*override*/ gradient()                  : JssStyle  { return {} } // disabled
+    public /*override*/ noGradient(inherit = false)          : JssStyle  { return {} } // disabled
+    public /*override*/ gradient()                           : JssStyle  { return {} } // disabled
 
-    public /*override*/ noOutlined(inherit = false) : JssStyle  { return {
+    public /*override*/ noOutlined(inherit = false)          : JssStyle  { return {
         // borders:
         border : 'none', // no_border if no_outlined
     }}
-    public /*override*/ outlined()                  : JssStyle  { return {} } // disabled
+    public /*override*/ outlined()                           : JssStyle  { return {} } // disabled
 
-    public /*override*/ noMild(inherit = false)     : JssStyle  { return {} } // disabled
-    public /*override*/ mild()                      : JssStyle  { return {} } // disabled
+    public /*override*/ noMild(inherit = false)              : JssStyle  { return {} } // disabled
+    public /*override*/ mild()                               : JssStyle  { return {} } // disabled
 
 
 
     // states:
-    public /*override*/ resetDefaultState(inherit = false)   : PropList { return {} } // disabled
+    public /*override*/ resetDefaultState(inherit = false)   : PropList  { return {} } // disabled
 
-    public /*override*/ resetEnableDisable(inherit: boolean) : PropList { return {} } // disabled
-    public /*override*/ enabled()     : JssStyle { return {} } // disabled
-    public /*override*/ enabling()    : JssStyle { return {} } // disabled
-    public /*override*/ disabling()   : JssStyle { return {} } // disabled
-    public /*override*/ disabled()    : JssStyle { return {} } // disabled
+    public /*override*/ resetEnableDisable(inherit: boolean) : PropList  { return {} } // disabled
+    public /*override*/ enabled()                            : JssStyle  { return {} } // disabled
+    public /*override*/ enabling()                           : JssStyle  { return {} } // disabled
+    public /*override*/ disabling()                          : JssStyle  { return {} } // disabled
+    public /*override*/ disabled()                           : JssStyle  { return {} } // disabled
 
-    public /*override*/ resetActivePassive(inherit: boolean) : PropList { return {} } // disabled
-    public /*override*/ actived()     : JssStyle { return {} } // disabled
-    public /*override*/ activating()  : JssStyle { return {} } // disabled
-    public /*override*/ passivating() : JssStyle { return {} } // disabled
-    public /*override*/ passived()    : JssStyle { return {} } // disabled
-    public /*override*/ themeActive(theme = 'primary')   : PropList { return {} } // disabled
+    public /*override*/ resetActivePassive(inherit: boolean) : PropList  { return {} } // disabled
+    public /*override*/ actived()                            : JssStyle  { return {} } // disabled
+    public /*override*/ activating()                         : JssStyle  { return {} } // disabled
+    public /*override*/ passivating()                        : JssStyle  { return {} } // disabled
+    public /*override*/ passived()                           : JssStyle  { return {} } // disabled
+    public /*override*/ themeActive(theme = 'primary')       : PropList  { return {} } // disabled
 
-    public /*override*/ resetFocusBlur(inherit: boolean)     : PropList { return {} } // disabled
-    public /*override*/ focused()     : JssStyle { return {} } // disabled
-    public /*override*/ focusing()    : JssStyle { return {} } // disabled
-    public /*override*/ blurring()    : JssStyle { return {} } // disabled
-    public /*override*/ blurred()     : JssStyle { return {} } // disabled
+    public /*override*/ resetFocusBlur(inherit: boolean)     : PropList  { return {} } // disabled
+    public /*override*/ focused()                            : JssStyle  { return {} } // disabled
+    public /*override*/ focusing()                           : JssStyle  { return {} } // disabled
+    public /*override*/ blurring()                           : JssStyle  { return {} } // disabled
+    public /*override*/ blurred()                            : JssStyle  { return {} } // disabled
 
-    public /*override*/ resetArriveLeave(inherit: boolean)   : PropList { return {} } // disabled
-    public /*override*/ arrived()     : JssStyle { return this.arrive(); }
-    public /*override*/ arriving()    : JssStyle { return this.arrive(); }
-    public /*override*/ arrive()      : JssStyle { return {
-        opacity: cssProps.ghostOpacityHover,
-    }}
-    public /*override*/ leaving()     : JssStyle { return {} } // disabled
-    public /*override*/ left()        : JssStyle { return {
+    public /*override*/ resetArriveLeave(inherit: boolean)   : PropList  { return {} } // disabled
+    public /*override*/ arrived()                            : JssStyle  { return {} } // disabled
+    public /*override*/ arriving()                           : JssStyle  { return {} } // disabled
+    public /*override*/ leaving()                            : JssStyle  { return {} } // disabled
+    public /*override*/ left()   : JssStyle { return {
         extend: [
             super.noGradient(),
         ] as JssStyle,
     }}
+    public /*override*/ arrive() : JssStyle { return {
+        opacity: cssProps.ghostOpacityHover,
+    }}
 
-    public /*override*/ resetPressRelease(inherit: boolean)  : PropList { return {} } // disabled
+    public /*override*/ resetPressRelease(inherit: boolean)  : PropList  { return {} } // disabled
 
 
 
     // functions:
-    public /*override*/ propsFn(): PropList { return {} } // disabled
+    public /*override*/ propsFn()                            : PropList { return {} }  // disabled
 
 
 
