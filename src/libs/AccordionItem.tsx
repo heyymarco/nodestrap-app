@@ -13,6 +13,9 @@ import {
     CssConfig,
 }                           from './nodestrap'   // nodestrap's core
 import {
+    usePropEnabled,
+}                           from './accessibilities'
+import {
     useTogglerActive,
     TogglerActiveProps,
 }                           from './Indicator'
@@ -221,6 +224,11 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
         // children:
         children,
     ...restProps} = props;
+
+
+
+    // fn props:
+    const propEnabled = usePropEnabled(props);
     
     
     
@@ -269,10 +277,10 @@ export default function AccordionItem<TElement extends HTMLElement = HTMLElement
 
 
             // accessibility:
-            enabled={props.enabled}
             inheritEnabled={props.inheritEnabled}
-            active={isActive}
+            enabled={propEnabled}
             inheritActive={props.inheritActive ?? true} // change default value to `true`
+            active={isActive}
 
             
             // classes:
