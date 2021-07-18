@@ -3,9 +3,12 @@ import React                from 'react'        // base technology of our nodest
 
 // nodestrap (modular web components):
 import {
-    default  as Check,
+    ChkStyle,
+    VariantCheck,
+
+    CheckProps,
+    Check,
 }                           from './Check'
-import type * as Checks     from './Check'
 
 
 
@@ -13,7 +16,7 @@ import type * as Checks     from './Check'
 
 export interface Props
     extends
-        Checks.CheckProps
+        CheckProps
 {
 }
 export default function Radio(props: Props) {
@@ -29,3 +32,6 @@ export default function Radio(props: Props) {
         />
     );
 }
+export { Radio }
+
+export type { ChkStyle, VariantCheck }

@@ -93,7 +93,7 @@ Button^
 	ButtonIcon^
 		CloseButton^
 Check^?
-	Radio#
+	Radio# todo unique checked per name
 	TogglerMenuButton#
 Input^
 

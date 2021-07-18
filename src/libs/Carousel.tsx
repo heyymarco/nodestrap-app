@@ -464,7 +464,10 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                 prevBtn
                 :
                 <NavButton
-                    id='prevBtn'
+                    // classes:
+                    classes={[
+                        'prevBtn',
+                    ]}
 
 
                     // accessibility:
@@ -510,7 +513,10 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
                 nextBtn
                 :
                 <NavButton
-                    id='nextBtn'
+                    // classes:
+                    classes={[
+                        'nextBtn',
+                    ]}
 
 
                     // accessibility:
@@ -629,7 +635,6 @@ interface NavButtonProps
     extends
         ButtonIconProps
 {
-    id? : string
 }
 function NavButton(props: NavButtonProps) {
     // jsx:
@@ -643,13 +648,6 @@ function NavButton(props: NavButtonProps) {
             size={props.size ?? 'lg'}
             gradient={props.gradient ?? true}
             btnStyle={props.btnStyle ?? 'ghost'}
-
-
-            // classes:
-            classes={[...(props.classes ?? []),
-                // ids:
-                props.id,
-            ]}
         />
     );
 }

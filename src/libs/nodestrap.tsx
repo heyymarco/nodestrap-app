@@ -665,6 +665,10 @@ export interface ElementProps<TElement extends HTMLElement = HTMLElement>
     elmRef?         : React.Ref<TElement> // setter ref
 
 
+    // identifiers:
+    id?             : string
+
+
     // accessibility:
     role?           : React.AriaRole
 

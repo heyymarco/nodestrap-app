@@ -517,6 +517,10 @@ export interface EditableControlProps<TElement extends EditableControlElement = 
 
         ValidationProps
 {
+    // identifiers:
+    name?            : string
+
+
     // values:
     defaultValue?    : string | number | ReadonlyArray<string>
     value?           : string | number | ReadonlyArray<string>
