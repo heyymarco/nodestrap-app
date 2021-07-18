@@ -383,7 +383,7 @@ export class ModalStyles extends PopupStyles {
     }}
     public /*virtual*/ actionBarStyle(): JssStyle { return {
         // layout:
-        display        : 'flex',          // use flexbox as the layout
+        display        : 'flex',          // use block flexbox, so it takes the entire parent's width
         flexDirection  : 'row',           // items are stacked horizontally
         justifyContent : 'space-between', // items are separated horizontally
         alignItems     : 'center',        // items are centered vertically

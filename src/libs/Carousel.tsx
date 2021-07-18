@@ -159,7 +159,7 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
 
         // layout:
         gridArea       : '1 / 1 / -1 / -1', // fills the entire grid areas, from the first row/column to the last row/column
-        display        : 'flex',    // use flexbox as the layout
+        display        : 'flex',    // use block flexbox, so it takes the entire parent's width
         flexDirection  : 'row',     // items are stacked horizontally
         justifyContent : 'start',   // items are placed starting from the left
         alignItems     : 'stretch', // items height are follow the tallest one

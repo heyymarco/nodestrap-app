@@ -312,7 +312,7 @@ export class ListgroupStyles extends ContentStyles {
 
     public /*virtual*/ block(): JssStyle { return {
         // layout:
-        display           : 'flex',        // use flexbox as the layout
+        display           : 'flex',        // use block flexbox, so it takes the entire parent's width
         flexDirection     : 'column',      // items are stacked vertically
 
 
@@ -354,7 +354,7 @@ export class ListgroupStyles extends ContentStyles {
     }}
     public /*virtual*/ inline(): JssStyle { return {
         // layout:
-        display           : 'inline-flex', // use flexbox as the layout
+        display           : 'inline-flex', // use inline flexbox, so it takes the width & height as needed
         flexDirection     : 'row',         // items are stacked horizontally
 
 
@@ -512,7 +512,7 @@ export class ListgroupStyles extends ContentStyles {
         // children:
         [wrapperElm]: {
             // layout:
-            display        : 'flex',    // use flexbox as the layout, fills the entire Listgroup's width
+            display        : 'flex',    // use block flexbox, so it takes the entire Listgroup's width
             justifyContent : 'stretch', // listItems height are 100% of the wrapper (the listItems also need to have growable & shrinkable)
             alignItems     : 'stretch', // listItems width  are 100% of the wrapper
         } as JssStyle,

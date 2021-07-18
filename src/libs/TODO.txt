@@ -4,11 +4,6 @@ todo:
 Alert CloseButton imperfect
 ***Builder
 ***Old()
-ecssProps => bcssProps
-scoped css props => props
-
-filter*** = 'unset'
-filter*** = 'initial'
 
 
 readonly
@@ -97,15 +92,15 @@ non gen (11):
 Button^
 	ButtonIcon^
 		CloseButton^
-Check#
+Check^?
 	Radio#
 	TogglerMenuButton#
 Input^
 
 Form???????
 
-validations@
-accessibilities@
+validations^
+accessibilities^
 
 Navbar#
 NavbarMenu#

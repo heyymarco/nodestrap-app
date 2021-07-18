@@ -21,7 +21,7 @@ import {
     isTypeOf,
 }                           from './nodestrap'  // nodestrap's core
 import {
-    cssProps as ecssProps,
+    cssProps as bcssProps,
 }                           from './BasicComponent'
 import {
     cssProps as contCssProps,
@@ -115,7 +115,7 @@ export class NavbarStylesBuilder extends ControlStyles {
 
             this.iif(!inherit, {
                 //#region all initial states are none
-                [this.decl(this._menusAnimActivePassive)] : ecssProps.animNone,
+                [this.decl(this._menusAnimActivePassive)] : bcssProps.animNone,
                 //#endregion all initial states are none
             }),
 
@@ -317,8 +317,8 @@ export class NavbarStylesBuilder extends ControlStyles {
 
 
         // spacings:
-        paddingInline  : ecssProps.paddingInline,
-        paddingBlock   : ecssProps.paddingBlock,
+        paddingInline  : bcssProps.paddingInline,
+        paddingBlock   : bcssProps.paddingBlock,
     }}
     protected /*virtual*/ navbarSecondaryItemBasicStyle(): JssStyle { return {
         // layout:
@@ -385,7 +385,7 @@ export class NavbarStylesBuilder extends ControlStyles {
             //#region overrides some base's basicStyle
             {
                 // typos:
-                fontSize       : ecssProps.fontSize,
+                fontSize       : bcssProps.fontSize,
                 fontFamily     : undefined,
                 fontWeight     : undefined,
                 fontStyle      : undefined,
@@ -619,17 +619,17 @@ const cssConfig = new CssConfig(() => {
 
         //#region spacings
         paddingInline : contCssProps.paddingInline, // override to Element
-        paddingBlock  : ecssProps.paddingBlock,
+        paddingBlock  : bcssProps.paddingBlock,
 
-        gapX          : ecssProps.paddingInline,
-        gapY          : ecssProps.paddingBlock,
+        gapX          : bcssProps.paddingInline,
+        gapY          : bcssProps.paddingBlock,
         //#endregion spacings
 
 
 
         // anim props:
 
-        filterActive  : ecssProps.filterNone,   // override to Indicator
+        filterActive  : bcssProps.filterNone,   // override to Indicator
 
         '@keyframes menusActive'  : keyframesMenusActive,
         '@keyframes menusPassive' : keyframesMenusPassive,
@@ -640,7 +640,7 @@ const cssConfig = new CssConfig(() => {
 
         // menus:
         // kill margin top & bottom:
-        menusMarginBlock          : [['calc(0px -', ecssProps.paddingBlock, ')']],
+        menusMarginBlock          : [['calc(0px -', bcssProps.paddingBlock, ')']],
 
         // on mobile, on the menu group, kill margin left & right:
         menusMarginInlineCompact  : [['calc(0px -', contCssProps.paddingInline, ')']],
@@ -659,8 +659,8 @@ const cssConfig = new CssConfig(() => {
 
             // menus:
             menusPositionCompact         : 'absolute',
-            menusMarginBlockStartCompact : ecssProps.paddingBlock,
-            menusPaddingBlockEndCompact  : ecssProps.paddingBlock,
+            menusMarginBlockStartCompact : bcssProps.paddingBlock,
+            menusPaddingBlockEndCompact  : bcssProps.paddingBlock,
         } as JssStyle,
         //#endregion making menus floating (on mobile), not shifting the content
     };

@@ -740,7 +740,10 @@ export default function Check(props: CheckProps) {
                 
                 
                 
-                if (!e.defaultPrevented) handleToggleActive();
+                if (!e.defaultPrevented) {
+                    handleToggleActive();
+                    e.preventDefault();
+                } // if
             }}
             onKeyUp={(e) => {
                 // backwards:
@@ -749,7 +752,10 @@ export default function Check(props: CheckProps) {
 
 
                 if (!e.defaultPrevented) {
-                    if ((e.key === ' ') || (e.code === 'Space')) handleToggleActive();
+                    if ((e.key === ' ') || (e.code === 'Space')) {
+                        handleToggleActive();
+                        e.preventDefault();
+                    } // if
                 } // if
             }}
         >

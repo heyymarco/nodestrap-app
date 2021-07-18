@@ -220,7 +220,7 @@ export class ButtonStyles extends ActionControlStyles {
 
 
         // layout:
-        display        : 'inline-flex', // use flexbox as the layout
+        display        : 'inline-flex', // use inline flexbox, so it takes the width & height as needed
      // flexDirection  : 'row',         // customizable orientation // already defined in inline()/block()
         justifyContent : 'center',      // center items horizontally
         alignItems     : 'center',      // center items vertically

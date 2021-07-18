@@ -244,7 +244,6 @@ export interface EditableTextControlProps<TElement extends EditableTextControlEl
     // validations:
     minLength? : number
     maxLength? : number
-    pattern?   : string
 
 
     // events:

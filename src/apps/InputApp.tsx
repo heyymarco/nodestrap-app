@@ -141,6 +141,48 @@ function App() {
 					isValid={isValid}
 				/>
                 <hr style={{flexBasis: '100%'}} />
+				<p>readOnly:</p>
+				<Text
+					theme={theme} size={size} gradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+
+					enableValidation={enableVal}
+					isValid={isValid}
+
+					required={true}
+					minLength={3}
+					maxLength={8}
+
+					value={text}
+					readOnly={true}
+				/>
+                <hr style={{flexBasis: '100%'}} />
+				<p>uncontrollable:</p>
+				<Text
+					theme={theme} size={size} gradient={enableGrad}
+					outlined={outlined} mild={mild}
+
+					enabled={enabled} active={active}
+
+					arrive={arrive}
+					focus={focus}
+
+					enableValidation={enableVal}
+					isValid={isValid}
+
+					required={true}
+					minLength={3}
+					maxLength={8}
+
+					defaultValue={text}
+					onChange={(e) => setText(e.target.value)}
+				/>
+                <hr style={{flexBasis: '100%'}} />
 				<p>controllable:</p>
 				<Text
 					theme={theme} size={size} gradient={enableGrad}

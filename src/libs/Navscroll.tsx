@@ -705,7 +705,12 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
                         
                         
                         
-                        if (!e.defaultPrevented && (child.props.actionCtrl ?? props.actionCtrl ?? false)) itemHandleClick(e, deepLevelsCurrent);
+                        if (!e.defaultPrevented) {
+                            if (child.props.actionCtrl ?? props.actionCtrl ?? false) {
+                                itemHandleClick(e, deepLevelsCurrent);
+                                e.preventDefault();
+                            } // if
+                        } // if
                     }}
                 >
                     {child.props.children && (Array.isArray(child.props.children) ? child.props.children : [child.props.children]).map((child, index) => (
@@ -727,9 +732,11 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
 
                     // events:
-                    onClick={(props.actionCtrl ?? false) ? ((e) => {
-                        itemHandleClick(e, deepLevelsCurrent);
-                    }) : undefined}
+                    onClick={(e) => {
+                        if (props.actionCtrl ?? false) {
+                            itemHandleClick(e, deepLevelsCurrent);
+                        } // if
+                    }}
                 >
                     { child }
                 </ListgroupItem>

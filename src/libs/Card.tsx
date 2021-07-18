@@ -56,7 +56,7 @@ export class CardStyles extends ContentStyles {
 
     public /*virtual*/ block(): JssStyle { return {
         // layout:
-        display        : 'flex',        // use flexbox as the layout
+        display        : 'flex',        // use block flexbox, so it takes the entire parent's width
         flexDirection  : 'column',      // items are stacked vertically
 
 
@@ -102,7 +102,7 @@ export class CardStyles extends ContentStyles {
     }}
     public /*virtual*/ inline(): JssStyle { return {
         // layout:
-        display        : 'inline-flex', // use flexbox as the layout
+        display        : 'inline-flex', // use inline flexbox, so it takes the width & height as needed
         flexDirection  : 'row',         // items are stacked horizontally
 
 
@@ -327,15 +327,15 @@ export class CardStyles extends ContentStyles {
         boxSizing      : 'border-box', // the final size is including borders & paddings
         inlineSize     : 'fill-available',
         fallbacks      : {
-            inlineSize : [['calc(100% + (', ccssProps.paddingInline, ' * 2))']],
+            inlineSize : [['calc(100% + (', cssProps.paddingInline, ' * 2))']],
         },
 
 
 
         // spacings:
         // cancel-out parent's padding with negative margin:
-        marginInline   : [['calc(0px -', ccssProps.paddingInline, ')']],
-        marginBlock    : [['calc(0px -', ccssProps.paddingBlock,  ')']],
+        marginInline   : [['calc(0px -', cssProps.paddingInline, ')']],
+        marginBlock    : [['calc(0px -', cssProps.paddingBlock,  ')']],
 
         // kill the top negative margin so the prev sibling can add a bottom space:
         '&:not(:first-child)': {
@@ -344,7 +344,7 @@ export class CardStyles extends ContentStyles {
 
         // add a bottom space to the next sibling:
         '&:not(:last-child)': {
-            marginBlockEnd   : ccssProps.paddingBlock,
+            marginBlockEnd   : cssProps.paddingBlock,
         },
 
 
@@ -383,6 +383,13 @@ const cssConfig = new CssConfig(() => {
     return {
         // typos:
         wordWrap      : 'break-word',
+
+
+
+        //#region spacings
+        paddingInline : ccssProps.paddingInline,
+        paddingBlock  : ccssProps.paddingBlock,
+        //#endregion spacings
 
 
 

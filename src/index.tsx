@@ -26,8 +26,8 @@ import reportWebVitals from './reportWebVitals';
 //             import EditableControlApp           from './apps/EditableControlApp';
 //                 import EditableTextControlApp   from './apps/EditableTextControlApp';
                     import InputApp             from './apps/InputApp';
-                import EditableActionControlApp from './apps/EditableActionControlApp';
-                    import CheckApp             from './apps/CheckApp';
+//                 import EditableActionControlApp from './apps/EditableActionControlApp';
+//                     import CheckApp             from './apps/CheckApp';
 //     import IconApp                              from './apps/IconApp';
 //     import MasonryApp                           from './apps/MasonryApp';
 //     import CarouselApp                          from './apps/CarouselApp';
@@ -38,7 +38,7 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
     <React.StrictMode>
-        <CheckApp />
+        <InputApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

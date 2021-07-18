@@ -13,6 +13,7 @@ import {
 import * as stripOuts       from './strip-outs'
 import {
     usePropEnabled,
+    usePropReadOnly,
 }                           from './accessibilities'
 import {
     cssProps as bcssProps,
@@ -54,7 +55,7 @@ export class InputStyles extends EditableTextControlStyles {
 
 
         // layout:
-        display        : 'flex',   // use flexbox as the layout
+        display        : 'flex',   // use block flexbox, so it takes the entire parent's width
         flexDirection  : 'row',    // items are stacked horizontally
         justifyContent : 'center', // center items horizontally
         alignItems     : 'center', // center items vertically
@@ -72,7 +73,7 @@ export class InputStyles extends EditableTextControlStyles {
 
 
         // children:
-        [inputElm]: this.inputBasicStyle(),
+        [inputElm]     : this.inputBasicStyle(),
 
 
 
@@ -97,19 +98,19 @@ export class InputStyles extends EditableTextControlStyles {
         boxSizing      : 'border-box', // the final size is including borders & paddings
         inlineSize     : 'fill-available',
         fallbacks      : {
-            inlineSize : [['calc(100% + (', bcssProps.paddingInline, ' * 2))']],
+            inlineSize : [['calc(100% + (', cssProps.paddingInline, ' * 2))']],
         },
 
 
         
         // spacings:
         // cancel-out parent's padding with negative margin:
-        marginInline   : [['calc(0px -', bcssProps.paddingInline, ')']],
-        marginBlock    : [['calc(0px -', bcssProps.paddingBlock,  ')']],
+        marginInline   : [['calc(0px -', cssProps.paddingInline, ')']],
+        marginBlock    : [['calc(0px -', cssProps.paddingBlock,  ')']],
 
         // copy parent's paddings:
-        paddingInline  : bcssProps.paddingInline,
-        paddingBlock   : bcssProps.paddingBlock,
+        paddingInline  : cssProps.paddingInline,
+        paddingBlock   : cssProps.paddingBlock,
     }}
 }
 export const inputStyles = new InputStyles();
@@ -120,7 +121,14 @@ export const inputStyles = new InputStyles();
 
 const cssConfig = new CssConfig(() => {
     return {
-        backgGrad : [['linear-gradient(180deg, rgba(0,0,0, 0.2), rgba(255,255,255, 0.2))', 'border-box']],
+        //#region spacings
+        paddingInline : bcssProps.paddingInline,
+        paddingBlock  : bcssProps.paddingBlock,
+        //#endregion spacings
+
+
+        
+        backgGrad     : [['linear-gradient(180deg, rgba(0,0,0, 0.2), rgba(255,255,255, 0.2))', 'border-box']],
     };
 }, /*prefix: */'inp');
 export const cssProps = cssConfig.refs;
@@ -138,8 +146,9 @@ export interface InputProps
         EditableTextControlProps<HTMLInputElement>
 {
     // validations:
-    min? : string | number
-    max? : string | number
+    min?     : string | number
+    max?     : string | number
+    pattern? : string
 
 
     // formats:
@@ -160,22 +169,21 @@ export default function Input(props: InputProps) {
 
         // accessibility:
         tabIndex,
-        readOnly,
 
 
         // values:
         defaultValue,
         value,
-        onChange,
+        onChange, // forwards to `input[type]`
 
 
         // validations:
         required,
         minLength,
         maxLength,
-        pattern,
         min,
         max,
+        pattern,
 
 
         // formats:
@@ -186,7 +194,8 @@ export default function Input(props: InputProps) {
 
 
     // fn props:
-    const propEnabled = usePropEnabled(props);
+    const propEnabled  = usePropEnabled(props);
+    const propReadOnly = usePropReadOnly(props);
 
     
     
@@ -202,7 +211,7 @@ export default function Input(props: InputProps) {
 
 
             // accessibility:
-            tabIndex={-1} // [tabIndex] is negative => act as *wrapper* element, if input is :focus (pseudo) => the wrapper is also .focus (synthetic)
+            tabIndex={-1} // negative [tabIndex] => act as *wrapper* element, if input is `:focus` (pseudo) => the wrapper is also `.focus` (synthetic)
 
 
             // classes:
@@ -214,24 +223,24 @@ export default function Input(props: InputProps) {
 
 
                 // accessibility:
-                disabled={!propEnabled}
-                tabIndex={tabIndex}
-                readOnly={readOnly}
+                tabIndex={tabIndex} // focusable
+
+                disabled={!propEnabled} // do not submit the value if disabled
+                readOnly={propReadOnly} // locks the value if readOnly
 
 
                 // values:
                 defaultValue={defaultValue}
                 value={value}
-                onChange={onChange} // for satisfying React of readOnly check
 
 
                 // validations:
                 required={required}
                 minLength={minLength}
                 maxLength={maxLength}
-                pattern={pattern}
                 min={min}
                 max={max}
+                pattern={pattern}
 
 
                 // formats:
@@ -240,7 +249,7 @@ export default function Input(props: InputProps) {
 
 
                 // events:
-                // onFocus, onBlur // bubble to parent (unlike on native DOM that doesn't bubble, on react *do* bubbling)
+                onChange={onChange} // forwards `onChange` event
             />
         </EditableTextControl>
     );

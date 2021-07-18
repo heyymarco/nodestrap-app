@@ -441,7 +441,7 @@ export function useStateFocusBlur<TElement extends HTMLElement = HTMLElement>(pr
                 // focusing by controllable prop => use class .focus
                 if (props.focus !== undefined) return 'focus';
 
-                // negative tabIndex => can't be focused by user input => treats Control as *wrapper* element => use class .focus
+                // negative [tabIndex] => can't be focused by user input => treats Control as *wrapper* element => use class .focus
                 if ((props.tabIndex ?? 0) < 0) return 'focus';
 
                 // otherwise use pseudo :focus
