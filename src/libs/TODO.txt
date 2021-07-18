@@ -94,7 +94,7 @@ Button^
 		CloseButton^
 Check^?
 	Radio# todo unique checked per name
-	TogglerMenuButton#
+	TogglerMenuButton^
 Input^
 
 Form???????

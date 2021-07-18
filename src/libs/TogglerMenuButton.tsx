@@ -7,17 +7,18 @@ import {
     JssStyle,
     PropEx,
     Cust,
-    ClassList,
     PropList,
 
 
     // components:
     CssConfig,
 }                           from './nodestrap'   // nodestrap's core
+import {
+    usePropActive,
+}                           from './accessibilities'
 import typos                from './typos/index' // configurable typography (texting) defs
 import {
-    cssProps as ecssProps,
-    cssDecls as ecssDecls,
+    cssDecls as bcssDecls,
 }                           from './BasicComponent'
 import {
     CheckStyles,
@@ -29,31 +30,54 @@ import {
 
 // styles:
 
-const btnElm = '&>:nth-child(1n+2)';
+const svgElm = '&>:nth-child(1n+2)>svg';
 
 export class TogglerMenuButtonStyles extends CheckStyles {
-    //#region scoped css props
+    //#region props
+    //#region finals
     /**
-     * functional animations for the toggler top.
+     * final transform for the svg top.
      */
-    public    readonly _togglerTopAnimFn    = 'togglerTopAnimFn'
+    public    readonly _svgTopTransf = 'svgTopTransf'
     /**
-     * functional animations for the toggler middle.
+     * final transform for the svg middle.
      */
-    public    readonly _togglerMidAnimFn    = 'togglerMidAnimFn'
+    public    readonly _svgMidTransf = 'svgMidTransf'
     /**
-     * functional animations for the toggler bottom.
+     * final transform for the svg bottom.
      */
-    public    readonly _togglerBtmAnimFn    = 'togglerBtmAnimFn'
+    public    readonly _svgBtmTransf = 'svgBtmTransf'
+
+    /**
+     * final animation for the svg top.
+     */
+    public    readonly _svgTopAnim   = 'svgTopAnim'
+    /**
+     * final animation for the svg middle.
+     */
+    public    readonly _svgMidAnim   = 'svgMidAnim'
+    /**
+     * final animation for the svg bottom.
+     */
+    public    readonly _svgBtmAnim   = 'svgBtmAnim'
+    //#endregion finals
 
 
 
-    // anim props:
+    //#region animations
+    public    readonly _svgTopTransfToggleOn  = 'svgTopTransfToggleOn'
+    public    readonly _svgMidTransfToggleOn  = 'svgMidTransfToggleOn'
+    public    readonly _svgBtmTransfToggleOn  = 'svgBtmTransfToggleOn'
 
-    protected readonly _togglerTopAnimOnOff = 'togglerTopAnimOnOff'
-    protected readonly _togglerMidAnimOnOff = 'togglerMidAnimOnOff'
-    protected readonly _togglerBtmAnimOnOff = 'togglerBtmAnimOnOff'
-    //#endregion scoped css props
+    public    readonly _svgTopTransfToggleOff = 'svgTopTransfToggleOff'
+    public    readonly _svgMidTransfToggleOff = 'svgMidTransfToggleOff'
+    public    readonly _svgBtmTransfToggleOff = 'svgBtmTransfToggleOff'
+
+    protected readonly _svgTopAnimToggle      = 'svgTopAnimToggle'
+    protected readonly _svgMidAnimToggle      = 'svgMidAnimToggle'
+    protected readonly _svgBtmAnimToggle      = 'svgBtmAnimToggle'
+    //#endregion animations
+    //#endregion props
 
 
 
@@ -72,121 +96,148 @@ export class TogglerMenuButtonStyles extends CheckStyles {
 
 
     // states:
-    protected /*virtual*/ togglerThemesIf(): JssStyle { return {} }
-    protected /*virtual*/ togglerStates(inherit = false): JssStyle { return {
-        extend: [
-            this.iif(!inherit, {
-                //#region all initial states are none
-                [this.decl(this._togglerTopAnimOnOff)] : ecssProps.animNone,
-                [this.decl(this._togglerMidAnimOnOff)] : ecssProps.animNone,
-                [this.decl(this._togglerBtmAnimOnOff)] : ecssProps.animNone,
-                //#endregion all initial states are none
-            }),
+    public /*override*/ resetActivePassive(inherit: boolean) : PropList { return {
+        ...super.resetActivePassive(inherit), // copy resetActivePassive from base
 
 
 
-            //#region specific states
-            //#region check, clear
-            // this.stateCheck({ // [checking, checked]
-            //     [this.decl(this._togglerTopAnimOnOff)] : cssProps.togglerTopAnimOn,
-            //     [this.decl(this._togglerMidAnimOnOff)] : cssProps.togglerMidAnimOn,
-            //     [this.decl(this._togglerBtmAnimOnOff)] : cssProps.togglerBtmAnimOn,
-            // }),
-            // this.stateNotCheck({ // [not-checking, not-checked] => [clearing, cleared]
-            //     [this.decl(this._togglerTopAnimOnOff)] : cssProps.togglerTopAnimOff,
-            //     [this.decl(this._togglerMidAnimOnOff)] : cssProps.togglerMidAnimOff,
-            //     [this.decl(this._togglerBtmAnimOnOff)] : cssProps.togglerBtmAnimOff,
-            // }),
-            // this.stateNotCheckingClearing({ // if ctrl was fully checked/unchecked, disable the animation
-            //     [btnElm]: {
-            //         '&>svg>*': super.applyStateNoAnimStartupOld(),
-            //     },
-            // }),
-            //#endregion check, clear
-            //#endregion specific states
-        ] as JssStyle,
+        [this.decl(this._svgTopTransfToggleOn)]  : inherit ? 'unset' : 'initial',
+        [this.decl(this._svgMidTransfToggleOn)]  : inherit ? 'unset' : 'initial',
+        [this.decl(this._svgBtmTransfToggleOn)]  : inherit ? 'unset' : 'initial',
+
+        [this.decl(this._svgTopTransfToggleOff)] : inherit ? 'unset' : 'initial',
+        [this.decl(this._svgMidTransfToggleOff)] : inherit ? 'unset' : 'initial',
+        [this.decl(this._svgBtmTransfToggleOff)] : inherit ? 'unset' : 'initial',
+
+        [this.decl(this._svgTopAnimToggle)]      : inherit ? 'unset' : 'initial',
+        [this.decl(this._svgMidAnimToggle)]      : inherit ? 'unset' : 'initial',
+        [this.decl(this._svgBtmAnimToggle)]      : inherit ? 'unset' : 'initial',
     }}
-
-    public /*override*/ themesIfOld(): JssStyle { return {
+    public /*override*/ actived()     : JssStyle { return {
         extend: [
-            super.themesIfOld(), // copy themes from base
-
-            this.togglerThemesIf(),
+            super.actived(), // copy actived from base
         ] as JssStyle,
+
+
+
+        [this.decl(this._svgTopTransfToggleOn)]  : cssProps.svgTopTransfOn,
+        [this.decl(this._svgMidTransfToggleOn)]  : cssProps.svgMidTransfOn,
+        [this.decl(this._svgBtmTransfToggleOn)]  : cssProps.svgBtmTransfOn,
     }}
-    public /*override*/ statesOld(inherit = false): JssStyle { return {
+    public /*override*/ activating()  : JssStyle { return {
         extend: [
-            super.statesOld(inherit), // copy states from base
-
-            this.togglerStates(inherit),
+            super.activating(), // copy activating from base
         ] as JssStyle,
+
+
+
+        [this.decl(this._svgTopTransfToggleOn)]  : cssProps.svgTopTransfOn,
+        [this.decl(this._svgMidTransfToggleOn)]  : cssProps.svgMidTransfOn,
+        [this.decl(this._svgBtmTransfToggleOn)]  : cssProps.svgBtmTransfOn,
+
+        [this.decl(this._svgTopTransfToggleOff)] : cssProps.svgTopTransfOff,
+        [this.decl(this._svgMidTransfToggleOff)] : cssProps.svgMidTransfOff,
+        [this.decl(this._svgBtmTransfToggleOff)] : cssProps.svgBtmTransfOff,
+
+        [this.decl(this._svgTopAnimToggle)]      : cssProps.svgTopAnimOn,
+        [this.decl(this._svgMidAnimToggle)]      : cssProps.svgMidAnimOn,
+        [this.decl(this._svgBtmAnimToggle)]      : cssProps.svgBtmAnimOn,
+
+
+
+        [this.decl(this._animActivePassive)]     : cssProps.animActive,
+    }}
+    public /*override*/ passivating() : JssStyle { return {
+        extend: [
+            super.passivating(), // copy passivating from base
+        ] as JssStyle,
+
+
+
+        [this.decl(this._svgTopTransfToggleOn)]  : cssProps.svgTopTransfOn,
+        [this.decl(this._svgMidTransfToggleOn)]  : cssProps.svgMidTransfOn,
+        [this.decl(this._svgBtmTransfToggleOn)]  : cssProps.svgBtmTransfOn,
+
+        [this.decl(this._svgTopTransfToggleOff)] : cssProps.svgTopTransfOff,
+        [this.decl(this._svgMidTransfToggleOff)] : cssProps.svgMidTransfOff,
+        [this.decl(this._svgBtmTransfToggleOff)] : cssProps.svgBtmTransfOff,
+
+        [this.decl(this._svgTopAnimToggle)]      : cssProps.svgTopAnimOff,
+        [this.decl(this._svgMidAnimToggle)]      : cssProps.svgMidAnimOff,
+        [this.decl(this._svgBtmAnimToggle)]      : cssProps.svgBtmAnimOff,
+
+
+
+        [this.decl(this._animActivePassive)]     : cssProps.animPassive,
+    }}
+    public /*override*/ passived()    : JssStyle { return {
+        extend: [
+            super.passived(), // copy passived from base
+        ] as JssStyle,
+
+
+
+        [this.decl(this._svgTopTransfToggleOff)] : cssProps.svgTopTransfOff,
+        [this.decl(this._svgMidTransfToggleOff)] : cssProps.svgMidTransfOff,
+        [this.decl(this._svgBtmTransfToggleOff)] : cssProps.svgBtmTransfOff,
     }}
 
 
 
     // functions:
-    protected /*virtual*/ togglerPropsFn(): JssStyle { return {
-        ...this.togglerAnimFn(),
-    }}
-    protected /*virtual*/ togglerAnimFn(): JssStyle { return {
-        // define an *animations* func for the toggler top:
-        [this.decl(this._togglerTopAnimFn)]: [
-            this.ref(this._togglerTopAnimOnOff),
-        ],
-        // define an *animations* func for the toggler middle:
-        [this.decl(this._togglerMidAnimFn)]: [
-            this.ref(this._togglerMidAnimOnOff),
-        ],
-        // define an *animations* func for the toggler bottom:
-        [this.decl(this._togglerBtmAnimFn)]: [
-            this.ref(this._togglerBtmAnimOnOff),
-        ],
+    public /*override*/ propsFn(): PropList { return {
+        ...super.propsFn(), // copy functional props from base
+        
+        
+        
+        //#region finals
+        // define a final *transform* func for the svg top:
+        [this.decl(this._svgTopTransf)] : [this.svgTopTransfFn()], // double array (including from the returning function) => makes the JSS treat as space separated values
+
+        // define a final *transform* func for the svg middle:
+        [this.decl(this._svgMidTransf)] : [this.svgMidTransfFn()], // double array (including from the returning function) => makes the JSS treat as space separated values
+
+        // define a final *transform* func for the svg bottom:
+        [this.decl(this._svgBtmTransf)] : [this.svgBtmTransfFn()], // double array (including from the returning function) => makes the JSS treat as space separated values
+
+
+        // define a final *animation* func for the svg top:
+        [this.decl(this._svgTopAnim)]   : this.svgTopAnimFn(),     // single array (including from the returning function) => makes the JSS treat as comma separated values
+
+        // define a final *animation* func for the svg middle:
+        [this.decl(this._svgMidAnim)]   : this.svgMidAnimFn(),     // single array (including from the returning function) => makes the JSS treat as comma separated values
+
+        // define a final *animation* func for the svg bottom:
+        [this.decl(this._svgBtmAnim)]   : this.svgBtmAnimFn(),     // single array (including from the returning function) => makes the JSS treat as comma separated values
+        //#endregion finals
     }}
 
-    public /*override*/ propsFnOld(): JssStyle { return {
-        extend: [
-            super.propsFnOld(), // copy functional props from base
+    public /*virtual*/ svgTopTransfFn(): Cust.Ref[] { return [
+        this.ref(this._svgTopTransfToggleOn,  this._transfNone),
+        this.ref(this._svgTopTransfToggleOff, this._transfNone),
+    ]}
+    public /*virtual*/ svgMidTransfFn(): Cust.Ref[] { return [
+        this.ref(this._svgMidTransfToggleOn,  this._transfNone),
+        this.ref(this._svgMidTransfToggleOff, this._transfNone),
+    ]}
+    public /*virtual*/ svgBtmTransfFn(): Cust.Ref[] { return [
+        this.ref(this._svgBtmTransfToggleOn,  this._transfNone),
+        this.ref(this._svgBtmTransfToggleOff, this._transfNone),
+    ]}
 
-            this.togglerPropsFn(),
-        ] as JssStyle,
-    }}
+    public /*virtual*/ svgTopAnimFn(): Cust.Ref[] { return [
+        this.ref(this._svgTopAnimToggle, this._animNone),
+    ]}
+    public /*virtual*/ svgMidAnimFn(): Cust.Ref[] { return [
+        this.ref(this._svgMidAnimToggle, this._animNone),
+    ]}
+    public /*virtual*/ svgBtmAnimFn(): Cust.Ref[] { return [
+        this.ref(this._svgBtmAnimToggle, this._animNone),
+    ]}
 
 
 
     // styles:
-    protected /*virtual*/ togglerBasicStyle(): JssStyle { return {
-        '&>svg': {
-            // sizes:
-            // fills the entire parent text's height:
-            blockSize  : [['calc(1em *',
-                `var(${ecssDecls.lineHeight},${typos.lineHeight})`,
-            ')']],
-            inlineSize : 'auto', // calculates the width by [height * aspect-ratio]
-
-
-
-            // children:
-            '&>*': {
-                // appearances:
-                stroke        : 'currentColor', // set menu color as parent's font color
-                strokeWidth   : 4,              // set menu thickness, 4 of 24 might enough
-                strokeLinecap : 'square',       // set menu edges square
-                
-                
-                
-                // apply fn props:
-                '&:nth-child(1)': {
-                    anim : this.ref(this._togglerTopAnimFn),
-                },
-                '&:nth-child(2)': {
-                    anim : this.ref(this._togglerMidAnimFn),
-                },
-                '&:nth-child(3)': {
-                    anim : this.ref(this._togglerBtmAnimFn),
-                },
-            },
-        },
-    }}
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
@@ -194,12 +245,49 @@ export class TogglerMenuButtonStyles extends CheckStyles {
 
 
         
-        [btnElm] : this.togglerBasicStyle(),
+        // children:
+        [svgElm] : this.svgBasicStyle(),
 
 
 
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    protected /*virtual*/ svgBasicStyle(): JssStyle { return {
+        // sizes:
+        // fills the entire parent text's height:
+        blockSize  : [['calc(1em *',
+            `var(${bcssDecls.lineHeight},${typos.lineHeight})`,
+        ')']],
+        inlineSize : 'auto', // calculates the width by [height * aspect-ratio]
+
+
+
+        // children:
+        overflow: 'visible', // allows graphics to overflow the canvas
+        '&>*': {
+            // appearances:
+            stroke        : 'currentColor', // set menu color as parent's font color
+            strokeWidth   : 4,              // set menu thickness, 4 of 24 might enough
+            strokeLinecap : 'square',       // set menu edges square
+            
+            
+            
+            // states & animations:
+            transformOrigin : '50% 50%',
+            '&:nth-child(1)': {
+                transform : this.ref(this._svgTopTransf),
+                anim      : this.ref(this._svgTopAnim),
+            },
+            '&:nth-child(2)': {
+                transform : this.ref(this._svgMidTransf),
+                anim      : this.ref(this._svgMidAnim),
+            },
+            '&:nth-child(3)': {
+                transform : this.ref(this._svgBtmTransf),
+                anim      : this.ref(this._svgBtmAnim),
+            },
+        },
     }}
 }
 export const togglerMenuButtonStyles = new TogglerMenuButtonStyles();
@@ -210,101 +298,123 @@ export const togglerMenuButtonStyles = new TogglerMenuButtonStyles();
 
 const cssConfig = new CssConfig(() => {
     // transforms hamburger menu to cross menu
-    const keyframesTogglerTopOn  : PropEx.Keyframes = {
-        from: {
-            transformOrigin : '50% 50%',
-
-            transform       : [['rotate(0deg)',   'scaleX(1)',    'translate(0, 0)',     ]],
+    const keyframesSvgTopOn  : PropEx.Keyframes = {
+        from : {
+            transform: [[
+                togglerMenuButtonStyles.ref(togglerMenuButtonStyles._svgTopTransfToggleOff),
+            ]],
         },
         '43%': {
-            transform       : [['rotate(-45deg)', 'scaleX(1.35)', 'translate(0, 37.5%)', ]],
+            transform: [['rotate(-45deg)', 'scaleX(1.35)', 'translate(0, 37.5%)', ]],
         },
         '71%': {
-            transform       : [['rotate(-75deg)', 'scaleX(1.35)', 'translate(0, 37.5%)', ]],
+            transform: [['rotate(-60deg)', 'scaleX(1.35)', 'translate(0, 37.5%)', ]],
         },
-        to: {
-            transformOrigin : '50% 50%',
-
-            transform       : [['rotate(-45deg)', 'scaleX(1.35)', 'translate(0, 37.5%)', ]],
+        to   : {
+            transform: [[
+                togglerMenuButtonStyles.ref(togglerMenuButtonStyles._svgTopTransfToggleOn),
+            ]],
         },
     };
-    const keyframesTogglerMidOn  : PropEx.Keyframes = {
-        from: {
-            transformOrigin : '50% 50%',
-
-            transform       : [['scaleX(1)',   ]],
+    const keyframesSvgMidOn  : PropEx.Keyframes = {
+        from : {
+            transform: [[
+                togglerMenuButtonStyles.ref(togglerMenuButtonStyles._svgMidTransfToggleOff),
+            ]],
         },
         '19%': {
-            transform       : [['scaleX(1.35)',]],
+            transform: [['scaleX(1.35)',]],
         },
-        to: {
-            transformOrigin : '50% 50%',
-
-            transform       : [['scaleX(0)',   ]],
+        to   : {
+            transform: [[
+                togglerMenuButtonStyles.ref(togglerMenuButtonStyles._svgMidTransfToggleOn),
+            ]],
         },
     };
-    const keyframesTogglerBtmOn  : PropEx.Keyframes = {
-        from: {
-            transformOrigin : '50% 50%',
-
-            transform       : [['rotate(0deg)',   'scaleX(1)',    'translate(0, 0)',     ]],
+    const keyframesSvgBtmOn  : PropEx.Keyframes = {
+        from : {
+            transform: [[
+                togglerMenuButtonStyles.ref(togglerMenuButtonStyles._svgBtmTransfToggleOff),
+            ]],
         },
         '43%': {
-            transform       : [['rotate(45deg)',  'scaleX(1.35)', 'translate(0, -37.5%)',]],
+            transform: [['rotate(45deg)',  'scaleX(1.35)', 'translate(0, -37.5%)',]],
         },
         '71%': {
-            transform       : [['rotate(75deg)',  'scaleX(1.35)', 'translate(0, -37.5%)',]],
+            transform: [['rotate(60deg)',  'scaleX(1.35)', 'translate(0, -37.5%)',]],
         },
-        to: {
-            transformOrigin : '50% 50%',
-
-            transform       : [['rotate(45deg)',  'scaleX(1.35)', 'translate(0, -37.5%)',]],
+        to   : {
+            transform: [[
+                togglerMenuButtonStyles.ref(togglerMenuButtonStyles._svgBtmTransfToggleOn),
+            ]],
         },
     };
 
     
     
-    const keyframesTogglerTopOff : PropEx.Keyframes = {
-        from : keyframesTogglerTopOn.to,
-        '43%': keyframesTogglerTopOn.from,
+    const keyframesSvgTopOff : PropEx.Keyframes = {
+        from : keyframesSvgTopOn.to,
+        '43%': keyframesSvgTopOn.from,
         '71%': {
             transformOrigin : '91.7% 12.5%',
-            transform       : [['rotate(30deg)',  'scaleX(1)',    'translate(0, 0)',    ]],
+            transform       : [['rotate(15deg)',  'scaleX(1)',    'translate(0, 0)',     ]],
         },
-        to   : keyframesTogglerTopOn.from,
+        to   : keyframesSvgTopOn.from,
     };
-    const keyframesTogglerMidOff : PropEx.Keyframes = {
-        from : keyframesTogglerMidOn.to,
-        '81%': keyframesTogglerMidOn['19%'],
-        to   : keyframesTogglerMidOn.from,
+    const keyframesSvgMidOff : PropEx.Keyframes = {
+        from : keyframesSvgMidOn.to,
+        '81%': keyframesSvgMidOn['19%'],
+        to   : keyframesSvgMidOn.from,
     };
-    const keyframesTogglerBtmOff : PropEx.Keyframes = {
-        from : keyframesTogglerBtmOn.to,
-        '43%': keyframesTogglerBtmOn.from,
+    const keyframesSvgBtmOff : PropEx.Keyframes = {
+        from : keyframesSvgBtmOn.to,
+        '43%': keyframesSvgBtmOn.from,
         '71%': {
             transformOrigin : '91.7% 87.5%',
-            transform       : [['rotate(-30deg)', 'scaleX(1)',    'translate(0, 0)',     ]],
+            transform       : [['rotate(-15deg)', 'scaleX(1)',    'translate(0, 0)',     ]],
         },
-        to   : keyframesTogglerBtmOn.from,
+        to   : keyframesSvgBtmOn.from,
     };
+    
+    
+    
+    const keyframesActive    : PropEx.Keyframes = { };
+    const keyframesPassive   : PropEx.Keyframes = { };
 
     
     
+    const animDuration = '300ms';
+
+
+
     return {
         //#region animations
-        '@keyframes togglerTopOn'  : keyframesTogglerTopOn,
-        '@keyframes togglerMidOn'  : keyframesTogglerMidOn,
-        '@keyframes togglerBtmOn'  : keyframesTogglerBtmOn,
-        '@keyframes togglerTopOff' : keyframesTogglerTopOff,
-        '@keyframes togglerMidOff' : keyframesTogglerMidOff,
-        '@keyframes togglerBtmOff' : keyframesTogglerBtmOff,
-        togglerAnimDuration        :   '300ms',
-        togglerTopAnimOn           : [['300ms', 'ease-out', 'both', keyframesTogglerTopOn ]],
-        togglerMidAnimOn           : [['300ms', 'ease-out', 'both', keyframesTogglerMidOn ]],
-        togglerBtmAnimOn           : [['300ms', 'ease-out', 'both', keyframesTogglerBtmOn ]],
-        togglerTopAnimOff          : [['300ms', 'ease-out', 'both', keyframesTogglerTopOff]],
-        togglerMidAnimOff          : [['300ms', 'ease-out', 'both', keyframesTogglerMidOff]],
-        togglerBtmAnimOff          : [['300ms', 'ease-out', 'both', keyframesTogglerBtmOff]],
+        svgTopTransfOn         : [['rotate(-45deg)', 'scaleX(1.35)', 'translate(0, 37.5%)', ]],
+        svgMidTransfOn         : [['scaleX(0)',   ]],
+        svgBtmTransfOn         : [['rotate(45deg)',  'scaleX(1.35)', 'translate(0, -37.5%)',]],
+
+        svgTopTransfOff        : [['rotate(0deg)',   'scaleX(1)',    'translate(0, 0)',     ]],
+        svgMidTransfOff        : [['scaleX(1)',   ]],
+        svgBtmTransfOff        : [['rotate(0deg)',   'scaleX(1)',    'translate(0, 0)',     ]],
+
+        '@keyframes svgTopOn'  : keyframesSvgTopOn,
+        '@keyframes svgMidOn'  : keyframesSvgMidOn,
+        '@keyframes svgBtmOn'  : keyframesSvgBtmOn,
+        '@keyframes svgTopOff' : keyframesSvgTopOff,
+        '@keyframes svgMidOff' : keyframesSvgMidOff,
+        '@keyframes svgBtmOff' : keyframesSvgBtmOff,
+        svgAnimDuration        :   animDuration,
+        svgTopAnimOn           : [[animDuration, 'ease-out', 'both', keyframesSvgTopOn ]],
+        svgMidAnimOn           : [[animDuration, 'ease-out', 'both', keyframesSvgMidOn ]],
+        svgBtmAnimOn           : [[animDuration, 'ease-out', 'both', keyframesSvgBtmOn ]],
+        svgTopAnimOff          : [[animDuration, 'ease-out', 'both', keyframesSvgTopOff]],
+        svgMidAnimOff          : [[animDuration, 'ease-out', 'both', keyframesSvgMidOff]],
+        svgBtmAnimOff          : [[animDuration, 'ease-out', 'both', keyframesSvgBtmOff]],
+
+        '@keyframes active'    : keyframesActive,
+        '@keyframes passive'   : keyframesPassive,
+        animActive             : [[animDuration, 'ease-out', 'both', keyframesActive ]],
+        animPassive            : [[animDuration, 'ease-out', 'both', keyframesPassive]],
         //#endregion animations
     };
 }, /*prefix: */'tgmn');
@@ -315,22 +425,26 @@ export const cssDecls = cssConfig.decls;
 
 // react components:
 
-export interface Props
+export interface TogglerMenuButtonProps
     extends
         CheckProps
 {
 }
-export default function TogglerMenuButton(props: Props) {
+export default function TogglerMenuButton(props: TogglerMenuButtonProps) {
     // styles:
-    const styles = togglerMenuButtonStyles.useStyles();
+    const styles      = togglerMenuButtonStyles.useStyles();
 
 
 
     // jsx fn props:
-    const childrenFn = (() => {
+    const childrenFn  = (() => {
         // default (unset):
         if (props.children === undefined) return (
-            <svg viewBox='0 0 24 24'><polyline points='2,3 22,3' /><polyline points='2,12 22,12' /><polyline points='2,21 22,21' /></svg>
+            <svg viewBox='0 0 24 24'>
+                <polyline points='2,3 22,3' />
+                <polyline points='2,12 22,12' />
+                <polyline points='2,21 22,21' />
+            </svg>
         );
 
 
@@ -338,6 +452,14 @@ export default function TogglerMenuButton(props: Props) {
         // other component:
         return props.children;
     })();
+
+
+
+    // fn props:
+    const propActive  = usePropActive(props);
+    
+    const ariaRole    = props.role            ?? 'button';
+    const ariaPressed = props['aria-pressed'] ?? ((ariaRole === 'button') ? propActive : undefined);
 
 
 
@@ -349,7 +471,9 @@ export default function TogglerMenuButton(props: Props) {
 
 
             // accessibility:
-            aria-expanded={props.active}
+            role={ariaRole}
+            aria-pressed={ariaPressed}
+            aria-expanded={props['aria-expanded'] ?? propActive}
             label={props.label ?? 'Toggle navigation'}
 
 
