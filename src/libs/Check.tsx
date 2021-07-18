@@ -145,8 +145,10 @@ export class CheckStyles extends EditableActionControlStyles {
     //#region animations
     public    readonly _filterCheckClearIn  = 'filterCheckClearIn'
     public    readonly _filterCheckClearOut = 'filterCheckClearOut'
+
     public    readonly _transfCheckClearIn  = 'transfCheckClearIn'
     public    readonly _transfCheckClearOut = 'transfCheckClearOut'
+
     protected readonly _animCheckClear      = 'animCheckClear'
     //#endregion animations
     //#endregion props
@@ -242,8 +244,10 @@ export class CheckStyles extends EditableActionControlStyles {
 
         [this.decl(this._filterCheckClearIn)]  : inherit ? 'unset' : 'initial',
         [this.decl(this._filterCheckClearOut)] : inherit ? 'unset' : 'initial',
+
         [this.decl(this._transfCheckClearIn)]  : inherit ? 'unset' : 'initial',
         [this.decl(this._transfCheckClearOut)] : inherit ? 'unset' : 'initial',
+
         [this.decl(this._animCheckClear)]      : inherit ? 'unset' : 'initial',
     }}
     public /*override*/ actived()     : JssStyle { return {
@@ -265,8 +269,10 @@ export class CheckStyles extends EditableActionControlStyles {
 
         [this.decl(this._filterCheckClearIn)]  : cssProps.filterCheck,
         [this.decl(this._filterCheckClearOut)] : cssProps.filterClear,
+
         [this.decl(this._transfCheckClearIn)]  : cssProps.transfCheck,
         [this.decl(this._transfCheckClearOut)] : cssProps.transfClear,
+
         [this.decl(this._animCheckClear)]      : cssProps.animCheck,
     }}
     public /*override*/ passivating() : JssStyle { return {
@@ -278,8 +284,10 @@ export class CheckStyles extends EditableActionControlStyles {
 
         [this.decl(this._filterCheckClearIn)]  : cssProps.filterCheck,
         [this.decl(this._filterCheckClearOut)] : cssProps.filterClear,
+
         [this.decl(this._transfCheckClearIn)]  : cssProps.transfCheck,
         [this.decl(this._transfCheckClearOut)] : cssProps.transfClear,
+
         [this.decl(this._animCheckClear)]      : cssProps.animClear,
     }}
     public /*override*/ passived()    : JssStyle { return {
@@ -702,6 +710,9 @@ export default function Check(props: CheckProps) {
     // fn props:
     const propEnabled = usePropEnabled(props);
 
+    const ariaRole    = props.role            ?? 'checkbox';
+    const ariaChecked = props['aria-checked'] ?? ((ariaRole === 'checkbox') ? isActive : undefined);
+
     
     
     // jsx:
@@ -716,8 +727,8 @@ export default function Check(props: CheckProps) {
 
 
             // accessibility:
-            role='checkbox'
-            aria-checked={isActive}
+            role={ariaRole}
+            aria-checked={ariaChecked}
             aria-label={props.label}
             active={isActive}
 
