@@ -40,6 +40,7 @@ export interface IActionControlStyles {
 
     // states:
     actionControlStates(inherit: boolean, actionControl: IActionControlStyles): StateList
+    
     resetPressRelease(inherit: boolean): PropList
     pressed()   : JssStyle
     pressing()  : JssStyle
