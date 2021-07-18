@@ -1,26 +1,29 @@
 // react (builds html using javascript):
-import React                from 'react'        // base technology of our nodestrap components
-
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-import {
-    PropEx,
-}                           from './Css'        // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
+import React                from 'react'         // base technology of our nodestrap components
 
 // nodestrap (modular web components):
+import {
+    // general types:
+    JssStyle,
+    PropEx,
+    Cust,
+    ClassList,
+    PropList,
+
+
+    // components:
+    CssConfig,
+}                           from './nodestrap'   // nodestrap's core
+import typos                from './typos/index' // configurable typography (texting) defs
 import {
     cssProps as ecssProps,
     cssDecls as ecssDecls,
 }                           from './BasicComponent'
 import {
-    default  as Check,
     CheckStyles,
+    CheckProps,
+    Check,
 }                           from './Check'
-import type * as Checks     from './Check'
-import typos                from './typos/index' // configurable typography (texting) defs
 
 
 
@@ -28,7 +31,7 @@ import typos                from './typos/index' // configurable typography (tex
 
 const btnElm = '&>:nth-child(1n+2)';
 
-export class TogglerMenuButtonStylesBuilder extends CheckStyles {
+export class TogglerMenuButtonStyles extends CheckStyles {
     //#region scoped css props
     /**
      * functional animations for the toggler top.
@@ -199,23 +202,14 @@ export class TogglerMenuButtonStylesBuilder extends CheckStyles {
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
 }
-export const styles = new TogglerMenuButtonStylesBuilder();
+export const togglerMenuButtonStyles = new TogglerMenuButtonStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
-    // transform hamburger menu to cross menu
+    // transforms hamburger menu to cross menu
     const keyframesTogglerTopOn  : PropEx.Keyframes = {
         from: {
             transformOrigin : '50% 50%',
@@ -268,6 +262,8 @@ const cssConfig = new CssConfig(() => {
         },
     };
 
+    
+    
     const keyframesTogglerTopOff : PropEx.Keyframes = {
         from : keyframesTogglerTopOn.to,
         '43%': keyframesTogglerTopOn.from,
@@ -292,9 +288,10 @@ const cssConfig = new CssConfig(() => {
         to   : keyframesTogglerBtmOn.from,
     };
 
+    
+    
     return {
-        // anim props:
-
+        //#region animations
         '@keyframes togglerTopOn'  : keyframesTogglerTopOn,
         '@keyframes togglerMidOn'  : keyframesTogglerMidOn,
         '@keyframes togglerBtmOn'  : keyframesTogglerBtmOn,
@@ -308,6 +305,7 @@ const cssConfig = new CssConfig(() => {
         togglerTopAnimOff          : [['300ms', 'ease-out', 'both', keyframesTogglerTopOff]],
         togglerMidAnimOff          : [['300ms', 'ease-out', 'both', keyframesTogglerMidOff]],
         togglerBtmAnimOff          : [['300ms', 'ease-out', 'both', keyframesTogglerBtmOff]],
+        //#endregion animations
     };
 }, /*prefix: */'tgmn');
 export const cssProps = cssConfig.refs;
@@ -319,12 +317,12 @@ export const cssDecls = cssConfig.decls;
 
 export interface Props
     extends
-        Checks.CheckProps
+        CheckProps
 {
 }
 export default function TogglerMenuButton(props: Props) {
     // styles:
-    const togglerStyles = styles.useStyles();
+    const styles = togglerMenuButtonStyles.useStyles();
 
 
 
@@ -364,10 +362,11 @@ export default function TogglerMenuButton(props: Props) {
 
 
             // classes:
-            mainClass={props.mainClass ?? togglerStyles.main}
+            mainClass={props.mainClass ?? styles.main}
         >
             { childrenFn }
         </Check>
     );
 }
 TogglerMenuButton.prototype = Check.prototype; // mark as Check compatible
+export { TogglerMenuButton }
