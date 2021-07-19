@@ -6,39 +6,44 @@ import {
     useRef,
 }                           from 'react'        // base technology of our nodestrap components
 
-// jss   (builds css  using javascript):
-import type {
-    JssStyle,
-}                           from 'jss'          // ts defs support for jss
-import {
-    PropEx,
-}                           from './Css'        // ts defs support for jss
-import CssConfig            from './CssConfig'  // Stores & retrieves configuration using *css custom properties* (css variables) stored at HTML `:root` level (default) or at specified `rule`.
-
 // nodestrap (modular web components):
 import {
+    // general types:
+    JssStyle,
+    PropEx,
+
+    
+    // components:
+    CssConfig,
     Element,
+
+    
+    // utils:
     isTypeOf,
 }                           from './nodestrap'  // nodestrap's core
 import {
     cssProps as bcssProps,
 }                           from './BasicComponent'
 import {
-    cssProps as contCssProps,
+    cssProps as ccssProps,
 }                           from './Container'
 import {
-    default  as Indicator,
-    indicatorStyles,
+    TogglerActiveProps,
     useTogglerActive,
+    
+    indicatorStyles,
+    IndicatorProps,
+    Indicator,
 }                           from './Indicator'
-import type * as Indicators from './Indicator'
 import {
     ControlStyles,
 }                           from './Control'
-import NavbarMenu           from './NavbarMenu'
-import Check                from './Check'
-import type * as Checks     from './Check'
+import {
+    CheckProps,
+    Check,
+}                           from './Check'
 import TogglerMenuButton    from './TogglerMenuButton'
+import NavbarMenu           from './NavbarMenu'
 
 
 
@@ -53,7 +58,7 @@ const menuElm       = '&>.menus>*';
 // Navbar is not a Control, but an Indicator wrapping of NavbarMenu (Control)
 // We use ControlStylesBuilder for serving styling of NavbarMenu (Control)
 
-export class NavbarStylesBuilder extends ControlStyles {
+export class NavbarStyles extends ControlStyles {
     //#region scoped css props
     /**
      * functional animations for the navbar's menus.
@@ -570,22 +575,13 @@ export class NavbarStylesBuilder extends ControlStyles {
         };
     }
 }
-export const styles = new NavbarStylesBuilder();
+export const navbarStyles = new NavbarStyles();
 
 
 
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     const keyframesMenusActive  : PropEx.Keyframes = {
         from: {
             overflow     : 'hidden',
@@ -607,18 +603,19 @@ const cssConfig = new CssConfig(() => {
     };
 
 
+    
     return {
         zIndex        : 1020,
         position      : 'sticky',
 
         //#region borders
-        borderInline  : none,
-        borderBlock   : none,
+        borderInline  : 'none',
+        borderBlock   : 'none',
         borderRadius  : 0,
         //#endregion borders
 
         //#region spacings
-        paddingInline : contCssProps.paddingInline, // override to Element
+        paddingInline : ccssProps.paddingInline, // override to Element
         paddingBlock  : bcssProps.paddingBlock,
 
         gapX          : bcssProps.paddingInline,
@@ -643,7 +640,7 @@ const cssConfig = new CssConfig(() => {
         menusMarginBlock          : [['calc(0px -', bcssProps.paddingBlock, ')']],
 
         // on mobile, on the menu group, kill margin left & right:
-        menusMarginInlineCompact  : [['calc(0px -', contCssProps.paddingInline, ')']],
+        menusMarginInlineCompact  : [['calc(0px -', ccssProps.paddingInline, ')']],
 
         // on mobile, on the menu group, restore the margin top & bottom:
         menusMarginBlockCompact   : 0,
@@ -770,8 +767,9 @@ export function useStateCompact<TElement extends HTMLElement = HTMLElement>(prop
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
-        Indicators.IndicatorProps<TElement>,
-        Indicators.TogglerActiveProps,
+        IndicatorProps<TElement>,
+        TogglerActiveProps,
+
         Compactable
 {
     // children:
@@ -781,7 +779,7 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
 }
 export default function Navbar<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
     // styles:
-    const navbStyles            = styles.useStyles();
+    const navbStyles            = navbarStyles.useStyles();
 
     
     
@@ -863,13 +861,18 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                 ]}
 
 
+                {...(isTypeOf(toggler, Indicator) ? ({
+                    // values:
+                    active         : (toggler.props as IndicatorProps).active ?? isActive,
+                } as IndicatorProps) : {})}
+
+                
                 {...(isTypeOf(toggler, Check) ? ({
                     // values:
-                    active         : toggler.props.checked  ?? isActive,
-                    onActiveChange : toggler.props.onActiveChange ?? ((newActive) => {
+                    onActiveChange : (toggler.props as CheckProps).onActiveChange ?? ((newActive) => {
                         setActive(newActive);
                     }),
-                } as Checks.CheckProps) : {})}
+                } as CheckProps) : {})}
             />
         );
 
@@ -991,5 +994,6 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
         </Indicator>
     );
 }
+export { Navbar }
 
 export { NavbarMenu, NavbarMenu as Menu }

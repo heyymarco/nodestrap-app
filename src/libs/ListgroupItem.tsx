@@ -27,7 +27,7 @@ export interface ListgroupItemProps<TElement extends HTMLElement = HTMLElement>
 
 
     // behaviors:
-    actionCtrl? : boolean
+    actionCtrl?    : boolean
 
 
     // children:

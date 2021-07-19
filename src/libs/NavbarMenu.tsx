@@ -2,22 +2,24 @@
 import React                from 'react'        // base technology of our nodestrap components
 
 // nodestrap (modular web components):
-import Control              from './Control'
-import type * as Controls   from './Control'
+import {
+    ActionControlProps,
+    ActionControl,
+}                           from './ActionControl'
 
 
 
 // react components:
 
-export interface Props<TElement extends HTMLElement = HTMLAnchorElement>
+export interface NavbarMenuProps<TElement extends HTMLElement = HTMLAnchorElement>
     extends
-        Controls.ControlProps<TElement>
+        ActionControlProps<TElement>
 {
 }
-export default function NavbarMenu<TElement extends HTMLElement = HTMLAnchorElement>(props: Props<TElement>) {
+export default function NavbarMenu<TElement extends HTMLElement = HTMLAnchorElement>(props: NavbarMenuProps<TElement>) {
     // jsx:
     return (
-        <Control<TElement>
+        <ActionControl<TElement>
             // other props:
             {...props}
 
@@ -31,3 +33,4 @@ export default function NavbarMenu<TElement extends HTMLElement = HTMLAnchorElem
         />
     );
 }
+export { NavbarMenu }
