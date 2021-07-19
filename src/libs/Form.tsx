@@ -30,9 +30,6 @@ import {
     useStateValidInvalid,
 }                           from './EditableControl'
 import {
-    editableTextControlStyles as editableTextControlStyles,
-}                           from './EditableTextControl'
-import {
     IContentStyles,
     contentStyles,
 }                           from './Content'
@@ -58,14 +55,6 @@ export class FormStyles extends BasicComponentStyles implements IContentStyles {
     public /*implement*/ contentSize(size: string): JssStyle {
         return contentStyles.contentSize(size); // copy sizes from Content
     }
-
-
-
-    // states:
-
-
-
-    // functions:
 
 
 
