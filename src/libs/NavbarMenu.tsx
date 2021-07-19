@@ -11,12 +11,12 @@ import {
 
 // react components:
 
-export interface NavbarMenuProps<TElement extends HTMLElement = HTMLAnchorElement>
+export interface NavbarMenuProps<TElement extends HTMLElement = HTMLElement>
     extends
         ActionControlProps<TElement>
 {
 }
-export default function NavbarMenu<TElement extends HTMLElement = HTMLAnchorElement>(props: NavbarMenuProps<TElement>) {
+export default function NavbarMenu<TElement extends HTMLElement = HTMLElement>(props: NavbarMenuProps<TElement>) {
     // jsx:
     return (
         <ActionControl<TElement>
