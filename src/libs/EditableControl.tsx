@@ -40,45 +40,7 @@ import {
 
 // styles:
 
-export interface IEditableControlStyles {
-    // variants:
-    editableControlSize(size: string): JssStyle
-
-
-
-    // states:
-    editableControlStates(inherit: boolean, editableControl: IEditableControlStyles): StateList
-
-    resetValidUnvalid(inherit: boolean) : PropList
-    valided()        : JssStyle
-    validating()     : JssStyle
-    unvalidating()   : JssStyle
-    unvalided()      : JssStyle
-    valid()          : JssStyle
-    unvalid()        : JssStyle
-
-    resetInvalidUninvalid(inherit: boolean) : PropList
-    invalided()      : JssStyle
-    invalidating()   : JssStyle
-    uninvalidating() : JssStyle
-    uninvalided()    : JssStyle
-    invalid()        : JssStyle
-    uninvalid()      : JssStyle
-
-    noValidation()   : JssStyle
-
-
-
-    // functions:
-    editableControlAnimFn(): Cust.Ref[]
-
-
-
-    // styles:
-    editableControlBasicStyle(): JssStyle
-}
-
-export class EditableControlStyles extends ControlStyles implements IEditableControlStyles {
+export class EditableControlStyles extends ControlStyles {
     //#region props
     //#region animations
     protected readonly _animValUnval = 'animValUnval'
@@ -92,11 +54,10 @@ export class EditableControlStyles extends ControlStyles implements IEditableCon
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
-
-            this.editableControlSize(size),
         ] as JssStyle,
-    }}
-    public /*virtual*/ editableControlSize(size: string): JssStyle { return {
+
+
+
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
@@ -107,48 +68,47 @@ export class EditableControlStyles extends ControlStyles implements IEditableCon
     public /*override*/ states(inherit: boolean): StateList { return [
         ...super.states(inherit), // copy states from base
 
-        ...this.editableControlStates(inherit),
-    ]}
-    public /*virtual*/ editableControlStates(inherit: boolean, editableControl: IEditableControlStyles = this): StateList { return [
+
+
         [ null, {
             // reset filters/anims/toggles to initial/inherit state:
-            ...editableControl.resetValidUnvalid(inherit),
-            ...editableControl.resetInvalidUninvalid(inherit),
+            ...this.resetValidUnvalid(inherit),
+            ...this.resetInvalidUninvalid(inherit),
         }],
 
 
 
         // .vald will be added after validating-animation done
-        [  '.vald'                                                              , [editableControl.valid()     , editableControl.valided()       ] ],
+        [  '.vald'                                                              , [this.valid()     , this.valided()       ] ],
 
         // .val = programatically valid, :valid = user valid
         [ ['.val',
-           ':valid:not(.vald):not(.unval):not(.noval):not(.invd):not(.inv)']    , [editableControl.valid()     , editableControl.validating()    ] ],
+           ':valid:not(.vald):not(.unval):not(.noval):not(.invd):not(.inv)']    , [this.valid()     , this.validating()    ] ],
 
         // .unval will be added after loosing valid and will be removed after unvalidating-animation done
-        [  '.unval'                                                             , [editableControl.unvalid()   , editableControl.unvalidating()  ] ],
+        [  '.unval'                                                             , [this.unvalid()   , this.unvalidating()  ] ],
 
         // if all above are not set => unvalided
         // optionally use .noval to kill pseudo :valid
         [ [':not(.vald):not(.val):not(:valid):not(.unval)',
-           '.noval']                                                            , [editableControl.unvalid()   , editableControl.unvalided()     ] ],
+           '.noval']                                                            , [this.unvalid()   , this.unvalided()     ] ],
 
 
 
         // .invd will be added after invalidating-animation done
-        [  '.invd'                                                              , [editableControl.invalid()   , editableControl.invalided()     ] ],
+        [  '.invd'                                                              , [this.invalid()   , this.invalided()     ] ],
 
         // .inv = programatically invalid, :invalid = user invalid
         [ ['.inv',
-           ':invalid:not(.invd):not(.uninv):not(.noval):not(.vald):not(.val)']  , [editableControl.invalid()   , editableControl.invalidating()  ] ],
+           ':invalid:not(.invd):not(.uninv):not(.noval):not(.vald):not(.val)']  , [this.invalid()   , this.invalidating()  ] ],
 
         // .uninv will be added after loosing invalid and will be removed after uninvalidating-animation done
-        [  '.uninv'                                                             , [editableControl.uninvalid() , editableControl.uninvalidating()] ],
+        [  '.uninv'                                                             , [this.uninvalid() , this.uninvalidating()] ],
 
         // if all above are not set => uninvalided
         // optionally use .noval to kill pseudo :invalid
         [ [':not(.invd):not(.inv):not(:invalid):not(.uninv)',
-           '.noval']                                                            , [editableControl.uninvalid() , editableControl.uninvalided()   ] ],
+           '.noval']                                                            , [this.uninvalid() , this.uninvalided()   ] ],
         
         
         
@@ -156,7 +116,7 @@ export class EditableControlStyles extends ControlStyles implements IEditableCon
         // optionally use .noval to kill pseudo :valid & :invalid
         [ [':not(.vald):not(.val):not(:valid):not(.unval)' +
            ':not(.invd):not(.inv):not(:invalid):not(.uninv)',
-           '.noval']                                                            , editableControl.noValidation()                        ],
+           '.noval']                                                            , this.noValidation()                        ],
     ]}
 
     public /*virtual*/ resetValidUnvalid(inherit: boolean) : PropList { return {
@@ -232,9 +192,8 @@ export class EditableControlStyles extends ControlStyles implements IEditableCon
     public /*override*/ animFn(): Cust.Ref[] { return [
         ...super.animFn(), // copy functional animations from base
 
-        ...this.editableControlAnimFn(),
-    ]}
-    public /*virtual*/ editableControlAnimFn(): Cust.Ref[] { return [
+
+
         this.ref(this._animValUnval, this._animNone),
         this.ref(this._animInvUninv, this._animNone),
     ]}
@@ -245,11 +204,10 @@ export class EditableControlStyles extends ControlStyles implements IEditableCon
     public /*override*/ basicStyle(): JssStyle { return {
         extend: [
             super.basicStyle(), // copy basicStyle from base
-
-            this.editableControlBasicStyle(),
         ] as JssStyle,
-    }}
-    public /*virtual*/ editableControlBasicStyle(): JssStyle { return {
+
+
+
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
