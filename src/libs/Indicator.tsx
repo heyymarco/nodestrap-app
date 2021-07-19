@@ -534,6 +534,14 @@ export function useStateActivePassive(props: IndicationProps & ElementProps, act
     };
 }
 
+export interface TogglerActiveProps
+    extends
+        IndicationProps
+{
+    // accessibility:
+    defaultActive?  : boolean
+    onActiveChange? : (active: boolean) => void
+}
 export function useTogglerActive(props: TogglerActiveProps, changeEventTarget?: (React.RefObject<HTMLInputElement>|null)): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
     // fn props:
     const propAccess   = usePropAccessibility<boolean, boolean, null>(props, undefined, undefined, null);
@@ -598,16 +606,6 @@ export interface IndicationProps
         AccessibilityProps
 {
 }
-
-export interface TogglerActiveProps
-    extends
-        IndicationProps
-{
-    // accessibility:
-    defaultActive?  : boolean
-    onActiveChange? : (active: boolean) => void
-}
-
 export interface IndicatorProps<TElement extends HTMLElement = HTMLElement>
     extends
         BasicComponentProps<TElement>,
