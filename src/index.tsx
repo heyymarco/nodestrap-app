@@ -4,7 +4,6 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 // import App from './apps/App';
-// import FormApp from './apps/FormApp';
 // import NavbarApp from './apps/NavbarApp';
 
 
@@ -29,10 +28,11 @@ import reportWebVitals from './reportWebVitals';
 //                 import EditableActionControlApp     from './apps/EditableActionControlApp';
 //                     import CheckApp                 from './apps/CheckApp';
 //                         import RadioApp             from './apps/RadioApp';
-                        import TogglerMenuButtonApp from './apps/TogglerMenuButtonApp';
-    // import IconApp                                  from './apps/IconApp';
-    // import MasonryApp                               from './apps/MasonryApp';
-    // import CarouselApp                              from './apps/CarouselApp';
+//                         import TogglerMenuButtonApp from './apps/TogglerMenuButtonApp';
+                import FormApp                      from './apps/FormApp';
+//     import IconApp                                  from './apps/IconApp';
+//     import MasonryApp                               from './apps/MasonryApp';
+//     import CarouselApp                              from './apps/CarouselApp';
     
 
 
@@ -40,7 +40,7 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
     <React.StrictMode>
-        <TogglerMenuButtonApp />
+        <FormApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

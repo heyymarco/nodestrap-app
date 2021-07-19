@@ -13,7 +13,7 @@ import {
     
     // components:
     CssConfig,
-}                           from './nodestrap'   // nodestrap's core
+}                           from './nodestrap'  // nodestrap's core
 import {
     Result as ValResult,
     usePropValidation,
@@ -22,12 +22,13 @@ import {
     ValidationProvider,
 }                           from './validations'
 import {
-    BasicComponentStyles,
     BasicComponentProps,
     BasicComponent,
 }                           from './BasicComponent'
 import {
     useStateValidInvalid,
+
+    EditableControlStyles,
 }                           from './EditableControl'
 import {
     IContentStyles,
@@ -38,7 +39,7 @@ import {
 
 // styles:
 
-export class FormStyles extends BasicComponentStyles implements IContentStyles {
+export class FormStyles extends EditableControlStyles implements IContentStyles {
     // variants:
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -55,6 +56,39 @@ export class FormStyles extends BasicComponentStyles implements IContentStyles {
     public /*implement*/ contentSize(size: string): JssStyle {
         return contentStyles.contentSize(size); // copy sizes from Content
     }
+
+
+
+    //#region discard all Control's states
+    // states:
+    public /*override*/ resetEnableDisable(inherit: boolean) : PropList  { return {} } // disabled
+    public /*override*/ enabled()                            : JssStyle  { return {} } // disabled
+    public /*override*/ enabling()                           : JssStyle  { return {} } // disabled
+    public /*override*/ disabling()                          : JssStyle  { return {} } // disabled
+    public /*override*/ disabled()                           : JssStyle  { return {} } // disabled
+
+    public /*override*/ resetActivePassive(inherit: boolean) : PropList  { return {} } // disabled
+    public /*override*/ actived()                            : JssStyle  { return {} } // disabled
+    public /*override*/ activating()                         : JssStyle  { return {} } // disabled
+    public /*override*/ passivating()                        : JssStyle  { return {} } // disabled
+    public /*override*/ passived()                           : JssStyle  { return {} } // disabled
+    public /*override*/ markActive()                         : JssStyle  { return {} } // disabled
+    public /*override*/ themeActive(theme = 'primary')       : PropList  { return {} } // disabled
+
+    public /*override*/ resetFocusBlur(inherit: boolean)     : PropList  { return {} } // disabled
+    public /*override*/ focused()                            : JssStyle  { return {} } // disabled
+    public /*override*/ focusing()                           : JssStyle  { return {} } // disabled
+    public /*override*/ blurring()                           : JssStyle  { return {} } // disabled
+    public /*override*/ blurred()                            : JssStyle  { return {} } // disabled
+
+    public /*override*/ resetArriveLeave(inherit: boolean)   : PropList  { return {} } // disabled
+    public /*override*/ arrived()                            : JssStyle  { return {} } // disabled
+    public /*override*/ arriving()                           : JssStyle  { return {} } // disabled
+    public /*override*/ leaving()                            : JssStyle  { return {} } // disabled
+    public /*override*/ left()                               : JssStyle  { return {} } // disabled
+
+    public /*override*/ resetPressRelease(inherit: boolean)  : PropList  { return {} } // disabled
+    //#endregion discard all Control's states
 
 
 
@@ -82,15 +116,6 @@ export const formStyles = new FormStyles();
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    // common css values:
-    // const initial = 'initial';
-    // const unset   = 'unset';
-    // const none    = 'none';
-    // const inherit = 'inherit';
-    // const center  = 'center';
-    // const middle  = 'middle';
-
-
     return {
     };
 }, /*prefix: */'frm');
@@ -101,25 +126,27 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export type ValidatorHandler = () => ValResult;
-export type CustomValidatorHandler = (isValid: ValResult) => ValResult;
+export type ValidatorHandler       = () => ValResult
+export type CustomValidatorHandler = (isValid: ValResult) => ValResult
 export function useFormValidator(customValidator?: CustomValidatorHandler) {
     // states:
     let [isValid, setIsValid] = useState<ValResult>(null);
 
 
     
-    const handleVals = (target: HTMLFormElement, immediately = false) => {
+    const handleValidation = (target: HTMLFormElement, immediately = false) => {
         const getIsValid = (): ValResult => target.matches(':valid') ? true : (target.matches(':invalid') ? false : null);
 
         
         
         const update = (validPrev?: ValResult) => {
             const validNow = getIsValid();
-            if ((validPrev !== undefined) && (validPrev !== validNow)) return; // has been modified during waiting => abort further validating
+            if ((validPrev !== undefined) && (validPrev !== validNow)) return; // the validity has been modified during waiting => abort further validating
             
 
             
+            // instantly update variable `isValid` without waiting state to refresh (re-render)
+            // because the value is needed immediately by `useStateValidInvalid` at startup
             isValid = (customValidator ? customValidator(validNow) : validNow);
             setIsValid(isValid);
         };
@@ -133,18 +160,18 @@ export function useFormValidator(customValidator?: CustomValidatorHandler) {
         else {
             const validPrev = getIsValid();
         
-            // delay a while for the further validating, to avoid unpleasant effect
+            // delay a while for the further validating, to avoid unpleasant splash effect
             setTimeout(
                 () => update(validPrev),
-                (validPrev !== false) ? 100 : 500
+                (validPrev !== false) ? 300 : 600
             );
         } // if
     }
-    const handleInit = (target: HTMLFormElement | null) => {
-        if (target) handleVals(target, /*immediately =*/true);
+    const handleInit = (target: HTMLFormElement) => {
+        handleValidation(target, /*immediately =*/true);
     }
-    const handleChange = ({currentTarget}: React.FormEvent<HTMLFormElement>) => {
-        handleVals(currentTarget);
+    const handleChange = (target: HTMLFormElement) => {
+        handleValidation(target);
     }
     return {
         /**
@@ -207,6 +234,10 @@ export default function Form(props: FormProps) {
             tag={props.tag ?? 'form'}
 
 
+            // variants:
+            mild={props.mild ?? true}
+
+
             // classes:
             mainClass={props.mainClass ?? styles.main}
             stateClasses={[...(props.stateClasses ?? []),
@@ -228,14 +259,13 @@ export default function Form(props: FormProps) {
                         elmRef(elm);
                     }
                     else {
-                        // @ts-ignore
-                        elmRef.current = elm;
+                        (elmRef as React.MutableRefObject<HTMLFormElement|null>).current = elm;
                     } // if
                 } // if
             }}
-            onChange={(e: React.ChangeEvent<HTMLFormElement>) => { // watch change event bubbling from children
+            onChange={(e) => { // watch change event bubbling from children
                 // validations:
-                formValidator.handleChange(e);
+                formValidator.handleChange(e.currentTarget);
 
 
                 // forwards:

@@ -5,23 +5,10 @@ import
 import {
     jss as jssDefault,
 }                          from 'react-jss'         // base technology of our nodestrap components
-import logo from './logo.svg';
 import './App.css';
 
 import Form from '../libs/Form';
-import BasicComponent   from '../libs/BasicComponent';
-import Indicator from '../libs/Indicator';
-import Content from '../libs/Content';
-import Control from '../libs/Control';
-import EditableControl from '../libs/EditableControl';
-import EditableTextControl from '../libs/EditableTextControl';
-
-import Button, * as Buttons from '../libs/Button';
-import ButtonIcon from '../libs/ButtonIcon';
 import Input from '../libs/Input';
-import Check from '../libs/Check';
-
-import Icon   from '../libs/Icon';
 
 
 

@@ -79,6 +79,7 @@ class BtnStyles extends ActionControlStyles {
     public /*override*/ activating()                         : JssStyle  { return super.pressing()  }
     public /*override*/ passivating()                        : JssStyle  { return super.releasing() }
     public /*override*/ passived()                           : JssStyle  { return super.released()  }
+    public /*override*/ markActive()                         : JssStyle  { return {} } // disabled
     public /*override*/ themeActive(theme = 'primary')       : PropList  { return {} } // disabled
 
     public /*override*/ resetFocusBlur(inherit: boolean)     : PropList  { return {} } // disabled

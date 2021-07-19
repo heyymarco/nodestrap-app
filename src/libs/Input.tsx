@@ -144,6 +144,7 @@ export type InputType     = InputTextLike | 'color'|'file'|'range'
 export interface InputProps
     extends
         EditableTextControlProps<HTMLInputElement>
+        // React.InputHTMLAttributes<HTMLInputElement> // todo: implements input attr
 {
     // validations:
     min?     : string | number

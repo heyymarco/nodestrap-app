@@ -298,7 +298,7 @@ export function useInputValidator(customValidator?: CustomValidatorHandler) {
             // delay a while for the further validating, to avoid unpleasant splash effect
             setTimeout(
                 () => update(validity, valuePrev),
-                (validity.valid !== false) ? 100 : 500
+                (validity.valid !== false) ? 300 : 600
             );
         } // if
     }
@@ -583,7 +583,7 @@ export default function EditableControl<TElement extends EditableControlElement 
                     } // if
                 } // if
             }}
-            onChange={(e: React.ChangeEvent<TElement>) => { // watch change event from current element or bubbling from children
+            onChange={(e) => { // watch change event from current element or bubbling from children
                 // validations:
                 if (inputRef.current) inputValidator.handleChange(inputRef.current);
 
