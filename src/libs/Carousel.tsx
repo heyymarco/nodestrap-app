@@ -12,6 +12,7 @@ import {
     
     // components:
     CssConfig,
+    ElementProps,
     Element,
 
 
@@ -28,11 +29,6 @@ import {
     IContentStyles,
     contentStyles,
 }                           from './Content'
-import {
-    CarouselItemProps,
-    CarouselItem,
-}                           from './CarouselItem'
-import * as CarouselItems   from './CarouselItem'
 import {
     ButtonIconProps,
     ButtonIcon,
@@ -289,6 +285,34 @@ export const cssDecls = cssConfig.decls;
 
 
 // react components:
+
+export interface CarouselItemProps<TElement extends HTMLElement = HTMLDivElement>
+    extends
+        ElementProps<TElement>
+{
+}
+export function CarouselItem<TElement extends HTMLElement = HTMLDivElement>(props: CarouselItemProps<TElement>) {
+    // jsx:
+    return (
+        <Element<TElement>
+            // other props:
+            {...props}
+
+
+            // essentials:
+            tag={props.tag ?? 'div'}
+
+
+            // classes:
+            mainClass={props.mainClass ?? ''}
+        />
+    );
+}
+
+export type { CarouselItemProps as ItemProps }
+export { CarouselItem as Item }
+
+
 
 export interface CarouselProps<TElement extends HTMLElement = HTMLElement>
     extends
@@ -624,10 +648,6 @@ export default function Carousel<TElement extends HTMLElement = HTMLElement>(pro
     );
 }
 export { Carousel }
-
-export type { CarouselItemProps, CarouselItemProps as ItemProps }
-export type { CarouselItems, CarouselItems as Items }
-export { CarouselItem, CarouselItem as Item }
 
 
 
