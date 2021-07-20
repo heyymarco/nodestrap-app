@@ -429,6 +429,10 @@ export function NavbarMenu<TElement extends HTMLElement = HTMLElement>(props: Na
             tag={props.tag ?? 'a'}
 
 
+            // variants:
+            mild={props.mild ?? false}
+
+
             // classes:
             mainClass={props.mainClass ?? ''}
         />
@@ -479,11 +483,6 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
         toggler,
         children,
     ...restProps} = props;
-
-
-
-    // fn props:
-    const mildFn = props.mild ?? false;
 
 
 
@@ -604,7 +603,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
 
             // variants:
-            mild={mildFn}
+            mild={props.mild ?? false}
 
 
             // classes:
@@ -648,10 +647,6 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                         // essentials:
                         key={child.key ?? index}
 
-
-                        // variants:
-                        mild={false}
-
                         
                         // events:
                         onAnimationEnd={(e) => {
@@ -667,10 +662,6 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                     <NavbarMenu
                         // essentials:
                         key={index}
-
-
-                        // variants:
-                        mild={false}
 
 
                         // events:
