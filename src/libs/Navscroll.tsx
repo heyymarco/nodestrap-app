@@ -22,7 +22,6 @@ import {
 
     ListgroupItemProps,
     ListgroupItem,
-    ListgroupItems,
 }                           from './Listgroup'
 
 // other supports:
@@ -366,7 +365,15 @@ const findLast  = <T,R>(array: T[], predicate: (value: T) => R|null): [R, number
 
 // react components:
 
-// Navscroll is just a Listgroup with *manipulated active* on its items
+/*
+    Navscroll is just a Listgroup with *manipulated active* on its items
+*/
+
+// ListgroupItem => NavscrollItem
+export type { ListgroupItemProps, ListgroupItemProps as NavscrollItemProps, ListgroupItemProps as ItemProps }
+export { ListgroupItem, ListgroupItem as NavscrollItem, ListgroupItem as Item }
+
+
 
 export interface NavscrollProps<TElement extends HTMLElement = HTMLElement>
     extends
@@ -761,7 +768,3 @@ export { Navscroll }
 
 export type { OrientationStyle, VariantOrientation }
 export type { ListStyle, VariantList }
-
-export type { ListgroupItemProps, ListgroupItemProps as NavscrollItemProps, ListgroupItemProps as ItemProps }
-export type { ListgroupItems, ListgroupItems as NavscrollItems, ListgroupItems as Items }
-export { ListgroupItem, ListgroupItem as NavscrollItem, ListgroupItem as Item }
