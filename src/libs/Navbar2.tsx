@@ -82,7 +82,7 @@ class NavbarMenuStyles extends ActionControlStyles {
     public /*override*/ activating()  : JssStyle  { return super.pressing()  }
     public /*override*/ passivating() : JssStyle  { return super.releasing() }
     public /*override*/ passived()    : JssStyle  { return super.released()  }
-    public /*override*/ markActive()   : JssStyle { return {
+    public /*override*/ markActive()  : JssStyle { return {
         ...this.noOutlined(),  // kill .outlined variant
      // ...this.noMild(),      // do not kill .mild variant
 
