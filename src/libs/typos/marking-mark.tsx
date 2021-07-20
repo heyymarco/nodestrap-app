@@ -34,7 +34,7 @@ const cssConfig = new CssConfig(() => {
         lineHeight        : inherit              as Prop.LineHeight     | Cust.Expr,
     
         foreg             : inherit              as Prop.Color          | Cust.Ref,
-        backg             : colors.warningTransp as Prop.Background     | Cust.Ref,
+        backg             : colors.warningThin   as Prop.Background     | Cust.Ref,
         
         //#region borders
         border            : borders.default      as Prop.Border         | Cust.Expr,

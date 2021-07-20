@@ -370,11 +370,11 @@ export class BasicComponentStyles extends ElementStyles {
     public /*virtual*/ theme(theme: string): JssStyle { return {
         [this.decl(this._foregTh)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`],   // light on dark backg | dark on light backg
         [this.decl(this._backgTh)]          : (colors as DictionaryOf<typeof colors>)[theme],
-        [this.decl(this._borderTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],   // 20% background + 80% page's foreground
+        [this.decl(this._borderTh)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Bold`],   // 20% background + 80% page's foreground
         [this.decl(this._outlinedForegTh)]  : this.ref(this._backgTh),
         [this.decl(this._mildForegTh)]      : this.ref(this._borderTh),
-        [this.decl(this._mildBackgTh)]      : (colors as DictionaryOf<typeof colors>)[`${theme}Thin`],   // thin opacity with slightly color from background
-        [this.decl(this._boxShadowFocusTh)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
+        [this.decl(this._mildBackgTh)]      : (colors as DictionaryOf<typeof colors>)[`${theme}Mild`],   // // 20% background + 80% page's background
+        [this.decl(this._boxShadowFocusTh)] : (colors as DictionaryOf<typeof colors>)[`${theme}Thin`],
     }}
 
     /**
@@ -495,7 +495,7 @@ export class BasicComponentStyles extends ElementStyles {
             [this.decl(this._outlinedForegIf)]  : this.ref(this._foregIf),
             [this.decl(this._mildForegIf)]      : this.ref(this._foregIf),
             [this.decl(this._mildBackgIf)]      : this.ref(this._backgIf),
-            [this.decl(this._boxShadowFocusIf)] : colors.secondaryTransp,
+            [this.decl(this._boxShadowFocusIf)] : colors.secondaryThin,
         };
     }
     /**
@@ -506,11 +506,11 @@ export class BasicComponentStyles extends ElementStyles {
     public /*final*/ themeIf(theme: string): PropList { return {
         [this.decl(this._foregIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`],   // light on dark backg | dark on light backg
         [this.decl(this._backgIf)]          : (colors as DictionaryOf<typeof colors>)[theme],
-        [this.decl(this._borderIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],   // 20% background + 80% page's foreground
+        [this.decl(this._borderIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Bold`],   // 20% background + 80% page's foreground
         [this.decl(this._outlinedForegIf)]  : this.ref(this._backgIf),
         [this.decl(this._mildForegIf)]      : this.ref(this._borderIf),
-        [this.decl(this._mildBackgIf)]      : (colors as DictionaryOf<typeof colors>)[`${theme}Thin`],   // thin opacity with slightly color from background
-        [this.decl(this._boxShadowFocusIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
+        [this.decl(this._mildBackgIf)]      : (colors as DictionaryOf<typeof colors>)[`${theme}Mild`],   // // 20% background + 80% page's background
+        [this.decl(this._boxShadowFocusIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Thin`],
     }}
     /**
      * Creates an important conditional color definition for the specified `theme`.
@@ -520,11 +520,11 @@ export class BasicComponentStyles extends ElementStyles {
     public /*final*/ themeIfIf(theme: string): PropList { return {
         [this.decl(this._foregIfIf)]          : (colors as DictionaryOf<typeof colors>)[`${theme}Text`],   // light on dark backg | dark on light backg
         [this.decl(this._backgIfIf)]          : (colors as DictionaryOf<typeof colors>)[theme],
-        [this.decl(this._borderIfIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Cont`],   // 20% background + 80% page's foreground
+        [this.decl(this._borderIfIf)]         : (colors as DictionaryOf<typeof colors>)[`${theme}Bold`],   // 20% background + 80% page's foreground
         [this.decl(this._outlinedForegIfIf)]  : this.ref(this._backgIfIf),
         [this.decl(this._mildForegIfIf)]      : this.ref(this._borderIfIf),
-        [this.decl(this._mildBackgIfIf)]      : (colors as DictionaryOf<typeof colors>)[`${theme}Thin`],   // thin opacity with slightly color from background
-        [this.decl(this._boxShadowFocusIfIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Transp`],
+        [this.decl(this._mildBackgIfIf)]      : (colors as DictionaryOf<typeof colors>)[`${theme}Mild`],   // // 20% background + 80% page's background
+        [this.decl(this._boxShadowFocusIfIf)] : (colors as DictionaryOf<typeof colors>)[`${theme}Thin`],
     }}
 
 

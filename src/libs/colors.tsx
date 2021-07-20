@@ -12,36 +12,37 @@ import Color               from 'color'        // color utilities
 
 
 
-// jss:
+// color fn:
 
-// color functions
 // might be removed if *css 4* color() -or- color-mod() was released
-const transpLevel = 0.5
-const transpColor = (color: Color) => color.alpha(transpLevel)
-const textColor   = (color: Color) => (color.isLight() ? themes.dark : themes.light)
-const thinLevel   = 0.2
-const thinColor   = (color: Color) => color.alpha(thinLevel)
-const contColor   = (color: Color) => color.mix(page2.foreg as Color, 0.8)
+
+const thinLevel = 0.5
+const thinColor = (color: Color) => color.alpha(thinLevel)
+const textColor = (color: Color) => (color.isLight() ? themes.dark : themes.light)
+const mildLevel = 0.8
+const mildColor = (color: Color) => color.mix(page1.backg as Color, mildLevel)
+const boldLevel = 0.8
+const boldColor = (color: Color) => color.mix(page2.foreg as Color, boldLevel)
 
 
 
 //#region define colors by group
 const basics = {
-    blue        : Color('#0d6efd'),
-    indigo      : Color('#6610f2'),
-    purple      : Color('#6f42c1'),
-    pink        : Color('#d63384'),
-    red         : Color('#dc3545'),
-    orange      : Color('#fd7e14'),
-    yellow      : Color('#ffc107'),
-    green       : Color('#198754'),
-    teal        : Color('#20c997'),
-    cyan        : Color('#0dcaf0'),
+    blue     : Color('#0d6efd'),
+    indigo   : Color('#6610f2'),
+    purple   : Color('#6f42c1'),
+    pink     : Color('#d63384'),
+    red      : Color('#dc3545'),
+    orange   : Color('#fd7e14'),
+    yellow   : Color('#ffc107'),
+    green    : Color('#198754'),
+    teal     : Color('#20c997'),
+    cyan     : Color('#0dcaf0'),
 
-    black       : Color('#000000'),
-    white       : Color('#ffffff'),
-    gray        : Color('#6c757d'),
-    grayDark    : Color('#343a40'),
+    black    : Color('#000000'),
+    white    : Color('#ffffff'),
+    gray     : Color('#6c757d'),
+    grayDark : Color('#343a40'),
 };
 
 const themes = {
@@ -55,43 +56,21 @@ const themes = {
     dark      : Color('#212529'),
 };
 
-const page = {
-    backg     : basics.white,
+const page1 = {
+    backg : basics.white,
 };
 
 const page2 = {
-    foreg       : textColor(page.backg),
+    foreg : textColor(page1.backg),
 };
 const page3 = {
-    backgTransp : transpColor(page.backg),
-    backgThin   : thinColor(page.backg),
-    backgCont   : contColor(page.backg),
+    backgThin : thinColor(page1.backg),
+    backgMild : mildColor(page1.backg),
+    backgBold : boldColor(page1.backg),
 
-    foregTransp : transpColor(page2.foreg),
-    foregThin   : thinColor(page2.foreg),
-    foregCont   : contColor(page2.foreg),
-};
-
-const themesTransp = {
-    primaryTransp   : transpColor(themes.primary),
-    secondaryTransp : transpColor(themes.secondary),
-    successTransp   : transpColor(themes.success),
-    infoTransp      : transpColor(themes.info),
-    warningTransp   : transpColor(themes.warning),
-    dangerTransp    : transpColor(themes.danger),
-    lightTransp     : transpColor(themes.light),
-    darkTransp      : transpColor(themes.dark),
-};
-
-const themesText = {
-    primaryText   : textColor(themes.primary),
-    secondaryText : textColor(themes.secondary),
-    successText   : textColor(themes.success),
-    infoText      : textColor(themes.info),
-    warningText   : textColor(themes.warning),
-    dangerText    : textColor(themes.danger),
-    lightText     : textColor(themes.light),
-    darkText      : textColor(themes.dark),
+    foregThin : thinColor(page2.foreg),
+    foregMild : mildColor(page2.foreg),
+    foregBold : boldColor(page2.foreg),
 };
 
 const themesThin = {
@@ -105,27 +84,49 @@ const themesThin = {
     darkThin      : thinColor(themes.dark),
 };
 
-const themesCont = {
-    primaryCont   : contColor(themes.primary),
-    secondaryCont : contColor(themes.secondary),
-    successCont   : contColor(themes.success),
-    infoCont      : contColor(themes.info),
-    warningCont   : contColor(themes.warning),
-    dangerCont    : contColor(themes.danger),
-    lightCont     : contColor(themes.light),
-    darkCont      : contColor(themes.dark),
+const themesText = {
+    primaryText   : textColor(themes.primary),
+    secondaryText : textColor(themes.secondary),
+    successText   : textColor(themes.success),
+    infoText      : textColor(themes.info),
+    warningText   : textColor(themes.warning),
+    dangerText    : textColor(themes.danger),
+    lightText     : textColor(themes.light),
+    darkText      : textColor(themes.dark),
+};
+
+const themesMild = {
+    primaryMild   : mildColor(themes.primary),
+    secondaryMild : mildColor(themes.secondary),
+    successMild   : mildColor(themes.success),
+    infoMild      : mildColor(themes.info),
+    warningMild   : mildColor(themes.warning),
+    dangerMild    : mildColor(themes.danger),
+    lightMild     : mildColor(themes.light),
+    darkMild      : mildColor(themes.dark),
+};
+
+const themesBold = {
+    primaryBold   : boldColor(themes.primary),
+    secondaryBold : boldColor(themes.secondary),
+    successBold   : boldColor(themes.success),
+    infoBold      : boldColor(themes.info),
+    warningBold   : boldColor(themes.warning),
+    dangerBold    : boldColor(themes.danger),
+    lightBold     : boldColor(themes.light),
+    darkBold      : boldColor(themes.dark),
 };
 
 const allColors = {
     ...basics,
     ...themes,
-    ...page,
+    ...page1,
     ...page2,
     ...page3,
-    ...themesTransp,
-    ...themesText,
     ...themesThin,
-    ...themesCont,
+    ...themesText,
+    ...themesMild,
+    ...themesBold,
 };
 //#endregion define colors by group
 

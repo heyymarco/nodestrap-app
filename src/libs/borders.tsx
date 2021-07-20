@@ -33,8 +33,8 @@ const cssConfig = new CssConfig(() => {
     };
     
     const styles = {
-        color : colors.darkTransp ?? 'currentColor' as BorderColor,
-        style : 'solid'                             as BorderStyle,
+        color : colors.darkThin ?? 'currentColor' as BorderColor,
+        style : 'solid'                           as BorderStyle,
     };
     
     const defaults = {
