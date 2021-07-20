@@ -13,7 +13,7 @@ import BasicComponent   from '../libs/BasicComponent';
 import Indicator from '../libs/Indicator';
 import Content from '../libs/Content';
 // import ButtonIcon   from '../libs/ButtonIcon';
-import Navbar, {NavbarMenu} from '../libs/Navbar';
+import {Navbar, NavbarMenu} from '../libs/Navbar2';
 
 
 
@@ -58,6 +58,9 @@ function App() {
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
 
+	const milds = [false, undefined, true];
+	const [mild,       setMild      ] = useState<boolean|undefined>(undefined);
+
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
 
@@ -73,7 +76,7 @@ function App() {
 			
 			<Navbar
 				theme={theme} size={size} gradient={enableGrad}
-				outlined={outlined}
+				outlined={outlined} mild={mild}
 
 				enabled={enabled}
 				
@@ -81,7 +84,7 @@ function App() {
 				active={active}
 				onActiveChange={(active) => setActive(active)}
 
-				compact={compact}
+				// compact={compact}
 
 				logo={hasLogo && <img src="/logo.png" alt="" style={{height: '30px'}}  />}
 				// toggler={<ButtonIcon icon='close'>Close</ButtonIcon>}
@@ -167,6 +170,29 @@ function App() {
 						/>
 						outlined
 					</label>
+				</p>
+				<p>
+					Mild:
+					{
+						milds.map(mi =>
+							<label key={`${mi}`}>
+								<input type='radio'
+									value={`${mi}`}
+									checked={mild===mi}
+									onChange={(e) => setMild((() => {
+										const value = e.target.value;
+										if (!value) return undefined;
+										switch (value) {
+											case 'true' : return true;
+											case 'false': return false;
+											default     : return undefined;
+										} // switch
+									})())}
+								/>
+								{`${mi ?? 'unset'}`}
+							</label>
+						)
+					}
 				</p>
 				<p>
 					<label>
