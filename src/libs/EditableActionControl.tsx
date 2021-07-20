@@ -66,22 +66,22 @@ export class EditableActionControlStyles extends EditableControlStyles implement
     public /*implement*/ resetPressRelease(inherit: boolean) : PropList {
         return actionControlStyles.resetPressRelease(inherit); // copy resetPressRelease from actionControl
     }
-    public /*implement*/ pressed()   : JssStyle {
+    public /*implement*/ pressed()                                         : JssStyle {
         return actionControlStyles.pressed();   // copy pressed   from actionControl
     }
-    public /*implement*/ pressing()  : JssStyle {
+    public /*implement*/ pressing()                                        : JssStyle {
         return actionControlStyles.pressing();  // copy pressing  from actionControl
     }
-    public /*implement*/ releasing() : JssStyle {
+    public /*implement*/ releasing()                                       : JssStyle {
         return actionControlStyles.releasing(); // copy releasing from actionControl
     }
-    public /*implement*/ released()  : JssStyle {
+    public /*implement*/ released()                                        : JssStyle {
         return actionControlStyles.released();  // copy released  from actionControl
     }
-    public /*implement*/ press()     : JssStyle {
-        return actionControlStyles.press();     // copy press     from actionControl
+    public /*implement*/ press(actionControl: IActionControlStyles = this) : JssStyle {
+        return actionControlStyles.press(actionControl);     // copy press     from actionControl
     }
-    public /*implement*/ release()   : JssStyle {
+    public /*implement*/ release()                                         : JssStyle {
         return actionControlStyles.release();   // copy release   from actionControl
     }
 

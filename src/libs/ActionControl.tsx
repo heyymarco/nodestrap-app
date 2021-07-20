@@ -42,12 +42,14 @@ export interface IActionControlStyles {
     actionControlStates(inherit: boolean, actionControl: IActionControlStyles): StateList
     
     resetPressRelease(inherit: boolean): PropList
-    pressed()   : JssStyle
-    pressing()  : JssStyle
-    releasing() : JssStyle
-    released()  : JssStyle
-    press()     : JssStyle
-    release()   : JssStyle
+    pressed()    : JssStyle
+    pressing()   : JssStyle
+    releasing()  : JssStyle
+    released()   : JssStyle
+    press()      : JssStyle
+    release()    : JssStyle
+
+    markActive() : JssStyle
 
 
 
@@ -122,26 +124,26 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
         [this.decl(this._filterPressRelease)] : inherit ? 'unset' : 'initial',
         [this.decl(this._animPressRelease)]   : inherit ? 'unset' : 'initial',
     }}
-    public /*virtual*/ pressed()   : JssStyle { return {
+    public /*virtual*/ pressed()                                         : JssStyle { return {
         [this.decl(this._filterPressRelease)] : cssProps.filterPress,
     }}
-    public /*virtual*/ pressing()  : JssStyle { return {
+    public /*virtual*/ pressing()                                        : JssStyle { return {
         [this.decl(this._filterPressRelease)] : cssProps.filterPress,
         [this.decl(this._animPressRelease)]   : cssProps.animPress,
     }}
-    public /*virtual*/ releasing() : JssStyle { return {
+    public /*virtual*/ releasing()                                       : JssStyle { return {
         [this.decl(this._filterPressRelease)] : cssProps.filterPress,
         [this.decl(this._animPressRelease)]   : cssProps.animRelease,
     }}
-    public /*virtual*/ released()  : JssStyle { return {
+    public /*virtual*/ released()                                        : JssStyle { return {
         /* --nothing-- */
     }}
-    public /*virtual*/ press()     : JssStyle { return {
+    public /*virtual*/ press(actionControl: IActionControlStyles = this) : JssStyle { return {
         extend: [
-            this.markActive(),
+            actionControl.markActive(),
         ] as JssStyle,
     }}
-    public /*virtual*/ release()   : JssStyle { return {
+    public /*virtual*/ release()                                         : JssStyle { return {
     }}
 
 
