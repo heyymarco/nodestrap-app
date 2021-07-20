@@ -75,10 +75,10 @@ class BtnStyles extends ActionControlStyles {
 
     // active/passive => press/release
     public /*override*/ resetActivePassive(inherit: boolean) : PropList  { return {} } // disabled
-    public /*override*/ actived()                            : JssStyle  { return super.pressed()   }
-    public /*override*/ activating()                         : JssStyle  { return super.pressing()  }
-    public /*override*/ passivating()                        : JssStyle  { return super.releasing() }
-    public /*override*/ passived()                           : JssStyle  { return super.released()  }
+    public /*override*/ actived()                            : JssStyle  { return {} } // disabled
+    public /*override*/ activating()                         : JssStyle  { return {} } // disabled
+    public /*override*/ passivating()                        : JssStyle  { return {} } // disabled
+    public /*override*/ passived()                           : JssStyle  { return {} } // disabled
     public /*override*/ markActive()                         : JssStyle  { return {} } // disabled
     public /*override*/ themeActive(theme = 'primary')       : PropList  { return {} } // disabled
 
@@ -122,6 +122,15 @@ class BtnStyles extends ActionControlStyles {
     }}
 }
 
+class TogglerBtnStyles extends BtnStyles {
+    // states:
+    // active/passive => press/release
+    public /*override*/ actived()     : JssStyle  { return super.pressed()   }
+    public /*override*/ activating()  : JssStyle  { return super.pressing()  }
+    public /*override*/ passivating() : JssStyle  { return super.releasing() }
+    public /*override*/ passived()    : JssStyle  { return super.released()  }
+}
+
 export class CheckStyles extends EditableActionControlStyles {
     //#region props
     //#region finals
@@ -162,8 +171,9 @@ export class CheckStyles extends EditableActionControlStyles {
 
 
 
-        [ 'btn'   , this.button() ],
-        [ 'switch', this.switch() ],
+        [ 'btn'       , this.button()        ],
+        [ 'togglerBtn', this.togglerButton() ],
+        [ 'switch'    , this.switch()        ],
     ]}
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -175,42 +185,51 @@ export class CheckStyles extends EditableActionControlStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-    public /*virtual*/ button(): JssStyle { return {
-        extend: [
-            (new BtnStyles()).compositeStyle(),
-        ] as JssStyle,
-
-
-
+    protected /*virtual*/ hideInput(): JssStyle { return {
         // children:
-
         [inputElm] : {
-            //#region hides the checkbox while still preserving animations
+            // hides the checkbox while still preserving animations
+            
+            
+            
             // appearances:
             visibility : 'hidden', // invisible but still exists
-
-
-
+    
+    
+    
             // sizes:
             boxSizing  : 'border-box', // the final size is including borders & paddings
             inlineSize : 0, // kill the width
             blockSize  : 0, // kill the height
-
-
-
+    
+    
+    
             // borders:
             border     : 0, // kill the border
-
-
-
+    
+    
+    
             // spacings:
             padding    : 0, // kill the paddings
-
+    
             '&:not(:last-child)': {
                 marginInlineEnd : 0, // kill the spacing between input & label
             },
-            //#endregion hides the checkbox while still preserving animations
-        },
+        } as JssStyle,
+    }}
+    public /*virtual*/ button(): JssStyle { return {
+        extend: [
+            this.hideInput(),
+
+            (new BtnStyles()).compositeStyle(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ togglerButton(): JssStyle { return {
+        extend: [
+            this.hideInput(),
+
+            (new TogglerBtnStyles()).compositeStyle(),
+        ] as JssStyle,
     }}
     public /*virtual*/ switch(): JssStyle { return {
         // children:
@@ -606,7 +625,7 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export type ChkStyle = 'btn' | 'switch' // might be added more styles in the future
+export type ChkStyle = 'btn' | 'togglerBtn' | 'switch' // might be added more styles in the future
 export interface VariantCheck {
     chkStyle?: ChkStyle
 }
