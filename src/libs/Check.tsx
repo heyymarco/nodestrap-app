@@ -21,8 +21,8 @@ import {
     usePropEnabled,
 }                           from './accessibilities'
 import {
-    useTogglerActive,
     TogglerActiveProps,
+    useTogglerActive,
 }                           from './Indicator'
 import {
     ActionControlStyles,
