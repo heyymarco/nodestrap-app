@@ -28,6 +28,7 @@ import {
 
     cssProps as bcssProps,
 }                           from './BasicComponent'
+import Indicator            from './Indicator'
 import {
     IContentStyles,
     contentStyles,
@@ -38,12 +39,9 @@ import {
 }                           from './Content'
 import {
     ActionControlStyles,
+    ActionControlProps,
+    ActionControl,
 }                           from './ActionControl'
-import {
-    ListgroupItemProps,
-    ListgroupItem,
-}                           from './ListgroupItem'
-import * as ListgroupItems  from './ListgroupItem'
 
 
 
@@ -587,6 +585,76 @@ export function useVariantList(props: VariantList) {
 
 // react components:
 
+export interface ListgroupItemProps<TElement extends HTMLElement = HTMLElement>
+    extends
+        ActionControlProps<TElement>
+{
+    // accessibility:
+    // change default value to `true`
+    /**
+     * `undefined` : same as `true`.  
+     * `true`      : inherits `active` from `Listgroup`.  
+     * `false`     : independent `active`.
+     */
+    inheritActive? : boolean
+
+
+    // behaviors:
+    actionCtrl?    : boolean
+
+
+    // children:
+    children?      : React.ReactNode
+}
+export function ListgroupItem<TElement extends HTMLElement = HTMLElement>(props: ListgroupItemProps<TElement>) {
+    // jsx:
+    return (
+        props.actionCtrl
+        ?
+        <ActionControl<TElement>
+            // other props:
+            {...props}
+
+
+            // accessibility:
+            inheritActive={props.inheritActive ?? true} // change default value to `true`
+
+
+            // variants:
+            mild={props.mild ?? false}
+
+
+            // classes:
+            mainClass={props.mainClass ?? ''}
+            classes={[...(props.classes ?? []),
+                'actionCtrl',
+            ]}
+        />
+        :
+        <Indicator<TElement>
+            // other props:
+            {...props}
+
+
+            // accessibility:
+            inheritActive={props.inheritActive ?? true} // change default value to `true`
+
+
+            // variants:
+            mild={props.mild ?? false}
+
+
+            // classes:
+            mainClass={props.mainClass ?? ''}
+        />
+    );
+}
+
+export type { ListgroupItemProps as ItemProps }
+export { ListgroupItem as Item }
+
+
+
 export interface ListgroupProps<TElement extends HTMLElement = HTMLElement>
     extends
         ContentProps<TElement>,
@@ -700,7 +768,3 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
 export { Listgroup }
 
 export type { OrientationStyle, VariantOrientation }
-
-export type { ListgroupItemProps, ListgroupItemProps as ItemProps }
-export type { ListgroupItems, ListgroupItems as Items }
-export { ListgroupItem, ListgroupItem as Item }
