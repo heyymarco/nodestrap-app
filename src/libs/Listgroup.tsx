@@ -292,9 +292,10 @@ export class ListgroupStyles extends ContentStyles {
         
         
         // on ListgroupItem, *toggle on* the outlined with their own theme:
-        [wrapperElm]: { [listItemElm]:
-            super.outlined()
-        } as JssStyle,
+        [wrapperElm]: { [listItemElm]: {
+            '&:not(._)': // increase the specificity
+                super.outlined(),
+        }} as JssStyle,
     }}
     public /*override*/ mild(): JssStyle { return {
         extend: [
@@ -304,9 +305,10 @@ export class ListgroupStyles extends ContentStyles {
 
 
         // on ListgroupItem, *toggle on* the mild with their own theme:
-        [wrapperElm]: { [listItemElm]:
-            super.mild()
-        } as JssStyle,
+        [wrapperElm]: { [listItemElm]: {
+            '&:not(._)': // increase the specificity
+                super.mild(),
+        }} as JssStyle,
     }}
 
     public /*virtual*/ block(): JssStyle { return {
