@@ -39,21 +39,24 @@ import {
     ControlStyles,
 }                           from './Control'
 import {
+    ActionControlProps,
+    ActionControl,
+}                           from './ActionControl'
+import {
     CheckProps,
     Check,
 }                           from './Check'
 import TogglerMenuButton    from './TogglerMenuButton'
-import NavbarMenu           from './NavbarMenu'
 
 
 
 // styles:
 
-const wrapperElm    = '& .wrapper';
-const logoElm       = '&>.logo';
-const togglerElm    = '&>.toggler';
-const menusElm      = '&>.menus';
-const menuElm       = '&>.menus>*';
+const wrapperElm = '& .wrapper';
+const logoElm    = '&>.logo';
+const togglerElm = '&>.toggler';
+const menusElm   = '&>.menus';
+const menuElm    = '&>.menus>*';
 
 // Navbar is not a Control, but an Indicator wrapping of NavbarMenu (Control)
 // We use ControlStylesBuilder for serving styling of NavbarMenu (Control)
@@ -763,7 +766,33 @@ export function useStateCompact<TElement extends HTMLElement = HTMLElement>(prop
 
 // react components:
 
-// Navbar is not a Control, but an Indicator wrapping of NavbarMenu (Control)
+export interface NavbarMenuProps<TElement extends HTMLElement = HTMLElement>
+    extends
+        ActionControlProps<TElement>
+{
+}
+export function NavbarMenu<TElement extends HTMLElement = HTMLElement>(props: NavbarMenuProps<TElement>) {
+    // jsx:
+    return (
+        <ActionControl<TElement>
+            // other props:
+            {...props}
+
+
+            // essentials:
+            tag={props.tag ?? 'a'}
+
+
+            // classes:
+            mainClass={props.mainClass ?? ''}
+        />
+    );
+}
+
+export type { NavbarMenuProps as MenuProps }
+export { NavbarMenu as Menu }
+
+
 
 export interface Props<TElement extends HTMLElement = HTMLElement>
     extends
@@ -995,5 +1024,3 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
     );
 }
 export { Navbar }
-
-export { NavbarMenu, NavbarMenu as Menu }
