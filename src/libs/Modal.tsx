@@ -404,7 +404,7 @@ export const modalStyles = new ModalStyles();
 
 const cssConfig = new CssConfig(() => {
     const keyframesOverlayActive  : PropEx.Keyframes = {
-        from: {
+        from : {
             opacity    : 0,
             background : modalStyles.overlayBackgFn(),
             // background : [ // double array => makes the JSS treat as comma separated values
@@ -413,7 +413,7 @@ const cssConfig = new CssConfig(() => {
             //  // modalStyles.ref(modalStyles._overlayBackgActivePassive, modalStyles._backgNone), // missing the last => let's the browser interpolated it
             // ],
         },
-        to: {
+        to   : {
             opacity    : 1,
             background : modalStyles.overlayBackgFn(),
             // background : [ // double array => makes the JSS treat as comma separated values
