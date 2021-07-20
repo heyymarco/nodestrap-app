@@ -215,18 +215,19 @@ class ListgroupActionItemStyles extends ActionControlStyles implements IContentS
     // states:
     public /*override*/ themeDefault(theme: string|null = 'secondary') : PropList { return {} } // disabled
 
-    public /*override*/ resetEnableDisable(inherit: boolean) : PropList { return {} } // disabled
-    public /*override*/ enabled()     : JssStyle { return {} } // disabled
-    public /*override*/ enabling()    : JssStyle { return {} } // disabled
-    public /*override*/ disabling()   : JssStyle { return {} } // disabled
-    public /*override*/ disabled()    : JssStyle { return {} } // disabled
+    public /*override*/ resetEnableDisable(inherit: boolean) : PropList  { return {} } // disabled
+    public /*override*/ enabled()                            : JssStyle  { return {} } // disabled
+    public /*override*/ enabling()                           : JssStyle  { return {} } // disabled
+    public /*override*/ disabling()                          : JssStyle  { return {} } // disabled
+    public /*override*/ disabled()                           : JssStyle  { return {} } // disabled
 
-    public /*override*/ resetActivePassive(inherit: boolean) : PropList { return {} } // disabled
-    public /*override*/ actived()     : JssStyle { return {} } // disabled
-    public /*override*/ activating()  : JssStyle { return {} } // disabled
-    public /*override*/ passivating() : JssStyle { return {} } // disabled
-    public /*override*/ passived()    : JssStyle { return {} } // disabled
-    public /*override*/ themeActive(theme = 'primary')   : PropList { return {} } // disabled
+    public /*override*/ resetActivePassive(inherit: boolean) : PropList  { return {} } // disabled
+    public /*override*/ actived()                            : JssStyle  { return {} } // disabled
+    public /*override*/ activating()                         : JssStyle  { return {} } // disabled
+    public /*override*/ passivating()                        : JssStyle  { return {} } // disabled
+    public /*override*/ passived()                           : JssStyle  { return {} } // disabled
+    public /*override*/ markActive()                         : JssStyle  { return {} } // disabled
+    public /*override*/ themeActive(theme = 'primary')       : PropList  { return {} } // disabled
     
     
     
@@ -527,6 +528,7 @@ export class ListgroupStyles extends ContentStyles {
 
 
 
+        // children:
         [wrapperElm]: { [listItemElm]: {
             extend: [
                 // general ListgroupItem:
