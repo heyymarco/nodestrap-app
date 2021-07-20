@@ -83,9 +83,10 @@ class NavbarMenuStyles extends ActionControlStyles {
     public /*override*/ passivating() : JssStyle  { return super.releasing() }
     public /*override*/ passived()    : JssStyle  { return super.released()  }
     public /*override*/ markActive()   : JssStyle { return {
-        ...this.noOutlined(),
+        ...this.noOutlined(),  // kill .outlined variant
+     // ...this.noMild(),      // do not kill .mild variant
 
-        ...this.themeActive(),
+        ...this.themeActive(), // switch to active theme
     }}
 
     public /*override*/ themeDefault(theme: string|null = null): PropList {
@@ -149,7 +150,10 @@ export class NavbarStyles extends BasicComponentStyles {
         
         
         // on NavbarMenu, *toggle on* the outlined with their own theme:
-        [menuElm]: super.outlined(),
+        [menuElm]: {
+            '&:not(._)': // increase the specificity
+                super.outlined(),
+        } as JssStyle,
     }}
     public /*override*/ mild(): JssStyle { return {
         extend: [
@@ -159,7 +163,10 @@ export class NavbarStyles extends BasicComponentStyles {
 
 
         // on NavbarMenu, *toggle on* the mild with their own theme:
-        [menuElm]: super.mild(),
+        [menuElm]: {
+            '&:not(._)': // increase the specificity
+                super.mild(),
+        } as JssStyle,
     }}
 
 
@@ -486,6 +493,11 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
 
 
+    // fn props:
+    const mildFn = props.mild ?? false;
+
+
+
     // jsx fn props:
     const logoFn = (() => {
         // nodestrap's component:
@@ -515,6 +527,10 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
         // default (unset):
         if (toggler === undefined) return (
             <TogglerMenuButton
+                // variants:
+                mild={mildFn}
+                
+                
                 // classes:
                 classes={[
                     'toggler', // inject toggler class
@@ -603,7 +619,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
 
             // variants:
-            mild={props.mild ?? false}
+            mild={mildFn}
 
 
             // classes:

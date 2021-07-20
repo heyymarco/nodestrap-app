@@ -93,9 +93,10 @@ export class EditableTextControlStyles extends EditableControlStyles {
 
     // states:
     public /*override*/ markActive()   : JssStyle { return {
-        ...this.noOutlined(),
+        ...this.noOutlined(),  // kill .outlined variant
+     // ...this.noMild(),      // do not kill .mild variant
 
-        ...this.themeActive(),
+        ...this.themeActive(), // switch to active theme
     }}
 
     public /*override*/ resetValidUnvalid(inherit: boolean) : PropList { return {

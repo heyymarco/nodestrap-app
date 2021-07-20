@@ -239,10 +239,10 @@ export class IndicatorStyles extends BasicComponentStyles {
     }}
 
     public /*virtual*/ markActive()  : JssStyle { return {
-        ...this.noOutlined(),
-        ...this.noMild(),
+        ...this.noOutlined(),  // kill .outlined variant
+        ...this.noMild(),      // kill .mild     variant
 
-        ...this.themeActive(),
+        ...this.themeActive(), // switch to active theme
     }}
     public /*virtual*/ themeActive(theme = 'secondary'): PropList {
         return this.themeIf(theme);

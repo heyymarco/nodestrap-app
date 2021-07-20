@@ -181,6 +181,12 @@ export class TogglerMenuButtonStyles extends CheckStyles {
         [this.decl(this._svgMidTransfToggleOff)] : cssProps.svgMidTransfOff,
         [this.decl(this._svgBtmTransfToggleOff)] : cssProps.svgBtmTransfOff,
     }}
+    public /*override*/ markActive()   : JssStyle { return {
+        ...this.noOutlined(),  // kill .outlined variant
+     // ...this.noMild(),      // do not kill .mild variant
+
+        ...this.themeActive(), // switch to active theme
+    }}
 
 
 
