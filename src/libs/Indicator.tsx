@@ -157,55 +157,57 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
         // if all below are not set => enabled
-        [  ':not(.enable):not(.disabled):not(.disable):not(:disabled)' , [this.enable()  , this.enabled()    ] ],
+        [  ':not(.enable):not(.disabled):not(.disable):not(:disabled)' , [                           this.enable()  , this.enabled()    ] ],
 
         // .enable will be added after loosing disable and will be removed after enabling-animation done
-        [  '.enable'                                                   , [this.enable()  , this.enabling()   ] ],
+        [  '.enable'                                                   , [this.enablingDisable()   , this.enable()  , this.enabling()   ] ],
 
         // .disable = styled disable, :disabled = real disable
         [ ['.disable' ,
-           ':disabled:not(.disabled)']                                 , [this.disable() , this.disabling()  ] ],
+           ':disabled:not(.disabled)']                                 , [this.enablingDisable()   , this.disable() , this.disabling()  ] ],
 
         // .disabled will be added after disabling-animation done
-        [  '.disabled'                                                 , [this.disable() , this.disabled()   ] ],
+        [  '.disabled'                                                 , [this.enablingDisable()   , this.disable() , this.disabled()   ] ],
 
         
 
         // .actived will be added after activating-animation done
-        [  '.actived'                                                  , [this.active()  , this.actived()    ] ],
+        [  '.actived'                                                  , [this.activePassivating() , this.active()  , this.actived()    ] ],
 
         // .active = programatically active, :checked = user active
         [ ['.active' ,
-           ':checked:not(.actived)']                                   , [this.active()  , this.activating() ] ],
+           ':checked:not(.actived)']                                   , [this.activePassivating() , this.active()  , this.activating() ] ],
 
         // .passive will be added after loosing active and will be removed after deactivating-animation done
-        [  '.passive'                                                  , [this.passive() , this.passivating()] ],
+        [  '.passive'                                                  , [this.activePassivating() , this.passive() , this.passivating()] ],
 
         // if all above are not set => passived
-        [  ':not(.actived):not(.active):not(:checked):not(.passive)'   , [this.passive() , this.passived()   ] ],
+        [  ':not(.actived):not(.active):not(:checked):not(.passive)'   , [                           this.passive() , this.passived()   ] ],
     ]}
     
     public /*virtual*/ resetEnableDisable(inherit: boolean) : PropList { return {
         [this.decl(this._filterEnableDisable)] : inherit ? 'unset' : 'initial',
         [this.decl(this._animEnableDisable)]   : inherit ? 'unset' : 'initial',
     }}
-    public /*virtual*/ enabled()     : JssStyle { return {
+    public /*virtual*/ enabled()           : JssStyle { return {
         /* --nothing-- */
     }}
-    public /*virtual*/ enabling()    : JssStyle { return {
+    public /*virtual*/ enabling()          : JssStyle { return {
         [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
         [this.decl(this._animEnableDisable)]   : cssProps.animEnable,
     }}
-    public /*virtual*/ disabling()   : JssStyle { return {
+    public /*virtual*/ disabling()         : JssStyle { return {
         [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
         [this.decl(this._animEnableDisable)]   : cssProps.animDisable,
     }}
-    public /*virtual*/ disabled()    : JssStyle { return {
+    public /*virtual*/ disabled()          : JssStyle { return {
         [this.decl(this._filterEnableDisable)] : cssProps.filterDisable,
     }}
-    public /*virtual*/ enable()      : JssStyle { return {
+    public /*virtual*/ enable()            : JssStyle { return {
     }}
-    public /*virtual*/ disable()     : JssStyle { return {
+    public /*virtual*/ disable()           : JssStyle { return {
+    }}
+    public /*virtual*/ enablingDisable()   : JssStyle { return {
     }}
 
     public /*virtual*/ resetArriveLeave(inherit: boolean) : PropList { return {
@@ -216,26 +218,28 @@ export class IndicatorStyles extends BasicComponentStyles {
         [this.decl(this._filterActivePassive)] : inherit ? 'unset' : 'initial',
         [this.decl(this._animActivePassive)]   : inherit ? 'unset' : 'initial',
     }}
-    public /*virtual*/ actived()     : JssStyle { return {
+    public /*virtual*/ actived()           : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
     }}
-    public /*virtual*/ activating()  : JssStyle { return {
+    public /*virtual*/ activating()        : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
         [this.decl(this._animActivePassive)]   : cssProps.animActive,
     }}
-    public /*virtual*/ passivating() : JssStyle { return {
+    public /*virtual*/ passivating()       : JssStyle { return {
         [this.decl(this._filterActivePassive)] : cssProps.filterActive,
         [this.decl(this._animActivePassive)]   : cssProps.animPassive,
     }}
-    public /*virtual*/ passived()    : JssStyle { return {
+    public /*virtual*/ passived()          : JssStyle { return {
         /* --nothing-- */
     }}
-    public /*virtual*/ active()      : JssStyle { return {
+    public /*virtual*/ active()            : JssStyle { return {
         extend: [
             this.markActive(),
         ] as JssStyle,
     }}
-    public /*virtual*/ passive()     : JssStyle { return {
+    public /*virtual*/ passive()           : JssStyle { return {
+    }}
+    public /*virtual*/ activePassivating() : JssStyle { return {
     }}
 
     public /*virtual*/ markActive()  : JssStyle { return {
