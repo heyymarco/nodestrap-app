@@ -395,7 +395,7 @@ export class ElementStyles {
 
     /**
      * Creates one/more composite styles, with the themes & states applied.
-     * @returns A `Styles` represents the composite style definitions.
+     * @returns A `ClassList` represents the composite style definitions.
      */
     protected /*virtual*/ styles(): ClassList { return [
         [ 'main', this.compositeStyle() ],

@@ -12,16 +12,6 @@ import './App.css';
 import Container from '../libs/Container';
 import BasicComponent from '../libs/BasicComponent';
 
-// import type {
-//     JssStyle,
-// }                           from 'jss'          // ts defs support for jss
-// import {
-//     Cust,
-// }                           from '../libs/Css'        // ts defs support for jss
-// import type {
-//     ClassList,
-// }                           from '../libs/Element'
-
 
 
 // import jssPluginFunctions        from 'jss-plugin-rule-value-function'
