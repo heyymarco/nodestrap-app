@@ -151,14 +151,14 @@ export class ControlStyles extends IndicatorStyles {
 
 
         // .focused will be added after focusing-animation done
-        [  '.focused'                                                                                                          , [this.focus()  , this.focused() ] ],
+        [  '.focused'                                                                                                          , [this.focusBlurring() , this.focus()  , this.focused() ] ],
 
         // .focus = programatically focus, :focus = user focus
         [ ['.focus' ,
-           ':focus:not(.disabled):not(.disable):not(:disabled):not(.focused):not(.blur):not(.blurred)']                        , [this.focus()  , this.focusing()] ],
+           ':focus:not(.disabled):not(.disable):not(:disabled):not(.focused):not(.blur):not(.blurred)']                        , [this.focusBlurring() , this.focus()  , this.focusing()] ],
 
         // .blur will be added after loosing focus and will be removed after blurring-animation done
-        [  '.blur'                                                                                                             , [this.blur()   , this.blurring()] ],
+        [  '.blur'                                                                                                             , [this.focusBlurring() , this.blur()   , this.blurring()] ],
 
         // if all above are not set => blurred
         // optionally use .blurred to kill pseudo :focus
@@ -166,12 +166,12 @@ export class ControlStyles extends IndicatorStyles {
            ':not(.focused):not(.focus).disabled:not(.blur)'    ,
            ':not(.focused):not(.focus).disable:not(.blur)'     ,
            ':not(.focused):not(.focus):disabled:not(.blur)'    ,
-           '.blurred']                                                                                                         , [this.blur()   , this.blurred() ] ],
+           '.blurred']                                                                                                         , [                       this.blur()   , this.blurred() ] ],
 
 
 
         // .arrived will be added after arriving-animation done
-        [  '.arrived'                                                                                                          , [this.arrive() , this.arrived() ] ],
+        [  '.arrived'                                                                                                          , [this.arriveLeaving() , this.arrive() , this.arrived() ] ],
 
         // arrive = a combination of .arrive || :hover || (.focused || .focus || :focus)
         // .arrive = programatically arrive, :hover = user hover
@@ -179,10 +179,10 @@ export class ControlStyles extends IndicatorStyles {
            ':hover:not(.disabled):not(.disable):not(:disabled):not(.arrived):not(.leave):not(.left)' ,
            '.focused:not(.arrived):not(.leave):not(.left)'                                           ,
            '.focus:not(.arrived):not(.leave):not(.left)'                                             ,
-           ':focus:not(.disabled):not(.disable):not(:disabled):not(.blur):not(.blurred):not(.arrived):not(.leave):not(.left)'] , [this.arrive() , this.arriving()] ],
+           ':focus:not(.disabled):not(.disable):not(:disabled):not(.blur):not(.blurred):not(.arrived):not(.leave):not(.left)'] , [this.arriveLeaving() , this.arrive() , this.arriving()] ],
 
         // .leave will be added after loosing arrive and will be removed after leaving-animation done
-        [  '.leave'                                                                                                            , [this.leave()  , this.leaving() ] ],
+        [  '.leave'                                                                                                            , [this.arriveLeaving() , this.leave()  , this.leaving() ] ],
 
         // if all above are not set => left
         // optionally use .left to kill [:hover || (.focused || .focus || :focus)]
@@ -192,7 +192,7 @@ export class ControlStyles extends IndicatorStyles {
            ':not(.arrived):not(.arrive).disabled:not(.leave)'                                          ,
            ':not(.arrived):not(.arrive).disable:not(.leave)'                                           ,
            ':not(.arrived):not(.arrive):disabled:not(.leave)'                                          ,
-           '.left']                                                                                                            , [this.leave()  , this.left()    ] ],
+           '.left']                                                                                                            , [                       this.leave()  , this.left()    ] ],
     ]}
 
     public /*override*/ disable() : JssStyle { return {
@@ -211,52 +211,56 @@ export class ControlStyles extends IndicatorStyles {
         [this.decl(this._boxShadowFocusBlur)] : inherit ? 'unset' : 'initial',
         [this.decl(this._animFocusBlur)]      : inherit ? 'unset' : 'initial',
     }}
-    public /*virtual*/ focused()  : JssStyle { return {
+    public /*virtual*/ focused()       : JssStyle { return {
         [this.decl(this._boxShadowFocusBlur)] : this.ref(this._boxShadowFocusFn),
     }}
-    public /*virtual*/ focusing() : JssStyle { return {
+    public /*virtual*/ focusing()      : JssStyle { return {
         [this.decl(this._boxShadowFocusBlur)] : this.ref(this._boxShadowFocusFn),
         [this.decl(this._animFocusBlur)]      : cssProps.animFocus,
     }}
-    public /*virtual*/ blurring() : JssStyle { return {
+    public /*virtual*/ blurring()      : JssStyle { return {
         [this.decl(this._boxShadowFocusBlur)] : this.ref(this._boxShadowFocusFn),
         [this.decl(this._animFocusBlur)]      : cssProps.animBlur,
     }}
-    public /*virtual*/ blurred()  : JssStyle { return {
+    public /*virtual*/ blurred()       : JssStyle { return {
         /* --nothing-- */
     }}
-    public /*virtual*/ focus()    : JssStyle { return {
+    public /*virtual*/ focus()         : JssStyle { return {
         extend: [
             this.markActive(),
         ] as JssStyle,
     }}
-    public /*virtual*/ blur()     : JssStyle { return {
+    public /*virtual*/ blur()          : JssStyle { return {
+    }}
+    public /*virtual*/ focusBlurring() : JssStyle { return {
     }}
 
     public /*override*/ resetArriveLeave(inherit: boolean) : PropList { return {
         [this.decl(this._filterArriveLeave)]  : inherit ? 'unset' : 'initial',
         [this.decl(this._animArriveLeave)]    : inherit ? 'unset' : 'initial',
     }}
-    public /*virtual*/ arrived()  : JssStyle { return {
+    public /*virtual*/ arrived()       : JssStyle { return {
         [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
     }}
-    public /*virtual*/ arriving() : JssStyle { return {
+    public /*virtual*/ arriving()      : JssStyle { return {
         [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
         [this.decl(this._animArriveLeave)]     : cssProps.animArrive,
     }}
-    public /*virtual*/ leaving()  : JssStyle { return {
+    public /*virtual*/ leaving()       : JssStyle { return {
         [this.decl(this._filterArriveLeave)]   : cssProps.filterArrive,
         [this.decl(this._animArriveLeave)]     : cssProps.animLeave,
     }}
-    public /*virtual*/ left()     : JssStyle { return {
+    public /*virtual*/ left()          : JssStyle { return {
         /* --nothing-- */
     }}
-    public /*virtual*/ arrive()   : JssStyle { return {
+    public /*virtual*/ arrive()        : JssStyle { return {
         extend: [
             this.markActive(),
         ] as JssStyle,
     }}
-    public /*virtual*/ leave()    : JssStyle { return {
+    public /*virtual*/ leave()         : JssStyle { return {
+    }}
+    public /*virtual*/ arriveLeaving() : JssStyle { return {
     }}
 
     public /*override*/ themeDefault(theme: string|null = 'secondary'): PropList {
