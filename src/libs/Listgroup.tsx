@@ -70,12 +70,6 @@ class ListgroupItemStyles extends ContentStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-    public /*override*/ noOutlined(inherit = false): JssStyle {
-        return super.noOutlined(true); // always inherit, ignores parameter
-    }
-    public /*override*/ noMild(inherit = false): JssStyle {
-        return super.noMild(true); // always inherit, ignores parameter
-    }
     public /*virtual*/ block(): JssStyle { return {
         // borders:
         //#region strip out borders partially
@@ -282,33 +276,6 @@ export class ListgroupStyles extends ContentStyles {
 
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
-    }}
-
-    public /*override*/ outlined(): JssStyle { return {
-        extend: [
-            super.outlined(), // copy outlined from base
-        ] as JssStyle,
-
-        
-        
-        // on ListgroupItem, *toggle on* the outlined with their own theme:
-        [wrapperElm]: { [listItemElm]: {
-            '&:not(._)': // increase the specificity
-                super.outlined(),
-        }} as JssStyle,
-    }}
-    public /*override*/ mild(): JssStyle { return {
-        extend: [
-            super.mild(), // copy mild from base
-        ] as JssStyle,
-
-
-
-        // on ListgroupItem, *toggle on* the mild with their own theme:
-        [wrapperElm]: { [listItemElm]: {
-            '&:not(._)': // increase the specificity
-                super.mild(),
-        }} as JssStyle,
     }}
 
     public /*virtual*/ block(): JssStyle { return {
