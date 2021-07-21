@@ -305,18 +305,9 @@ export class ElementStyles {
      * Watches & applies `variant classes` on current element.
      * @returns A `JssStyle` represents the implementation of the variants.
      */
-    public /*virtual*/ useVariants(): JssStyle { return {
-        extend: [
-            // variant rules:
-            ...this.variants().map(([variant, style]) => ({ [variant ? (() => {
-                if (variant.includes('&')) return variant;
-
-                if (variant.includes('.') || variant.includes(':')) return `&${variant}`;
-
-                return `&.${variant}`;
-            })() : '&'] : style })),
-        ] as JssStyle,
-    }}
+    public /*virtual*/ useVariants(): JssStyle {
+        return this.combineRules(this.variants());
+    }
     /**
      * Creates css rule definitions for all variants by manipulating some props.
      * @returns A `ClassList` represents the css rule definitions for all variants.
@@ -331,30 +322,9 @@ export class ElementStyles {
      * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
      * @returns A `JssStyle` represents the implementation of the states.
      */
-    public /*virtual*/ useStates(inherit = false): JssStyle { return {
-        extend: [
-            // state rules:
-            ...this.states(inherit).map(([states, styles]): JssStyle => ({
-                [
-                    (Array.isArray(states) ? states : [states])
-                    .map((state): string => {
-                        if (!state) return '&';
-
-                        if (state.includes('&')) return state;
-
-                        if (state.includes('.') || state.includes(':')) return `&${state}`;
-
-                        return `&.${state}`;
-                    })
-                    .join(',')
-                ]: {
-                    extend: [
-                        ...(Array.isArray(styles) ? styles : [styles]),
-                    ] as JssStyle,
-                } as JssStyle,
-            }))
-        ] as JssStyle,
-    }}
+    public /*virtual*/ useStates(inherit = false): JssStyle {
+        return this.combineRules(this.states(inherit));
+    }
 
     /**
      * Creates css rule definitions for all states by manipulating some props.
@@ -471,6 +441,49 @@ export class ElementStyles {
 
 
     // utilities:
+    protected /*virtual*/ combineRules(ruleList: StateList): JssStyle { return {
+        extend: [
+            ...((): JssStyle[] => {
+                const noRules: JssStyle[] = [];
+
+                return [
+                    ...ruleList.map(([rules, styles]): JssStyle => {
+                        const normalizedRules = (Array.isArray(rules) ? rules : [rules]).map((rule): string => {
+                            if (!rule) return '&';
+    
+                            if (rule.includes('&')) return rule;
+    
+                            if (rule.includes('.') || rule.includes(':')) return `&${rule}`;
+    
+                            return `&.${rule}`;
+                        });
+
+                        const mergedStyles = {
+                            extend: (Array.isArray(styles) ? styles : [styles]) as JssStyle,
+                        } as JssStyle;
+
+
+
+                        if (normalizedRules.includes('&')) noRules.push(mergedStyles);
+
+
+
+                        return {
+                            [
+                                normalizedRules
+                                .filter((rule) => (rule !== '&'))
+                                .join(',')
+                            ] : mergedStyles,
+                        };
+                    }),
+                    
+                    ...noRules,
+                ];
+            })(),
+        ] as JssStyle,
+    }}
+
+
     /**
      * Escapes some sets of character in svg data, so it will be valid to be written in css.
      * @param svgData The raw svg data to be escaped.
