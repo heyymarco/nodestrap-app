@@ -323,7 +323,7 @@ export class ElementStyles {
      * @returns A `JssStyle` represents the implementation of the states.
      */
     public /*virtual*/ useStates(inherit = false): JssStyle {
-        return this.combineRules(this.states(inherit));
+        return this.combineRules(this.states(inherit), /*addSpecificity :*/1);
     }
 
     /**
@@ -441,14 +441,14 @@ export class ElementStyles {
 
 
     // utilities:
-    protected /*virtual*/ combineRules(ruleList: RuleList): JssStyle { return {
+    protected /*virtual*/ combineRules(ruleList: RuleList, addSpecificity: number = 0): JssStyle { return {
         extend: [
             ...((): JssStyle[] => {
                 const noRules: JssStyle[] = [];
 
                 return [
                     ...ruleList.map(([rules, styles]): JssStyle => {
-                        const normalizedRules = (Array.isArray(rules) ? rules : [rules]).map((rule): string => {
+                        let normalizedRules = (Array.isArray(rules) ? rules : [rules]).map((rule): string => {
                             if (!rule) return '&';
     
                             if (rule.includes('&')) return rule;
@@ -457,6 +457,10 @@ export class ElementStyles {
     
                             return `&.${rule}`;
                         });
+                        if (addSpecificity > 0) {
+                            const specificity = (new Array(addSpecificity)).fill(':not(._)').join('');
+                            normalizedRules = normalizedRules.map((rule) => (rule === '&') ? rule : `${rule}${specificity}`);
+                        } // if
 
                         const mergedStyles = {
                             extend: (Array.isArray(styles) ? styles : [styles]) as JssStyle,
@@ -464,16 +468,15 @@ export class ElementStyles {
 
 
 
-                        if (normalizedRules.includes('&')) noRules.push(mergedStyles);
+                        if (normalizedRules.includes('&')) {
+                            normalizedRules = normalizedRules.filter((rule) => (rule !== '&'));
+                            noRules.push(mergedStyles);
+                        } // if
 
 
 
                         return {
-                            [
-                                normalizedRules
-                                .filter((rule) => (rule !== '&'))
-                                .join(',')
-                            ] : mergedStyles,
+                            [normalizedRules.join(',')] : mergedStyles,
                         };
                     }),
                     
