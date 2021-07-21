@@ -14,6 +14,7 @@ import {
     PropEx,
     Cust,
     ClassList,
+    RuleList,
     PropList,
 
     
@@ -89,7 +90,7 @@ export class ModalStyles extends PopupStyles {
 
 
     // variants:
-    public /*override*/ variants(): ClassList { return [
+    public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
 
 

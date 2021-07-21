@@ -11,7 +11,7 @@ import {
     JssStyle,
     PropEx,
     Cust,
-    StateList,
+    RuleList,
     PropList,
 
 
@@ -39,7 +39,7 @@ export interface IActionControlStyles {
 
 
     // states:
-    actionControlStates(inherit: boolean, actionControl: IActionControlStyles): StateList
+    actionControlStates(inherit: boolean, actionControl: IActionControlStyles): RuleList
     
     resetPressRelease(inherit: boolean): PropList
     pressed()    : JssStyle
@@ -88,12 +88,12 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
 
 
     // states:
-    public /*override*/ states(inherit: boolean): StateList { return [
+    public /*override*/ states(inherit: boolean): RuleList { return [
         ...super.states(inherit), // copy states from base
 
         ...this.actionControlStates(inherit),
     ]}
-    public /*virtual*/ actionControlStates(inherit: boolean, actionControl: IActionControlStyles = this): StateList { return [
+    public /*virtual*/ actionControlStates(inherit: boolean, actionControl: IActionControlStyles = this): RuleList { return [
         [ null, {
             // reset filters/anims/toggles to initial/inherit state:
             ...actionControl.resetPressRelease(inherit),

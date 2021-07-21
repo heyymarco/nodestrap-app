@@ -9,7 +9,7 @@ import {
     // general types:
     JssStyle,
     Cust,
-    ClassList,
+    RuleList,
     PropList,
 
 
@@ -39,7 +39,7 @@ export class IconStyles extends BasicComponentStyles {
 
 
     // variants:
-    public /*override*/ variants(): ClassList { return [
+    public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
 
 

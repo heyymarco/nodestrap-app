@@ -43,8 +43,8 @@ export type { Prop, PropEx, Cust }
 export type { Dictionary, ValueOf, DictionaryOf }
 export type ClassEntry = [string|null, JssStyle]
 export type ClassList  = ClassEntry[]
-export type StateEntry = [((string|null)|(string|null)[]), (JssStyle|JssStyle[])]
-export type StateList  = StateEntry[]
+export type RuleEntry  = [((string|null)|(string|null)[]), (JssStyle|JssStyle[])]
+export type RuleList   = RuleEntry[]
 export type PropList   = { [name: string]: JssValue }
 
 
@@ -310,9 +310,9 @@ export class ElementStyles {
     }
     /**
      * Creates css rule definitions for all variants by manipulating some props.
-     * @returns A `ClassList` represents the css rule definitions for all variants.
+     * @returns A `RuleList` represents the css rule definitions for all variants.
      */
-    public /*virtual*/ variants(): ClassList { return [] }
+    public /*virtual*/ variants(): RuleList { return [] }
 
 
 
@@ -329,9 +329,9 @@ export class ElementStyles {
     /**
      * Creates css rule definitions for all states by manipulating some props.
      * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
-     * @returns A `StateList` represents the css rule definitions for all states.
+     * @returns A `RuleList` represents the css rule definitions for all states.
      */
-    public /*virtual*/ states(inherit: boolean): StateList { return [] }
+    public /*virtual*/ states(inherit: boolean): RuleList { return [] }
 
 
 
@@ -441,7 +441,7 @@ export class ElementStyles {
 
 
     // utilities:
-    protected /*virtual*/ combineRules(ruleList: StateList): JssStyle { return {
+    protected /*virtual*/ combineRules(ruleList: RuleList): JssStyle { return {
         extend: [
             ...((): JssStyle[] => {
                 const noRules: JssStyle[] = [];

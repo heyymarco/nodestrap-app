@@ -5,7 +5,7 @@ import React                from 'react'        // base technology of our nodest
 import {
     // general types:
     JssStyle,
-    ClassList,
+    RuleList,
 
     
     // components:
@@ -34,7 +34,7 @@ import Button               from './Button'
 
 export class CardStyles extends ContentStyles {
     // variants:
-    public /*override*/ variants(): ClassList { return [
+    public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
 
 

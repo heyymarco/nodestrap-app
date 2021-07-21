@@ -10,7 +10,7 @@ import {
     JssStyle,
     PropEx,
     Cust,
-    StateList,
+    RuleList,
     PropList,
 
     
@@ -137,7 +137,7 @@ export class ControlStyles extends IndicatorStyles {
 
 
     // states:
-    public /*override*/ states(inherit: boolean): StateList { return [
+    public /*override*/ states(inherit: boolean): RuleList { return [
         ...super.states(inherit), // copy states from base
 
 

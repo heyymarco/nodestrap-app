@@ -9,7 +9,7 @@ import {
 import {
     // general types:
     JssStyle,
-    ClassList,
+    RuleList,
 
     
     // components:
@@ -36,7 +36,7 @@ import {
 
 export class MasonryStyles extends BasicComponentStyles implements IContentStyles {
     // variants:
-    public /*override*/ variants(): ClassList { return [
+    public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
 
 

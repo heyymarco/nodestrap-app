@@ -6,7 +6,7 @@ import {
     // general types:
     JssStyle,
     Cust,
-    ClassList,
+    RuleList,
     PropList,
 
     
@@ -52,7 +52,7 @@ const listItemElm = '&>*';
 
 class ListgroupItemStyles extends ContentStyles {
     // variants:
-    public /*override*/ variants(): ClassList { return [
+    public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
 
 
@@ -197,7 +197,7 @@ class ListgroupItemStyles extends ContentStyles {
 
 class ListgroupActionItemStyles extends ActionControlStyles implements IContentStyles {
     // variants:
-    public /*override*/ variants(): ClassList { return [
+    public /*override*/ variants(): RuleList { return [
         // ...super.variants(), // no base's variants
 
 
@@ -262,7 +262,7 @@ class ListgroupActionItemStyles extends ActionControlStyles implements IContentS
 
 export class ListgroupStyles extends ContentStyles {
     // variants:
-    public /*override*/ variants(): ClassList { return [
+    public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
 
 

@@ -6,7 +6,7 @@ import {
     // general types:
     JssStyle,
     PropEx,
-    ClassList,
+    RuleList,
 
     
     // components:
@@ -54,7 +54,7 @@ import {
 
 export class AccordionItemStyles extends PopupStyles implements IContentStyles {
     // variants:
-    public /*override*/ variants(): ClassList { return [
+    public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
 
 

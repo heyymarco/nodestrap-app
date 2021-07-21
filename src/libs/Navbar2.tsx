@@ -12,7 +12,7 @@ import {
     JssStyle,
     PropEx,
     Cust,
-    StateList,
+    RuleList,
     PropList,
 
     
@@ -150,10 +150,7 @@ export class NavbarStyles extends BasicComponentStyles {
         
         
         // on NavbarMenu, *toggle on* the outlined with their own theme:
-        [menuElm]: {
-            '&:not(._)': // increase the specificity
-                super.outlined(),
-        } as JssStyle,
+        [menuElm]: super.outlined(),
     }}
     public /*override*/ mild(): JssStyle { return {
         extend: [
@@ -163,10 +160,7 @@ export class NavbarStyles extends BasicComponentStyles {
 
 
         // on NavbarMenu, *toggle on* the mild with their own theme:
-        [menuElm]: {
-            '&:not(._)': // increase the specificity
-                super.mild(),
-        } as JssStyle,
+        [menuElm]: super.mild(),
     }}
 
 
@@ -315,14 +309,17 @@ export class NavbarStyles extends BasicComponentStyles {
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menus')), // apply *general* cssProps starting with menus***
     }}
     public /*override*/ compositeStyle(): JssStyle { return {
-        extend: [
-            super.compositeStyle(), // copy compositeStyle from base
-        ] as JssStyle,
-
-
-
-        // children:
+        /* the rules order is important, write the children's rules first and then write the parent's rules */
+        
+        
+        
+        // write children's rules first:
         [menuElm]: (new NavbarMenuStyles()).compositeStyle(),
+
+
+        
+        // then write parent's rules:
+        '&': super.compositeStyle(), // copy compositeStyle from base
     }}
 }
 export const navbarStyles = new NavbarStyles();

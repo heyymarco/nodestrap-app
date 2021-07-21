@@ -6,7 +6,7 @@ import {
     // general types:
     JssStyle,
     Cust,
-    StateList,
+    RuleList,
     PropList,
 }                           from './nodestrap'  // nodestrap's core
 import {
@@ -54,12 +54,12 @@ export class EditableActionControlStyles extends EditableControlStyles implement
 
 
     // states:
-    public /*override*/ states(inherit: boolean): StateList { return [
+    public /*override*/ states(inherit: boolean): RuleList { return [
         ...super.states(inherit), // copy states from base
 
         ...this.actionControlStates(inherit),
     ]}
-    public /*implement*/ actionControlStates(inherit: boolean, actionControl: IActionControlStyles = this): StateList {
+    public /*implement*/ actionControlStates(inherit: boolean, actionControl: IActionControlStyles = this): RuleList {
         return actionControlStyles.actionControlStates(inherit, actionControl); // copy states from actionControl
     }
 

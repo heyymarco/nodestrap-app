@@ -12,7 +12,7 @@ import {
     DictionaryOf,
     ClassEntry,
     ClassList,
-    StateList,
+    RuleList,
     PropList,
 
     
@@ -314,7 +314,7 @@ export class BasicComponentStyles extends ElementStyles {
     
     
     // variants:
-    public /*override*/ variants(): ClassList { return [
+    public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
 
 
@@ -466,7 +466,7 @@ export class BasicComponentStyles extends ElementStyles {
 
 
     // states:
-    public /*override*/ states(inherit: boolean): StateList { return [
+    public /*override*/ states(inherit: boolean): RuleList { return [
         ...super.states(inherit), // copy states from base
 
 

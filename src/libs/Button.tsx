@@ -6,6 +6,7 @@ import {
     // general types:
     JssStyle,
     ClassList,
+    RuleList,
     PropList,
 
 
@@ -121,7 +122,7 @@ class GhostStyles extends ControlStyles {
 
 export class ButtonStyles extends ActionControlStyles {
     // variants:
-    public /*override*/ variants(): ClassList { return [
+    public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
 
 
