@@ -329,14 +329,26 @@ export class BasicComponentStyles extends ElementStyles {
         ...this.themes(),
         ...this.sizes(),
 
-        [ ':not(.gradient)', this.noGradient(/*inherit =*/true) ],
-        [      '.gradient' , this.gradient()                    ],
+        
+        
+        [ ':not(.gradient)'                                      , this.noGradient(/*inherit =*/true)  ],
+        [      '.gradient'                                       , this.gradient()                     ],
 
-        [ ':not(.outlined)', this.noOutlined(/*inherit =*/true) ],
-        [      '.outlined' , this.outlined()                    ],
+        
+        
+        // grandpa ??? .outlined and parent not .outlined and current not .outlined:
+        [                      ':not(.outlined)&:not(.outlined)' , this.noOutlined(/*inherit =*/false) ], // can't inherit, because outlined() uses dedicated color theme
+        // grandpa iss .outlined or  parent is  .outlined or  current is  .outlined:
+        // double `.outlined.outlined` to combat with `:not(.outlined)&:not(.outlined)`
+        [ ['.outlined.outlined &',  '.outlined&',  '&.outlined'] , this.outlined()                     ],
 
-        [ ':not(.mild)'    , this.noMild(/*inherit =*/false)    ],
-        [      '.mild'     , this.mild()                        ],
+
+
+        // grandpa's .mild does not affect the .mild
+        // parent not .mild and current not .mild:
+        [ ':not(.mild)&:not(.mild)'                              , this.noMild(/*inherit =*/false)     ], // can't inherit, because mild() uses dedicated color theme
+        // parent is  .mild or  current is  .mild:
+        [ [    '.mild&',  '&.mild']                              , this.mild()                         ],
     ]}
 
     /**
