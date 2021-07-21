@@ -10,8 +10,7 @@ import {
     PropEx,
     Cust,
     DictionaryOf,
-    ClassEntry,
-    ClassList,
+    RuleEntry,
     RuleList,
     PropList,
 
@@ -349,9 +348,9 @@ export class BasicComponentStyles extends ElementStyles {
     }
     /**
      * Creates color definitions *for each* `themeOptions()`.
-     * @returns A `ClassList` represents the color definitions *for each* `themeOptions()`.
+     * @returns A `RuleList` represents the color definitions *for each* `themeOptions()`.
      */
-    public /*virtual*/ themes(): ClassList {
+    public /*virtual*/ themes(): RuleList {
         return this.themeOptions().map((theme) => {
             const Theme     = pascalCase(theme);
             const themeProp = `th${Theme}`;
@@ -359,7 +358,7 @@ export class BasicComponentStyles extends ElementStyles {
             return [
                 themeProp,
                 this.theme(theme)
-            ] as ClassEntry;
+            ] as RuleEntry;
         });
     }
     /**
@@ -386,9 +385,9 @@ export class BasicComponentStyles extends ElementStyles {
     }
     /**
      * Creates sizing definitions *for each* `sizeOptions()`.
-     * @returns A `ClassList` represents the sizing definitions *for each* `sizeOptions()`.
+     * @returns A `RuleList` represents the sizing definitions *for each* `sizeOptions()`.
      */
-    public /*virtual*/ sizes(): ClassList {
+    public /*virtual*/ sizes(): RuleList {
         return this.sizeOptions().map((size) => {
             const Size     = pascalCase(size);
             const sizeProp = `sz${Size}`;
@@ -396,7 +395,7 @@ export class BasicComponentStyles extends ElementStyles {
             return [
                 sizeProp,
                 this.size(size)
-            ] as ClassEntry;
+            ] as RuleEntry;
         });
     }
     /**

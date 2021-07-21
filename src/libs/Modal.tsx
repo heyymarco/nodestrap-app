@@ -99,21 +99,21 @@ export class ModalStyles extends PopupStyles {
         [      '.scrollable' , this.scrollable()    ],
     ]}
 
-    public /*override*/ themes()                    : ClassList { return [] } // disabled
+    public /*override*/ themes()                    : RuleList { return [] } // disabled
 
     public /*override*/ size(size: string): JssStyle { return {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
-    public /*override*/ noGradient(inherit = false) : JssStyle  { return {} } // disabled
-    public /*override*/ gradient()                  : JssStyle  { return {} } // disabled
+    public /*override*/ noGradient(inherit = false) : JssStyle { return {} } // disabled
+    public /*override*/ gradient()                  : JssStyle { return {} } // disabled
 
-    public /*override*/ noOutlined(inherit = false) : JssStyle  { return {} } // disabled
-    public /*override*/ outlined()                  : JssStyle  { return {} } // disabled
+    public /*override*/ noOutlined(inherit = false) : JssStyle { return {} } // disabled
+    public /*override*/ outlined()                  : JssStyle { return {} } // disabled
 
-    public /*override*/ noMild(inherit = false)     : JssStyle  { return {} } // disabled
-    public /*override*/ mild()                      : JssStyle  { return {} } // disabled
+    public /*override*/ noMild(inherit = false)     : JssStyle { return {} } // disabled
+    public /*override*/ mild()                      : JssStyle { return {} } // disabled
 
     public /*virtual*/ notScrollable()  : JssStyle { return {
         // scrolls:
