@@ -38,10 +38,15 @@ import {
     TogglerActiveProps,
     useTogglerActive,
     
-    indicatorStyles,
+    IndicatorStyles,
     IndicatorProps,
     Indicator,
 }                           from './Indicator'
+import {
+    PopupStyles,
+    PopupProps,
+    Popup,
+}                           from './Popup'
 import {
     ControlStyles,
 }                           from './Control'
@@ -120,7 +125,7 @@ class NavbarMenuStyles extends ActionControlStyles {
     }}
 }
 
-export class NavbarStyles extends BasicComponentStyles {
+export class NavbarStyles extends PopupStyles {
     // variants:
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -135,11 +140,165 @@ export class NavbarStyles extends BasicComponentStyles {
 
 
 
+    // states:
+    public /*override*/ states(inherit: boolean): RuleList { return [
+        ...super.states(inherit), // copy states from base
+
+
+
+        [ '.compact'       , this.compact() ],
+        [ ':not(.compact)' , this.full()    ],
+    ]}
+
+    public /*override*/ actived()     : JssStyle { return {
+        extend: [
+            super.actived(), // copy actived from base
+        ] as JssStyle,
+
+
+
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+    }}
+    public /*override*/ activating()  : JssStyle { return {
+        extend: [
+            super.activating(), // copy activating from base
+        ] as JssStyle,
+
+
+
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animActive,
+    }}
+    public /*override*/ passivating() : JssStyle { return {
+        extend: [
+            super.passivating(), // copy passivating from base
+        ] as JssStyle,
+
+
+
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animPassive,
+    }}
+    public /*override*/ passived()    : JssStyle { return {
+        extend: [
+            super.passived(), // copy passived from base
+        ] as JssStyle,
+
+
+
+        // appearances:
+        display: undefined as unknown as null, // discard passived's display
+
+
+
+        '&.compact': {
+            [menusElm]: {
+                // appearances:
+                display: 'none',
+            } as JssStyle,
+        } as JssStyle,
+    }}
+
+    public /*virtual*/ compact() : JssStyle { return {
+        [[
+            // all sections:
+            logoElm,
+            togglerElm,
+            menusElm,
+        ].join(',')] : {
+            // customize:
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'item'), 'Compact'),    // apply *general* cssProps starting with item***    and ending with ***Compact
+        } as JssStyle,
+
+        [logoElm]    : {
+            // customize:
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'), 'Compact'),    // apply *general* cssProps starting with logo***    and ending with ***Compact
+        } as JssStyle,
+
+        [togglerElm] : {
+            // customize:
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'toggler'), 'Compact'), // apply *general* cssProps starting with toggler*** and ending with ***Compact
+        } as JssStyle,
+
+        [menusElm]   : {
+            // layout:
+            gridArea      : '-1 / -3 / -1 / 3',
+            flexDirection : 'column',  // place the menus vertically
+
+
+
+            // customize:
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menus'), 'Compact'),   // apply *general* cssProps starting with menus***   and ending with ***Compact
+        } as JssStyle,
+
+        [menuElm]    : {
+            // customize:
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'), 'Compact'),    // apply *general* cssProps starting with menu***    and ending with ***Compact
+        } as JssStyle,
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterSuffixProps(cssProps, 'Compact')),               // apply *general* cssProps ending with ***Compact
+    }}
+    public /*virtual*/ full()    : JssStyle { return {
+        [[
+            // all sections:
+            logoElm,
+            togglerElm,
+            menusElm,
+        ].join(',')] : {
+            // customize:
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'item'), 'Full'),       // apply *general* cssProps starting with item***    and ending with ***Full
+        } as JssStyle,
+
+        [logoElm]    : {
+            // customize:
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'), 'Full'),       // apply *general* cssProps starting with logo***    and ending with ***Full
+        } as JssStyle,
+
+        [togglerElm] : {
+            // appearances:
+            display: 'none', // hides toggler on full version
+
+
+
+            // customize:
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'toggler'), 'Full'),    // apply *general* cssProps starting with toggler*** and ending with ***Full
+        } as JssStyle,
+
+        [menusElm]   : {
+            // customize:
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menus'), 'Full'),      // apply *general* cssProps starting with menus***   and ending with ***Full
+        } as JssStyle,
+
+        [menuElm]    : {
+            // customize:
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'), 'Full'),       // apply *general* cssProps starting with menu***    and ending with ***Full
+        } as JssStyle,
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterSuffixProps(cssProps, 'Full')),                  // apply *general* cssProps ending with ***Full
+    }}
+
+    public /*override*/ resetEnableDisable(inherit: boolean) : PropList { return {} } // disabled
+    public /*override*/ enabled()                            : JssStyle { return {} } // disabled
+    public /*override*/ enabling()                           : JssStyle { return {} } // disabled
+    public /*override*/ disabling()                          : JssStyle { return {} } // disabled
+    public /*override*/ disabled()                           : JssStyle { return {} } // disabled
+
+    public /*override*/ resetArriveLeave(inherit: boolean)   : PropList { return {} } // disabled
+    public /*override*/ resetPressRelease(inherit: boolean)  : PropList { return {} } // disabled
+
+
+
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
-        extend: [
-            super.basicStyle(), // copy basicStyle from base
-        ] as JssStyle,
+        // extend: [
+        //     super.basicStyle(), // copy basicStyle from base
+        // ] as JssStyle,
 
 
 
@@ -266,7 +425,8 @@ export class NavbarStyles extends BasicComponentStyles {
 
         
         // states & animations:
-        // todo: anim           : this.ref(this._menusAnimFn),
+        filter      : this.ref(this._filter),
+        anim        : this.ref(this._anim),
 
 
 
@@ -291,7 +451,7 @@ export const navbarStyles = new NavbarStyles();
 // configs:
 
 const cssConfig = new CssConfig(() => {
-    const keyframesMenusActive  : PropEx.Keyframes = {
+    const keyframesActive  : PropEx.Keyframes = {
         from : {
             overflow     : 'hidden',
             maxBlockSize : 0,
@@ -305,10 +465,10 @@ const cssConfig = new CssConfig(() => {
             maxBlockSize : 'unset',
         },
     };
-    const keyframesMenusPassive : PropEx.Keyframes = {
-        from : keyframesMenusActive.to,
-        '1%' : keyframesMenusActive['99%'],
-        to   : keyframesMenusActive.from,
+    const keyframesPassive : PropEx.Keyframes = {
+        from : keyframesActive.to,
+        '1%' : keyframesActive['99%'],
+        to   : keyframesActive.from,
     };
 
 
@@ -340,25 +500,25 @@ const cssConfig = new CssConfig(() => {
 
 
         //#region animations
-        filterActive              : bcssProps.filterNone, // override to Indicator
+        filterActive             : 'initial',
 
-        '@keyframes menusActive'  : keyframesMenusActive,
-        '@keyframes menusPassive' : keyframesMenusPassive,
-        menusAnimActive           : [['300ms', 'ease-out', 'both', keyframesMenusActive ]],
-        menusAnimPassive          : [['300ms', 'ease-out', 'both', keyframesMenusPassive]],
+        '@keyframes active'      : keyframesActive,
+        '@keyframes passive'     : keyframesPassive,
+        animActive               : [['300ms', 'ease-out', 'both', keyframesActive ]],
+        animPassive              : [['300ms', 'ease-out', 'both', keyframesPassive]],
         //#endregion animations
 
 
 
         // menus:
         // kill margin top & bottom:
-        menusMarginBlock          : [['calc(0px -', bcssProps.paddingBlock, ')']],
+        menusMarginBlock         : [['calc(0px -', bcssProps.paddingBlock, ')']],
 
         // on mobile, on the menu group, kill margin left & right:
-        menusMarginInlineCompact  : [['calc(0px -', ccssProps.paddingInline, ')']],
+        menusMarginInlineCompact : [['calc(0px -', ccssProps.paddingInline, ')']],
 
         // on mobile, on the menu group, restore the margin top & bottom:
-        menusMarginBlockCompact   : 0,
+        menusMarginBlockCompact  : 0,
 
 
 
@@ -379,6 +539,116 @@ const cssConfig = new CssConfig(() => {
 }, /*prefix: */'navb');
 export const cssProps = cssConfig.refs;
 export const cssDecls = cssConfig.decls;
+
+
+
+// hooks:
+
+export interface Compactable {
+    compact? : boolean
+}
+export function useStateCompact<TElement extends HTMLElement = HTMLElement>(props: Compactable, navbarRef: React.RefObject<TElement>) {
+    // states:
+    const [compactDn, setCompactDn] = useState<boolean>(false); // uncontrollable (dynamic) state: true => compact mode, false => full mode
+
+
+
+    /*
+     * state is compact/full based on [controllable compact] (if set) and fallback to [uncontrollable compact]
+     */
+    const compactFn: boolean = props.compact /*controllable*/ ?? compactDn /*uncontrollable*/;
+
+
+
+    useEffect(() => {
+        const navbar = navbarRef.current;
+        if (!navbar)                     return; // navbar was unloaded => nothing to do
+        if (props.compact !== undefined) return; // controllable [compact] is set => no uncontrollable required
+        
+        
+        
+        const handleUpdate = async () => { // keeps the UI responsive (not blocking) while handling the event
+            // prepare the condition for dom measurement:
+            const classList  = navbar.classList;
+            const hasCompact = classList.contains('compact');
+            if (hasCompact) classList.remove('compact');
+
+
+
+            // measuring dom props:
+            const {
+                scrollWidth,
+                clientWidth,
+
+                scrollHeight,
+                clientHeight,
+            } = navbar;
+
+
+
+            // restore to original condition as before measurement:
+            if (hasCompact) classList.add('compact');
+
+
+
+            // decides the dynamic compact mode based on the measured dom props:
+            if ((scrollWidth > clientWidth) || (scrollHeight > clientHeight)) {
+                setCompactDn(true);
+            }
+            else {
+                setCompactDn(false);
+            } // if
+        };
+
+
+
+        // update for the first time:
+        handleUpdate();
+
+
+        
+        //#region update in the future
+        //#region when items resized
+        const resizeObserver = ResizeObserver ? new ResizeObserver(async (entries) => {
+            // filter only the existing items
+            const exist = ((): boolean => {
+                if (navbar.parentElement) { // navbar is still exist on the document
+                    return true; // confirmed
+                } // if
+
+                
+                
+                resizeObserver?.unobserve(navbar); // no longer exist => remove from observer
+                return false; // not exist
+            })();
+            if (!exist) return; // no existing items => nothing to do
+
+
+
+            // update after being resized:
+            await handleUpdate();
+        }) : null;
+        if (resizeObserver) {
+            // update in the future:
+            resizeObserver.observe(navbar, { box: 'border-box' });
+        } // if
+        //#endregion when items resized
+        //#endregion update in the future
+
+
+
+        // cleanups:
+        return () => {
+            resizeObserver?.disconnect();
+        };
+    }, [props.compact, navbarRef]);
+
+
+
+    return {
+        class: compactFn ? 'compact' : null,
+    };
+}
 
 
 
@@ -418,10 +688,10 @@ export { NavbarMenu as Menu }
 
 export interface NavbarProps<TElement extends HTMLElement = HTMLElement>
     extends
-        IndicatorProps<TElement>,
-        TogglerActiveProps
+        PopupProps<TElement>,
+        TogglerActiveProps,
 
-        // Compactable
+        Compactable
 {
     // children:
     logo?     : React.ReactChild | boolean
@@ -437,8 +707,8 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
     // states:
     const [isActive, setActive] = useTogglerActive(props);
 
-    const navbarRef             = useRef<TElement>(null);
-    // const stateCompact          = useStateCompact(props, navbarRef);
+    const navbarRef             = useRef<TElement|null>(null);
+    const stateCompact          = useStateCompact(props, navbarRef);
 
     
     
@@ -553,7 +823,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
     // jsx:
     return (
-        <BasicComponent<TElement>
+        <Popup<TElement>
             // other props:
             {...restProps}
 
@@ -561,7 +831,6 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
             // essentials:
             tag={props.tag ?? 'nav'}
             elmRef={(elm) => {
-                // @ts-ignore
                 navbarRef.current = elm;
 
 
@@ -572,15 +841,14 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                         elmRef(elm);
                     }
                     else {
-                        // @ts-ignore
-                        elmRef.current = elm;
+                        (elmRef as React.MutableRefObject<TElement|null>).current = elm;
                     } // if
                 } // if
             }}
 
 
             // accessibility:
-            // active={isActive}
+            active={isActive}
 
 
             // variants:
@@ -590,7 +858,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
             // classes:
             mainClass={props.mainClass ?? styles.main}
             stateClasses={[...(props.stateClasses ?? []),
-                // stateCompact.class,
+                stateCompact.class,
             ]}
 
 
@@ -612,7 +880,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
         >
             { logoFn }
             { togglerFn }
-            { children && <div
+            <div
                 // classes:
                 className='menus'
 
@@ -660,8 +928,8 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                         { child }
                     </NavbarMenu>
                 ))}
-            </div> }
-        </BasicComponent>
+            </div>
+        </Popup>
     );
 }
 export { Navbar }
