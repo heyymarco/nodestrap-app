@@ -644,14 +644,14 @@ export default function Modal<TElement extends HTMLElement = HTMLElement>(props:
 
 
             // events:
-            // watch [escape key] on the whole Modal, including Card & Card's children:
-            onKeyDown={(e) => {
-                if ((e.key === 'Escape') || (e.code === 'Escape')) props.onClose?.('shortcut');
-            }}
-
             // watch left click on the overlay only (not at the Card):
             onClick={(e) => {
-                if ((e.target === e.currentTarget) && (e.type === 'click')) props.onClose?.('overlay');
+                if (e.target === e.currentTarget) props.onClose?.('overlay');
+            }}
+
+            // watch [escape key] on the whole Modal, including Card & Card's children:
+            onKeyUp={(e) => {
+                if ((e.key === 'Escape') || (e.code === 'Escape')) props.onClose?.('shortcut');
             }}
 
             onAnimationEnd={(e) => {
