@@ -230,7 +230,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
         const delay = (interval: number = 1) => new Promise<void>((resolve) => setTimeout(() => resolve(), interval));
         
-        const handleResize = async (item: HTMLElement) => { // keeps the UI responsive (not blocking) while handling the event
+        const handleUpdate = async (item: HTMLElement) => { // keeps the UI responsive (not blocking) while handling the event
             await delay(); // low priority task => limits dominating the cpu usage
 
 
@@ -315,8 +315,8 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
         // update for the first time:
         (async () => {
-            await updateFirstRowItems(); // needs to be called first before handleResize, because the item's margin affected the resizing calculation
-            for (const item of (Array.from(masonry.children) as HTMLElement[])) await handleResize(item);
+            await updateFirstRowItems(); // needs to be called first before handleUpdate, because the item's margin affected the resizing calculation
+            for (const item of (Array.from(masonry.children) as HTMLElement[])) await handleUpdate(item);
         })();
 
 
@@ -341,8 +341,8 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
 
             // update after being resized:
-            await updateFirstRowItems(); // needs to be called first before handleResize, because the item's margin affected the resizing calculation
-            for (const item of items) await handleResize(item);
+            await updateFirstRowItems(); // needs to be called first before handleUpdate, because the item's margin affected the resizing calculation
+            for (const item of items) await handleUpdate(item);
         }) : null;
         if (resizeObserver) {
             (Array.from(masonry.children) as HTMLElement[]).forEach((item) => {
@@ -358,7 +358,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
         const mutationObserver = MutationObserver ? new MutationObserver(async (entries) => {
             // update after being added/removed:
             // any adding/removing of items causing the first_row_items need to be recalculated:
-            await updateFirstRowItems(); // needs to be called first before handleResize, because the item's margin affected the resizing calculation
+            await updateFirstRowItems(); // needs to be called first before handleUpdate, because the item's margin affected the resizing calculation
 
 
             
@@ -366,7 +366,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
                 // added items:
                 for (const item of (Array.from(entry.addedNodes) as HTMLElement[])) {
                     // update after being added/removed:
-                    await handleResize(item);
+                    await handleUpdate(item);
 
                     // update in the future:
                     resizeObserver?.observe(item, { box: 'border-box' });
