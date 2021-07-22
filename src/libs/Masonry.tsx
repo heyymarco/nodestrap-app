@@ -62,7 +62,7 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
 
     public /*virtual*/ block(): JssStyle { return {
         // layout:
-        display             : 'grid',
+        display             : 'grid', // use css grid for layouting, the core of our Masonry layout
         gridAutoFlow        : 'row', // masonry's direction is to row
         gridAutoRows        : cssProps.itemsRaiseSize,
         gridTemplateColumns : `repeat(auto-fill, minmax(${cssProps.itemsMinColumnSize}, 1fr))`,

@@ -978,7 +978,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
                 // events:
                 onAnimationEnd={(e) =>
-                    // triggers Navbar's onAnimationEnd event
+                    // triggers `Navbar`'s onAnimationEnd event
                     e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }))
                 }
             >
@@ -996,7 +996,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                         
                         // events:
                         onAnimationEnd={(e) => {
-                            // triggers Navbar's onAnimationEnd event
+                            // triggers `Navbar`'s onAnimationEnd event
                             e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
 
 
@@ -1012,7 +1012,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
                         // events:
                         onAnimationEnd={(e) =>
-                            // triggers Navbar's onAnimationEnd event
+                            // triggers `Navbar`'s onAnimationEnd event
                             e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }))
                         }
                     >

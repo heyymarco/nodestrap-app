@@ -83,7 +83,7 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
 
 
         // layout:
-        display             : 'grid',
+        display             : 'grid', // use css grid for layouting, so we can customize the desired area later.
 
         // explicit areas:
         gridTemplateRows    : [[
@@ -188,9 +188,9 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
     }}
     protected /*virtual*/ carouselItemBasicStyle(): JssStyle { return {
         // layout:
-        display         : 'flex',
+        display         : 'flex',   // use block flexbox, so it takes the entire parent's width
         flexDirection   : 'row',    // the flex direction to horz, so we can adjust the content's height
-        justifyContent  : 'center', // center the content horizontally
+        justifyContent  : 'center', // center items horizontally
         alignItems      : 'center', // if the content's height is shorter than the section, place it at the center
 
 

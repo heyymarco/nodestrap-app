@@ -68,9 +68,9 @@ const menuElm    = '&>.menus>*';
 
 class NavbarMenuStyles extends ActionControlStyles {
     // states:
-    public /*virtual*/ focus()    : JssStyle { return {
+    public /*override*/ focusBlurring()    : JssStyle { return {
         extend: [
-            super.focus(), // copy focus from base
+            super.focusBlurring(), // copy focusBlurring from base
         ] as JssStyle,
 
 
@@ -78,10 +78,11 @@ class NavbarMenuStyles extends ActionControlStyles {
         zIndex: 1, // prevent boxShadowFocus from clipping
     }}
 
-    public /*override*/ actived()     : JssStyle  { return super.pressed()   }
-    public /*override*/ activating()  : JssStyle  { return super.pressing()  }
-    public /*override*/ passivating() : JssStyle  { return super.releasing() }
-    public /*override*/ passived()    : JssStyle  { return super.released()  }
+    // active/passive => press/release
+    public /*override*/ actived()     : JssStyle { return super.pressed()   }
+    public /*override*/ activating()  : JssStyle { return super.pressing()  }
+    public /*override*/ passivating() : JssStyle { return super.releasing() }
+    public /*override*/ passived()    : JssStyle { return super.released()  }
     public /*override*/ markActive()  : JssStyle { return {
         ...this.noOutlined(),  // kill .outlined variant
      // ...this.noMild(),      // do not kill .mild variant
@@ -108,19 +109,9 @@ class NavbarMenuStyles extends ActionControlStyles {
 
 
 
-        // typos:
-        fontSize       : bcssProps.fontSize,
-        fontFamily     : undefined,
-        fontWeight     : undefined,
-        fontStyle      : undefined,
-        textDecoration : undefined,
-        lineHeight     : undefined,
-
-
-
         // borders:
-        border         : undefined,
-        borderRadius   : undefined,
+        border       : undefined as unknown as null, // discard basicStyle's border
+        borderRadius : undefined as unknown as null, // discard basicStyle's borderRadius
 
 
 
@@ -142,27 +133,6 @@ export class NavbarStyles extends BasicComponentStyles {
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 
-    public /*override*/ outlined(): JssStyle { return {
-        extend: [
-            super.outlined(), // copy outlined from base
-        ] as JssStyle,
-
-        
-        
-        // on NavbarMenu, *toggle on* the outlined with their own theme:
-        [menuElm]: super.outlined(),
-    }}
-    public /*override*/ mild(): JssStyle { return {
-        extend: [
-            super.mild(), // copy mild from base
-        ] as JssStyle,
-
-
-
-        // on NavbarMenu, *toggle on* the mild with their own theme:
-        [menuElm]: super.mild(),
-    }}
-
 
 
     // styles:
@@ -177,24 +147,21 @@ export class NavbarStyles extends BasicComponentStyles {
         display             : 'grid', // use css grid for layouting, so we can customize the desired area later.
 
         // explicit areas:
+        /*
+            just one explicit area: `menus`
+            logo & toggler rely on implicit area
+        */
         gridTemplateRows    : [['auto'/*fluid height*/]],
-        // gridTemplateColumns : [['max-content'/*fixed width*/, 'auto'/*fluid width*/, 'max-content'/*fixed width*/]],
-        // gridTemplateAreas   : [[
-        //     '"logo menus toggler"',
-        // ]],
-        // just one explicit area: menus
-        // logo & toggler rely on implicit area
-        gridTemplateColumns : [['auto']],
+        gridTemplateColumns : [['auto'/*fluid width, the rest of maximum width - logo's width - toggler's width*/]],
         gridTemplateAreas   : [[
             '"menus"',
         ]],
 
         // implicit areas:
-        gridAutoFlow        : 'column',      // if child's grid are is not specified => place automatically at horz direction
-        gridAutoRows        : 'min-content', // other areas than menus should take a minimum required height
-        gridAutoColumns     : 'min-content', // other areas than menus should take a minimum required width
-        // the grid's size configured as *minimum* size required => no free space left to distribute => so (justify|algin)Content is *not required*
-        // default placement for each navbar's sections:
+        gridAutoFlow        : 'column',      // if child's gridArea was not specified => place it automatically at horz direction
+        gridAutoRows        : 'min-content', // other areas than `menus` should take the minimum required height
+        gridAutoColumns     : 'min-content', // other areas than `menus` should take the minimum required width
+        // the gridArea's size configured as *minimum* content's size required => no free space left to distribute => so (justify|algin)Content is *not required*
 
         // child alignments:
         justifyItems        : 'stretch', // each section fills the entire area's width
@@ -205,9 +172,7 @@ export class NavbarStyles extends BasicComponentStyles {
         //#region children
         [[
             // wrapper elements:
-            // logoElm,
-            // togglerElm,
-            wrapperElm,
+            wrapperElm, // wrapped logo & wrapped toggler
             menuElm,
         ].join(',')] : this.wrapperLayout(),
 
@@ -238,9 +203,9 @@ export class NavbarStyles extends BasicComponentStyles {
     }}
     protected /*virtual*/ wrapperLayout(): JssStyle { return {
         // layout:
-        display        : 'flex',
+        display        : 'flex',   // use block flexbox, so it takes the entire parent's width
         flexDirection  : 'row',    // the flex direction to horz, so we can adjust the content's height
-        justifyContent : 'center', // center the content horizontally
+        justifyContent : 'center', // center items horizontally
         alignItems     : 'center', // if the content's height is shorter than the section, place it at the center
 
 
@@ -251,8 +216,8 @@ export class NavbarStyles extends BasicComponentStyles {
     }}
     protected /*virtual*/ navbarSecondaryItemLayout(): JssStyle { return {
         // layout:
-        justifySelf    : 'center', // center horizontally
-        alignSelf      : 'center', // center vertically
+        justifySelf    : 'center', // center self horizontally
+        alignSelf      : 'center', // center self vertically
 
 
 
@@ -265,7 +230,7 @@ export class NavbarStyles extends BasicComponentStyles {
     }}
     protected /*virtual*/ navbarLogoLayout(): JssStyle { return {
         // layout:
-        gridArea       : '1 / -3', // place the same row as menus / place at the 3rd column from the right (negative columns are placed after all positive ones are placed)
+        gridArea       : '1 / -3', // place at the same `menus`' row / place at the 3rd column from the right (negative columns are placed after all positive ones was placed)
 
 
 
@@ -274,7 +239,7 @@ export class NavbarStyles extends BasicComponentStyles {
     }}
     protected /*virtual*/ navbarTogglerLayout(): JssStyle { return {
         // layout:
-        gridArea       : '1 / 2', // place the same row as menus / place at the 2nd column from the left
+        gridArea       : '1 / 2', // place at the same `menus`' row / place at the 2nd column from the left
 
 
 
@@ -283,15 +248,16 @@ export class NavbarStyles extends BasicComponentStyles {
     }}
     protected /*virtual*/ navbarMenusLayout(): JssStyle { return {
         // layout:
-        gridArea       : 'menus',
+        gridArea       : 'menus',   // place at the defined `menus` area
         display        : 'flex',    // use flexbox to place the menus sequentially
-        flexDirection  : 'row',     // place the menus horizontally
-        justifyContent : 'start',   // place the menus from the begining, leave a free space (if any) at the end
-        alignItems     : 'stretch', // each menu fills the entire section's height
+        flexDirection  : 'row',     // menus are stacked horizontally
+        justifyContent : 'start',   // menus are placed starting from the left, leaving a free space (if any) at the end
+        alignItems     : 'stretch', // menus height are follow the tallest one
 
 
 
         // sizes:
+        // todo: what's this????
         inlineSize     : 'fill-available',
         fallbacks      : {
             inlineSize : '-moz-available',
@@ -299,8 +265,7 @@ export class NavbarStyles extends BasicComponentStyles {
 
 
         
-        // apply fn props:
-        // backg          : this.ref(this._backg),
+        // states & animations:
         // todo: anim           : this.ref(this._menusAnimFn),
 
 
@@ -309,17 +274,14 @@ export class NavbarStyles extends BasicComponentStyles {
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menus')), // apply *general* cssProps starting with menus***
     }}
     public /*override*/ compositeStyle(): JssStyle { return {
-        /* the rules order is important, write the children's rules first and then write the parent's rules */
+        extend: [
+            super.compositeStyle(), // copy compositeStyle from base
+        ] as JssStyle,
         
         
         
-        // write children's rules first:
+        // children:
         [menuElm]: (new NavbarMenuStyles()).compositeStyle(),
-
-
-        
-        // then write parent's rules:
-        '&': super.compositeStyle(), // copy compositeStyle from base
     }}
 }
 export const navbarStyles = new NavbarStyles();
@@ -352,15 +314,21 @@ const cssConfig = new CssConfig(() => {
 
     
     return {
+        //#region positions
         zIndex        : 1020,
         position      : 'sticky',
+        //#endregion positions
 
+        
+        
         //#region borders
         borderInline  : 'none',
         borderBlock   : 'none',
         borderRadius  : 0,
         //#endregion borders
 
+        
+        
         //#region spacings
         paddingInline : ccssProps.paddingInline, // override to Element
         paddingBlock  : bcssProps.paddingBlock,
@@ -372,7 +340,7 @@ const cssConfig = new CssConfig(() => {
 
 
         //#region animations
-        filterActive  : bcssProps.filterNone,   // override to Indicator
+        filterActive              : bcssProps.filterNone, // override to Indicator
 
         '@keyframes menusActive'  : keyframesMenusActive,
         '@keyframes menusPassive' : keyframesMenusPassive,
@@ -443,12 +411,12 @@ export function NavbarMenu<TElement extends HTMLElement = HTMLElement>(props: Na
     );
 }
 
-
-
 export type { NavbarMenuProps as MenuProps }
 export { NavbarMenu as Menu }
 
-export interface Props<TElement extends HTMLElement = HTMLElement>
+
+
+export interface NavbarProps<TElement extends HTMLElement = HTMLElement>
     extends
         IndicatorProps<TElement>,
         TogglerActiveProps
@@ -460,9 +428,9 @@ export interface Props<TElement extends HTMLElement = HTMLElement>
     toggler?  : React.ReactChild | boolean
     children? : React.ReactNode
 }
-export default function Navbar<TElement extends HTMLElement = HTMLElement>(props: Props<TElement>) {
+export default function Navbar<TElement extends HTMLElement = HTMLElement>(props: NavbarProps<TElement>) {
     // styles:
-    const navbStyles            = navbarStyles.useStyles();
+    const styles                = navbarStyles.useStyles();
 
     
     
@@ -477,9 +445,9 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
     // rest props:
     const {
         // accessibility:
-        defaultActive,  // delete, already handled by useTogglerActive
-        onActiveChange, // delete, already handled by useTogglerActive
-        active,         // delete, already handled by useTogglerActive
+        defaultActive,  // delete, already handled by `useTogglerActive`
+        active,         // delete, already handled by `useTogglerActive`
+        onActiveChange, // delete, already handled by `useTogglerActive`
 
 
         // children:
@@ -620,7 +588,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
 
             // classes:
-            mainClass={props.mainClass ?? navbStyles.main}
+            mainClass={props.mainClass ?? styles.main}
             stateClasses={[...(props.stateClasses ?? []),
                 // stateCompact.class,
             ]}
@@ -628,12 +596,18 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
             // events:
             // watch [escape key] on the whole navbar, including menus & toggler:
-            onKeyDown={(e) => {
-                if (isActive && ((e.code === 'Escape') || (e.key === 'Escape'))) setActive(false);
-
-
-                // forwards:
-                props.onKeyDown?.(e);
+            onKeyUp={(e) => {
+                // backwards:
+                props.onKeyUp?.(e);
+                
+                
+                
+                if (!e.defaultPrevented) {
+                    if (isActive && ((e.key === 'Escape') || (e.code === 'Escape'))) {
+                        setActive(false);
+                        e.preventDefault();
+                    } // if
+                } // if
             }}
         >
             { logoFn }
@@ -644,10 +618,10 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
 
                 // events:
-                onAnimationEnd={(e) =>
-                    // triggers Navbar's onAnimationEnd event
-                    e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }))
-                }
+                onAnimationEnd={(e) => {
+                    // triggers `Navbar`'s onAnimationEnd event
+                    e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
+                }}
             >
                 {(Array.isArray(children) ? children : [children]).map((child, index) => (
                     isTypeOf(child, NavbarMenu)
@@ -663,7 +637,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                         
                         // events:
                         onAnimationEnd={(e) => {
-                            // triggers Navbar's onAnimationEnd event
+                            // triggers `Navbar`'s onAnimationEnd event
                             e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
 
 
@@ -679,7 +653,7 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
                         // events:
                         onAnimationEnd={(e) =>
-                            // triggers Navbar's onAnimationEnd event
+                            // triggers `Navbar`'s onAnimationEnd event
                             e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }))
                         }
                     >

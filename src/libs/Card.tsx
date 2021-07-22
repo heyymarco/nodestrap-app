@@ -448,7 +448,7 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
     
     // handlers:
     const handleAnimationEnd = (e: React.AnimationEvent<HTMLElement>) => {
-        // triggers Card's onAnimationEnd event
+        // triggers `Card`'s onAnimationEnd event
         e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }))
     };
 
@@ -472,13 +472,13 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
             ]}
         >
             { header && <header
-                // triggers Card's onAnimationEnd event
+                // triggers `Card`'s onAnimationEnd event
                 onAnimationEnd={handleAnimationEnd}
             >
                 { header }
             </header> }
             { children && <div className='body'
-                // triggers Card's onAnimationEnd event
+                // triggers `Card`'s onAnimationEnd event
                 onAnimationEnd={handleAnimationEnd}
             >
                 {(Array.isArray(children) ? children : [children]).map((child, index) => (
@@ -502,7 +502,7 @@ export default function Card<TElement extends HTMLElement = HTMLElement>(props: 
                 ))}
             </div> }
             { footer && <footer
-                // triggers Card's onAnimationEnd event
+                // triggers `Card`'s onAnimationEnd event
                 onAnimationEnd={handleAnimationEnd}
             >
                 { footer }

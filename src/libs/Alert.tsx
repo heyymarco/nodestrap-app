@@ -73,6 +73,10 @@ export class AlertStyles extends PopupStyles implements IContentStyles {
         display             : 'grid', // use css grid for layouting, so we can customize the desired area later.
 
         // explicit areas:
+        /*
+            just one explicit area: `body`
+            icon & control rely on implicit area
+        */
         gridTemplateRows    : [['auto']],
         gridTemplateColumns : [['auto']],
         gridTemplateAreas   : [[
@@ -80,9 +84,10 @@ export class AlertStyles extends PopupStyles implements IContentStyles {
         ]],
 
         // implicit areas:
-        gridAutoFlow        : 'column',
-        gridAutoRows        : 'min-content',
-        gridAutoColumns     : 'min-content',
+        gridAutoFlow        : 'column',      // if child's gridArea was not specified => place it automatically at horz direction
+        gridAutoRows        : 'min-content', // other areas than `body` should take the minimum required height
+        gridAutoColumns     : 'min-content', // other areas than `body` should take the minimum required width
+        // the gridArea's size configured as *minimum* content's size required => no free space left to distribute => so (justify|algin)Content is *not required*
 
         // child alignments:
         justifyItems        : 'stretch', // each section fills the entire area's width

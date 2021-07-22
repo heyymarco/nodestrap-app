@@ -146,11 +146,11 @@ export class ButtonStyles extends ActionControlStyles {
 
     public /*virtual*/ inline(): JssStyle { return {
         // layout:
-        flexDirection  : 'row',
+        flexDirection  : 'row',    // items are stacked horizontally
     }}
     public /*virtual*/ block(): JssStyle { return {
         // layout:
-        flexDirection  : 'column',
+        flexDirection  : 'column', // items are stacked vertically
     }}
 
     public /*virtual*/ link(): JssStyle { return {

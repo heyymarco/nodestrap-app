@@ -54,7 +54,7 @@ export class ContainerStyles extends BasicComponentStyles {
      */
     public /*virtual*/ useContainerGrid(): JssStyle { return {
         // layout:
-        display             : 'grid',
+        display             : 'grid', // use css grid for layouting
         gridTemplateRows    : [[cssProps.paddingBlock,  'auto', cssProps.paddingBlock ]],
         gridTemplateColumns : [[cssProps.paddingInline, 'auto', cssProps.paddingInline]],
         gridTemplateAreas   : [[

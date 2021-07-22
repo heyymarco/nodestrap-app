@@ -708,7 +708,7 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
                             
                             // events:
                             onAnimationEnd={(e) => {
-                                // triggers Listgroup's onAnimationEnd event
+                                // triggers `Listgroup`'s onAnimationEnd event
                                 e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
 
 
@@ -723,10 +723,10 @@ export default function Listgroup<TElement extends HTMLElement = HTMLElement>(pr
 
                             
                             // events:
-                            onAnimationEnd={(e) =>
-                                // triggers Listgroup's onAnimationEnd event
-                                e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }))
-                            }
+                            onAnimationEnd={(e) => {
+                                // triggers `Listgroup`'s onAnimationEnd event
+                                e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
+                            }}
                         >
                             { child }
                         </ListgroupItem>

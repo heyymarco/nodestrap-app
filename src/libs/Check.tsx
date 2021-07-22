@@ -832,7 +832,7 @@ export default function Check(props: CheckProps) {
 
                 // events:
                 onAnimationEnd={(e) => {
-                    // triggers parent's onAnimationEnd event
+                    // triggers `Check`'s onAnimationEnd event
                     e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
                 }}
 
@@ -844,7 +844,7 @@ export default function Check(props: CheckProps) {
                     // events:
                     // listening input's onAnimationEnd is enough
                     // onAnimationEnd={(e) => {
-                    //     // triggers parent's onAnimationEnd event
+                    //     // triggers `Check`'s onAnimationEnd event
                     //     e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
                     // }}
                 >
