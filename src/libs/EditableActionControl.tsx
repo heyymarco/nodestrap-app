@@ -67,22 +67,25 @@ export class EditableActionControlStyles extends EditableControlStyles implement
         return actionControlStyles.resetPressRelease(inherit); // copy resetPressRelease from actionControl
     }
     public /*implement*/ pressed()                                         : JssStyle {
-        return actionControlStyles.pressed();   // copy pressed   from actionControl
+        return actionControlStyles.pressed();                  // copy pressed           from actionControl
     }
     public /*implement*/ pressing()                                        : JssStyle {
-        return actionControlStyles.pressing();  // copy pressing  from actionControl
+        return actionControlStyles.pressing();                 // copy pressing          from actionControl
     }
     public /*implement*/ releasing()                                       : JssStyle {
-        return actionControlStyles.releasing(); // copy releasing from actionControl
+        return actionControlStyles.releasing();                // copy releasing         from actionControl
     }
     public /*implement*/ released()                                        : JssStyle {
-        return actionControlStyles.released();  // copy released  from actionControl
+        return actionControlStyles.released();                 // copy released          from actionControl
     }
     public /*implement*/ press(actionControl: IActionControlStyles = this) : JssStyle {
-        return actionControlStyles.press(actionControl);     // copy press     from actionControl
+        return actionControlStyles.press(actionControl);       // copy press             from actionControl
     }
     public /*implement*/ release()                                         : JssStyle {
-        return actionControlStyles.release();   // copy release   from actionControl
+        return actionControlStyles.release();                  // copy release           from actionControl
+    }
+    public /*implement*/ pressReleasing()                                  : JssStyle {
+        return actionControlStyles.pressReleasing();           // copy pressReleasing    from actionControl
     }
 
 
