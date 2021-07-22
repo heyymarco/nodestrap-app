@@ -42,12 +42,13 @@ export interface IActionControlStyles {
     actionControlStates(inherit: boolean, actionControl: IActionControlStyles): RuleList
     
     resetPressRelease(inherit: boolean): PropList
-    pressed()    : JssStyle
-    pressing()   : JssStyle
-    releasing()  : JssStyle
-    released()   : JssStyle
-    press()      : JssStyle
-    release()    : JssStyle
+    pressed()        : JssStyle
+    pressing()       : JssStyle
+    releasing()      : JssStyle
+    released()       : JssStyle
+    press()          : JssStyle
+    release()        : JssStyle
+    pressReleasing() : JssStyle
 
     markActive() : JssStyle
 
@@ -102,14 +103,14 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
 
 
         // .pressed will be added after pressing-animation done
-        [  '.pressed'                                                                                        , [actionControl.press()   , actionControl.pressed()  ] ],
+        [  '.pressed'                                                                                        , [actionControl.pressReleasing() , actionControl.press()   , actionControl.pressed()  ] ],
 
         // .press = programatically press, :active = user press
         [ ['.press' ,
-           ':active:not(.disabled):not(.disable):not(:disabled):not(.pressed):not(.release):not(.released)'] , [actionControl.press()   , actionControl.pressing() ] ],
+           ':active:not(.disabled):not(.disable):not(:disabled):not(.pressed):not(.release):not(.released)'] , [actionControl.pressReleasing() , actionControl.press()   , actionControl.pressing() ] ],
 
         // .release will be added after loosing press and will be removed after releasing-animation done
-        [  '.release'                                                                                        , [actionControl.release() , actionControl.releasing()] ],
+        [  '.release'                                                                                        , [actionControl.pressReleasing() , actionControl.release() , actionControl.releasing()] ],
 
         // if all above are not set => released
         // optionally use .released to kill pseudo :active
@@ -117,7 +118,7 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
            ':not(.pressed):not(.press).disabled:not(.release)'     ,
            ':not(.pressed):not(.press).disable:not(.release)'      ,
            ':not(.pressed):not(.press):disabled:not(.release)'     ,
-           '.released']                                                                                      , [actionControl.release() , actionControl.released() ] ],
+           '.released']                                                                                      , [                                 actionControl.release() , actionControl.released() ] ],
     ]}
 
     public /*virtual*/ resetPressRelease(inherit: boolean) : PropList { return {
@@ -144,6 +145,8 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
         ] as JssStyle,
     }}
     public /*virtual*/ release()                                         : JssStyle { return {
+    }}
+    public /*virtual*/ pressReleasing()                                  : JssStyle { return {
     }}
 
 
