@@ -327,15 +327,15 @@ export class CardStyles extends ContentStyles {
         boxSizing      : 'border-box', // the final size is including borders & paddings
         inlineSize     : 'fill-available',
         fallbacks      : {
-            inlineSize : [['calc(100% + (', cssProps.paddingInline, ' * 2))']],
+            inlineSize : [['calc(100% + (', cssProps.itemPaddingInline, ' * 2))']],
         },
 
 
 
         // spacings:
         // cancel-out parent's padding with negative margin:
-        marginInline   : [['calc(0px -', cssProps.paddingInline, ')']],
-        marginBlock    : [['calc(0px -', cssProps.paddingBlock,  ')']],
+        marginInline   : [['calc(0px -', cssProps.itemPaddingInline, ')']],
+        marginBlock    : [['calc(0px -', cssProps.itemPaddingBlock,  ')']],
 
         // kill the top negative margin so the prev sibling can add a bottom space:
         '&:not(:first-child)': {
@@ -344,7 +344,7 @@ export class CardStyles extends ContentStyles {
 
         // add a bottom space to the next sibling:
         '&:not(:last-child)': {
-            marginBlockEnd   : cssProps.paddingBlock,
+            marginBlockEnd   : cssProps.itemPaddingBlock,
         },
 
 
@@ -382,30 +382,29 @@ export const cardStyles = new CardStyles();
 const cssConfig = new CssConfig(() => {
     return {
         // typos:
-        wordWrap      : 'break-word',
-
-
-
-        //#region spacings
-        paddingInline : ccssProps.paddingInline,
-        paddingBlock  : ccssProps.paddingBlock,
-        //#endregion spacings
+        wordWrap          : 'break-word',
 
 
 
         // sizes:
-        boxSizing     : 'border-box', // the final size is including borders & paddings
-        blockSize     : '100%',       // fills the entire parent's height if the parent has a specific height, otherwise no effect
+        boxSizing         : 'border-box', // the final size is including borders & paddings
+        blockSize         : '100%',       // fills the entire parent's height if the parent has a specific height, otherwise no effect
+
+
+
+        // items:
+        itemPaddingInline : ccssProps.paddingInline,
+        itemPaddingBlock  : ccssProps.paddingBlock,
 
         
         
         // captions:
-        captionFilter : [['brightness(70%)', 'contrast(140%)']],
+        captionFilter     : [['brightness(70%)', 'contrast(140%)']],
 
 
 
         // links:
-        linkSpacing   : spacers.sm,
+        linkSpacing       : spacers.sm,
     };
 }, /*prefix: */'crd');
 export const cssProps = cssConfig.refs;
