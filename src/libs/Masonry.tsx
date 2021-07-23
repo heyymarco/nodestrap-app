@@ -323,8 +323,17 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
         //#region update in the future
         //#region when items resized
+        let initialResizeEvent = false;
         const resizeObserver = ResizeObserver ? new ResizeObserver(async (entries) => {
-            // filter only the existing items
+            // ignores the insertion dom event:
+            if (initialResizeEvent) {
+                initialResizeEvent = false;
+                return;
+            } // if
+
+
+            
+            // ignores the removal dom event:
             const items = entries.map((e) => e.target as HTMLElement).filter((item) => {
                 if (masonry.parentElement) { // masonry is still exist on the document
                     // check if the item is the child of masonry
@@ -347,6 +356,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
         if (resizeObserver) {
             (Array.from(masonry.children) as HTMLElement[]).forEach((item) => {
                 // update in the future:
+                initialResizeEvent = true; // prevent the insertion dom event
                 resizeObserver.observe(item, { box: 'border-box' });
             });
         } // if
@@ -369,6 +379,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
                     await handleUpdate(item);
 
                     // update in the future:
+                    initialResizeEvent = true; // prevent the insertion dom event
                     resizeObserver?.observe(item, { box: 'border-box' });
                 } // for
 
