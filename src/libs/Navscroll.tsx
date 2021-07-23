@@ -481,8 +481,17 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
         //#region update in the future
         //#region when descendants resized
+        let initialResizeEvent = false;
         const resizeObserver = ResizeObserver ? new ResizeObserver(async (entries) => {
-            // filter only the existing descendants
+            // ignores the insertion dom event:
+            if (initialResizeEvent) {
+                initialResizeEvent = false;
+                return;
+            } // if
+
+
+
+            // ignores the removal dom event:
             const descendants = entries.map((e) => e.target as HTMLElement).filter((descendant) => {
                 if (target.parentElement) { // target is still exist on the document
                     // check if the descendant is target itself or the descendant of target
@@ -521,6 +530,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
             descendants.forEach((descendant) => {
                 // update in the future:
                 descendant.addEventListener('scroll', handleUpdate);
+                initialResizeEvent = true; // prevent the insertion dom event
                 resizeObserver?.observe(descendant, { box: 'border-box' });
             });
 
