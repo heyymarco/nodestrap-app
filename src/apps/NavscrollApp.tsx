@@ -10,9 +10,6 @@ import './App.css';
 import './NavscrollApp.css'
 
 import Container from '../libs/Container';
-import BasicComponent   from '../libs/BasicComponent';
-import Indicator from '../libs/Indicator';
-import Content from '../libs/Content';
 import Navscroll, {NavscrollItem} from '../libs/Navscroll';
 import type * as Navscrolls from '../libs/Navscroll';
 
