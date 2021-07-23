@@ -64,7 +64,7 @@ function App() {
 	const [enabled,    setEnabled   ] = useState(true);
 	const [active,      setActive   ] = useState(false);
 
-	const compacts = [undefined, false, true];
+	const compacts = [false, undefined, true];
 	const [compact,    setCompact   ] = useState<boolean|undefined>(undefined);
 
 	const [hasLogo,      setHasLogo   ] = useState(true);
@@ -84,7 +84,7 @@ function App() {
 				active={active}
 				onActiveChange={(active) => setActive(active)}
 
-				// compact={compact}
+				compact={compact}
 
 				logo={hasLogo && <img src="/logo.png" alt="" style={{height: '30px'}}  />}
 				// toggler={<ButtonIcon icon='close'>Close</ButtonIcon>}

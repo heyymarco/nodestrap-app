@@ -8,16 +8,10 @@ import {
 import logo from './logo.svg';
 import './App.css';
 
-import {
-    Prop,
-}                           from '../libs/Css'        // ts defs support for jss
-
 import Container from '../libs/Container';
 import BasicComponent   from '../libs/BasicComponent';
-import Indicator from '../libs/Indicator';
-import Content from '../libs/Content';
-import Button from '../libs/Button';
-import ButtonIcon from '../libs/ButtonIcon';
+// import Button from '../libs/Button';
+// import ButtonIcon from '../libs/ButtonIcon';
 import Carousel, { CarouselItem } from '../libs/Carousel';
 
 
@@ -63,9 +57,6 @@ function App() {
 	const [enableGrad, setEnableGrad] = useState(false);
 	const [outlined,   setOutlined  ] = useState(false);
 
-	const [enabled,    setEnabled   ] = useState(true);
-	const [active,      setActive   ] = useState(false);
-
 	
 
     return (
@@ -90,22 +81,6 @@ function App() {
 				>
                         test
                 </BasicComponent>
-                <Indicator
-					theme={theme} size={size} gradient={enableGrad}
-					outlined={outlined}
-
-					enabled={enabled} active={active}
-				>
-                        test
-                </Indicator>
-                <Content
-					theme={theme} size={size} gradient={enableGrad}
-					outlined={outlined}
-
-					enabled={enabled} active={active}
-				>
-                        test
-                </Content>
 				<Carousel theme={theme} size={size} gradient={enableGrad} outlined={outlined}
 				>
 					<CarouselItem><img src='https://picsum.photos/400/600' alt='' /></CarouselItem>
