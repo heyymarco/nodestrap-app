@@ -8,7 +8,6 @@ import {
     // general types:
     JssStyle,
     PropEx,
-    PropList,
 
 
     // components:

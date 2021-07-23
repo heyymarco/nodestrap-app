@@ -7,7 +7,6 @@ import {
 import {
     // general types:
     JssStyle,
-    PropList,
 
 
     // components:
@@ -190,6 +189,11 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
 
 
 
+    // fn props:
+    const mildFn = props.mild ?? false;
+
+
+
     // jsx fn props:
     const iconFn = (() => {
         // default (unset) or string:
@@ -214,6 +218,7 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
                 // variants:
                 theme={props.theme}
                 size='md'
+                mild={!mildFn}
 
 
                 // classes:
@@ -314,6 +319,10 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
         <Popup
             // other props:
             {...restProps}
+
+
+            // variants:
+            mild={mildFn}
 
 
             // classes:
