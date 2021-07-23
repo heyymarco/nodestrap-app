@@ -64,7 +64,7 @@ export class PopupStyles extends IndicatorStyles {
 
         display: 'none', // hide the popup
     }}
-    public /*override*/ themeActive(theme = 'secondary') : PropList { return {} } // disabled
+    public /*override*/ markActive()  : JssStyle { return {} } // disabled
 }
 export const popupStyles = new PopupStyles();
 
