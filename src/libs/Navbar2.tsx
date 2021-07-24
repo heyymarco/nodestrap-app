@@ -24,12 +24,9 @@ import {
     // utils:
     isTypeOf,
 }                           from './nodestrap'  // nodestrap's core
-import fontItems            from './Icon-font-material'
+import typos                from './typos/index' // configurable typography (texting) defs
 import {
-    BasicComponentStyles,
     cssProps as bcssProps,
-    BasicComponentProps,
-    BasicComponent,
 }                           from './BasicComponent'
 import {
     cssProps as ccssProps,
@@ -38,7 +35,6 @@ import {
     TogglerActiveProps,
     useTogglerActive,
     
-    IndicatorStyles,
     IndicatorProps,
     Indicator,
 }                           from './Indicator'
@@ -47,9 +43,6 @@ import {
     PopupProps,
     Popup,
 }                           from './Popup'
-import {
-    ControlStyles,
-}                           from './Control'
 import {
     ActionControlProps,
     ActionControl,
@@ -126,7 +119,32 @@ class NavbarMenuStyles extends ActionControlStyles {
 }
 
 export class NavbarStyles extends PopupStyles {
+    //#region props
+    //#region finals
+    /**
+     * final filter for the menus.
+     */
+    public    readonly _menusFilter = 'menusFilter'
+
+    /**
+     * final animation for the menus.
+     */
+    public    readonly _menusAnim   = 'menusAnim'
+    //#endregion finals
+    //#endregion props
+
+
+
     // variants:
+    public /*override*/ variants(): RuleList { return [
+        ...super.variants(), // copy variants from base
+
+
+
+        [ '.compact'       , this.compact() ],
+        [ ':not(.compact)' , this.full()    ],
+    ]}
+
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
@@ -137,65 +155,15 @@ export class NavbarStyles extends PopupStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-
-
-
-    // states:
-    public /*override*/ states(inherit: boolean): RuleList { return [
-        ...super.states(inherit), // copy states from base
-
-
-
-        [ '.compact'       , this.compact() ],
-        [ ':not(.compact)' , this.full()    ],
-    ]}
-
-    public /*override*/ actived()     : JssStyle { return {
+    public /*virtual*/ outlined(): JssStyle { return {
         extend: [
-            super.actived(), // copy actived from base
+            super.outlined(), // copy outlined from base
         ] as JssStyle,
 
 
 
-        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-    }}
-    public /*override*/ activating()  : JssStyle { return {
-        extend: [
-            super.activating(), // copy activating from base
-        ] as JssStyle,
-
-
-
-        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-        [this.decl(this._animActivePassive)]   : cssProps.animActive,
-    }}
-    public /*override*/ passivating() : JssStyle { return {
-        extend: [
-            super.passivating(), // copy passivating from base
-        ] as JssStyle,
-
-
-
-        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
-        [this.decl(this._animActivePassive)]   : cssProps.animPassive,
-    }}
-    public /*override*/ passived()    : JssStyle { return {
-        extend: [
-            super.passived(), // copy passived from base
-        ] as JssStyle,
-
-
-
-        // appearances:
-        display: undefined as unknown as null, // discard passived's display
-
-
-
-        '&.compact': {
-            [menusElm]: {
-                // appearances:
-                display: 'none',
-            } as JssStyle,
+        [menusElm]: {
+            backg: 'none', // kill menus' background when .outlined
         } as JssStyle,
     }}
 
@@ -283,6 +251,58 @@ export class NavbarStyles extends PopupStyles {
         ...this.filterGeneralProps(this.filterSuffixProps(cssProps, 'Full')),                  // apply *general* cssProps ending with ***Full
     }}
 
+
+
+    // states:
+    public /*override*/ actived()     : JssStyle { return {
+        extend: [
+            super.actived(), // copy actived from base
+        ] as JssStyle,
+
+
+
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+    }}
+    public /*override*/ activating()  : JssStyle { return {
+        extend: [
+            super.activating(), // copy activating from base
+        ] as JssStyle,
+
+
+
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animActive,
+    }}
+    public /*override*/ passivating() : JssStyle { return {
+        extend: [
+            super.passivating(), // copy passivating from base
+        ] as JssStyle,
+
+
+
+        [this.decl(this._filterActivePassive)] : cssProps.filterActive,
+        [this.decl(this._animActivePassive)]   : cssProps.animPassive,
+    }}
+    public /*override*/ passived()    : JssStyle { return {
+        extend: [
+            super.passived(), // copy passived from base
+        ] as JssStyle,
+
+
+
+        // appearances:
+        display: undefined as unknown as null, // discard passived's display
+
+
+
+        '&.compact': {
+            [menusElm]: {
+                // appearances:
+                display: 'none',
+            } as JssStyle,
+        } as JssStyle,
+    }}
+
     public /*override*/ resetEnableDisable(inherit: boolean) : PropList { return {} } // disabled
     public /*override*/ enabled()                            : JssStyle { return {} } // disabled
     public /*override*/ enabling()                           : JssStyle { return {} } // disabled
@@ -294,11 +314,54 @@ export class NavbarStyles extends PopupStyles {
 
 
 
+    // functions:
+    public /*override*/ propsFn(): PropList { return {
+        ...super.propsFn(), // copy functional props from base
+
+
+
+        //#region finals
+        // define a final *filter* func for the menus:
+        [this.decl(this._menusFilter)] : [this.menusFilterFn()], // double array (including from the returning function) => makes the JSS treat as space separated values
+
+        // define a final *animation* func for the menus:
+        [this.decl(this._menusAnim)]   : this.menusAnimFn(),     // single array (including from the returning function) => makes the JSS treat as comma separated values
+        //#endregion finals
+    }}
+
+    public /*override*/ filterFn(): Cust.Ref[] {
+        // take the first array's element:
+        const  [first] = super.filterFn(); // copy functional filters from base
+
+        return [first];
+    }
+    public /*override*/ menusFilterFn(): Cust.Ref[] {
+        // discard the first array's element:
+        const [, ...rests] = super.filterFn(); // copy functional filters from base
+
+        return rests;
+    }
+
+    public /*override*/ animFn(): Cust.Ref[] {
+        // take the first array's element:
+        const  [first] = super.animFn(); // copy functional animations from base
+
+        return [first];
+    }
+    public /*override*/ menusAnimFn(): Cust.Ref[] {
+        // discard the first array's element:
+        const [, ...rests] = super.animFn(); // copy functional animations from base
+
+        return rests;
+    }
+
+
+
     // styles:
     public /*override*/ basicStyle(): JssStyle { return {
-        // extend: [
-        //     super.basicStyle(), // copy basicStyle from base
-        // ] as JssStyle,
+        extend: [
+            super.basicStyle(), // copy basicStyle from base
+        ] as JssStyle,
 
 
 
@@ -425,8 +488,8 @@ export class NavbarStyles extends PopupStyles {
 
         
         // states & animations:
-        filter      : this.ref(this._filter),
-        anim        : this.ref(this._anim),
+        filter      : this.ref(this._menusFilter),
+        anim        : this.ref(this._menusAnim),
 
 
 
@@ -522,6 +585,11 @@ const cssConfig = new CssConfig(() => {
 
 
 
+        // menu:
+        whiteSpace               : 'nowrap',
+
+
+
         //#region making menus floating (on mobile), not shifting the content
         ...{
             // do not make row spacing when the menus shown (we'll make the menus as ghost element, floating in front of the contents below the navbar)
@@ -530,6 +598,7 @@ const cssConfig = new CssConfig(() => {
 
 
             // menus:
+            menusBackgCompact            : typos.backg,
             menusPositionCompact         : 'absolute',
             menusMarginBlockStartCompact : bcssProps.paddingBlock,
             menusPaddingBlockEndCompact  : bcssProps.paddingBlock,
@@ -544,10 +613,10 @@ export const cssDecls = cssConfig.decls;
 
 // hooks:
 
-export interface Compactable {
+export interface VariantCompact {
     compact? : boolean
 }
-export function useStateCompact<TElement extends HTMLElement = HTMLElement>(props: Compactable, navbarRef: React.RefObject<TElement>) {
+export function useVariantCompact<TElement extends HTMLElement = HTMLElement>(props: VariantCompact, navbarRef: React.RefObject<TElement>) {
     // states:
     const [compactDn, setCompactDn] = useState<boolean>(false); // uncontrollable (dynamic) state: true => compact mode, false => full mode
 
@@ -564,18 +633,22 @@ export function useStateCompact<TElement extends HTMLElement = HTMLElement>(prop
         const navbar = navbarRef.current;
         if (!navbar)                     return; // navbar was unloaded => nothing to do
         if (props.compact !== undefined) return; // controllable [compact] is set => no uncontrollable required
-        
-        
-        
+
+
+
         const handleUpdate = async () => { // keeps the UI responsive (not blocking) while handling the event
             // prepare the condition for dom measurement:
             const classList  = navbar.classList;
             const hasCompact = classList.contains('compact');
-            if (hasCompact) classList.remove('compact');
+            if (hasCompact) {
+                // turn off ResizeObserver soon (to avoid listening `ResizeObserver event` => firing `handleUpdate()`):
+                turnOffResizeObserver();
+
+                classList.remove('compact');
+            } // if
 
 
-
-            // measuring dom props:
+            // measuring the overflows:
             const {
                 scrollWidth,
                 clientWidth,
@@ -587,53 +660,89 @@ export function useStateCompact<TElement extends HTMLElement = HTMLElement>(prop
 
 
             // restore to original condition as before measurement:
-            if (hasCompact) classList.add('compact');
+            if (hasCompact) {
+                classList.add('compact'); // <== causing to trigger `ResizeObserver event` at the next event loop
 
-
-
-            // decides the dynamic compact mode based on the measured dom props:
-            if ((scrollWidth > clientWidth) || (scrollHeight > clientHeight)) {
-                setCompactDn(true);
-            }
-            else {
-                setCompactDn(false);
+                // turn on ResizeObserver soon (to avoid listening `ResizeObserver event` => firing `handleUpdate()`):
+                setTimeout(() => {
+                    turnOnResizeObserver();
+                }, 0);
             } // if
+
+
+
+            // decides the dynamic compact mode based on the measured overflows:
+            setCompactDn(
+                (scrollWidth > clientWidth)
+                ||
+                (scrollHeight > clientHeight)
+            );
         };
-
-
-
-        // update for the first time:
-        handleUpdate();
 
 
         
         //#region update in the future
-        //#region when items resized
+        //#region when navbar / navbar's items resized
+        let initialResizeEvent : boolean|null = null;
         const resizeObserver = ResizeObserver ? new ResizeObserver(async (entries) => {
-            // filter only the existing items
-            const exist = ((): boolean => {
+            // ignores the insertion dom event:
+            if (initialResizeEvent) {
+                initialResizeEvent = false;
+                return;
+            } // if
+
+            
+            
+            // ignores the removal dom event:
+            let items = entries.map((e) => e.target as HTMLElement).filter((item) => {
                 if (navbar.parentElement) { // navbar is still exist on the document
-                    return true; // confirmed
+                    // check if the item is navbar itself or the child of navbar
+                    if ((item === navbar) || (item.parentElement === navbar)) return true; // confirmed
                 } // if
 
                 
                 
-                resizeObserver?.unobserve(navbar); // no longer exist => remove from observer
-                return false; // not exist
-            })();
-            if (!exist) return; // no existing items => nothing to do
+                resizeObserver?.unobserve(item); // no longer exist => remove from observer
+                return false; // not the child of navbar
+            });
+            if (!items.length) return; // no existing items => nothing to do
+
+
+
+            // ignores resizing by animations:
+            items = items.filter((item) => (item.getAnimations().length === 0));
+            if (!items.length) return; // no existing items => nothing to do
 
 
 
             // update after being resized:
             await handleUpdate();
         }) : null;
-        if (resizeObserver) {
-            // update in the future:
-            resizeObserver.observe(navbar, { box: 'border-box' });
-        } // if
-        //#endregion when items resized
+
+        const resizeObserverElements = [navbar, ...Array.from(navbar.children)] as HTMLElement[];
+        const turnOnResizeObserver = () => {
+            if (resizeObserver && (initialResizeEvent === null)) {
+                resizeObserverElements.forEach((item) => {
+                    // update in the future:
+                    initialResizeEvent = true; // prevent the insertion dom event
+                    resizeObserver.observe(item, { box: 'border-box' });
+                });
+            } // if
+        }
+        const turnOffResizeObserver = () => {
+            initialResizeEvent = null;
+            resizeObserver?.disconnect();
+        }
+        //#endregion when navbar / navbar's items resized
         //#endregion update in the future
+
+
+
+        // update for the first time:
+        handleUpdate();
+
+        // update in the future:
+        turnOnResizeObserver();
 
 
 
@@ -691,7 +800,7 @@ export interface NavbarProps<TElement extends HTMLElement = HTMLElement>
         PopupProps<TElement>,
         TogglerActiveProps,
 
-        Compactable
+        VariantCompact
 {
     // children:
     logo?     : React.ReactChild | boolean
@@ -702,13 +811,16 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
     // styles:
     const styles                = navbarStyles.useStyles();
 
+
+
+    // variants:
+    const navbarRef             = useRef<TElement|null>(null);
+    const variCompact           = useVariantCompact(props, navbarRef);
+
     
     
     // states:
     const [isActive, setActive] = useTogglerActive(props);
-
-    const navbarRef             = useRef<TElement|null>(null);
-    const stateCompact          = useStateCompact(props, navbarRef);
 
     
     
@@ -857,8 +969,8 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
             // classes:
             mainClass={props.mainClass ?? styles.main}
-            stateClasses={[...(props.stateClasses ?? []),
-                stateCompact.class,
+            variantClasses={[...(props.variantClasses ?? []),
+                variCompact.class,
             ]}
 
 
