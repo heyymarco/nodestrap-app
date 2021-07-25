@@ -233,6 +233,10 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
         // nodestrap's component:
         if (isTypeOf(icon, Element)) return (
             <icon.type
+                // other props:
+                {...icon.props}
+
+
                 // classes:
                 classes={[...(icon.props.classes ?? []),
                     'icon', // inject icon class
@@ -288,6 +292,10 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
         // nodestrap's component:
         if (isTypeOf(control, Element)) return (
             <control.type
+                // other props:
+                {...control.props}
+
+                
                 // classes:
                 classes={[...(control.props.classes ?? []),
                     'control', // inject control class
