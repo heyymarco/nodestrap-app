@@ -61,6 +61,7 @@ export class PopupStyles extends IndicatorStyles {
 
 
 
+        // appearances:
         display: 'none', // hide the popup
     }}
     public /*override*/ markActive()  : JssStyle { return {} } // disabled
