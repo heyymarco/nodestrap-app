@@ -24,7 +24,6 @@ import {
     // utils:
     isTypeOf,
 }                           from './nodestrap'  // nodestrap's core
-import typos                from './typos/index' // configurable typography (texting) defs
 import {
     cssProps as bcssProps,
 }                           from './BasicComponent'
@@ -44,9 +43,9 @@ import {
     Popup,
 }                           from './Popup'
 import {
+    ActionControlStyles,
     ActionControlProps,
     ActionControl,
-    ActionControlStyles,
 }                           from './ActionControl'
 import {
     CheckProps,
@@ -155,17 +154,6 @@ export class NavbarStyles extends PopupStyles {
         // overwrites propName = propName{Size}:
         ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
-    public /*virtual*/ outlined(): JssStyle { return {
-        extend: [
-            super.outlined(), // copy outlined from base
-        ] as JssStyle,
-
-
-
-        [menusElm]: {
-            backg: 'none', // kill menus' background when .outlined
-        } as JssStyle,
-    }}
 
     public /*virtual*/ compact() : JssStyle { return {
         [[
@@ -175,12 +163,12 @@ export class NavbarStyles extends PopupStyles {
             menusElm,
         ].join(',')] : {
             // customize:
-            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'item'), 'Compact'),    // apply *general* cssProps starting with item***    and ending with ***Compact
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'item'),    'Compact'), // apply *general* cssProps starting with item***    and ending with ***Compact
         } as JssStyle,
 
         [logoElm]    : {
             // customize:
-            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'), 'Compact'),    // apply *general* cssProps starting with logo***    and ending with ***Compact
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'),    'Compact'), // apply *general* cssProps starting with logo***    and ending with ***Compact
         } as JssStyle,
 
         [togglerElm] : {
@@ -190,18 +178,37 @@ export class NavbarStyles extends PopupStyles {
 
         [menusElm]   : {
             // layout:
-            gridArea      : '-1 / -3 / -1 / 3',
+            gridArea      : '-1 / -3 / -1 / 3', // place at the 1st column from the bottom / place start from the 3rd column from the right to 3rd column from the left (negative columns are placed after all positive ones was placed)
             flexDirection : 'column',  // place the menus vertically
 
 
 
+            // backgrounds:
+            backg       : 'inherit', // supports for floating menus's background
+
+
+
+            // borders:
+            borderBlock : 'inherit', // supports for floating menus's border
+
+
+
+            // sizes:
+            // supports for floating menus, fills the entire page's width
+            inlineSize     : 'fill-available',
+            fallbacks      : {
+                inlineSize : '-moz-available',
+            },
+
+
+
             // customize:
-            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menus'), 'Compact'),   // apply *general* cssProps starting with menus***   and ending with ***Compact
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menus'),   'Compact'), // apply *general* cssProps starting with menus***   and ending with ***Compact
         } as JssStyle,
 
         [menuElm]    : {
             // customize:
-            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'), 'Compact'),    // apply *general* cssProps starting with menu***    and ending with ***Compact
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'),    'Compact'), // apply *general* cssProps starting with menu***    and ending with ***Compact
         } as JssStyle,
 
 
@@ -217,17 +224,17 @@ export class NavbarStyles extends PopupStyles {
             menusElm,
         ].join(',')] : {
             // customize:
-            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'item'), 'Full'),       // apply *general* cssProps starting with item***    and ending with ***Full
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'item'),    'Full'),    // apply *general* cssProps starting with item***    and ending with ***Full
         } as JssStyle,
 
         [logoElm]    : {
             // customize:
-            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'), 'Full'),       // apply *general* cssProps starting with logo***    and ending with ***Full
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'logo'),    'Full'),    // apply *general* cssProps starting with logo***    and ending with ***Full
         } as JssStyle,
 
         [togglerElm] : {
             // appearances:
-            display: 'none', // hides toggler on full version
+            display: 'none', // hides toggler on full mode
 
 
 
@@ -237,12 +244,12 @@ export class NavbarStyles extends PopupStyles {
 
         [menusElm]   : {
             // customize:
-            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menus'), 'Full'),      // apply *general* cssProps starting with menus***   and ending with ***Full
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menus'),   'Full'),    // apply *general* cssProps starting with menus***   and ending with ***Full
         } as JssStyle,
 
         [menuElm]    : {
             // customize:
-            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'), 'Full'),       // apply *general* cssProps starting with menu***    and ending with ***Full
+            ...this.filterSuffixProps(this.filterPrefixProps(cssProps, 'menu'),    'Full'),    // apply *general* cssProps starting with menu***    and ending with ***Full
         } as JssStyle,
 
 
@@ -298,7 +305,7 @@ export class NavbarStyles extends PopupStyles {
         '&.compact': {
             [menusElm]: {
                 // appearances:
-                display: 'none',
+                display: 'none', // hide the menus when on compact mode
             } as JssStyle,
         } as JssStyle,
     }}
@@ -335,7 +342,7 @@ export class NavbarStyles extends PopupStyles {
 
         return [first];
     }
-    public /*override*/ menusFilterFn(): Cust.Ref[] {
+    public /*virtual*/ menusFilterFn(): Cust.Ref[] {
         // discard the first array's element:
         const [, ...rests] = super.filterFn(); // copy functional filters from base
 
@@ -348,7 +355,7 @@ export class NavbarStyles extends PopupStyles {
 
         return [first];
     }
-    public /*override*/ menusAnimFn(): Cust.Ref[] {
+    public /*virtual*/ menusAnimFn(): Cust.Ref[] {
         // discard the first array's element:
         const [, ...rests] = super.animFn(); // copy functional animations from base
 
@@ -374,7 +381,7 @@ export class NavbarStyles extends PopupStyles {
             logo & toggler rely on implicit area
         */
         gridTemplateRows    : [['auto'/*fluid height*/]],
-        gridTemplateColumns : [['auto'/*fluid width, the rest of maximum width - logo's width - toggler's width*/]],
+        gridTemplateColumns : [['auto'/*fluid width, menus' width = maximum width - logo's width - toggler's width*/]],
         gridTemplateAreas   : [[
             '"menus"',
         ]],
@@ -477,15 +484,6 @@ export class NavbarStyles extends PopupStyles {
         alignItems     : 'stretch', // menus height are follow the tallest one
 
 
-
-        // sizes:
-        // todo: what's this????
-        inlineSize     : 'fill-available',
-        fallbacks      : {
-            inlineSize : '-moz-available',
-        },
-
-
         
         // states & animations:
         filter      : this.ref(this._menusFilter),
@@ -496,6 +494,10 @@ export class NavbarStyles extends PopupStyles {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menus')), // apply *general* cssProps starting with menus***
     }}
+
+
+
+    // composites:
     public /*override*/ compositeStyle(): JssStyle { return {
         extend: [
             super.compositeStyle(), // copy compositeStyle from base
@@ -545,19 +547,19 @@ const cssConfig = new CssConfig(() => {
         
         
         //#region borders
-        borderInline  : 'none',
-        borderBlock   : 'none',
-        borderRadius  : 0,
+        borderInline     : 'none',
+        borderBlockStart : 'none',
+        borderRadius     : 0,
         //#endregion borders
 
         
         
         //#region spacings
-        paddingInline : ccssProps.paddingInline, // override to Element
-        paddingBlock  : bcssProps.paddingBlock,
+        paddingInline    : ccssProps.paddingInline, // override to BasicElement
+        paddingBlock     : bcssProps.paddingBlock,  // override to BasicElement
 
-        gapX          : bcssProps.paddingInline,
-        gapY          : bcssProps.paddingBlock,
+        gapX             : bcssProps.paddingInline,
+        gapY             : bcssProps.paddingBlock,
         //#endregion spacings
 
 
@@ -574,14 +576,11 @@ const cssConfig = new CssConfig(() => {
 
 
         // menus:
-        // kill margin top & bottom:
-        menusMarginBlock         : [['calc(0px -', bcssProps.paddingBlock, ')']],
+        // at full mode, cancel-out Navbar's paddingBlock with negative margin:
+        menusMarginBlockFull     : [['calc(0px -', bcssProps.paddingBlock,  ')']],
 
-        // on mobile, on the menu group, kill margin left & right:
+        // at compact mode, cancel-out Navbar's paddingInline with negative margin:
         menusMarginInlineCompact : [['calc(0px -', ccssProps.paddingInline, ')']],
-
-        // on mobile, on the menu group, restore the margin top & bottom:
-        menusMarginBlockCompact  : 0,
 
 
 
@@ -598,7 +597,6 @@ const cssConfig = new CssConfig(() => {
 
 
             // menus:
-            menusBackgCompact            : typos.backg,
             menusPositionCompact         : 'absolute',
             menusMarginBlockStartCompact : bcssProps.paddingBlock,
             menusPaddingBlockEndCompact  : bcssProps.paddingBlock,
@@ -636,19 +634,21 @@ export function useVariantCompact<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
+        // functions:
         const handleUpdate = async () => { // keeps the UI responsive (not blocking) while handling the event
             // prepare the condition for dom measurement:
             const classList  = navbar.classList;
             const hasCompact = classList.contains('compact');
             if (hasCompact) {
-                // turn off ResizeObserver soon (to avoid listening `ResizeObserver event` => firing `handleUpdate()`):
+                // turn off ResizeObserver (to avoid triggering `ResizeObserver event` => firing `handleUpdate()`):
                 turnOffResizeObserver();
 
-                classList.remove('compact');
+                classList.remove('compact'); // kill compact mode, so we can measure the menu's overflows
             } // if
 
 
-            // measuring the overflows:
+            
+            // measuring the menu's overflows:
             const {
                 scrollWidth,
                 clientWidth,
@@ -661,9 +661,9 @@ export function useVariantCompact<TElement extends HTMLElement = HTMLElement>(pr
 
             // restore to original condition as before measurement:
             if (hasCompact) {
-                classList.add('compact'); // <== causing to trigger `ResizeObserver event` at the next event loop
+                classList.add('compact'); // <== warning: causing to trigger `ResizeObserver event` at the next event loop
 
-                // turn on ResizeObserver soon (to avoid listening `ResizeObserver event` => firing `handleUpdate()`):
+                // turn on ResizeObserver soon (to avoid triggering `ResizeObserver event` => firing `handleUpdate()`):
                 setTimeout(() => {
                     turnOnResizeObserver();
                 }, 0);
@@ -671,13 +671,18 @@ export function useVariantCompact<TElement extends HTMLElement = HTMLElement>(pr
 
 
 
-            // decides the dynamic compact mode based on the measured overflows:
+            // update the dynamic compact mode based on the measured menu's overflows:
             setCompactDn(
                 (scrollWidth > clientWidth)
                 ||
                 (scrollHeight > clientHeight)
             );
         };
+
+
+
+        // update for the first time:
+        handleUpdate();
 
 
         
@@ -711,7 +716,7 @@ export function useVariantCompact<TElement extends HTMLElement = HTMLElement>(pr
 
             // ignores resizing by animations:
             items = items.filter((item) => (item.getAnimations().length === 0));
-            if (!items.length) return; // no existing items => nothing to do
+            if (!items.length) return; // no non_animating items => nothing to do
 
 
 
@@ -719,10 +724,10 @@ export function useVariantCompact<TElement extends HTMLElement = HTMLElement>(pr
             await handleUpdate();
         }) : null;
 
-        const resizeObserverElements = [navbar, ...Array.from(navbar.children)] as HTMLElement[];
+        const resizeObserverItems = [navbar, ...(Array.from(navbar.children) as HTMLElement[])];
         const turnOnResizeObserver = () => {
             if (resizeObserver && (initialResizeEvent === null)) {
-                resizeObserverElements.forEach((item) => {
+                resizeObserverItems.forEach((item) => {
                     // update in the future:
                     initialResizeEvent = true; // prevent the insertion dom event
                     resizeObserver.observe(item, { box: 'border-box' });
@@ -733,16 +738,10 @@ export function useVariantCompact<TElement extends HTMLElement = HTMLElement>(pr
             initialResizeEvent = null;
             resizeObserver?.disconnect();
         }
+
+        turnOnResizeObserver();
         //#endregion when navbar / navbar's items resized
         //#endregion update in the future
-
-
-
-        // update for the first time:
-        handleUpdate();
-
-        // update in the future:
-        turnOnResizeObserver();
 
 
 
@@ -765,7 +764,8 @@ export function useVariantCompact<TElement extends HTMLElement = HTMLElement>(pr
 
 export interface NavbarMenuProps<TElement extends HTMLElement = HTMLElement>
     extends
-        ActionControlProps<TElement>
+        ActionControlProps<TElement>,
+        React.AnchorHTMLAttributes<TElement>
 {
 }
 export function NavbarMenu<TElement extends HTMLElement = HTMLElement>(props: NavbarMenuProps<TElement>) {
@@ -803,8 +803,8 @@ export interface NavbarProps<TElement extends HTMLElement = HTMLElement>
         VariantCompact
 {
     // children:
-    logo?     : React.ReactChild | boolean
-    toggler?  : React.ReactChild | boolean
+    logo?     : React.ReactChild | boolean | null
+    toggler?  : React.ReactChild | boolean | null
     children? : React.ReactNode
 }
 export default function Navbar<TElement extends HTMLElement = HTMLElement>(props: NavbarProps<TElement>) {
@@ -850,6 +850,10 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
         // nodestrap's component:
         if (isTypeOf(logo, Element)) return (
             <logo.type
+                // other props:
+                {...logo.props}
+
+
                 // classes:
                 classes={[...(logo.props.classes ?? []),
                     'logo', // inject logo class
@@ -874,6 +878,13 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
         // default (unset):
         if (toggler === undefined) return (
             <TogglerMenuButton
+                // accessibility:
+                active={isActive}
+                onActiveChange={(newActive) => {
+                    setActive(newActive);
+                }}
+                
+                
                 // variants:
                 mild={mildFn}
                 
@@ -882,13 +893,6 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
                 classes={[
                     'toggler', // inject toggler class
                 ]}
-
-
-                // values:
-                active={isActive}
-                onActiveChange={(newActive) => {
-                    setActive(newActive);
-                }}
             />
         );
 
@@ -897,6 +901,10 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
         // nodestrap's component:
         if (isTypeOf(toggler, Element)) return (
             <toggler.type
+                // other props:
+                {...toggler.props}
+
+
                 // classes:
                 classes={[...(toggler.props.classes ?? []),
                     'toggler', // inject toggler class
@@ -904,13 +912,13 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
 
                 {...(isTypeOf(toggler, Indicator) ? ({
-                    // values:
+                    // accessibility:
                     active         : (toggler.props as IndicatorProps).active ?? isActive,
                 } as IndicatorProps) : {})}
 
                 
                 {...(isTypeOf(toggler, Check) ? ({
-                    // values:
+                    // accessibility:
                     onActiveChange : (toggler.props as CheckProps).onActiveChange ?? ((newActive) => {
                         setActive(newActive);
                     }),
@@ -979,9 +987,9 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
             onKeyUp={(e) => {
                 // backwards:
                 props.onKeyUp?.(e);
-                
-                
-                
+
+
+
                 if (!e.defaultPrevented) {
                     if (isActive && ((e.key === 'Escape') || (e.code === 'Escape'))) {
                         setActive(false);
@@ -992,13 +1000,20 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
         >
             { logoFn }
             { togglerFn }
-            <div
+            { children && <div
                 // classes:
                 className='menus'
 
 
                 // events:
                 onAnimationEnd={(e) => {
+                    /*
+                        active/passive rely on `.menus`' active/passive
+                        
+                        // todo will be perfected soon:
+                        enable/disable rely on `NavbarMenu` enable/disable
+                        if the `Navbar` doesn't have any `NavbarMenu` it wouldn't work
+                    */
                     // triggers `Navbar`'s onAnimationEnd event
                     e.currentTarget.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
                 }}
@@ -1013,34 +1028,16 @@ export default function Navbar<TElement extends HTMLElement = HTMLElement>(props
 
                         // essentials:
                         key={child.key ?? index}
-
-                        
-                        // events:
-                        onAnimationEnd={(e) => {
-                            // triggers `Navbar`'s onAnimationEnd event
-                            e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }));
-
-
-                            // forwards:
-                            child.props.onAnimationEnd?.(e);
-                        }}
                     />
                     :
                     <NavbarMenu
                         // essentials:
                         key={index}
-
-
-                        // events:
-                        onAnimationEnd={(e) =>
-                            // triggers `Navbar`'s onAnimationEnd event
-                            e.currentTarget.parentElement?.parentElement?.dispatchEvent(new AnimationEvent('animationend', { animationName: e.animationName, bubbles: true }))
-                        }
                     >
                         { child }
                     </NavbarMenu>
                 ))}
-            </div>
+            </div> }
         </Popup>
     );
 }
