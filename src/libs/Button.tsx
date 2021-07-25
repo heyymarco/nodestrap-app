@@ -258,6 +258,8 @@ const cssConfig = new CssConfig(() => {
     return {
         whiteSpace  : 'normal',
 
+        
+        
         //#region spacings
         gapX        : spacers.sm,
         gapY        : spacers.sm,
