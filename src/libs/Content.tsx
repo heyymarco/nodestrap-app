@@ -68,12 +68,12 @@ export const contentStyles = new ContentStyles();
 const cssConfig = new CssConfig(() => {
     return {
         //#region spacings
-        paddingInline        : spacers.default, // override to Element
-        paddingBlock         : spacers.default, // override to Element
-        paddingInlineSm      : spacers.sm,      // override to Element
-        paddingBlockSm       : spacers.sm,      // override to Element
-        paddingInlineLg      : spacers.lg,      // override to Element
-        paddingBlockLg       : spacers.lg,      // override to Element
+        paddingInline        : spacers.default, // override to BasicElement
+        paddingBlock         : spacers.default, // override to BasicElement
+        paddingInlineSm      : spacers.sm,      // override to BasicElement
+        paddingBlockSm       : spacers.sm,      // override to BasicElement
+        paddingInlineLg      : spacers.lg,      // override to BasicElement
+        paddingBlockLg       : spacers.lg,      // override to BasicElement
         //#endregion spacings
     };
 }, /*prefix: */'ct');
