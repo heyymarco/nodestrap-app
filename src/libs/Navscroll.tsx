@@ -481,7 +481,7 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
 
         //#region update in the future
         //#region when descendants resized
-        let initialResizeEvent = false;
+        let initialResizeEvent : boolean|null = null;
         const resizeObserver = ResizeObserver ? new ResizeObserver(async (entries) => {
             // ignores the insertion dom event:
             if (initialResizeEvent) {

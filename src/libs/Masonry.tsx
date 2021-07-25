@@ -323,7 +323,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
 
         //#region update in the future
         //#region when items resized
-        let initialResizeEvent = false;
+        let initialResizeEvent : boolean|null = null;
         const resizeObserver = ResizeObserver ? new ResizeObserver(async (entries) => {
             // ignores the insertion dom event:
             if (initialResizeEvent) {
