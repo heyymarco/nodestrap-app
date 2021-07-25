@@ -13,7 +13,7 @@ import BasicComponent   from '../libs/BasicComponent';
 import Indicator from '../libs/Indicator';
 import Content from '../libs/Content';
 // import ButtonIcon   from '../libs/ButtonIcon';
-import {Navbar, NavbarMenu} from '../libs/Navbar2';
+import {Navbar, NavbarMenu} from '../libs/Navbar';
 
 
 
