@@ -102,7 +102,7 @@ Form^ todo at outlined stile => the children outlined should use their own color
 validations^
 accessibilities^
 
-Navbar#
+Navbar^
 NavbarMenu^
 
 
