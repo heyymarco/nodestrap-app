@@ -326,9 +326,9 @@ export interface CarouselProps<TElement extends HTMLElement = HTMLElement>
 
     // children:
     children? : React.ReactNode
-    prevBtn?  : React.ReactChild | boolean
-    nextBtn?  : React.ReactChild | boolean
-    nav?      : React.ReactChild | boolean
+    prevBtn?  : React.ReactChild | boolean | null
+    nextBtn?  : React.ReactChild | boolean | null
+    nav?      : React.ReactChild | boolean | null
 }
 export default function Carousel<TElement extends HTMLElement = HTMLElement>(props: CarouselProps<TElement>) {
     // styles:
