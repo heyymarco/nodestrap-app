@@ -324,7 +324,7 @@ export default function Alert<TElement extends HTMLElement = HTMLElement>(props:
 
     // jsx:
     return (
-        <Popup
+        <Popup<TElement>
             // other props:
             {...restProps}
 
