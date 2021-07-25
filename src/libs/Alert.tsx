@@ -76,8 +76,8 @@ export class AlertStyles extends PopupStyles implements IContentStyles {
             just one explicit area: `body`
             icon & control rely on implicit area
         */
-        gridTemplateRows    : [['auto']],
-        gridTemplateColumns : [['auto']],
+        gridTemplateRows    : [['auto'/*fluid height*/]],
+        gridTemplateColumns : [['auto'/*fluid width*/ ]],
         gridTemplateAreas   : [[
             '"body"',
         ]],
