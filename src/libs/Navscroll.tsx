@@ -397,12 +397,12 @@ export default function Navscroll<TElement extends HTMLElement = HTMLElement>(pr
     // dom effects:
     useEffect(() => {
         const target = props.targetRef?.current;
-        if (!target) return;
+        if (!target) return; // target was not set => nothing to do
 
 
 
         // functions:
-        const handleUpdate = async () => {
+        const handleUpdate = async () => { // keeps the UI responsive (not blocking) while handling the event
             const getVisibleChildIndices = (viewport: Viewport, accumResults: number[] = []): number[] => {
                 const children = viewport.children(props.targetFilter);
                 const visibleChild = ((): [Dimension, number]|null => {

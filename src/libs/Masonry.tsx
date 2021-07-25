@@ -206,7 +206,7 @@ export default function Masonry<TElement extends HTMLElement = HTMLElement>(prop
     const masonryRef      = useRef<TElement|null>(null);
     useEffect(() => {
         const masonry = masonryRef.current;
-        if (!masonry) return;
+        if (!masonry) return; // masonry was unloaded => nothing to do
 
 
 
