@@ -493,7 +493,7 @@ export class ListgroupStyles extends ContentStyles {
 
 
 
-    // styles:
+    // compositions:
     public /*override*/ composition(): JssStyle { return {
         extend: [
             super.composition(), // copy composition from base

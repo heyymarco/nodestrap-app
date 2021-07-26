@@ -497,7 +497,7 @@ export class NavbarStyles extends PopupStyles {
 
 
 
-    // composites:
+    // compositions:
     public /*override*/ composition(): JssStyle { return {
         extend: [
             super.composition(), // copy composition from base

@@ -292,11 +292,90 @@ export class ElementStyles {
 
 
 
-    //#region mixins
-    protected iif<T extends PropList|JssStyle>(condition: boolean, content: T): T {
-        return condition ? content : ({} as T);
+    // styles:
+    protected _useStylesCache : ((() => Classes<'main'>)|null) = null;
+    
+    /**
+     * Returns a jss stylesheet for styling dom.
+     * @returns A jss stylesheet instance.
+     */
+    public /*virtual*/ useStyles(): Classes<'main'> {
+        // hack: wrap with function twice and then unwrap twice:
+        // so we can use *react hook* here:
+        return (() => // wrap-1
+            () => { // wrap-2
+                const jssContext = useContext(JssContext);
+
+                if (!this._useStylesCache) {
+                    // console.log('creating style...');
+
+                    const jss = jssContext.jss ?? jssDefault;
+                    jss.use(
+                        jssPluginGlobal(),
+                        jssPluginNormalizeShorthands()
+                    );
+
+                    this._useStylesCache = createUseStyles(
+                        Object.assign({},
+                            ...this.styles().map((style) => ({ [style[0] ?? '@global']: style[1] }))
+                        )
+                    );
+                }
+                // else {
+                //     console.log('use cached style');
+                // }
+                return this._useStylesCache();
+            }
+        )()(); // unwrap-1 & unwrap-2
     }
-    //#endregion mixins
+    /**
+     * Creates one/more composite styles, with the themes & states applied.
+     * @returns A `ClassList` represents the composite style definitions.
+     */
+    protected /*virtual*/ styles(): ClassList { return [
+        [ 'main', this.composition() ],
+
+        [ null  , this.global()      ],
+    ]}
+
+    /**
+     * Creates a global style applied to a whole document.
+     * @returns A `JssStyle` represents a global style definition.
+     */
+    public /*virtual*/ global(): JssStyle { return {} }
+
+
+
+    // compositions:
+    /**
+     * Creates a composite style made up from layout + variants + states + functions.
+     * @returns A `JssStyle` represents a composite style definition.
+     */
+    public /*virtual*/ composition(): JssStyle { return {
+        extend: [
+            // watch variant classes:
+            this.useVariants(),
+
+            // watch state classes/pseudo-classes:
+            this.useStates(),
+            
+            // after watching => use func props:
+            this.usePropsFn(),
+
+            // all the required stuff has been loaded,
+            // now load the layout:
+            this.layout(),
+        ] as JssStyle,
+    }}
+
+
+    
+    // layouts:
+    /**
+     * Defines the layout of the component.
+     * @returns A `JssStyle` represents a layout definition.
+     */
+    public /*virtual*/ layout(): JssStyle { return {} }
 
 
 
@@ -355,91 +434,6 @@ export class ElementStyles {
 
 
 
-    // styles:
-    protected _useStylesCache : ((() => Classes<'main'>)|null) = null;
-    
-    /**
-     * Returns a jss stylesheet for styling dom.
-     * @returns A jss stylesheet instance.
-     */
-    public /*virtual*/ useStyles(): Classes<'main'> {
-        // hack: wrap with function twice and then unwrap twice:
-        // so we can use *react hook* here:
-        return (() => // wrap-1
-            () => { // wrap-2
-                const jssContext = useContext(JssContext);
-
-                if (!this._useStylesCache) {
-                    // console.log('creating style...');
-
-                    const jss = jssContext.jss ?? jssDefault;
-                    jss.use(
-                        jssPluginGlobal(),
-                        jssPluginNormalizeShorthands()
-                    );
-
-                    this._useStylesCache = createUseStyles(
-                        Object.assign({},
-                            ...this.styles().map((style) => ({ [style[0] ?? '@global']: style[1] }))
-                        )
-                    );
-                }
-                // else {
-                //     console.log('use cached style');
-                // }
-                return this._useStylesCache();
-            }
-        )()(); // unwrap-1 & unwrap-2
-    }
-
-
-    /**
-     * Creates one/more composite styles, with the themes & states applied.
-     * @returns A `ClassList` represents the composite style definitions.
-     */
-    protected /*virtual*/ styles(): ClassList { return [
-        [ 'main', this.composition() ],
-
-        [ null  , this.globalStyle() ],
-    ]}
-
-
-    /**
-     * Creates a composite style made up from layout + variants + states + functions.
-     * @returns A `JssStyle` represents a composite style definition.
-     */
-    public /*virtual*/ composition(): JssStyle { return {
-        extend: [
-            // watch variant classes:
-            this.useVariants(),
-
-            // watch state classes/pseudo-classes:
-            this.useStates(),
-            
-            // after watching => use func props:
-            this.usePropsFn(),
-
-            // all the required stuff has been loaded,
-            // now load the layout:
-            this.layout(),
-        ] as JssStyle,
-    }}
-
-    /**
-     * Defines the layout of the component.
-     * @returns A `JssStyle` represents a layout definition.
-     */
-    public /*virtual*/ layout(): JssStyle { return {} }
-
-
-    /**
-     * Creates a global style applied to a whole document.
-     * @returns A `JssStyle` represents a global style definition.
-     */
-    public /*virtual*/ globalStyle(): JssStyle { return {} }
-
-
-
     // utilities:
     protected /*virtual*/ combineRules(ruleList: RuleList, addSpecificity: number = 0): JssStyle { return {
         extend: [
@@ -485,7 +479,10 @@ export class ElementStyles {
             })(),
         ] as JssStyle,
     }}
-
+    
+    protected iif<T extends PropList|JssStyle>(condition: boolean, content: T): T {
+        return condition ? content : ({} as T);
+    }
 
     /**
      * Escapes some sets of character in svg data, so it will be valid to be written in css.
@@ -518,13 +515,6 @@ export class ElementStyles {
     public solidBackg(color: Cust.Ref, clip : Prop.BackgroundClip = 'border-box'): JssValue {
         return [[`linear-gradient(${color},${color})`, clip]];
     }
-
-
-
-    // old:
-    public /*virtual*/ statesOld(inherit = false): JssStyle   { return {} }
-    public /*virtual*/ themesIfOld(): JssStyle { return {} }
-    public /*virtual*/ propsFnOld(): JssStyle { return {} }
 }
 
 

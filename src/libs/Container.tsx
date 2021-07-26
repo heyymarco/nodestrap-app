@@ -80,15 +80,15 @@ export class ContainerStyles extends BasicComponentStyles {
 
 
     // styles:
-    public /*override*/ globalStyle(): JssStyle { return {
+    public /*override*/ global(): JssStyle { return {
         // *extend* doesn't work on global
         // extend: [
-        //     super.globalStyle(), // copy globalStyle from base
+        //     super.global(), // copy global from base
         //
         //     this.mediaBreakpoints(),
         // ] as JssStyle,
 
-        ...super.globalStyle(), // copy globalStyle from base
+        ...super.global(), // copy global from base
         ...this.mediaBreakpoints(),
     }}
     public /*virtual*/ mediaBreakpoints(): JssStyle {
