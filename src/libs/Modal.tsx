@@ -249,6 +249,9 @@ export class ModalStyles extends PopupStyles {
         [ 'actionBar', this.actionBarStyle() ],
     ]}
 
+    
+    
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             containerStyles.useContainerGrid(), // applies responsive container functionality using css grid
@@ -378,6 +381,10 @@ export class ModalStyles extends PopupStyles {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'overlay')), // apply *general* cssProps starting with overlay***
     }}
+
+
+
+    // styles:
     public /*virtual*/ bodyStyle(): JssStyle { return {
         // kill the scroll on the body:
         overflow: 'hidden',

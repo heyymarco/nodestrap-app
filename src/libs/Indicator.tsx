@@ -280,7 +280,7 @@ export class IndicatorStyles extends BasicComponentStyles {
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             super.layout(), // copy layout from base

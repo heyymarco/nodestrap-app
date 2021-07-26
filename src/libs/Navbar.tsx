@@ -98,7 +98,7 @@ class NavbarMenuStyles extends ActionControlStyles {
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             super.layout(), // copy layout from base
@@ -364,7 +364,7 @@ export class NavbarStyles extends PopupStyles {
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             super.layout(), // copy layout from base
@@ -498,15 +498,15 @@ export class NavbarStyles extends PopupStyles {
 
 
     // composites:
-    public /*override*/ compositeStyle(): JssStyle { return {
+    public /*override*/ composition(): JssStyle { return {
         extend: [
-            super.compositeStyle(), // copy compositeStyle from base
+            super.composition(), // copy composition from base
         ] as JssStyle,
         
         
         
         // children:
-        [menuElm]: (new NavbarMenuStyles()).compositeStyle(),
+        [menuElm]: (new NavbarMenuStyles()).composition(),
     }}
 }
 export const navbarStyles = new NavbarStyles();

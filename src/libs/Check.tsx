@@ -221,14 +221,14 @@ export class CheckStyles extends EditableActionControlStyles {
         extend: [
             this.hideInput(),
 
-            (new BtnStyles()).compositeStyle(),
+            (new BtnStyles()).composition(),
         ] as JssStyle,
     }}
     public /*virtual*/ togglerButton(): JssStyle { return {
         extend: [
             this.hideInput(),
 
-            (new TogglerBtnStyles()).compositeStyle(),
+            (new TogglerBtnStyles()).composition(),
         ] as JssStyle,
     }}
     public /*virtual*/ switch(): JssStyle { return {

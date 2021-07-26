@@ -398,9 +398,9 @@ export class ElementStyles {
      * @returns A `ClassList` represents the composite style definitions.
      */
     protected /*virtual*/ styles(): ClassList { return [
-        [ 'main', this.compositeStyle() ],
+        [ 'main', this.composition() ],
 
-        [ null  , this.globalStyle()    ],
+        [ null  , this.globalStyle() ],
     ]}
 
 
@@ -408,7 +408,7 @@ export class ElementStyles {
      * Creates a composite style made up from layout + variants + states + functions.
      * @returns A `JssStyle` represents a composite style definition.
      */
-    public /*virtual*/ compositeStyle(): JssStyle { return {
+    public /*virtual*/ composition(): JssStyle { return {
         extend: [
             // watch variant classes:
             this.useVariants(),

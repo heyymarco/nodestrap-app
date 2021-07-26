@@ -155,7 +155,7 @@ class ListgroupItemStyles extends ContentStyles {
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             super.layout(), // copy layout from base
@@ -234,7 +234,7 @@ class ListgroupActionItemStyles extends ActionControlStyles implements IContentS
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             super.layout(), // copy layout from base
@@ -419,7 +419,7 @@ export class ListgroupStyles extends ContentStyles {
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             //#region clear browser's default styles
@@ -490,9 +490,13 @@ export class ListgroupStyles extends ContentStyles {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    public /*override*/ compositeStyle(): JssStyle { return {
+
+
+
+    // styles:
+    public /*override*/ composition(): JssStyle { return {
         extend: [
-            super.compositeStyle(), // copy compositeStyle from base
+            super.composition(), // copy composition from base
         ] as JssStyle,
 
 
@@ -501,13 +505,13 @@ export class ListgroupStyles extends ContentStyles {
         [wrapperElm]: { [listItemElm]: {
             extend: [
                 // general ListgroupItem:
-                (new ListgroupItemStyles()).compositeStyle(),
+                (new ListgroupItemStyles()).composition(),
             ] as JssStyle,
 
 
 
             // special ListgroupItem:
-            '&.actionCtrl': (new ListgroupActionItemStyles()).compositeStyle(),
+            '&.actionCtrl': (new ListgroupActionItemStyles()).composition(),
 
 
 

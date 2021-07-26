@@ -59,7 +59,7 @@ export interface IActionControlStyles {
 
 
 
-    // styles:
+    // layouts:
     actionControlLayout(): JssStyle
 }
 
@@ -163,7 +163,7 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             super.layout(), // copy layout from base

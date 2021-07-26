@@ -27,7 +27,7 @@ import {
 // styles:
 
 export class ContainerStyles extends BasicComponentStyles {
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             super.layout(),         // copy layout from base
@@ -40,6 +40,10 @@ export class ContainerStyles extends BasicComponentStyles {
         // layouts:
         display: 'block',
     }}
+
+
+
+    // uses:
     /**
      * Applies responsive container functionality - without any other styling.
      * @returns A `JssStyle` represents a responsive container style definition.
@@ -73,6 +77,9 @@ export class ContainerStyles extends BasicComponentStyles {
         paddingBlock  : null,
     }}
 
+
+
+    // styles:
     public /*override*/ globalStyle(): JssStyle { return {
         // *extend* doesn't work on global
         // extend: [

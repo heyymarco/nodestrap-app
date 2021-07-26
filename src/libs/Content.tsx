@@ -27,7 +27,7 @@ export interface IContentStyles {
 
 
 
-    // styles:
+    // layouts:
     contentLayout()           : JssStyle
 }
 export class ContentStyles extends IndicatorStyles implements IContentStyles {
@@ -46,7 +46,7 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             super.layout(), // copy layout from base

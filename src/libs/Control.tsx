@@ -293,7 +293,7 @@ export class ControlStyles extends IndicatorStyles {
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             stripOuts.control,  // clear browser's default styles

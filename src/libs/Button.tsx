@@ -97,7 +97,7 @@ class GhostStyles extends ControlStyles {
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         // extend: [
         //     super.outlined(),
@@ -207,12 +207,12 @@ export class ButtonStyles extends ActionControlStyles {
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'link')), // apply *general* cssProps starting with link***
     }}
     public /*virtual*/ ghost(): JssStyle {
-        return (new GhostStyles()).compositeStyle();
+        return (new GhostStyles()).composition();
     }
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             super.layout(), // copy layout from base

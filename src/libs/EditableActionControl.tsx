@@ -102,7 +102,7 @@ export class EditableActionControlStyles extends EditableControlStyles implement
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             super.layout(), // copy layout from base

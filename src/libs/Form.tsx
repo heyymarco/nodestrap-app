@@ -92,7 +92,7 @@ export class FormStyles extends EditableControlStyles implements IContentStyles 
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             super.layout(), // copy layout from base

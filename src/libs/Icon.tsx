@@ -301,7 +301,7 @@ export class IconStyles extends BasicComponentStyles {
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         // layouts:
         display       : 'inline-flex', // use inline flexbox, so it takes the width & height as we set
@@ -342,6 +342,10 @@ export class IconStyles extends BasicComponentStyles {
 
         foreg         : null, // delete from cssProps; in img-icon: foreg => backgColor ; in font-icon: foreg => font-color
     }}
+
+
+
+    // uses:
     public /*virtual*/ useIcon(img: Cust.Ref, foreg?: Cust.Ref): JssStyle { return {
         extend: [
             // layout + image => img-icon

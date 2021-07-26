@@ -112,7 +112,7 @@ export class AccordionItemStyles extends PopupStyles implements IContentStyles {
 
 
 
-    // styles:
+    // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             super.layout(), // copy layout from base
@@ -128,8 +128,12 @@ export class AccordionItemStyles extends PopupStyles implements IContentStyles {
     public /*implement*/ contentLayout(): JssStyle {
         return contentStyles.contentLayout(); // copy layout from Content
     }
-    public /*override*/ compositeStyle(): JssStyle { return {
-        '&&': super.compositeStyle(), // makes AccordionItem more specific than ListGroupItem
+
+
+
+    // compositions:
+    public /*override*/ composition(): JssStyle { return {
+        '&&': super.composition(), // makes AccordionItem more specific than ListGroupItem
     }}
 }
 export const accordionItemStyles = new AccordionItemStyles();
