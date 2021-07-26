@@ -294,7 +294,6 @@ export class ElementStyles {
 
     // styles:
     protected _useStylesCache : ((() => Classes<'main'>)|null) = null;
-    
     /**
      * Returns a jss stylesheet for styling dom.
      * @returns A jss stylesheet instance.
@@ -404,7 +403,6 @@ export class ElementStyles {
     public /*virtual*/ useStates(inherit = false): JssStyle {
         return this.combineRules(this.states(inherit), /*addSpecificity :*/1);
     }
-
     /**
      * Creates css rule definitions for all states by manipulating some props.
      * @param inherit `true` to inherit states from parent element -or- `false` to create independent states.
