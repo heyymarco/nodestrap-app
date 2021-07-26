@@ -32,20 +32,6 @@ import {
 const inputElm = '&>:first-child';
 
 export class InputStyles extends EditableTextControlStyles {
-    // variants:
-    public /*override*/ size(size: string): JssStyle { return {
-        extend: [
-            super.size(size), // copy sizes from base
-        ] as JssStyle,
-
-
-
-        // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
-    }}
-
-
-
     // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
@@ -111,6 +97,20 @@ export class InputStyles extends EditableTextControlStyles {
         // copy parent's paddings:
         paddingInline  : cssProps.paddingInline,
         paddingBlock   : cssProps.paddingBlock,
+    }}
+    
+    
+    
+    // variants:
+    public /*override*/ size(size: string): JssStyle { return {
+        extend: [
+            super.size(size), // copy sizes from base
+        ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 }
 export const inputStyles = new InputStyles();

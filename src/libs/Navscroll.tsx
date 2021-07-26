@@ -24,9 +24,6 @@ import {
     ListgroupItem,
 }                           from './Listgroup'
 
-// other supports:
-import deepEqual            from 'deep-equal'
-
 
 
 // utils:
@@ -387,7 +384,15 @@ export interface NavscrollProps<TElement extends HTMLElement = HTMLElement>
 export default function Navscroll<TElement extends HTMLElement = HTMLElement>(props: NavscrollProps<TElement>) {
     // states:
     const [activeIndices, setActiveIndices] = useReducer((indices: number[], newIndices: number[]): number[] => {
-        if (deepEqual(newIndices, indices)) return indices; // already the same, use the old as by-reference
+        if (((): boolean => {
+            if (newIndices.length !== indices.length) return false; // difference detected
+
+            for (let i = 0; i < newIndices.length; i++) {
+                if (newIndices[i] !== indices[i]) return false; // difference detected
+            } // for
+
+            return true; // no differences detected
+        })()) return indices; // already the same, use the old as by-reference
 
         return newIndices; // update with the new one
     }, []);

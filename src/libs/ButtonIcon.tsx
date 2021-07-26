@@ -39,23 +39,6 @@ import {
 // styles:
 
 export class ButtonIconStyles extends ButtonStyles {
-    // variants:
-    public /*override*/ sizeOptions(): string[] {
-        return ['xs', 'sm', 'lg', 'xl'];
-    }
-    public /*override*/ size(size: string): JssStyle { return {
-        extend: [
-            super.size(size), // copy sizes from base
-        ] as JssStyle,
-
-
-
-        // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
-    }}
-
-
-
     // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
@@ -86,6 +69,23 @@ export class ButtonIconStyles extends ButtonStyles {
 
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    
+    
+    
+    // variants:
+    public /*override*/ sizeOptions(): string[] {
+        return ['xs', 'sm', 'lg', 'xl'];
+    }
+    public /*override*/ size(size: string): JssStyle { return {
+        extend: [
+            super.size(size), // copy sizes from base
+        ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 }
 export const buttonIconStyles = new ButtonIconStyles();

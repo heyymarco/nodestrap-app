@@ -53,25 +53,6 @@ const prevBtnElm = '&>.prevBtn';
 const nextBtnElm = '&>.nextBtn';
 
 export class CarouselStyles extends BasicComponentStyles implements IContentStyles {
-    // variants:
-    public /*override*/ size(size: string): JssStyle { return {
-        extend: [
-            super.size(size), // copy sizes from base
-
-            this.contentSize(size),
-        ] as JssStyle,
-
-
-
-        // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
-    }}
-    public /*implement*/ contentSize(size: string): JssStyle {
-        return contentStyles.contentSize(size); // copy sizes from Content
-    }
-
-
-
     // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
@@ -260,6 +241,25 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'nav')), // apply *general* cssProps starting with nav***
     }}
+    
+    
+    
+    // variants:
+    public /*override*/ size(size: string): JssStyle { return {
+        extend: [
+            super.size(size), // copy sizes from base
+
+            this.contentSize(size),
+        ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
+    }}
+    public /*implement*/ contentSize(size: string): JssStyle {
+        return contentStyles.contentSize(size); // copy sizes from Content
+    }
 }
 export const carouselStyles = new CarouselStyles();
 

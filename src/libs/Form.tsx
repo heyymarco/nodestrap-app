@@ -40,6 +40,25 @@ import {
 // styles:
 
 export class FormStyles extends EditableControlStyles implements IContentStyles {
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            super.layout(), // copy layout from base
+
+            this.contentLayout(),
+        ] as JssStyle,
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    public /*implement*/ contentLayout(): JssStyle {
+        return contentStyles.contentLayout(); // copy layout from Content
+    }
+    
+    
+    
     // variants:
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -89,25 +108,6 @@ export class FormStyles extends EditableControlStyles implements IContentStyles 
 
     public /*override*/ resetPressRelease(inherit: boolean)  : PropList  { return {} } // disabled
     //#endregion discard all Control's states
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            super.layout(), // copy layout from base
-
-            this.contentLayout(),
-        ] as JssStyle,
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
-    public /*implement*/ contentLayout(): JssStyle {
-        return contentStyles.contentLayout(); // copy layout from Content
-    }
 }
 export const formStyles = new FormStyles();
 

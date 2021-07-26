@@ -39,6 +39,20 @@ export class EditableActionControlStyles extends EditableControlStyles implement
 
 
 
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            super.layout(), // copy layout from base
+
+            this.actionControlLayout(),
+        ] as JssStyle,
+    }}
+    public /*implement*/ actionControlLayout(): JssStyle {
+        return actionControlStyles.actionControlLayout(); // copy layout from actionControl
+    }
+
+
+
     // variants:
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -98,20 +112,6 @@ export class EditableActionControlStyles extends EditableControlStyles implement
     ]}
     public /*implement*/ actionControlAnimFn(): Cust.Ref[] {
         return actionControlStyles.actionControlAnimFn(); // copy functional animations from actionControl
-    }
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            super.layout(), // copy layout from base
-
-            this.actionControlLayout(),
-        ] as JssStyle,
-    }}
-    public /*implement*/ actionControlLayout(): JssStyle {
-        return actionControlStyles.actionControlLayout(); // copy layout from actionControl
     }
 }
 export const editableActionControlStyles = new EditableActionControlStyles();

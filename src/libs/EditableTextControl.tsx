@@ -56,6 +56,58 @@ export class EditableTextControlStyles extends EditableControlStyles {
 
 
 
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            super.layout(), // copy layout from base
+        ] as JssStyle,
+
+
+
+        // children:
+        [iconElm]: this.iconLayout(),
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    protected /*virtual*/ iconLayout(): JssStyle { return {
+        extend: [
+            iconStyles.useIcon( // apply icon
+                /*img   :*/ this.ref(this._iconValInv),
+                /*foreg :*/ this.ref(this._iconCol)
+            ),
+        ] as JssStyle,
+
+
+
+        // layouts:
+        content : '""',
+        display : 'inline-block', // use inline-block, so it takes the width & height as we set
+
+        
+        
+        // sizes:
+        boxSizing         : 'border-box', // the final size is including borders & paddings
+        blockSize         :            cssProps.iconSize,
+        inlineSize        : [['calc(', cssProps.iconSize,  '* 1.25)']], // make sure the icon's image ratio is 1.25 or less
+        marginInlineStart : [['calc(', cssProps.iconSize, '* -1.25)']], // sizeless (ghost): cancel-out icon's width with negative margin, so it doen't take up space
+        maskPosition      : 'right', // align icon to the right
+
+        
+        
+        // accessibility:
+        pointerEvents     : 'none', // just an overlay element (ghost), no mouse interaction, clicking on it will focus on the parent
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'icon')), // apply *general* cssProps starting with icon***
+    }}
+
+
+
     // variants:
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -155,58 +207,6 @@ export class EditableTextControlStyles extends EditableControlStyles {
             this._foregFn,
         ),
         //#endregion finals
-    }}
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            super.layout(), // copy layout from base
-        ] as JssStyle,
-
-
-
-        // children:
-        [iconElm]: this.iconLayout(),
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
-    protected /*virtual*/ iconLayout(): JssStyle { return {
-        extend: [
-            iconStyles.useIcon( // apply icon
-                /*img   :*/ this.ref(this._iconValInv),
-                /*foreg :*/ this.ref(this._iconCol)
-            ),
-        ] as JssStyle,
-
-
-
-        // layouts:
-        content : '""',
-        display : 'inline-block', // use inline-block, so it takes the width & height as we set
-
-        
-        
-        // sizes:
-        boxSizing         : 'border-box', // the final size is including borders & paddings
-        blockSize         :            cssProps.iconSize,
-        inlineSize        : [['calc(', cssProps.iconSize,  '* 1.25)']], // make sure the icon's image ratio is 1.25 or less
-        marginInlineStart : [['calc(', cssProps.iconSize, '* -1.25)']], // sizeless (ghost): cancel-out icon's width with negative margin, so it doen't take up space
-        maskPosition      : 'right', // align icon to the right
-
-        
-        
-        // accessibility:
-        pointerEvents     : 'none', // just an overlay element (ghost), no mouse interaction, clicking on it will focus on the parent
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'icon')), // apply *general* cssProps starting with icon***
     }}
 }
 export const editableTextControlStyles = new EditableTextControlStyles();

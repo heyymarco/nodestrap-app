@@ -27,6 +27,36 @@ import {
 // styles:
 
 export class ContainerStyles extends BasicComponentStyles {
+    // styles:
+    public /*override*/ global(): JssStyle { return {
+        // *extend* doesn't work on global
+        // extend: [
+        //     super.global(), // copy global from base
+        //
+        //     this.mediaBreakpoints(),
+        // ] as JssStyle,
+
+        ...super.global(), // copy global from base
+        ...this.mediaBreakpoints(),
+    }}
+    
+    public /*virtual*/ mediaBreakpoints(): JssStyle {
+        // *extend* doesn't work on global
+        // so we use Object.assign() to extend the breakpoint[]
+        return Object.assign({}, ...Object.keys(breakpoints).map((bpName) =>
+            breakpoint.mediaUp(bpName, {
+                // doubling the :root to win with CssConfig
+                ':root:root': this.mediaBreakpoint(bpName),
+            })
+        ));
+    }
+    public /*virtual*/ mediaBreakpoint(breakpoint: string): JssStyle { return {
+        // overwrites propName = propName{Breakpoint}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, breakpoint)),
+    }}
+    
+    
+    
     // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
@@ -75,35 +105,6 @@ export class ContainerStyles extends BasicComponentStyles {
         // since we use grid as paddings, so the css paddings are not longer needed:
         paddingInline : null,
         paddingBlock  : null,
-    }}
-
-
-
-    // styles:
-    public /*override*/ global(): JssStyle { return {
-        // *extend* doesn't work on global
-        // extend: [
-        //     super.global(), // copy global from base
-        //
-        //     this.mediaBreakpoints(),
-        // ] as JssStyle,
-
-        ...super.global(), // copy global from base
-        ...this.mediaBreakpoints(),
-    }}
-    public /*virtual*/ mediaBreakpoints(): JssStyle {
-        // *extend* doesn't work on global
-        // so we use Object.assign() to extend the breakpoint[]
-        return Object.assign({}, ...Object.keys(breakpoints).map((bpName) =>
-            breakpoint.mediaUp(bpName, {
-                // doubling the :root to win with CssConfig
-                ':root:root': this.mediaBreakpoint(bpName),
-            })
-        ));
-    }
-    public /*virtual*/ mediaBreakpoint(breakpoint: string): JssStyle { return {
-        // overwrites propName = propName{Breakpoint}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, breakpoint)),
     }}
 }
 export const containerStyles = new ContainerStyles();

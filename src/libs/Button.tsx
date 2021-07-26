@@ -33,6 +33,29 @@ import {
 // styles:
 
 class GhostStyles extends ControlStyles {
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        // extend: [
+        //     super.outlined(),
+        // ] as JssStyle,
+
+        // always *toggle on* the outlined props:
+        [this.decl(this._outlinedForegTg)] : [[this.ref(this._outlinedForegFn)], '!important'],
+        [this.decl(this._outlinedBackgTg)] : [[this.ref(this._outlinedBackgFn)], '!important'],
+
+
+
+        // borders:
+        boxShadow : 'none !important', // no focus animation
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'ghost')), // apply *general* cssProps starting with ghost***
+    }}
+    
+    
+    
     // variants:
     public /*override*/ themes()                             : RuleList { return [] } // disabled
 
@@ -94,32 +117,47 @@ class GhostStyles extends ControlStyles {
 
     // functions:
     public /*override*/ propsFn()                            : PropList { return {} }  // disabled
+}
 
-
-
+export class ButtonStyles extends ActionControlStyles {
     // layouts:
     public /*override*/ layout(): JssStyle { return {
-        // extend: [
-        //     super.outlined(),
-        // ] as JssStyle,
-
-        // always *toggle on* the outlined props:
-        [this.decl(this._outlinedForegTg)] : [[this.ref(this._outlinedForegFn)], '!important'],
-        [this.decl(this._outlinedBackgTg)] : [[this.ref(this._outlinedBackgFn)], '!important'],
+        extend: [
+            super.layout(), // copy layout from base
+        ] as JssStyle,
 
 
 
-        // borders:
-        boxShadow : 'none !important', // no focus animation
+        // layouts:
+        display        : 'inline-flex', // use inline flexbox, so it takes the width & height as needed
+     // flexDirection  : 'row',         // customizable orientation // already defined in inline()/block()
+        justifyContent : 'center',      // center items horizontally
+        alignItems     : 'center',      // center items vertically
+
+        
+
+        // positions:
+        verticalAlign  : 'baseline',    // button's text should be aligned with sibling text, so the button behave like <span> wrapper
+
+
+
+        // sizes:
+        /* -- auto size depends on the text's/content's size -- */
+        boxSizing      : 'content-box', // the final size is excluding borders & paddings
+
+
+
+        // typos:
+        textAlign      : 'center',
 
 
 
         // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'ghost')), // apply *general* cssProps starting with ghost***
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-}
-
-export class ButtonStyles extends ActionControlStyles {
+    
+    
+    
     // variants:
     public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
@@ -209,44 +247,6 @@ export class ButtonStyles extends ActionControlStyles {
     public /*virtual*/ ghost(): JssStyle {
         return (new GhostStyles()).composition();
     }
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            super.layout(), // copy layout from base
-        ] as JssStyle,
-
-
-
-        // layouts:
-        display        : 'inline-flex', // use inline flexbox, so it takes the width & height as needed
-     // flexDirection  : 'row',         // customizable orientation // already defined in inline()/block()
-        justifyContent : 'center',      // center items horizontally
-        alignItems     : 'center',      // center items vertically
-
-        
-
-        // positions:
-        verticalAlign  : 'baseline',    // button's text should be aligned with sibling text, so the button behave like <span> wrapper
-
-
-
-        // sizes:
-        /* -- auto size depends on the text's/content's size -- */
-        boxSizing      : 'content-box', // the final size is excluding borders & paddings
-
-
-
-        // typos:
-        textAlign      : 'center',
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
 }
 export const buttonStyles = new ButtonStyles();
 

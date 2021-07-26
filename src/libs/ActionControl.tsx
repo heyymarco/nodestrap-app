@@ -33,6 +33,11 @@ import {
 // styles:
 
 export interface IActionControlStyles {
+    // layouts:
+    actionControlLayout(): JssStyle
+    
+    
+    
     // variants:
     actionControlSize(size: string): JssStyle
 
@@ -56,11 +61,6 @@ export interface IActionControlStyles {
 
     // functions:
     actionControlAnimFn(): Cust.Ref[]
-
-
-
-    // layouts:
-    actionControlLayout(): JssStyle
 }
 
 export class ActionControlStyles extends ControlStyles implements IActionControlStyles {
@@ -70,6 +70,26 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
     protected readonly _animPressRelease    = 'animPressRelease'
     //#endregion animations
     //#endregion props
+
+
+
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            super.layout(), // copy layout from base
+
+            this.actionControlLayout(),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ actionControlLayout(): JssStyle { return {
+        // accessibility:
+        userSelect : 'none', // disable selecting text (double clicking not causing selecting text)
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
 
 
 
@@ -160,26 +180,6 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
     public /*virtual*/ actionControlAnimFn(): Cust.Ref[] { return [
         this.ref(this._animPressRelease, this._animNone),
     ]}
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            super.layout(), // copy layout from base
-
-            this.actionControlLayout(),
-        ] as JssStyle,
-    }}
-    public /*virtual*/ actionControlLayout(): JssStyle { return {
-        // accessibility:
-        userSelect : 'none', // disable selecting text (double clicking not causing selecting text)
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
 }
 export const actionControlStyles = new ActionControlStyles();
 

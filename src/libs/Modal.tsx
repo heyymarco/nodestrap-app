@@ -89,6 +89,173 @@ export class ModalStyles extends PopupStyles {
 
 
 
+    // styles:
+    public /*override*/ useStyles(): Classes<'main'|'body'|'actionBar'> {
+        return super.useStyles() as Classes<'main'|'body'|'actionBar'>;
+    }
+    protected /*override*/ styles(): ClassList { return [
+        ...super.styles(),
+
+        
+        
+        [ 'body'     , this.bodyStyle()      ],
+        [ 'actionBar', this.actionBarStyle() ],
+    ]}
+    
+    public /*virtual*/ bodyStyle(): JssStyle { return {
+        // kill the scroll on the body:
+        overflow: 'hidden',
+    }}
+    public /*virtual*/ actionBarStyle(): JssStyle { return {
+        // layouts:
+        display        : 'flex',          // use block flexbox, so it takes the entire parent's width
+        flexDirection  : 'row',           // items are stacked horizontally
+        justifyContent : 'space-between', // items are separated horizontally
+        alignItems     : 'center',        // items are centered vertically
+
+
+
+        // children:
+        '&>:first-child:last-child': { // only one child
+            marginInlineStart: 'auto',
+        },
+    }}
+
+    
+    
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            containerStyles.useContainerGrid(), // applies responsive container functionality using css grid
+        ] as JssStyle,
+
+
+
+        // layouts:
+     // display      : 'grid',             // already defined in `useContainerGrid()`. We use a grid for the layout, so we can align the Card both horizontally & vertically
+        justifyItems : cssProps.horzAlign, // align (default center) horizontally
+        alignItems   : cssProps.vertAlign, // align (default center) vertically
+
+
+
+        // sizes:
+        // fills the entire screen:
+        boxSizing : 'border-box', // the final size is including borders & paddings
+        position  : 'fixed',
+        inset     : 0,
+        width     : '100vw',
+        height    : '100vh',
+     // maxWidth  : 'fill-available', // hack to excluding scrollbar // not needed since all html pages are virtually full width
+     // maxHeight : 'fill-available', // hack to excluding scrollbar // will be handle by javascript soon
+        
+        
+        
+        // backgrounds:
+        backg                     : this.ref(this._overlayBackg),
+
+
+
+        // states & animations:
+        anim                      : this.ref(this._overlayAnim),
+        [this.decl(this._animFw)] : this.ref(this._anim), // store _anim into _animFw for overwriting Card's _anim
+
+
+
+        //#region children
+        //#region Card
+        ...((): JssStyle => {
+            const newCardProps = this.overwriteParentProps(
+                this.filterGeneralProps(cssProps), // apply *general* cssProps
+
+                // parents:
+                rcssDecls, // Card
+                ccssDecls, // Content
+                icssDecls, // Indicator
+                bcssDecls, // BasicComponent
+            );
+
+
+
+            return {
+                ...this.backupProps(newCardProps), // backup Card's cssProps before overwriting
+
+
+
+                [cardElm]: { // Card's layer
+                    extend: [
+                        stripOuts.focusableElement, // clear browser's default styles
+                    ] as JssStyle,
+
+
+
+                    '&:not(._)': { // force overwrite
+                        // layouts:
+                        gridArea : 'content',
+                        
+                        
+                        
+                        // apply fn props:
+                        anim     : this.ref(this._animFw),
+                        
+                        
+                        
+                        // customize:
+                        ...newCardProps, // overwrite Card's cssProps
+                    } as JssStyle,
+    
+    
+
+                    // Card's items:
+                    [cardItemsElm] : this.restoreProps(newCardProps), // restore Card's cssProps
+
+
+                        
+                    // special conditions:
+                    '&.outlined': {
+                        [cssDecls.backg]: 'none',
+                    } as JssStyle,
+                } as JssStyle,
+            };
+        })(),
+        //#endregion Card
+
+
+
+        //#region psedudo elm for filling the end of horz & vert scroll
+        '&::before, &::after': {
+            // layouts:
+            content     : '""',
+            display     : 'block',
+
+
+            // sizes:
+            // fills the entire grid area:
+            justifySelf : 'stretch',
+            alignSelf   : 'stretch',
+
+
+            // appearances:
+            visibility  : 'hidden',
+        } as JssStyle,
+        '&::before': {
+            // layouts:
+            gridArea    : 'inlineEnd',
+        } as JssStyle,
+        '&::after': {
+            // layouts:
+            gridArea    : 'blockEnd',
+        } as JssStyle,
+        //#endregion psedudo elm for filling the end of horz & vert scroll
+        //#endregion children
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'overlay')), // apply *general* cssProps starting with overlay***
+    }}
+
+
+
     // variants:
     public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
@@ -233,176 +400,6 @@ export class ModalStyles extends PopupStyles {
     public /*virtual*/ overlayAnimFn(): Cust.Ref[] { return [
         this.ref(this._overlayAnimActivePassive, this._animNone),
     ]}
-
-
-
-    // styles:
-    public /*override*/ useStyles(): Classes<'main'|'body'|'actionBar'> {
-        return super.useStyles() as Classes<'main'|'body'|'actionBar'>;
-    }
-    protected /*override*/ styles(): ClassList { return [
-        ...super.styles(),
-
-        
-        
-        [ 'body'     , this.bodyStyle()      ],
-        [ 'actionBar', this.actionBarStyle() ],
-    ]}
-
-    
-    
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            containerStyles.useContainerGrid(), // applies responsive container functionality using css grid
-        ] as JssStyle,
-
-
-
-        // layouts:
-     // display      : 'grid',             // already defined in `useContainerGrid()`. We use a grid for the layout, so we can align the Card both horizontally & vertically
-        justifyItems : cssProps.horzAlign, // align (default center) horizontally
-        alignItems   : cssProps.vertAlign, // align (default center) vertically
-
-
-
-        // sizes:
-        // fills the entire screen:
-        boxSizing : 'border-box', // the final size is including borders & paddings
-        position  : 'fixed',
-        inset     : 0,
-        width     : '100vw',
-        height    : '100vh',
-     // maxWidth  : 'fill-available', // hack to excluding scrollbar // not needed since all html pages are virtually full width
-     // maxHeight : 'fill-available', // hack to excluding scrollbar // will be handle by javascript soon
-        
-        
-        
-        // backgrounds:
-        backg                     : this.ref(this._overlayBackg),
-
-
-
-        // states & animations:
-        anim                      : this.ref(this._overlayAnim),
-        [this.decl(this._animFw)] : this.ref(this._anim), // store _anim into _animFw for overwriting Card's _anim
-
-
-
-        //#region children
-        //#region Card
-        ...((): JssStyle => {
-            const newCardProps = this.overwriteParentProps(
-                this.filterGeneralProps(cssProps), // apply *general* cssProps
-
-                // parents:
-                rcssDecls, // Card
-                ccssDecls, // Content
-                icssDecls, // Indicator
-                bcssDecls, // BasicComponent
-            );
-
-
-
-            return {
-                ...this.backupProps(newCardProps), // backup Card's cssProps before overwriting
-
-
-
-                [cardElm]: { // Card's layer
-                    extend: [
-                        stripOuts.focusableElement, // clear browser's default styles
-                    ] as JssStyle,
-
-
-
-                    '&:not(._)': { // force overwrite
-                        // layouts:
-                        gridArea : 'content',
-                        
-                        
-                        
-                        // apply fn props:
-                        anim     : this.ref(this._animFw),
-                        
-                        
-                        
-                        // customize:
-                        ...newCardProps, // overwrite Card's cssProps
-                    } as JssStyle,
-    
-    
-
-                    // Card's items:
-                    [cardItemsElm] : this.restoreProps(newCardProps), // restore Card's cssProps
-
-
-                        
-                    // special conditions:
-                    '&.outlined': {
-                        [cssDecls.backg]: 'none',
-                    } as JssStyle,
-                } as JssStyle,
-            };
-        })(),
-        //#endregion Card
-
-
-
-        //#region psedudo elm for filling the end of horz & vert scroll
-        '&::before, &::after': {
-            // layouts:
-            content     : '""',
-            display     : 'block',
-
-
-            // sizes:
-            // fills the entire grid area:
-            justifySelf : 'stretch',
-            alignSelf   : 'stretch',
-
-
-            // appearances:
-            visibility  : 'hidden',
-        } as JssStyle,
-        '&::before': {
-            // layouts:
-            gridArea    : 'inlineEnd',
-        } as JssStyle,
-        '&::after': {
-            // layouts:
-            gridArea    : 'blockEnd',
-        } as JssStyle,
-        //#endregion psedudo elm for filling the end of horz & vert scroll
-        //#endregion children
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'overlay')), // apply *general* cssProps starting with overlay***
-    }}
-
-
-
-    // styles:
-    public /*virtual*/ bodyStyle(): JssStyle { return {
-        // kill the scroll on the body:
-        overflow: 'hidden',
-    }}
-    public /*virtual*/ actionBarStyle(): JssStyle { return {
-        // layouts:
-        display        : 'flex',          // use block flexbox, so it takes the entire parent's width
-        flexDirection  : 'row',           // items are stacked horizontally
-        justifyContent : 'space-between', // items are separated horizontally
-        alignItems     : 'center',        // items are centered vertically
-
-
-
-        // children:
-        '&>:first-child:last-child': { // only one child
-            marginInlineStart: 'auto',
-        },
-    }}
 }
 export const modalStyles = new ModalStyles();
 

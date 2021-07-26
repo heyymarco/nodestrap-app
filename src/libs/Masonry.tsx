@@ -35,6 +35,20 @@ import {
 // styles:
 
 export class MasonryStyles extends BasicComponentStyles implements IContentStyles {
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            super.layout(), // copy layout from base
+
+            this.contentLayout(),
+        ] as JssStyle,
+    }}
+    public /*implement*/ contentLayout(): JssStyle {
+        return contentStyles.contentLayout(); // copy layout from Content
+    }
+    
+    
+    
     // variants:
     public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
@@ -44,6 +58,7 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
         [ ':not(.inline)', this.block()  ], // block  style as default
         [      '.inline' , this.inline() ], // inline style as optional
     ]}
+    
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
             super.size(size), // copy sizes from base
@@ -130,20 +145,6 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
 
         columnGap : [[0], '!important'], // strip out the `columnGap` because it will conflict with masonry's direction
     }}
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            super.layout(), // copy layout from base
-
-            this.contentLayout(),
-        ] as JssStyle,
-    }}
-    public /*implement*/ contentLayout(): JssStyle {
-        return contentStyles.contentLayout(); // copy layout from Content
-    }
 }
 export const masonryStyles = new MasonryStyles();
 

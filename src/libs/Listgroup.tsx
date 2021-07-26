@@ -51,6 +51,41 @@ const wrapperElm  = '&>li, &>*';
 const listItemElm = '&>*';
 
 class ListgroupItemStyles extends ContentStyles {
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            super.layout(), // copy layout from base
+        ] as JssStyle,
+
+
+        
+        // layouts:
+        display   : 'block',  // fills the entire wrapper's width
+
+
+
+        // sizes:
+        flex      : [[1, 1]], // growable & shrinkable, fills the entire wrapper's height
+
+
+
+        // strip out shadows:
+        // moved from here to parent,
+        /*
+            i don't know why setting `null` causing the JSS not working,
+            but setting `undefined` causing TS error.
+            so the hack `undefined as unknown as null` solved this problem.
+        */
+        boxShadow : undefined as unknown as null,
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    
+    
+    
     // variants:
     public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
@@ -152,44 +187,30 @@ class ListgroupItemStyles extends ContentStyles {
         borderRadius : 0, // strip out border radius
         //#endregion strip out borders partially
     }}
+}
 
-
-
+class ListgroupActionItemStyles extends ActionControlStyles implements IContentStyles {
     // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
             super.layout(), // copy layout from base
+
+            this.contentLayout(),
         ] as JssStyle,
 
 
-        
-        // layouts:
-        display   : 'block',  // fills the entire wrapper's width
 
-
-
-        // sizes:
-        flex      : [[1, 1]], // growable & shrinkable, fills the entire wrapper's height
-
-
-
-        // strip out shadows:
-        // moved from here to parent,
-        /*
-            i don't know why setting `null` causing the JSS not working,
-            but setting `undefined` causing TS error.
-            so the hack `undefined as unknown as null` solved this problem.
-        */
-        boxShadow : undefined as unknown as null,
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+        // strip out borders:
+        border       : undefined,
+        borderColor  : undefined,
+        borderRadius : undefined,
     }}
-}
-
-class ListgroupActionItemStyles extends ActionControlStyles implements IContentStyles {
+    public /*implement*/ contentLayout(): JssStyle {
+        return contentStyles.contentLayout(); // copy layout from Content
+    }
+    
+    
+    
     // variants:
     public /*override*/ variants(): RuleList { return [
         // ...super.variants(), // no base's variants
@@ -231,30 +252,112 @@ class ListgroupActionItemStyles extends ActionControlStyles implements IContentS
 
         this.ref(this._boxShadowFocusBlur, this._boxShadowNone),
     ]}
+}
 
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
+export class ListgroupStyles extends ContentStyles {
+    // compositions:
+    public /*override*/ composition(): JssStyle { return {
         extend: [
-            super.layout(), // copy layout from base
-
-            this.contentLayout(),
+            super.composition(), // copy composition from base
         ] as JssStyle,
 
 
 
-        // strip out borders:
-        border       : undefined,
-        borderColor  : undefined,
-        borderRadius : undefined,
-    }}
-    public /*implement*/ contentLayout(): JssStyle {
-        return contentStyles.contentLayout(); // copy layout from Content
-    }
-}
+        // children:
+        [wrapperElm]: { [listItemElm]: {
+            extend: [
+                // general ListgroupItem:
+                (new ListgroupItemStyles()).composition(),
+            ] as JssStyle,
 
-export class ListgroupStyles extends ContentStyles {
+
+
+            // special ListgroupItem:
+            '&.actionCtrl': (new ListgroupActionItemStyles()).composition(),
+
+
+
+            // customize:
+            '&:not(.actionCtrl), &.actionCtrl': this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
+        } as JssStyle } as JssStyle,
+    }}
+    
+    
+    
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            //#region clear browser's default styles
+            (() => {
+                const style = stripOuts.list;
+                delete (style as any)['&>li'].display;
+
+                return style;
+            })(),
+            //#endregion clear browser's default styles
+        ] as JssStyle,
+
+
+
+        // layouts:
+     // display        : 'flex',           // customizable orientation // already defined in block()/inline()
+     // flexDirection  : 'column',         // customizable orientation // already defined in block()/inline()
+        justifyContent : 'center',         // items are placed starting from the center and then spread to both sides
+        alignItems     : 'stretch',        // items width are 100% of the parent
+
+
+
+        // sizes:
+        minInlineSize  : 0, // See https://github.com/twbs/bootstrap/pull/22740#issuecomment-305868106
+
+
+
+        // borders:
+        //#region make a nicely rounded corners
+        /*
+            border & borderRadius are moved from children to here,
+            for making consistent border color when the children's color are filtered.
+            so we need to reconstruct the border & borderRadius here.
+        */
+
+
+
+        //#region border-strokes
+        border       : bcssProps.border,          // moved in from children
+        borderColor  : this.ref(this._borderCol), // moved in from children
+        //#endregion border-strokes
+
+
+
+        //#region border radiuses
+        borderRadius : bcssProps.borderRadius, // moved in from children
+        overflow     : 'hidden',               // clip the children at the rounded corners
+        //#endregion border radiuses
+        //#endregion make a nicely rounded corners
+
+
+
+        // shadows:
+        boxShadow    : bcssProps.boxShadow, // moved in from children
+
+
+
+        // children:
+        [wrapperElm]: {
+            // layouts:
+            display        : 'flex',    // use block flexbox, so it takes the entire Listgroup's width
+            justifyContent : 'stretch', // listItems height are 100% of the wrapper (the listItems also need to have growable & shrinkable)
+            alignItems     : 'stretch', // listItems width  are 100% of the wrapper
+        } as JssStyle,
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    
+    
+    
     // variants:
     public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
@@ -415,109 +518,6 @@ export class ListgroupStyles extends ContentStyles {
             },
         } as JssStyle } as JssStyle,
         //#endregion children
-    }}
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            //#region clear browser's default styles
-            (() => {
-                const style = stripOuts.list;
-                delete (style as any)['&>li'].display;
-
-                return style;
-            })(),
-            //#endregion clear browser's default styles
-        ] as JssStyle,
-
-
-
-        // layouts:
-     // display        : 'flex',           // customizable orientation // already defined in block()/inline()
-     // flexDirection  : 'column',         // customizable orientation // already defined in block()/inline()
-        justifyContent : 'center',         // items are placed starting from the center and then spread to both sides
-        alignItems     : 'stretch',        // items width are 100% of the parent
-
-
-
-        // sizes:
-        minInlineSize  : 0, // See https://github.com/twbs/bootstrap/pull/22740#issuecomment-305868106
-
-
-
-        // borders:
-        //#region make a nicely rounded corners
-        /*
-            border & borderRadius are moved from children to here,
-            for making consistent border color when the children's color are filtered.
-            so we need to reconstruct the border & borderRadius here.
-        */
-
-
-
-        //#region border-strokes
-        border       : bcssProps.border,          // moved in from children
-        borderColor  : this.ref(this._borderCol), // moved in from children
-        //#endregion border-strokes
-
-
-
-        //#region border radiuses
-        borderRadius : bcssProps.borderRadius, // moved in from children
-        overflow     : 'hidden',               // clip the children at the rounded corners
-        //#endregion border radiuses
-        //#endregion make a nicely rounded corners
-
-
-
-        // shadows:
-        boxShadow    : bcssProps.boxShadow, // moved in from children
-
-
-
-        // children:
-        [wrapperElm]: {
-            // layouts:
-            display        : 'flex',    // use block flexbox, so it takes the entire Listgroup's width
-            justifyContent : 'stretch', // listItems height are 100% of the wrapper (the listItems also need to have growable & shrinkable)
-            alignItems     : 'stretch', // listItems width  are 100% of the wrapper
-        } as JssStyle,
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
-
-
-
-    // compositions:
-    public /*override*/ composition(): JssStyle { return {
-        extend: [
-            super.composition(), // copy composition from base
-        ] as JssStyle,
-
-
-
-        // children:
-        [wrapperElm]: { [listItemElm]: {
-            extend: [
-                // general ListgroupItem:
-                (new ListgroupItemStyles()).composition(),
-            ] as JssStyle,
-
-
-
-            // special ListgroupItem:
-            '&.actionCtrl': (new ListgroupActionItemStyles()).composition(),
-
-
-
-            // customize:
-            '&:not(.actionCtrl), &.actionCtrl': this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
-        } as JssStyle } as JssStyle,
     }}
 }
 export const listgroupStyles = new ListgroupStyles();

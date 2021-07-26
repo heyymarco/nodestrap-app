@@ -48,6 +48,22 @@ const checkElm = '&::before';
 const labelElm = '&>:nth-child(1n+2)';
 
 class BtnStyles extends ActionControlStyles {
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        [labelElm]: {
+            extend: [
+                buttonStyles.layout(),
+            ] as JssStyle,
+    
+    
+    
+            // customize:
+            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'btn')), // apply *general* cssProps starting with btn***
+        } as JssStyle,
+    }}
+    
+    
+    
     // variants:
     public /*override*/ themes()                             : RuleList { return [] } // disabled
 
@@ -104,22 +120,6 @@ class BtnStyles extends ActionControlStyles {
 
     // functions:
     public /*override*/ propsFn()                            : PropList { return {} } // disabled
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        [labelElm]: {
-            extend: [
-                buttonStyles.layout(),
-            ] as JssStyle,
-    
-    
-    
-            // customize:
-            ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'btn')), // apply *general* cssProps starting with btn***
-        } as JssStyle,
-    }}
 }
 
 class TogglerBtnStyles extends BtnStyles {
@@ -162,6 +162,174 @@ export class CheckStyles extends EditableActionControlStyles {
     protected readonly _animCheckClear      = 'animCheckClear'
     //#endregion animations
     //#endregion props
+
+
+
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            super.layout(), // copy layout from base
+        ] as JssStyle,
+
+
+
+        // layouts:
+        display        : 'inline-flex', // use inline flexbox, so it takes the width & height as we set
+        flexDirection  : 'row',         // flow to the document's writting flow
+        justifyContent : 'start',       // items are placed starting from the left
+        alignItems     : 'center',      // center items vertically
+        flexWrap       : 'wrap',        // allows the children to wrap to the next row
+
+
+
+        // positions:
+        verticalAlign  : 'baseline', // check's text should be aligned with sibling text, so the check behave like <span> wrapper
+
+
+
+        // foregrounds:
+        foreg          : this.ref(this._mildForegFn),
+        
+        
+        
+        // backgrounds:
+        backg          : 'initial !important', // no valid/invalid animation
+
+
+
+        // borders:
+        border         : undefined as unknown as null, // discard layout's border
+        borderRadius   : undefined as unknown as null, // discard layout's borderRadius
+
+
+
+        // spacings:
+        paddingInline  : undefined as unknown as null, // discard layout's paddingInline
+        paddingBlock   : undefined as unknown as null, // discard layout's paddingBlock
+
+
+
+        // states & animations:
+        boxShadow      : 'initial !important', // no focus animation
+    
+    
+    
+        // a dummy text content, for making parent's height as tall as line-height
+        // the dummy is also used for calibrating the flex's vertical position
+        '&::before': {
+            // layouts:
+            content    : '"\xa0"',       // &nbsp;
+            display    : 'inline-block', // use inline-block, so we can kill the width
+            
+
+
+            // appearances:
+            overflow   : 'hidden', // crop the text width (&nbsp;)
+            visibility : 'hidden', // hide the element, but still consumes the dimension
+
+            
+            
+            // sizes:
+            inlineSize : 0,        // kill the width, we just need the height
+        },
+    
+    
+    
+        // children:
+        [inputElm]     : this.inputLayout(),
+        [labelElm]     : this.labelLayout(),
+    }}
+    protected /*virtual*/ inputLayout(): JssStyle { return {
+        extend: [
+            super.layout(), // copy layout from base
+        ] as JssStyle,
+    
+
+
+        // layouts:
+        display       : 'inline-block', // use inline-block, so it takes the width & height as we set
+
+
+
+        // sizes:
+        boxSizing     : 'border-box', // the final size is including borders & paddings
+        // the size is exactly the same as current font size:
+        inlineSize    : '1em',
+        blockSize     : '1em',
+
+
+
+        // spacings:
+        paddingInline : undefined as unknown as null, // discard layout's paddingInline
+        paddingBlock  : undefined as unknown as null, // discard layout's paddingBlock
+
+        // spacing between input & label:
+        '&:not(:last-child)': {
+            marginInlineEnd : cssProps.spacing,
+        },
+    
+    
+    
+        // borders:
+        overflow      : 'hidden', // clip the icon at borderRadius
+
+
+
+        // accessibility:
+        pointerEvents : 'none', // just an overlay element (ghost), no mouse interaction, clicking on it will focus on the parent
+    
+        
+        
+        // children:
+        [checkElm]    : this.checkLayout(),
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    protected /*virtual*/ checkLayout(): JssStyle { return {
+        extend: [
+            iconStyles.useIcon( // apply icon
+                /*img   :*/ cssProps.img,
+                /*foreg :*/ this.ref(this._foreg)
+            ),
+        ] as JssStyle,
+
+
+
+        // layouts:
+        content   : '""',
+        display   : 'block', // fills the entire parent's width
+
+
+
+        // sizes:
+        // fills the entire parent:
+        boxSizing : 'border-box', // the final size is including borders & paddings
+        blockSize : '100%', // fills the entire parent's height
+        
+        
+        
+        // states & animations:
+        filter    : this.ref(this._checkFilter),
+        transform : this.ref(this._checkTransf),
+        anim      : this.ref(this._checkAnim),
+    }}
+    protected /*virtual*/ labelLayout(): JssStyle { return {
+        // layouts:
+        display       : 'inline', // use inline, so it takes the width & height automatically
+
+
+
+        // positions:
+        verticalAlign : 'baseline', // label's text should be aligned with sibling text, so the label behave like <span> wrapper
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'label')), // apply *general* cssProps starting with label***
+    }}
 
 
 
@@ -351,174 +519,6 @@ export class CheckStyles extends EditableActionControlStyles {
     public /*virtual*/ checkAnimFn(): Cust.Ref[] { return [
         this.ref(this._animCheckClear, this._animNone),
     ]}
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            super.layout(), // copy layout from base
-        ] as JssStyle,
-
-
-
-        // layouts:
-        display        : 'inline-flex', // use inline flexbox, so it takes the width & height as we set
-        flexDirection  : 'row',         // flow to the document's writting flow
-        justifyContent : 'start',       // items are placed starting from the left
-        alignItems     : 'center',      // center items vertically
-        flexWrap       : 'wrap',        // allows the children to wrap to the next row
-
-
-
-        // positions:
-        verticalAlign  : 'baseline', // check's text should be aligned with sibling text, so the check behave like <span> wrapper
-
-
-
-        // foregrounds:
-        foreg          : this.ref(this._mildForegFn),
-        
-        
-        
-        // backgrounds:
-        backg          : 'initial !important', // no valid/invalid animation
-
-
-
-        // borders:
-        border         : undefined as unknown as null, // discard layout's border
-        borderRadius   : undefined as unknown as null, // discard layout's borderRadius
-
-
-
-        // spacings:
-        paddingInline  : undefined as unknown as null, // discard layout's paddingInline
-        paddingBlock   : undefined as unknown as null, // discard layout's paddingBlock
-
-
-
-        // states & animations:
-        boxShadow      : 'initial !important', // no focus animation
-    
-    
-    
-        // a dummy text content, for making parent's height as tall as line-height
-        // the dummy is also used for calibrating the flex's vertical position
-        '&::before': {
-            // layouts:
-            content    : '"\xa0"',       // &nbsp;
-            display    : 'inline-block', // use inline-block, so we can kill the width
-            
-
-
-            // appearances:
-            overflow   : 'hidden', // crop the text width (&nbsp;)
-            visibility : 'hidden', // hide the element, but still consumes the dimension
-
-            
-            
-            // sizes:
-            inlineSize : 0,        // kill the width, we just need the height
-        },
-    
-    
-    
-        // children:
-        [inputElm]     : this.inputLayout(),
-        [labelElm]     : this.labelLayout(),
-    }}
-    protected /*virtual*/ inputLayout(): JssStyle { return {
-        extend: [
-            super.layout(), // copy layout from base
-        ] as JssStyle,
-    
-
-
-        // layouts:
-        display       : 'inline-block', // use inline-block, so it takes the width & height as we set
-
-
-
-        // sizes:
-        boxSizing     : 'border-box', // the final size is including borders & paddings
-        // the size is exactly the same as current font size:
-        inlineSize    : '1em',
-        blockSize     : '1em',
-
-
-
-        // spacings:
-        paddingInline : undefined as unknown as null, // discard layout's paddingInline
-        paddingBlock  : undefined as unknown as null, // discard layout's paddingBlock
-
-        // spacing between input & label:
-        '&:not(:last-child)': {
-            marginInlineEnd : cssProps.spacing,
-        },
-    
-    
-    
-        // borders:
-        overflow      : 'hidden', // clip the icon at borderRadius
-
-
-
-        // accessibility:
-        pointerEvents : 'none', // just an overlay element (ghost), no mouse interaction, clicking on it will focus on the parent
-    
-        
-        
-        // children:
-        [checkElm]    : this.checkLayout(),
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
-    protected /*virtual*/ checkLayout(): JssStyle { return {
-        extend: [
-            iconStyles.useIcon( // apply icon
-                /*img   :*/ cssProps.img,
-                /*foreg :*/ this.ref(this._foreg)
-            ),
-        ] as JssStyle,
-
-
-
-        // layouts:
-        content   : '""',
-        display   : 'block', // fills the entire parent's width
-
-
-
-        // sizes:
-        // fills the entire parent:
-        boxSizing : 'border-box', // the final size is including borders & paddings
-        blockSize : '100%', // fills the entire parent's height
-        
-        
-        
-        // states & animations:
-        filter    : this.ref(this._checkFilter),
-        transform : this.ref(this._checkTransf),
-        anim      : this.ref(this._checkAnim),
-    }}
-    protected /*virtual*/ labelLayout(): JssStyle { return {
-        // layouts:
-        display       : 'inline', // use inline, so it takes the width & height automatically
-
-
-
-        // positions:
-        verticalAlign : 'baseline', // label's text should be aligned with sibling text, so the label behave like <span> wrapper
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'label')), // apply *general* cssProps starting with label***
-    }}
 }
 export const checkStyles = new CheckStyles();
 

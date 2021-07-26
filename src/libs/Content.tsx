@@ -22,30 +22,15 @@ import {
 // styles:
 
 export interface IContentStyles {
-    // variants:
-    contentSize(size: string) : JssStyle
-
-
-
     // layouts:
     contentLayout()           : JssStyle
+    
+    
+    
+    // variants:
+    contentSize(size: string) : JssStyle
 }
 export class ContentStyles extends IndicatorStyles implements IContentStyles {
-    // variants:
-    public /*override*/ size(size: string): JssStyle { return {
-        extend: [
-            super.size(size), // copy sizes from base
-
-            this.contentSize(size),
-        ] as JssStyle,
-    }}
-    public /*virtual*/ contentSize(size: string): JssStyle { return {
-        // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
-    }}
-
-
-
     // layouts:
     public /*override*/ layout(): JssStyle { return {
         extend: [
@@ -57,6 +42,21 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
     public /*virtual*/ contentLayout(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    
+    
+    
+    // variants:
+    public /*override*/ size(size: string): JssStyle { return {
+        extend: [
+            super.size(size), // copy sizes from base
+
+            this.contentSize(size),
+        ] as JssStyle,
+    }}
+    public /*virtual*/ contentSize(size: string): JssStyle { return {
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
     }}
 }
 export const contentStyles = new ContentStyles();

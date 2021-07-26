@@ -56,73 +56,20 @@ export class IndicatorStyles extends BasicComponentStyles {
  // protected readonly _animPressRelease    = 'animPressRelease'   // will be defined in ActionControl
     //#endregion animations
     //#endregion props
-
-
-
-    //#region mixins
-    //TODO: to be removed....
-    protected stateEnabling(content: JssStyle): JssStyle { return {
-        '&.enable': content,
-    }}
-    protected stateNotEnabling(content: JssStyle): JssStyle { return {
-        '&:not(.enable)': content,
-    }}
-    protected stateDisabling(content: JssStyle): JssStyle { return {
-        '&.disable': content,
-    }}
-    protected stateDisable(content: JssStyle): JssStyle { return {
-        '&.disable,&.disabled,&:disabled': content,
-    }}
-    protected stateNotDisable(content: JssStyle): JssStyle { return {
-        '&:not(.disable):not(.disabled):not(:disabled)': content,
-    }}
-    protected stateNotDisabled(content: JssStyle): JssStyle { return {
-        // not fully disabled
-        '&:not(.disabled):not(:disabled),&:not(.disabled):disabled.disable': content,
-    }}
-    protected stateEnablingDisable(content: JssStyle): JssStyle { return {
-        '&.enable,&.disable,&.disabled,&:disabled': content,
-    }}
-    protected stateNotEnablingDisable(content: JssStyle): JssStyle { return {
-        '&:not(.enable):not(.disable):not(.disabled):not(:disabled)': content,
-    }}
-    protected stateNotEnablingDisabling(content: JssStyle): JssStyle { return {
-        '&:not(.enable):not(.disable)': content,
-    }}
     
-
-
-    //TODO: to be removed....
-    protected /*virtual*/ actionCtrl() { return false; }
-    protected stateActivating(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
-        [actionCtrl ? '&.active,&:active:not(.disable):not(.disabled):not(:disabled)' : '&.active']: content,
+    
+    
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            super.layout(), // copy layout from base
+        ] as JssStyle,
+        
+        
+        
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected stateActive(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
-        [actionCtrl ? '&.active,&.actived,&:active:not(.disable):not(.disabled):not(:disabled)' : '&.active,&.actived']: content,
-    }}
-    protected stateNotActive(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
-        [actionCtrl ? '&:not(.active):not(.actived):not(:active), &:not(.active):not(.actived).disable, &:not(.active):not(.actived).disabled, &:not(.active):not(.actived):disabled' : '&:not(.active):not(.actived)']: content,
-    }}
-    protected stateNotActived(content: JssStyle): JssStyle { return {
-        // not fully actived
-        '&:not(.actived)': content,
-    }}
-    protected statePassivating(content: JssStyle): JssStyle { return {
-        '&.passive': content,
-    }}
-    protected stateNotPassivating(content: JssStyle): JssStyle { return {
-        '&:not(.passive)': content,
-    }}
-    protected stateActivePassivating(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
-        [actionCtrl ? '&.active,&.actived,&:active:not(.disable):not(.disabled):not(:disabled),&.passive' : '&.active,&.actived,&.passive']: content,
-    }}
-    protected stateNotActivePassivating(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
-        [actionCtrl ? '&:not(.active):not(.actived):not(:active):not(.passive), &:not(.active):not(.actived).disable:not(.passive), &:not(.active):not(.actived).disabled:not(.passive), &:not(.active):not(.actived):disabled:not(.passive)' : '&:not(.active):not(.actived):not(.passive)']: content,
-    }}
-    protected stateNotActivatingPassivating(content: JssStyle, actionCtrl = this.actionCtrl()): JssStyle { return {
-        [actionCtrl ? '&:not(.active):not(:active):not(.passive), &:not(.active).disable:not(.passive), &:not(.active).disabled:not(.passive), &:not(.active):disabled:not(.passive)' : '&:not(.active):not(.passive)']: content,
-    }}
-    //#endregion mixins
 
 
 
@@ -277,26 +224,6 @@ export class IndicatorStyles extends BasicComponentStyles {
         this.ref(this._animEnableDisable, this._animNone), // 2nd : ctrl must be enabled
         this.ref(this._animActivePassive, this._animNone), // 1st : ctrl got pressed
     ]}
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            super.layout(), // copy layout from base
-        ] as JssStyle,
-        
-        
-        
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
-
-
-
-    // old:
-    public /*virtual*/ indicationAnimFnOld(): JssStyle { return {
-    }}
 }
 export const indicatorStyles = new IndicatorStyles();
 

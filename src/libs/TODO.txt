@@ -69,51 +69,52 @@ add
 // variants:
 // states:
 // functions:
+// uses:
 // utilities:
 
 
 fin comp (14) (generic):
-BasicComponent<TElement>^
-	Container<TElement>^
-	Icon<TElement>^
-	Carousel<TElement>^
-	CarouselItem<TElement>^
-	Indicator<TElement>^
-		Content<TElement>^
-			Listgroup<TElement>^
-				Navscroll<TElement>^
-				Accordion<TElement>^
-			ListgroupItem<TElement>^
-				AccordionItem<TElement>^
-			Card<TElement>^
-				Modal<TElement>^
-		Control<TElement>^
-			ActionControl<TElement>^
-			EditableControl<TElement>^
-				EditableTextControl<TElement>^
-				EditableActionControl<TElement>^
-		Popup<TElement>^
-			Alert<TElement>^
-	Masonry<TElement>^
+BasicComponent<TElement>#
+	Container<TElement>#
+	Icon<TElement>#
+	Carousel<TElement>#
+	CarouselItem<TElement>#
+	Indicator<TElement>#
+		Content<TElement>#
+			Listgroup<TElement>#
+				Navscroll<TElement>#
+				Accordion<TElement>#
+			ListgroupItem<TElement>#
+				AccordionItem<TElement>#
+			Card<TElement>#
+				Modal<TElement>#
+		Control<TElement>#
+			ActionControl<TElement>#
+			EditableControl<TElement>#
+				EditableTextControl<TElement>#
+				EditableActionControl<TElement>#
+		Popup<TElement>#
+			Alert<TElement>#
+	Masonry<TElement>#
 
 
 
 non gen (11):
-Button^
-	ButtonIcon^
-		CloseButton^
-Check^?
+Button#
+	ButtonIcon#
+		CloseButton#
+Check#
 	Radio# todo unique checked per name
-	TogglerMenuButton^
-Input^
+	TogglerMenuButton#
+Input#
 
-Form^ todo at outlined stile => the children outlined should use their own color theme
+Form# todo at outlined stile => the children outlined should use their own color theme
 
-validations^
-accessibilities^
+validations#
+accessibilities#
 
-Navbar^
-NavbarMenu^
+Navbar#
+NavbarMenu#
 
 
 

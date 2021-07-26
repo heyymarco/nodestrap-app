@@ -64,6 +64,26 @@ const menusElm   = '&>.menus';
 const menuElm    = '&>.menus>*';
 
 class NavbarMenuStyles extends ActionControlStyles {
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            super.layout(), // copy layout from base
+        ] as JssStyle,
+
+
+
+        // borders:
+        border       : undefined as unknown as null, // discard layout's border
+        borderRadius : undefined as unknown as null, // discard layout's borderRadius
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menu')), // apply *general* cssProps starting with menu***
+    }}
+    
+    
+    
     // states:
     public /*override*/ focusBlurring()    : JssStyle { return {
         extend: [
@@ -95,26 +115,6 @@ class NavbarMenuStyles extends ActionControlStyles {
         // change default parameter from 'primary' to 'secondary'
         return super.themeActive(theme);
     }
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            super.layout(), // copy layout from base
-        ] as JssStyle,
-
-
-
-        // borders:
-        border       : undefined as unknown as null, // discard layout's border
-        borderRadius : undefined as unknown as null, // discard layout's borderRadius
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menu')), // apply *general* cssProps starting with menu***
-    }}
 }
 
 export class NavbarStyles extends PopupStyles {
@@ -131,6 +131,153 @@ export class NavbarStyles extends PopupStyles {
     public    readonly _menusAnim   = 'menusAnim'
     //#endregion finals
     //#endregion props
+
+
+
+    // compositions:
+    public /*override*/ composition(): JssStyle { return {
+        extend: [
+            super.composition(), // copy composition from base
+        ] as JssStyle,
+        
+        
+        
+        // children:
+        [menuElm]: (new NavbarMenuStyles()).composition(),
+    }}
+
+
+
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            super.layout(), // copy layout from base
+        ] as JssStyle,
+
+
+
+        // layouts:
+        display             : 'grid', // use css grid for layouting, so we can customize the desired area later.
+
+        // explicit areas:
+        /*
+            just one explicit area: `menus`
+            logo & toggler rely on implicit area
+        */
+        gridTemplateRows    : [['auto'/*fluid height*/]],
+        gridTemplateColumns : [['auto'/*fluid width, menus' width = maximum width - logo's width - toggler's width*/]],
+        gridTemplateAreas   : [[
+            '"menus"',
+        ]],
+
+        // implicit areas:
+        gridAutoFlow        : 'column',      // if child's gridArea was not specified => place it automatically at horz direction
+        gridAutoRows        : 'min-content', // other areas than `menus` should take the minimum required height
+        gridAutoColumns     : 'min-content', // other areas than `menus` should take the minimum required width
+        // the gridArea's size configured as *minimum* content's size required => no free space left to distribute => so (justify|algin)Content is *not required*
+
+        // child alignments:
+        justifyItems        : 'stretch', // each section fills the entire area's width
+        alignItems          : 'stretch', // each section fills the entire area's height (the shorter sections follow the tallest one)
+
+
+
+        //#region children
+        [[
+            // wrapper elements:
+            wrapperElm, // wrapped logo & wrapped toggler
+            menuElm,
+        ].join(',')] : this.wrapperLayout(),
+
+        [[
+            // secondary sections:
+            logoElm,
+            togglerElm,
+        ].join(',')] : this.navbarSecondaryItemLayout(),
+
+        [[
+            // all sections:
+            logoElm,
+            togglerElm,
+            menusElm,
+        ].join(',')] : this.navbarItemLayout(),
+
+        [logoElm]    : this.navbarLogoLayout(),
+
+        [togglerElm] : this.navbarTogglerLayout(),
+
+        [menusElm]   : this.navbarMenusLayout(),
+        //#endregion children
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    protected /*virtual*/ wrapperLayout(): JssStyle { return {
+        // layouts:
+        display        : 'flex',   // use block flexbox, so it takes the entire parent's width
+        flexDirection  : 'row',    // the flex direction to horz, so we can adjust the content's height
+        justifyContent : 'center', // center items horizontally
+        alignItems     : 'center', // if the content's height is shorter than the section, place it at the center
+
+
+
+        // spacings:
+        paddingInline  : bcssProps.paddingInline,
+        paddingBlock   : bcssProps.paddingBlock,
+    }}
+    protected /*virtual*/ navbarSecondaryItemLayout(): JssStyle { return {
+        // layouts:
+        justifySelf    : 'center', // center self horizontally
+        alignSelf      : 'center', // center self vertically
+
+
+
+        // spacings:
+        paddingInline  : 0,
+    }}
+    protected /*virtual*/ navbarItemLayout(): JssStyle { return {
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
+    }}
+    protected /*virtual*/ navbarLogoLayout(): JssStyle { return {
+        // layouts:
+        gridArea       : '1 / -3', // place at the same `menus`' row / place at the 3rd column from the right (negative columns are placed after all positive ones was placed)
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'logo')), // apply *general* cssProps starting with logo***
+    }}
+    protected /*virtual*/ navbarTogglerLayout(): JssStyle { return {
+        // layouts:
+        gridArea       : '1 / 2', // place at the same `menus`' row / place at the 2nd column from the left
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'toggler')), // apply *general* cssProps starting with toggler***
+    }}
+    protected /*virtual*/ navbarMenusLayout(): JssStyle { return {
+        // layouts:
+        gridArea       : 'menus',   // place at the defined `menus` area
+        display        : 'flex',    // use flexbox to place the menus sequentially
+        flexDirection  : 'row',     // menus are stacked horizontally
+        justifyContent : 'start',   // menus are placed starting from the left, leaving a free space (if any) at the end
+        alignItems     : 'stretch', // menus height are follow the tallest one
+
+
+        
+        // states & animations:
+        filter      : this.ref(this._menusFilter),
+        anim        : this.ref(this._menusAnim),
+
+
+
+        // customize:
+        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menus')), // apply *general* cssProps starting with menus***
+    }}
 
 
 
@@ -361,153 +508,6 @@ export class NavbarStyles extends PopupStyles {
 
         return rests;
     }
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            super.layout(), // copy layout from base
-        ] as JssStyle,
-
-
-
-        // layouts:
-        display             : 'grid', // use css grid for layouting, so we can customize the desired area later.
-
-        // explicit areas:
-        /*
-            just one explicit area: `menus`
-            logo & toggler rely on implicit area
-        */
-        gridTemplateRows    : [['auto'/*fluid height*/]],
-        gridTemplateColumns : [['auto'/*fluid width, menus' width = maximum width - logo's width - toggler's width*/]],
-        gridTemplateAreas   : [[
-            '"menus"',
-        ]],
-
-        // implicit areas:
-        gridAutoFlow        : 'column',      // if child's gridArea was not specified => place it automatically at horz direction
-        gridAutoRows        : 'min-content', // other areas than `menus` should take the minimum required height
-        gridAutoColumns     : 'min-content', // other areas than `menus` should take the minimum required width
-        // the gridArea's size configured as *minimum* content's size required => no free space left to distribute => so (justify|algin)Content is *not required*
-
-        // child alignments:
-        justifyItems        : 'stretch', // each section fills the entire area's width
-        alignItems          : 'stretch', // each section fills the entire area's height (the shorter sections follow the tallest one)
-
-
-
-        //#region children
-        [[
-            // wrapper elements:
-            wrapperElm, // wrapped logo & wrapped toggler
-            menuElm,
-        ].join(',')] : this.wrapperLayout(),
-
-        [[
-            // secondary sections:
-            logoElm,
-            togglerElm,
-        ].join(',')] : this.navbarSecondaryItemLayout(),
-
-        [[
-            // all sections:
-            logoElm,
-            togglerElm,
-            menusElm,
-        ].join(',')] : this.navbarItemLayout(),
-
-        [logoElm]    : this.navbarLogoLayout(),
-
-        [togglerElm] : this.navbarTogglerLayout(),
-
-        [menusElm]   : this.navbarMenusLayout(),
-        //#endregion children
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
-    protected /*virtual*/ wrapperLayout(): JssStyle { return {
-        // layouts:
-        display        : 'flex',   // use block flexbox, so it takes the entire parent's width
-        flexDirection  : 'row',    // the flex direction to horz, so we can adjust the content's height
-        justifyContent : 'center', // center items horizontally
-        alignItems     : 'center', // if the content's height is shorter than the section, place it at the center
-
-
-
-        // spacings:
-        paddingInline  : bcssProps.paddingInline,
-        paddingBlock   : bcssProps.paddingBlock,
-    }}
-    protected /*virtual*/ navbarSecondaryItemLayout(): JssStyle { return {
-        // layouts:
-        justifySelf    : 'center', // center self horizontally
-        alignSelf      : 'center', // center self vertically
-
-
-
-        // spacings:
-        paddingInline  : 0,
-    }}
-    protected /*virtual*/ navbarItemLayout(): JssStyle { return {
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
-    }}
-    protected /*virtual*/ navbarLogoLayout(): JssStyle { return {
-        // layouts:
-        gridArea       : '1 / -3', // place at the same `menus`' row / place at the 3rd column from the right (negative columns are placed after all positive ones was placed)
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'logo')), // apply *general* cssProps starting with logo***
-    }}
-    protected /*virtual*/ navbarTogglerLayout(): JssStyle { return {
-        // layouts:
-        gridArea       : '1 / 2', // place at the same `menus`' row / place at the 2nd column from the left
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'toggler')), // apply *general* cssProps starting with toggler***
-    }}
-    protected /*virtual*/ navbarMenusLayout(): JssStyle { return {
-        // layouts:
-        gridArea       : 'menus',   // place at the defined `menus` area
-        display        : 'flex',    // use flexbox to place the menus sequentially
-        flexDirection  : 'row',     // menus are stacked horizontally
-        justifyContent : 'start',   // menus are placed starting from the left, leaving a free space (if any) at the end
-        alignItems     : 'stretch', // menus height are follow the tallest one
-
-
-        
-        // states & animations:
-        filter      : this.ref(this._menusFilter),
-        anim        : this.ref(this._menusAnim),
-
-
-
-        // customize:
-        ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'menus')), // apply *general* cssProps starting with menus***
-    }}
-
-
-
-    // compositions:
-    public /*override*/ composition(): JssStyle { return {
-        extend: [
-            super.composition(), // copy composition from base
-        ] as JssStyle,
-        
-        
-        
-        // children:
-        [menuElm]: (new NavbarMenuStyles()).composition(),
-    }}
 }
 export const navbarStyles = new NavbarStyles();
 

@@ -33,122 +33,6 @@ import Button               from './Button'
 // styles:
 
 export class CardStyles extends ContentStyles {
-    // variants:
-    public /*override*/ variants(): RuleList { return [
-        ...super.variants(), // copy variants from base
-
-
-
-        [ ':not(.inline)', this.block()  ],
-        [      '.inline' , this.inline() ],
-    ]}
-
-    public /*override*/ size(size: string): JssStyle { return {
-        extend: [
-            super.size(size), // copy sizes from base
-        ] as JssStyle,
-
-
-
-        // overwrites propName = propName{Size}:
-        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
-    }}
-
-    public /*virtual*/ block(): JssStyle { return {
-        // layouts:
-        display        : 'flex',        // use block flexbox, so it takes the entire parent's width
-        flexDirection  : 'column',      // items are stacked vertically
-
-
-
-        // children:
-        '&>header, &>.body, &>footer': {
-            // borders:
-            //#region strip out borders partially
-            /*
-                border & borderRadius are moved from here to parent,
-                for making consistent border color when the element's color are filtered.
-                so we need to disable the border & borderRadius here.
-            */
-
-        
-
-            //#region border-strokes as a separator
-            borderInlineWidth          : 0, // remove (left|right)-border for all-items
-
-            // assumes the card *always* have a body, so the second-last-item is always a body
-            // remove bottom-border at the last-item, so that it wouldn't collide with the Card's bottom-border
-            // and
-            // remove double border by removing bottom-border starting from the third-last-item to the first-item
-            // and
-            // an *exception* for the second-last-item (the body), do not remove the bottom-border, we need it for the replacement of the footer's top-border
-            '&:not(:nth-last-child(2))': {
-                borderBlockEndWidth    : 0,
-            },
-
-            // remove top-border at the header, so that it wouldn't collide with the Card's top-border
-            // remove top-border at the footer, as the replacement => use second-last-item bottom-border (from the body)
-            '&:first-child, &:last-child': {
-                borderBlockStartWidth  : 0,
-            },
-            //#endregion border-strokes as a separator
-
-
-
-            // border radiuses:
-            borderRadius : 0, // strip out border radius
-            //#endregion strip out borders partially
-        } as JssStyle,
-    }}
-    public /*virtual*/ inline(): JssStyle { return {
-        // layouts:
-        display        : 'inline-flex', // use inline flexbox, so it takes the width & height as needed
-        flexDirection  : 'row',         // items are stacked horizontally
-
-
-
-        // children:
-        '&>header, &>.body, &>footer': {
-            // borders:
-            //#region strip out borders partially
-            /*
-                border & borderRadius are moved from here to parent,
-                for making consistent border color when the element's color are filtered.
-                so we need to disable the border & borderRadius here.
-            */
-
-        
-
-            //#region border-strokes as a separator
-            borderBlockWidth           : 0, // remove (top|bottom)-border for all-items
-
-            // assumes the card *always* have a body, so the second-last-item is always a body
-            // remove right-border at the last-item, so that it wouldn't collide with the Card's right-border
-            // and
-            // remove double border by removing right-border starting from the third-last-item to the first-item
-            // and
-            // an *exception* for the second-last-item (the body), do not remove the right-border, we need it for the replacement of the footer's left-border
-            '&:not(:nth-last-child(2))': {
-                borderInlineEndWidth   : 0,
-            },
-
-            // remove left-border at the header, so that it wouldn't collide with the Card's left-border
-            // remove left-border at the footer, as the replacement => use second-last-item right-border (from the body)
-            '&:first-child, &:last-child': {
-                borderInlineStartWidth : 0,
-            },
-            //#endregion border-strokes as a separator
-
-
-
-            // border radiuses:
-            borderRadius : 0, // strip out border radius
-            //#endregion strip out borders partially
-        } as JssStyle,
-    }}
-
-
-
     // layouts:
     public /*override*/ layout(): JssStyle { return {
         // layouts:
@@ -371,6 +255,122 @@ export class CardStyles extends ContentStyles {
 
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'img')), // apply *general* cssProps starting with img***
+    }}
+    
+    
+    
+    // variants:
+    public /*override*/ variants(): RuleList { return [
+        ...super.variants(), // copy variants from base
+
+
+
+        [ ':not(.inline)', this.block()  ],
+        [      '.inline' , this.inline() ],
+    ]}
+
+    public /*override*/ size(size: string): JssStyle { return {
+        extend: [
+            super.size(size), // copy sizes from base
+        ] as JssStyle,
+
+
+
+        // overwrites propName = propName{Size}:
+        ...this.overwriteProps(cssDecls, this.filterSuffixProps(cssProps, size)),
+    }}
+
+    public /*virtual*/ block(): JssStyle { return {
+        // layouts:
+        display        : 'flex',        // use block flexbox, so it takes the entire parent's width
+        flexDirection  : 'column',      // items are stacked vertically
+
+
+
+        // children:
+        '&>header, &>.body, &>footer': {
+            // borders:
+            //#region strip out borders partially
+            /*
+                border & borderRadius are moved from here to parent,
+                for making consistent border color when the element's color are filtered.
+                so we need to disable the border & borderRadius here.
+            */
+
+        
+
+            //#region border-strokes as a separator
+            borderInlineWidth          : 0, // remove (left|right)-border for all-items
+
+            // assumes the card *always* have a body, so the second-last-item is always a body
+            // remove bottom-border at the last-item, so that it wouldn't collide with the Card's bottom-border
+            // and
+            // remove double border by removing bottom-border starting from the third-last-item to the first-item
+            // and
+            // an *exception* for the second-last-item (the body), do not remove the bottom-border, we need it for the replacement of the footer's top-border
+            '&:not(:nth-last-child(2))': {
+                borderBlockEndWidth    : 0,
+            },
+
+            // remove top-border at the header, so that it wouldn't collide with the Card's top-border
+            // remove top-border at the footer, as the replacement => use second-last-item bottom-border (from the body)
+            '&:first-child, &:last-child': {
+                borderBlockStartWidth  : 0,
+            },
+            //#endregion border-strokes as a separator
+
+
+
+            // border radiuses:
+            borderRadius : 0, // strip out border radius
+            //#endregion strip out borders partially
+        } as JssStyle,
+    }}
+    public /*virtual*/ inline(): JssStyle { return {
+        // layouts:
+        display        : 'inline-flex', // use inline flexbox, so it takes the width & height as needed
+        flexDirection  : 'row',         // items are stacked horizontally
+
+
+
+        // children:
+        '&>header, &>.body, &>footer': {
+            // borders:
+            //#region strip out borders partially
+            /*
+                border & borderRadius are moved from here to parent,
+                for making consistent border color when the element's color are filtered.
+                so we need to disable the border & borderRadius here.
+            */
+
+        
+
+            //#region border-strokes as a separator
+            borderBlockWidth           : 0, // remove (top|bottom)-border for all-items
+
+            // assumes the card *always* have a body, so the second-last-item is always a body
+            // remove right-border at the last-item, so that it wouldn't collide with the Card's right-border
+            // and
+            // remove double border by removing right-border starting from the third-last-item to the first-item
+            // and
+            // an *exception* for the second-last-item (the body), do not remove the right-border, we need it for the replacement of the footer's left-border
+            '&:not(:nth-last-child(2))': {
+                borderInlineEndWidth   : 0,
+            },
+
+            // remove left-border at the header, so that it wouldn't collide with the Card's left-border
+            // remove left-border at the footer, as the replacement => use second-last-item right-border (from the body)
+            '&:first-child, &:last-child': {
+                borderInlineStartWidth : 0,
+            },
+            //#endregion border-strokes as a separator
+
+
+
+            // border radiuses:
+            borderRadius : 0, // strip out border radius
+            //#endregion strip out borders partially
+        } as JssStyle,
     }}
 }
 export const cardStyles = new CardStyles();

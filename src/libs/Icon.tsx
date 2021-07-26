@@ -38,6 +38,50 @@ export class IconStyles extends BasicComponentStyles {
 
 
 
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        // layouts:
+        display       : 'inline-flex', // use inline flexbox, so it takes the width & height as we set
+        flexDirection : 'row',         // flow to the document's writting flow
+        alignItems    : 'center',      // center items vertically
+        flexWrap      : 'nowrap',      // do not wrap the children to the next row
+
+
+
+        // positions:
+        verticalAlign : 'baseline', // icon's text should be aligned with sibling text, so the icon behave like <span> wrapper
+
+
+
+        // a dummy text content, for making parent's height as tall as line-height
+        // the dummy is also used for calibrating the flex's vertical position
+        '&::before': {
+            // layouts:
+            content    : '"\xa0"',       // &nbsp;
+            display    : 'inline-block', // use inline-block, so we can kill the width
+            
+
+
+            // appearances:
+            overflow   : 'hidden', // crop the text width (&nbsp;)
+            visibility : 'hidden', // hide the element, but still consumes the dimension
+
+            
+            
+            // sizes:
+            inlineSize : 0,        // kill the width, we just need the height
+        },
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+
+        foreg         : null, // delete from cssProps; in img-icon: foreg => backgColor ; in font-icon: foreg => font-color
+    }}
+
+
+
     // variants:
     public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
@@ -297,50 +341,6 @@ export class IconStyles extends BasicComponentStyles {
         [this.decl(this._filter)]    : null,
         [this.decl(this._anim)]      : null,
         //#endregion finals
-    }}
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        // layouts:
-        display       : 'inline-flex', // use inline flexbox, so it takes the width & height as we set
-        flexDirection : 'row',         // flow to the document's writting flow
-        alignItems    : 'center',      // center items vertically
-        flexWrap      : 'nowrap',      // do not wrap the children to the next row
-
-
-
-        // positions:
-        verticalAlign : 'baseline', // icon's text should be aligned with sibling text, so the icon behave like <span> wrapper
-
-
-
-        // a dummy text content, for making parent's height as tall as line-height
-        // the dummy is also used for calibrating the flex's vertical position
-        '&::before': {
-            // layouts:
-            content    : '"\xa0"',       // &nbsp;
-            display    : 'inline-block', // use inline-block, so we can kill the width
-            
-
-
-            // appearances:
-            overflow   : 'hidden', // crop the text width (&nbsp;)
-            visibility : 'hidden', // hide the element, but still consumes the dimension
-
-            
-            
-            // sizes:
-            inlineSize : 0,        // kill the width, we just need the height
-        },
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-
-        foreg         : null, // delete from cssProps; in img-icon: foreg => backgColor ; in font-icon: foreg => font-color
     }}
 
 

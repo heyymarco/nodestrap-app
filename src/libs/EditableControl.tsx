@@ -50,6 +50,20 @@ export class EditableControlStyles extends ControlStyles {
 
 
 
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            super.layout(), // copy layout from base
+        ] as JssStyle,
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+
+
+
     // variants:
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -197,20 +211,6 @@ export class EditableControlStyles extends ControlStyles {
         this.ref(this._animValUnval, this._animNone),
         this.ref(this._animInvUninv, this._animNone),
     ]}
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            super.layout(), // copy layout from base
-        ] as JssStyle,
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
 }
 export const editableControlStyles = new EditableControlStyles();
 

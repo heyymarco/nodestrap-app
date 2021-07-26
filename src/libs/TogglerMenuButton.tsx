@@ -81,6 +81,61 @@ export class TogglerMenuButtonStyles extends CheckStyles {
 
 
 
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            super.layout(), // copy layout from base
+        ] as JssStyle,
+
+
+        
+        // children:
+        [svgElm] : this.svgLayout(),
+
+
+
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    protected /*virtual*/ svgLayout(): JssStyle { return {
+        // sizes:
+        // fills the entire parent text's height:
+        blockSize  : [['calc(1em *',
+            `var(${bcssDecls.lineHeight},${typos.lineHeight})`,
+        ')']],
+        inlineSize : 'auto', // calculates the width by [height * aspect-ratio]
+
+
+
+        // children:
+        overflow: 'visible', // allows graphics to overflow the canvas
+        '&>*': {
+            // appearances:
+            stroke        : 'currentColor', // set menu color as parent's font color
+            strokeWidth   : 4,              // set menu thickness, 4 of 24 might enough
+            strokeLinecap : 'square',       // set menu edges square
+            
+            
+            
+            // states & animations:
+            transformOrigin : '50% 50%',
+            '&:nth-child(1)': {
+                transform : this.ref(this._svgTopTransf),
+                anim      : this.ref(this._svgTopAnim),
+            },
+            '&:nth-child(2)': {
+                transform : this.ref(this._svgMidTransf),
+                anim      : this.ref(this._svgMidAnim),
+            },
+            '&:nth-child(3)': {
+                transform : this.ref(this._svgBtmTransf),
+                anim      : this.ref(this._svgBtmAnim),
+            },
+        },
+    }}
+
+
+
     // variants:
     public /*override*/ size(size: string): JssStyle { return {
         extend: [
@@ -249,61 +304,6 @@ export class TogglerMenuButtonStyles extends CheckStyles {
     public /*virtual*/ svgBtmAnimFn(): Cust.Ref[] { return [
         this.ref(this._svgBtmAnimToggle, this._animNone),
     ]}
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            super.layout(), // copy layout from base
-        ] as JssStyle,
-
-
-        
-        // children:
-        [svgElm] : this.svgLayout(),
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
-    protected /*virtual*/ svgLayout(): JssStyle { return {
-        // sizes:
-        // fills the entire parent text's height:
-        blockSize  : [['calc(1em *',
-            `var(${bcssDecls.lineHeight},${typos.lineHeight})`,
-        ')']],
-        inlineSize : 'auto', // calculates the width by [height * aspect-ratio]
-
-
-
-        // children:
-        overflow: 'visible', // allows graphics to overflow the canvas
-        '&>*': {
-            // appearances:
-            stroke        : 'currentColor', // set menu color as parent's font color
-            strokeWidth   : 4,              // set menu thickness, 4 of 24 might enough
-            strokeLinecap : 'square',       // set menu edges square
-            
-            
-            
-            // states & animations:
-            transformOrigin : '50% 50%',
-            '&:nth-child(1)': {
-                transform : this.ref(this._svgTopTransf),
-                anim      : this.ref(this._svgTopAnim),
-            },
-            '&:nth-child(2)': {
-                transform : this.ref(this._svgMidTransf),
-                anim      : this.ref(this._svgMidAnim),
-            },
-            '&:nth-child(3)': {
-                transform : this.ref(this._svgBtmTransf),
-                anim      : this.ref(this._svgBtmAnim),
-            },
-        },
-    }}
 }
 export const togglerMenuButtonStyles = new TogglerMenuButtonStyles();
 

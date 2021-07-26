@@ -53,6 +53,32 @@ import {
 */
 
 export class AccordionItemStyles extends PopupStyles implements IContentStyles {
+    // compositions:
+    public /*override*/ composition(): JssStyle { return {
+        '&&': super.composition(), // makes AccordionItem more specific than ListGroupItem
+    }}
+
+
+
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            super.layout(), // copy layout from base
+
+            this.contentLayout(),
+        ] as JssStyle,
+
+
+        
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
+    public /*implement*/ contentLayout(): JssStyle {
+        return contentStyles.contentLayout(); // copy layout from Content
+    }
+    
+    
+    
     // variants:
     public /*override*/ variants(): RuleList { return [
         ...super.variants(), // copy variants from base
@@ -108,32 +134,6 @@ export class AccordionItemStyles extends PopupStyles implements IContentStyles {
 
         [this.decl(this._filterActivePassive)] : null,
         [this.decl(this._animActivePassive)]   : cssProps.animPassive,
-    }}
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            super.layout(), // copy layout from base
-
-            this.contentLayout(),
-        ] as JssStyle,
-
-
-        
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
-    public /*implement*/ contentLayout(): JssStyle {
-        return contentStyles.contentLayout(); // copy layout from Content
-    }
-
-
-
-    // compositions:
-    public /*override*/ composition(): JssStyle { return {
-        '&&': super.composition(), // makes AccordionItem more specific than ListGroupItem
     }}
 }
 export const accordionItemStyles = new AccordionItemStyles();

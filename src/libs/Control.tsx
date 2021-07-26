@@ -44,81 +44,19 @@ export class ControlStyles extends IndicatorStyles {
 
 
 
-    //#region mixins
-    // stateHovering => not exist, because .hovered doesn't exist
-    protected stateHover(content: JssStyle): JssStyle { return {
-        // hover: hover by mouse || hover by keyboard (focus)
-        '&:hover,&.focus,&:focus': content,
-    }}
-    protected stateNotHover(content: JssStyle): JssStyle { return {
-        '&:not(:hover):not(.focus):not(:focus)': content,
-    }}
-    // stateNotHovered => not exist, because .hovered doesn't exist
-    protected stateLeaving(content: JssStyle): JssStyle {
-        // leave: leave by mouse && leave by keyboard (blur)
-        // mouse-leave but still keybd-focus => not leave
-        // keybd-blur  but still mouse-hover => not leave
-        return this.stateNotHover({
-            '&.leave,&.blur': content,
-        });
-    }
-    protected stateNotLeaving(content: JssStyle): JssStyle { return {
-        // not-leave: not leave by mouse && not leave by keyboard (blur)
-        '&:not(.leave):not(.blur)': content,
-    }}
-    protected stateHoverLeaving(content: JssStyle): JssStyle { return {
-        '&:hover,&.focus,&:focus,&.leave,&.blur': content,
-    }}
-    protected stateNotHoverLeaving(content: JssStyle): JssStyle { return {
-        '&:not(:hover):not(.focus):not(:focus):not(.leave):not(.blur)': content,
-    }}
-    // stateNotHoveringLeaving => not exist, because .hovered doesn't exist
-    
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        extend: [
+            stripOuts.control,  // clear browser's default styles
+
+            super.layout(), // copy layout from base
+        ] as JssStyle,
 
 
-    protected stateFocusing(content: JssStyle): JssStyle { return {
-        '&.focus,&:focus': content,
-    }}
-    protected stateFocus(content: JssStyle): JssStyle { return {
-        '&.focus,&.focused,&:focus': content,
-    }}
-    protected stateNotFocus(content: JssStyle): JssStyle { return {
-        '&:not(.focus):not(.focused):not(:focus)': content,
-    }}
-    protected stateNotFocused(content: JssStyle): JssStyle { return {
-        // not fully focused
-        '&:not(.focused)': content,
-    }}
-    protected stateBlurring(content: JssStyle): JssStyle { return {
-        '&.blur': content,
-    }}
-    protected stateNotBlurring(content: JssStyle): JssStyle { return {
-        '&:not(.blur)': content,
-    }}
-    protected stateFocusBlurring(content: JssStyle): JssStyle { return {
-        '&.focus,&.focused,&:focus,&.blur': content,
-    }}
-    protected stateNotFocusBlurring(content: JssStyle): JssStyle { return {
-        '&:not(.focus):not(.focused):not(:focus):not(.blur)': content,
-    }}
-    protected stateNotFocusingBlurring(content: JssStyle): JssStyle { return {
-        '&:not(.focus):not(:focus):not(.blur)': content,
-    }}
-    
 
-
-    protected /*override*/ actionCtrl() { return true; }
-    
-
-
-    protected /*override*/ applyStateNoAnimStartupOld(): JssStyle {
-        return this.stateNotHoverLeaving(
-            this.stateNotFocusingBlurring(
-                super.applyStateNoAnimStartupOld()
-            )
-        );
-    }
-    //#endregion mixins
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    }}
 
 
 
@@ -290,22 +228,6 @@ export class ControlStyles extends IndicatorStyles {
         this.ref(this._animFocusBlur,   this._animNone), // 2nd : ctrl got focus
         this.ref(this._animArriveLeave, this._animNone), // 1st : mouse arrive in
     ]}
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        extend: [
-            stripOuts.control,  // clear browser's default styles
-
-            super.layout(), // copy layout from base
-        ] as JssStyle,
-
-
-
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    }}
 }
 export const controlStyles = new ControlStyles();
 

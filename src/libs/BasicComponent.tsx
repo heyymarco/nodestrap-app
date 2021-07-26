@@ -309,6 +309,36 @@ export class BasicComponentStyles extends ElementStyles {
     public readonly _animNone              = 'animNone'
     //#endregion animations
     //#endregion props
+
+
+
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        // customize:
+        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
+    
+    
+    
+        // foregrounds:
+        foreg       : this.ref(this._foreg),
+
+
+
+        // backgrounds:
+        backg       : this.ref(this._backg),
+        
+        
+        
+        // borders:
+        borderColor : this.ref(this._borderCol),
+
+
+
+        // states & animations:
+        boxShadow   : this.ref(this._boxShadow),
+        filter      : this.ref(this._filter),
+        anim        : this.ref(this._anim),
+    }}
     
     
     
@@ -476,6 +506,7 @@ export class BasicComponentStyles extends ElementStyles {
     }}
 
 
+    
     // states:
     public /*override*/ states(inherit: boolean): RuleList { return [
         ...super.states(inherit), // copy states from base
@@ -680,7 +711,6 @@ export class BasicComponentStyles extends ElementStyles {
     public /*virtual*/ boxShadowFn(): Cust.Ref[] { return [
         cssProps.boxShadow,
     ]}
-
     /**
      * Creates a composite filter definition in which the filters *depends on* the variants and/or the states.
      * @returns A `Cust.Ref[]` represents the composite filter definition.
@@ -688,7 +718,6 @@ export class BasicComponentStyles extends ElementStyles {
     public /*virtual*/ filterFn(): Cust.Ref[] { return [
         cssProps.filter,
     ]}
-
     /**
      * Creates a composite animation definition in which the animations *depends on* the variants and/or the states.
      * @returns A `Cust.Ref[]` represents the composite animation definition.
@@ -696,51 +725,6 @@ export class BasicComponentStyles extends ElementStyles {
     public /*virtual*/ animFn(): Cust.Ref[] { return [
         cssProps.anim,
     ]}
-
-
-
-    // layouts:
-    public /*override*/ layout(): JssStyle { return {
-        // customize:
-        ...this.filterGeneralProps(cssProps), // apply *general* cssProps
-    
-    
-    
-        // foregrounds:
-        foreg       : this.ref(this._foreg),
-
-
-
-        // backgrounds:
-        backg       : this.ref(this._backg),
-        
-        
-        
-        // borders:
-        borderColor : this.ref(this._borderCol),
-
-
-
-        // states & animations:
-        boxShadow   : this.ref(this._boxShadow),
-        filter      : this.ref(this._filter),
-        anim        : this.ref(this._anim),
-    }}
-
-
-
-    // old:
-    // TODO: remove...
-    /**
-     * Creates a composite animation definition in which the animations *depends on* the variants and/or the states.
-     * @returns A `JssStyle` represents the composite animation definition.
-     */
-    public /*virtual*/ animFnOld(): JssStyle { return {
-    }}
-    protected /*virtual*/ applyStateNoAnimStartupOld(): JssStyle { return {
-        animationDuration: [['0ms'], '!important'],
-    }}
-    public    readonly _animFnOld             = 'animFn'
 }
 export const basicComponentStyles = new BasicComponentStyles();
 
