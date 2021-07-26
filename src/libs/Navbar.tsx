@@ -99,16 +99,16 @@ class NavbarMenuStyles extends ActionControlStyles {
 
 
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
         ] as JssStyle,
 
 
 
         // borders:
-        border       : undefined as unknown as null, // discard basicStyle's border
-        borderRadius : undefined as unknown as null, // discard basicStyle's borderRadius
+        border       : undefined as unknown as null, // discard layout's border
+        borderRadius : undefined as unknown as null, // discard layout's borderRadius
 
 
 
@@ -177,7 +177,7 @@ export class NavbarStyles extends PopupStyles {
         } as JssStyle,
 
         [menusElm]   : {
-            // layout:
+            // layouts:
             gridArea      : '-1 / -3 / -1 / 3', // place at the 1st column from the bottom / place start from the 3rd column from the right to 3rd column from the left (negative columns are placed after all positive ones was placed)
             flexDirection : 'column',  // place the menus vertically
 
@@ -365,14 +365,14 @@ export class NavbarStyles extends PopupStyles {
 
 
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
         ] as JssStyle,
 
 
 
-        // layout:
+        // layouts:
         display             : 'grid', // use css grid for layouting, so we can customize the desired area later.
 
         // explicit areas:
@@ -431,7 +431,7 @@ export class NavbarStyles extends PopupStyles {
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
     protected /*virtual*/ wrapperLayout(): JssStyle { return {
-        // layout:
+        // layouts:
         display        : 'flex',   // use block flexbox, so it takes the entire parent's width
         flexDirection  : 'row',    // the flex direction to horz, so we can adjust the content's height
         justifyContent : 'center', // center items horizontally
@@ -444,7 +444,7 @@ export class NavbarStyles extends PopupStyles {
         paddingBlock   : bcssProps.paddingBlock,
     }}
     protected /*virtual*/ navbarSecondaryItemLayout(): JssStyle { return {
-        // layout:
+        // layouts:
         justifySelf    : 'center', // center self horizontally
         alignSelf      : 'center', // center self vertically
 
@@ -458,7 +458,7 @@ export class NavbarStyles extends PopupStyles {
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
     protected /*virtual*/ navbarLogoLayout(): JssStyle { return {
-        // layout:
+        // layouts:
         gridArea       : '1 / -3', // place at the same `menus`' row / place at the 3rd column from the right (negative columns are placed after all positive ones was placed)
 
 
@@ -467,7 +467,7 @@ export class NavbarStyles extends PopupStyles {
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'logo')), // apply *general* cssProps starting with logo***
     }}
     protected /*virtual*/ navbarTogglerLayout(): JssStyle { return {
-        // layout:
+        // layouts:
         gridArea       : '1 / 2', // place at the same `menus`' row / place at the 2nd column from the left
 
 
@@ -476,7 +476,7 @@ export class NavbarStyles extends PopupStyles {
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'toggler')), // apply *general* cssProps starting with toggler***
     }}
     protected /*virtual*/ navbarMenusLayout(): JssStyle { return {
-        // layout:
+        // layouts:
         gridArea       : 'menus',   // place at the defined `menus` area
         display        : 'flex',    // use flexbox to place the menus sequentially
         flexDirection  : 'row',     // menus are stacked horizontally

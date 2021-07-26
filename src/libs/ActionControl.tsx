@@ -60,7 +60,7 @@ export interface IActionControlStyles {
 
 
     // styles:
-    actionControlBasicStyle(): JssStyle
+    actionControlLayout(): JssStyle
 }
 
 export class ActionControlStyles extends ControlStyles implements IActionControlStyles {
@@ -164,14 +164,14 @@ export class ActionControlStyles extends ControlStyles implements IActionControl
 
 
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
 
-            this.actionControlBasicStyle(),
+            this.actionControlLayout(),
         ] as JssStyle,
     }}
-    public /*virtual*/ actionControlBasicStyle(): JssStyle { return {
+    public /*virtual*/ actionControlLayout(): JssStyle { return {
         // accessibility:
         userSelect : 'none', // disable selecting text (double clicking not causing selecting text)
 

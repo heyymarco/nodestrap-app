@@ -28,16 +28,16 @@ import {
 
 export class ContainerStyles extends BasicComponentStyles {
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(),         // copy basicStyle from base
+            super.layout(),         // copy layout from base
 
             this.useContainer(), // applies responsive container functionality
         ] as JssStyle,
 
 
 
-        // layout:
+        // layouts:
         display: 'block',
     }}
     /**
@@ -53,7 +53,7 @@ export class ContainerStyles extends BasicComponentStyles {
      * @returns A `JssStyle` represents a responsive container style definition using css grid.
      */
     public /*virtual*/ useContainerGrid(): JssStyle { return {
-        // layout:
+        // layouts:
         display             : 'grid', // use css grid for layouting
         gridTemplateRows    : [[cssProps.paddingBlock,  'auto', cssProps.paddingBlock ]],
         gridTemplateColumns : [[cssProps.paddingInline, 'auto', cssProps.paddingInline]],

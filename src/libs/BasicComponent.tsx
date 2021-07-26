@@ -700,7 +700,7 @@ export class BasicComponentStyles extends ElementStyles {
 
 
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     

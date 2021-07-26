@@ -405,7 +405,7 @@ export class ElementStyles {
 
 
     /**
-     * Creates a composite style made up from basicStyle + variants + states + functions.
+     * Creates a composite style made up from layout + variants + states + functions.
      * @returns A `JssStyle` represents a composite style definition.
      */
     public /*virtual*/ compositeStyle(): JssStyle { return {
@@ -420,16 +420,16 @@ export class ElementStyles {
             this.usePropsFn(),
 
             // all the required stuff has been loaded,
-            // now load the basicStyle:
-            this.basicStyle(),
+            // now load the layout:
+            this.layout(),
         ] as JssStyle,
     }}
 
     /**
-     * Creates a basic style of a component *without* any variants nor states applied.
-     * @returns A `JssStyle` represents a basic style definition.
+     * Defines the layout of the component.
+     * @returns A `JssStyle` represents a layout definition.
      */
-    public /*virtual*/ basicStyle(): JssStyle { return {} }
+    public /*virtual*/ layout(): JssStyle { return {} }
 
 
     /**

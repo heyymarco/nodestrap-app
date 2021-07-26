@@ -61,7 +61,7 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
     }
 
     public /*virtual*/ block(): JssStyle { return {
-        // layout:
+        // layouts:
         display             : 'grid', // use css grid for layouting, the core of our Masonry layout
         gridAutoFlow        : 'row', // masonry's direction is to row
         gridAutoRows        : cssProps.itemsRaiseSize,
@@ -96,7 +96,7 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
         rowGap    : [[0], '!important'], // strip out the `rowGap` because it will conflict with masonry's direction
     }}
     public /*virtual*/ inline(): JssStyle { return {
-        // layout:
+        // layouts:
         display             : 'inline-grid',
         gridAutoFlow        : 'column', // masonry's direction is to column
         gridAutoColumns     : cssProps.itemsRaiseSize,
@@ -134,15 +134,15 @@ export class MasonryStyles extends BasicComponentStyles implements IContentStyle
 
 
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
 
-            this.contentBasicStyle(),
+            this.contentLayout(),
         ] as JssStyle,
     }}
-    public /*implement*/ contentBasicStyle(): JssStyle {
-        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
+    public /*implement*/ contentLayout(): JssStyle {
+        return contentStyles.contentLayout(); // copy layout from Content
     }
 }
 export const masonryStyles = new MasonryStyles();

@@ -45,7 +45,7 @@ export default cssProps;
 // define the css using configurable cssProps:
 base.declareCss({
     'p, .p': {
-        // layout:
+        // layouts:
         display : 'block',
 
 

@@ -89,7 +89,7 @@ export class IconStyles extends BasicComponentStyles {
 
     public /*virtual*/ font(): JssStyle { return {
         '&::after': {
-            // layout:
+            // layouts:
             content       : this.ref(this._img), // put the icon's name here, the font system will replace the name to the actual image
             display       : 'inline',            // use inline, so it takes the width & height automatically
             
@@ -165,7 +165,7 @@ export class IconStyles extends BasicComponentStyles {
         //#region children
         // a dummy element, for making the image's width
         '&>img': {
-            // layout:
+            // layouts:
             display    : 'inline-block', // use inline-block, so it takes the width & height as we set
 
 
@@ -302,8 +302,8 @@ export class IconStyles extends BasicComponentStyles {
 
 
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
-        // layout:
+    public /*override*/ layout(): JssStyle { return {
+        // layouts:
         display       : 'inline-flex', // use inline flexbox, so it takes the width & height as we set
         flexDirection : 'row',         // flow to the document's writting flow
         alignItems    : 'center',      // center items vertically
@@ -319,7 +319,7 @@ export class IconStyles extends BasicComponentStyles {
         // a dummy text content, for making parent's height as tall as line-height
         // the dummy is also used for calibrating the flex's vertical position
         '&::before': {
-            // layout:
+            // layouts:
             content    : '"\xa0"',       // &nbsp;
             display    : 'inline-block', // use inline-block, so we can kill the width
             
@@ -344,8 +344,8 @@ export class IconStyles extends BasicComponentStyles {
     }}
     public /*virtual*/ useIcon(img: Cust.Ref, foreg?: Cust.Ref): JssStyle { return {
         extend: [
-            // basicStyle + image => img-icon
-            this.basicStyle(),
+            // layout + image => img-icon
+            this.layout(),
             this.image(),
         ] as JssStyle,
 

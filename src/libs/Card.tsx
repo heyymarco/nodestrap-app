@@ -55,7 +55,7 @@ export class CardStyles extends ContentStyles {
     }}
 
     public /*virtual*/ block(): JssStyle { return {
-        // layout:
+        // layouts:
         display        : 'flex',        // use block flexbox, so it takes the entire parent's width
         flexDirection  : 'column',      // items are stacked vertically
 
@@ -101,7 +101,7 @@ export class CardStyles extends ContentStyles {
         } as JssStyle,
     }}
     public /*virtual*/ inline(): JssStyle { return {
-        // layout:
+        // layouts:
         display        : 'inline-flex', // use inline flexbox, so it takes the width & height as needed
         flexDirection  : 'row',         // items are stacked horizontally
 
@@ -149,9 +149,9 @@ export class CardStyles extends ContentStyles {
 
 
 
-    // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
-        // layout:
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
+        // layouts:
      // display        : 'flex',        // customizable orientation // already defined in block()/inline()
      // flexDirection  : 'column',      // customizable orientation // already defined in block()/inline()
         justifyContent : 'start',       // items are placed starting from the top
@@ -195,25 +195,25 @@ export class CardStyles extends ContentStyles {
 
 
         // children:
-        '&>header, &>.body, &>footer' : this.cardItemBasicStyle(),
-        '&>header, &>footer'          : this.cardCaptionBasicStyle(),
-        '&>header'                    : this.cardHeaderBasicStyle(),
-        '&>footer'                    : this.cardFooterBasicStyle(),
-        '&>.body'                     : this.cardBodyBasicStyle(),
+        '&>header, &>.body, &>footer' : this.cardItemLayout(),
+        '&>header, &>footer'          : this.cardCaptionLayout(),
+        '&>header'                    : this.cardHeaderLayout(),
+        '&>footer'                    : this.cardFooterLayout(),
+        '&>.body'                     : this.cardBodyLayout(),
 
 
 
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected /*virtual*/ cardItemBasicStyle(): JssStyle { return {
+    protected /*virtual*/ cardItemLayout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
         ] as JssStyle,
 
 
 
-        // layout:
+        // layouts:
         display   : 'block', // fills the entire parent's width
 
 
@@ -264,7 +264,7 @@ export class CardStyles extends ContentStyles {
 
 
 
-                // layout:
+                // layouts:
                 display: 'block', // fills the entire parent's width
             },
         },
@@ -273,7 +273,7 @@ export class CardStyles extends ContentStyles {
 
 
         // then: styling top_level <figure> & top_level <img>:
-        '&>figure, &>img': this.imageBasicStyle(),
+        '&>figure, &>img': this.imageLayout(),
         //#endregion images
         //#endregion children
 
@@ -282,7 +282,7 @@ export class CardStyles extends ContentStyles {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
-    protected /*virtual*/ cardCaptionBasicStyle(): JssStyle { return {
+    protected /*virtual*/ cardCaptionLayout(): JssStyle { return {
         // sizes:
         // default card's items height are unresizeable (excepts for the card's body):
         flex: [[0, 0]], // not growing, not shrinking
@@ -292,15 +292,15 @@ export class CardStyles extends ContentStyles {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'caption')), // apply *general* cssProps starting with caption***
     }}
-    protected /*virtual*/ cardHeaderBasicStyle(): JssStyle { return {
+    protected /*virtual*/ cardHeaderLayout(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'header')), // apply *general* cssProps starting with header***
     }}
-    protected /*virtual*/ cardFooterBasicStyle(): JssStyle { return {
+    protected /*virtual*/ cardFooterLayout(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'footer')), // apply *general* cssProps starting with footer***
     }}
-    protected /*virtual*/ cardBodyBasicStyle(): JssStyle { return {
+    protected /*virtual*/ cardBodyLayout(): JssStyle { return {
         // sizes:
         // default card's body height is resizeable, ensuring footers are aligned to the bottom:
         flex: [[1, 1]], // allows growing, allows shrinking
@@ -310,14 +310,14 @@ export class CardStyles extends ContentStyles {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'body')), // apply *general* cssProps starting with body***
     }}
-    protected /*virtual*/ imageBasicStyle(): JssStyle { return {
+    protected /*virtual*/ imageLayout(): JssStyle { return {
         extend: [
             stripOuts.image, // clear browser's default styling on image
         ] as JssStyle,
 
 
 
-        // layout:
+        // layouts:
         display: 'block', // fills the entire parent's width
 
 

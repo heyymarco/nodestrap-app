@@ -28,7 +28,7 @@ export interface IContentStyles {
 
 
     // styles:
-    contentBasicStyle()       : JssStyle
+    contentLayout()           : JssStyle
 }
 export class ContentStyles extends IndicatorStyles implements IContentStyles {
     // variants:
@@ -47,14 +47,14 @@ export class ContentStyles extends IndicatorStyles implements IContentStyles {
 
 
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
 
-            this.contentBasicStyle(),
+            this.contentLayout(),
         ] as JssStyle,
     }}
-    public /*virtual*/ contentBasicStyle(): JssStyle { return {
+    public /*virtual*/ contentLayout(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}

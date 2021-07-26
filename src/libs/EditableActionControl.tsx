@@ -103,15 +103,15 @@ export class EditableActionControlStyles extends EditableControlStyles implement
 
 
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
 
-            this.actionControlBasicStyle(),
+            this.actionControlLayout(),
         ] as JssStyle,
     }}
-    public /*implement*/ actionControlBasicStyle(): JssStyle {
-        return actionControlStyles.actionControlBasicStyle(); // copy basicStyle from actionControl
+    public /*implement*/ actionControlLayout(): JssStyle {
+        return actionControlStyles.actionControlLayout(); // copy layout from actionControl
     }
 }
 export const editableActionControlStyles = new EditableActionControlStyles();

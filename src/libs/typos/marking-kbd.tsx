@@ -54,7 +54,7 @@ export default cssProps;
 // define the css using configurable cssProps:
 base.declareCss({
     'kbd,.kbd': {
-        // layout:
+        // layouts:
         display : 'inline',
 
 

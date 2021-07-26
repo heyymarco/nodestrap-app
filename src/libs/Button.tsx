@@ -98,7 +98,7 @@ class GhostStyles extends ControlStyles {
 
 
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         // extend: [
         //     super.outlined(),
         // ] as JssStyle,
@@ -145,11 +145,11 @@ export class ButtonStyles extends ActionControlStyles {
     }}
 
     public /*virtual*/ inline(): JssStyle { return {
-        // layout:
+        // layouts:
         flexDirection  : 'row',    // items are stacked horizontally
     }}
     public /*virtual*/ block(): JssStyle { return {
-        // layout:
+        // layouts:
         flexDirection  : 'column', // items are stacked vertically
     }}
 
@@ -213,14 +213,14 @@ export class ButtonStyles extends ActionControlStyles {
 
 
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
         ] as JssStyle,
 
 
 
-        // layout:
+        // layouts:
         display        : 'inline-flex', // use inline flexbox, so it takes the width & height as needed
      // flexDirection  : 'row',         // customizable orientation // already defined in inline()/block()
         justifyContent : 'center',      // center items horizontally

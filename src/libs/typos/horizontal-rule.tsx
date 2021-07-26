@@ -43,7 +43,7 @@ export default cssProps;
 // define the css using configurable cssProps:
 base.declareCss({
     'hr': {
-        // layout:
+        // layouts:
         display         : 'block',
 
 

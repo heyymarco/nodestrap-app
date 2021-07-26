@@ -156,14 +156,14 @@ class ListgroupItemStyles extends ContentStyles {
 
 
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
         ] as JssStyle,
 
 
         
-        // layout:
+        // layouts:
         display   : 'block',  // fills the entire wrapper's width
 
 
@@ -235,11 +235,11 @@ class ListgroupActionItemStyles extends ActionControlStyles implements IContentS
 
 
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
 
-            this.contentBasicStyle(),
+            this.contentLayout(),
         ] as JssStyle,
 
 
@@ -249,8 +249,8 @@ class ListgroupActionItemStyles extends ActionControlStyles implements IContentS
         borderColor  : undefined,
         borderRadius : undefined,
     }}
-    public /*implement*/ contentBasicStyle(): JssStyle {
-        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
+    public /*implement*/ contentLayout(): JssStyle {
+        return contentStyles.contentLayout(); // copy layout from Content
     }
 }
 
@@ -279,7 +279,7 @@ export class ListgroupStyles extends ContentStyles {
     }}
 
     public /*virtual*/ block(): JssStyle { return {
-        // layout:
+        // layouts:
         display           : 'flex',        // use block flexbox, so it takes the entire parent's width
         flexDirection     : 'column',      // items are stacked vertically
 
@@ -287,7 +287,7 @@ export class ListgroupStyles extends ContentStyles {
 
         // children:
         [wrapperElm]: {
-            // layout:
+            // layouts:
             flexDirection : 'column', // listItems are stacked vertically (supports for the Accordion at blockStyle)
     
     
@@ -321,7 +321,7 @@ export class ListgroupStyles extends ContentStyles {
         } as JssStyle,
     }}
     public /*virtual*/ inline(): JssStyle { return {
-        // layout:
+        // layouts:
         display           : 'inline-flex', // use inline flexbox, so it takes the width & height as needed
         flexDirection     : 'row',         // items are stacked horizontally
 
@@ -329,7 +329,7 @@ export class ListgroupStyles extends ContentStyles {
 
         // children:
         [wrapperElm]: {
-            // layout:
+            // layouts:
             flexDirection : 'row', // listItems are stacked horizontally (supports for the Accordion at inlineStyle)
 
 
@@ -364,7 +364,7 @@ export class ListgroupStyles extends ContentStyles {
     }}
 
     public /*virtual*/ bullet(): JssStyle { return {
-        // layout:
+        // layouts:
         alignItems   : 'center', // child items are centered horizontally
 
 
@@ -420,7 +420,7 @@ export class ListgroupStyles extends ContentStyles {
 
 
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         extend: [
             //#region clear browser's default styles
             (() => {
@@ -434,7 +434,7 @@ export class ListgroupStyles extends ContentStyles {
 
 
 
-        // layout:
+        // layouts:
      // display        : 'flex',           // customizable orientation // already defined in block()/inline()
      // flexDirection  : 'column',         // customizable orientation // already defined in block()/inline()
         justifyContent : 'center',         // items are placed starting from the center and then spread to both sides
@@ -479,7 +479,7 @@ export class ListgroupStyles extends ContentStyles {
 
         // children:
         [wrapperElm]: {
-            // layout:
+            // layouts:
             display        : 'flex',    // use block flexbox, so it takes the entire Listgroup's width
             justifyContent : 'stretch', // listItems height are 100% of the wrapper (the listItems also need to have growable & shrinkable)
             alignItems     : 'stretch', // listItems width  are 100% of the wrapper

@@ -55,7 +55,7 @@ export default cssProps;
 // define the css using configurable cssProps:
 base.declareCss({
     'code,.code,var,.var,samp,.samp': {
-        // layout:
+        // layouts:
         display : 'inline',
 
 

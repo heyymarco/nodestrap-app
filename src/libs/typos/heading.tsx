@@ -59,7 +59,7 @@ export default cssProps;
 export function createStyle<TCssProps extends typeof cssProps>(cssProps: TCssProps, classLevelDecl: (level: number) => string[], levels = [1,2,3,4,5,6]): JssStyle { return {
     //#region global styles for the [h1,h2,...,h6]
     [levels.map(classLevelDecl).map((clss) => clss.join(',')).join(',')]: {
-        // layout:
+        // layouts:
         display : 'block',
 
 

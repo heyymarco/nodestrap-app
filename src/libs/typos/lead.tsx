@@ -47,7 +47,7 @@ export default cssProps;
 // define the css using configurable cssProps:
 base.declareCss({
     '.lead': {
-        // layout:
+        // layouts:
         display : 'block',
 
 

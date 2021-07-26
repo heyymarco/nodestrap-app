@@ -46,15 +46,15 @@ export class InputStyles extends EditableTextControlStyles {
 
 
 
-    // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
         ] as JssStyle,
         
 
 
-        // layout:
+        // layouts:
         display        : 'flex',   // use block flexbox, so it takes the entire parent's width
         flexDirection  : 'row',    // items are stacked horizontally
         justifyContent : 'center', // center items horizontally
@@ -73,21 +73,21 @@ export class InputStyles extends EditableTextControlStyles {
 
 
         // children:
-        [inputElm]     : this.inputBasicStyle(),
+        [inputElm]     : this.inputLayout(),
 
 
 
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected /*virtual*/ inputBasicStyle(): JssStyle { return {
+    protected /*virtual*/ inputLayout(): JssStyle { return {
         extend: [
             stripOuts.textbox, // clear browser's default styles
         ] as JssStyle,
 
 
 
-        // layout:
+        // layouts:
         display        : 'block', // fills the entire parent's width
 
 

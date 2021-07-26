@@ -159,23 +159,23 @@ export class EditableTextControlStyles extends EditableControlStyles {
 
 
 
-    // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
         ] as JssStyle,
 
 
 
         // children:
-        [iconElm]: this.iconBasicStyle(),
+        [iconElm]: this.iconLayout(),
 
 
 
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected /*virtual*/ iconBasicStyle(): JssStyle { return {
+    protected /*virtual*/ iconLayout(): JssStyle { return {
         extend: [
             iconStyles.useIcon( // apply icon
                 /*img   :*/ this.ref(this._iconValInv),
@@ -185,7 +185,7 @@ export class EditableTextControlStyles extends EditableControlStyles {
 
 
 
-        // layout:
+        // layouts:
         content : '""',
         display : 'inline-block', // use inline-block, so it takes the width & height as we set
 

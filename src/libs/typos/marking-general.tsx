@@ -6,7 +6,7 @@ import gens                from './general'
 // define the css:
 base.declareCss({
     'del,s,ins,u,small,.small,strong,b,em,i': {
-        // layout:
+        // layouts:
         display        : 'inline',
     },
     'del,s': {

@@ -107,11 +107,11 @@ class BtnStyles extends ActionControlStyles {
 
 
 
-    // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
         [labelElm]: {
             extend: [
-                buttonStyles.basicStyle(),
+                buttonStyles.layout(),
             ] as JssStyle,
     
     
@@ -354,15 +354,15 @@ export class CheckStyles extends EditableActionControlStyles {
 
 
 
-    // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
         ] as JssStyle,
 
 
 
-        // layout:
+        // layouts:
         display        : 'inline-flex', // use inline flexbox, so it takes the width & height as we set
         flexDirection  : 'row',         // flow to the document's writting flow
         justifyContent : 'start',       // items are placed starting from the left
@@ -387,14 +387,14 @@ export class CheckStyles extends EditableActionControlStyles {
 
 
         // borders:
-        border         : undefined as unknown as null, // discard basicStyle's border
-        borderRadius   : undefined as unknown as null, // discard basicStyle's borderRadius
+        border         : undefined as unknown as null, // discard layout's border
+        borderRadius   : undefined as unknown as null, // discard layout's borderRadius
 
 
 
         // spacings:
-        paddingInline  : undefined as unknown as null, // discard basicStyle's paddingInline
-        paddingBlock   : undefined as unknown as null, // discard basicStyle's paddingBlock
+        paddingInline  : undefined as unknown as null, // discard layout's paddingInline
+        paddingBlock   : undefined as unknown as null, // discard layout's paddingBlock
 
 
 
@@ -406,7 +406,7 @@ export class CheckStyles extends EditableActionControlStyles {
         // a dummy text content, for making parent's height as tall as line-height
         // the dummy is also used for calibrating the flex's vertical position
         '&::before': {
-            // layout:
+            // layouts:
             content    : '"\xa0"',       // &nbsp;
             display    : 'inline-block', // use inline-block, so we can kill the width
             
@@ -425,17 +425,17 @@ export class CheckStyles extends EditableActionControlStyles {
     
     
         // children:
-        [inputElm]     : this.inputBasicStyle(),
-        [labelElm]     : this.labelBasicStyle(),
+        [inputElm]     : this.inputLayout(),
+        [labelElm]     : this.labelLayout(),
     }}
-    protected /*virtual*/ inputBasicStyle(): JssStyle { return {
+    protected /*virtual*/ inputLayout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
         ] as JssStyle,
     
 
 
-        // layout:
+        // layouts:
         display       : 'inline-block', // use inline-block, so it takes the width & height as we set
 
 
@@ -449,8 +449,8 @@ export class CheckStyles extends EditableActionControlStyles {
 
 
         // spacings:
-        paddingInline : undefined as unknown as null, // discard basicStyle's paddingInline
-        paddingBlock  : undefined as unknown as null, // discard basicStyle's paddingBlock
+        paddingInline : undefined as unknown as null, // discard layout's paddingInline
+        paddingBlock  : undefined as unknown as null, // discard layout's paddingBlock
 
         // spacing between input & label:
         '&:not(:last-child)': {
@@ -470,14 +470,14 @@ export class CheckStyles extends EditableActionControlStyles {
         
         
         // children:
-        [checkElm]    : this.checkBasicStyle(),
+        [checkElm]    : this.checkLayout(),
 
 
 
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected /*virtual*/ checkBasicStyle(): JssStyle { return {
+    protected /*virtual*/ checkLayout(): JssStyle { return {
         extend: [
             iconStyles.useIcon( // apply icon
                 /*img   :*/ cssProps.img,
@@ -487,7 +487,7 @@ export class CheckStyles extends EditableActionControlStyles {
 
 
 
-        // layout:
+        // layouts:
         content   : '""',
         display   : 'block', // fills the entire parent's width
 
@@ -505,8 +505,8 @@ export class CheckStyles extends EditableActionControlStyles {
         transform : this.ref(this._checkTransf),
         anim      : this.ref(this._checkAnim),
     }}
-    protected /*virtual*/ labelBasicStyle(): JssStyle { return {
-        // layout:
+    protected /*virtual*/ labelLayout(): JssStyle { return {
+        // layouts:
         display       : 'inline', // use inline, so it takes the width & height automatically
 
 

@@ -93,11 +93,11 @@ export class FormStyles extends EditableControlStyles implements IContentStyles 
 
 
     // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
 
-            this.contentBasicStyle(),
+            this.contentLayout(),
         ] as JssStyle,
 
 
@@ -105,8 +105,8 @@ export class FormStyles extends EditableControlStyles implements IContentStyles 
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    public /*implement*/ contentBasicStyle(): JssStyle {
-        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
+    public /*implement*/ contentLayout(): JssStyle {
+        return contentStyles.contentLayout(); // copy layout from Content
     }
 }
 export const formStyles = new FormStyles();

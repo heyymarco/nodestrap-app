@@ -58,17 +58,17 @@ export class AlertStyles extends PopupStyles implements IContentStyles {
 
 
 
-    // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
 
-            this.contentBasicStyle(),
+            this.contentLayout(),
         ] as JssStyle,
 
 
 
-        // layout:
+        // layouts:
         display             : 'grid', // use css grid for layouting, so we can customize the desired area later.
 
         // explicit areas:
@@ -95,20 +95,20 @@ export class AlertStyles extends PopupStyles implements IContentStyles {
 
 
         // children:
-        [iconElm]    : this.iconBasicStyle(),
-        [bodyElm]    : this.bodyBasicStyle(),
-        [controlElm] : this.controlBasicStyle(),
+        [iconElm]    : this.iconLayout(),
+        [bodyElm]    : this.bodyLayout(),
+        [controlElm] : this.controlLayout(),
 
 
 
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    public /*implement*/ contentBasicStyle(): JssStyle {
-        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
+    public /*implement*/ contentLayout(): JssStyle {
+        return contentStyles.contentLayout(); // copy layout from Content
     }
-    protected /*virtual*/ iconBasicStyle(): JssStyle { return {
-        // layout:
+    protected /*virtual*/ iconLayout(): JssStyle { return {
+        // layouts:
         gridArea    : '1 / -3', // the first row / the third column starting from the last
         justifySelf : 'center', // align horizontally to center
         alignSelf   : 'start',  // align vertically   to top
@@ -118,8 +118,8 @@ export class AlertStyles extends PopupStyles implements IContentStyles {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'icon')), // apply *general* cssProps starting with icon***
     }}
-    protected /*virtual*/ bodyBasicStyle(): JssStyle { return {
-        // layout:
+    protected /*virtual*/ bodyLayout(): JssStyle { return {
+        // layouts:
         gridArea : 'body',
 
 
@@ -127,8 +127,8 @@ export class AlertStyles extends PopupStyles implements IContentStyles {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'body')), // apply *general* cssProps starting with body***
     }}
-    protected /*virtual*/ controlBasicStyle(): JssStyle { return {
-        // layout:
+    protected /*virtual*/ controlLayout(): JssStyle { return {
+        // layouts:
         gridArea    : '1 / 2',  // the first row / the second column
         justifySelf : 'center', // align horizontally to center
         alignSelf   : 'start',  // align vertically   to top

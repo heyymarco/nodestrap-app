@@ -46,7 +46,7 @@ export default cssProps;
 // define the css using configurable cssProps:
 base.declareCss({
     'blockquote,.blockquote': {
-        // layout:
+        // layouts:
         display : 'block',
 
 

@@ -249,14 +249,14 @@ export class ModalStyles extends PopupStyles {
         [ 'actionBar', this.actionBarStyle() ],
     ]}
 
-    public /*override*/ basicStyle(): JssStyle { return {
+    public /*override*/ layout(): JssStyle { return {
         extend: [
             containerStyles.useContainerGrid(), // applies responsive container functionality using css grid
         ] as JssStyle,
 
 
 
-        // layout:
+        // layouts:
      // display      : 'grid',             // already defined in `useContainerGrid()`. We use a grid for the layout, so we can align the Card both horizontally & vertically
         justifyItems : cssProps.horzAlign, // align (default center) horizontally
         alignItems   : cssProps.vertAlign, // align (default center) vertically
@@ -314,7 +314,7 @@ export class ModalStyles extends PopupStyles {
 
 
                     '&:not(._)': { // force overwrite
-                        // layout:
+                        // layouts:
                         gridArea : 'content',
                         
                         
@@ -348,7 +348,7 @@ export class ModalStyles extends PopupStyles {
 
         //#region psedudo elm for filling the end of horz & vert scroll
         '&::before, &::after': {
-            // layout:
+            // layouts:
             content     : '""',
             display     : 'block',
 
@@ -363,11 +363,11 @@ export class ModalStyles extends PopupStyles {
             visibility  : 'hidden',
         } as JssStyle,
         '&::before': {
-            // layout:
+            // layouts:
             gridArea    : 'inlineEnd',
         } as JssStyle,
         '&::after': {
-            // layout:
+            // layouts:
             gridArea    : 'blockEnd',
         } as JssStyle,
         //#endregion psedudo elm for filling the end of horz & vert scroll
@@ -383,7 +383,7 @@ export class ModalStyles extends PopupStyles {
         overflow: 'hidden',
     }}
     public /*virtual*/ actionBarStyle(): JssStyle { return {
-        // layout:
+        // layouts:
         display        : 'flex',          // use block flexbox, so it takes the entire parent's width
         flexDirection  : 'row',           // items are stacked horizontally
         justifyContent : 'space-between', // items are separated horizontally

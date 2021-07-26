@@ -252,23 +252,23 @@ export class TogglerMenuButtonStyles extends CheckStyles {
 
 
 
-    // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
         ] as JssStyle,
 
 
         
         // children:
-        [svgElm] : this.svgBasicStyle(),
+        [svgElm] : this.svgLayout(),
 
 
 
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    protected /*virtual*/ svgBasicStyle(): JssStyle { return {
+    protected /*virtual*/ svgLayout(): JssStyle { return {
         // sizes:
         // fills the entire parent text's height:
         blockSize  : [['calc(1em *',

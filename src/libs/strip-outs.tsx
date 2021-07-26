@@ -131,7 +131,7 @@ export const focusableElement : JssStyle = {
  * removes browser's default styling on image.
  */
 export const image : JssStyle = {
-    // layout:
+    // layouts:
     display: 'block', // fills the entire parent's width
 
 

@@ -72,17 +72,17 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
 
 
 
-    // styles:
-    public /*override*/ basicStyle(): JssStyle { return {
+    // layouts:
+    public /*override*/ layout(): JssStyle { return {
         extend: [
-            super.basicStyle(), // copy basicStyle from base
+            super.layout(), // copy layout from base
 
-            this.contentBasicStyle(),
+            this.contentLayout(),
         ] as JssStyle,
 
 
 
-        // layout:
+        // layouts:
         display             : 'grid', // use css grid for layouting, so we can customize the desired area later.
 
         // explicit areas:
@@ -109,17 +109,17 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
 
         // children:
         //#region children
-        [itemsElm]   : this.carouselItemsBasicStyle(),
-        [itemElm]    : this.carouselItemBasicStyle(),
+        [itemsElm]   : this.carouselItemsLayout(),
+        [itemElm]    : this.carouselItemLayout(),
 
         [[
             prevBtnElm,
             nextBtnElm,
-        ].join(',')] : this.navBtnBasicStyle(),
-        [prevBtnElm] : this.prevBtnBasicStyle(),
-        [nextBtnElm] : this.nextBtnBasicStyle(),
+        ].join(',')] : this.navBtnLayout(),
+        [prevBtnElm] : this.prevBtnLayout(),
+        [nextBtnElm] : this.nextBtnLayout(),
 
-        [navElm]     : this.navBasicStyle(),
+        [navElm]     : this.navLayout(),
         //#endregion children
 
 
@@ -127,11 +127,11 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
         // customize:
         ...this.filterGeneralProps(cssProps), // apply *general* cssProps
     }}
-    public /*implement*/ contentBasicStyle(): JssStyle {
-        return contentStyles.contentBasicStyle(); // copy basicStyle from Content
+    public /*implement*/ contentLayout(): JssStyle {
+        return contentStyles.contentLayout(); // copy layout from Content
     }
 
-    protected /*virtual*/ carouselItemsBasicStyle(): JssStyle { return {
+    protected /*virtual*/ carouselItemsLayout(): JssStyle { return {
         extend: [
             //#region clear browser's default styles
             (() => {
@@ -153,7 +153,7 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
 
 
 
-        // layout:
+        // layouts:
         gridArea       : '1 / 1 / -1 / -1', // fills the entire grid areas, from the first row/column to the last row/column
         display        : 'flex',    // use block flexbox, so it takes the entire parent's width
         flexDirection  : 'row',     // items are stacked horizontally
@@ -186,8 +186,8 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'items')), // apply *general* cssProps starting with items***
     }}
-    protected /*virtual*/ carouselItemBasicStyle(): JssStyle { return {
-        // layout:
+    protected /*virtual*/ carouselItemLayout(): JssStyle { return {
+        // layouts:
         display         : 'flex',   // use block flexbox, so it takes the entire parent's width
         flexDirection   : 'row',    // the flex direction to horz, so we can adjust the content's height
         justifyContent  : 'center', // center items horizontally
@@ -217,7 +217,7 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
 
 
 
-                // layout:
+                // layouts:
                 display   : 'block',   // fills the entire parent's width
             },
         },
@@ -228,12 +228,12 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'item')), // apply *general* cssProps starting with item***
     }}
 
-    protected /*virtual*/ navBtnBasicStyle(): JssStyle { return {
+    protected /*virtual*/ navBtnLayout(): JssStyle { return {
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'navBtn')), // apply *general* cssProps starting with navBtn***
     }}
-    protected /*virtual*/ prevBtnBasicStyle(): JssStyle { return {
-        // layout:
+    protected /*virtual*/ prevBtnLayout(): JssStyle { return {
+        // layouts:
         gridArea : 'prevBtn',
 
 
@@ -241,8 +241,8 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
         // customize:
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'prevBtn')), // apply *general* cssProps starting with prevBtn***
     }}
-    protected /*virtual*/ nextBtnBasicStyle(): JssStyle { return {
-        // layout:
+    protected /*virtual*/ nextBtnLayout(): JssStyle { return {
+        // layouts:
         gridArea : 'nextBtn',
 
 
@@ -251,8 +251,8 @@ export class CarouselStyles extends BasicComponentStyles implements IContentStyl
         ...this.filterGeneralProps(this.filterPrefixProps(cssProps, 'nextBtn')), // apply *general* cssProps starting with nextBtn***
     }}
 
-    protected /*virtual*/ navBasicStyle(): JssStyle { return {
-        // layout:
+    protected /*virtual*/ navLayout(): JssStyle { return {
+        // layouts:
         gridArea : 'nav',
 
 
