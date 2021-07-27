@@ -1,4 +1,4 @@
-Build, Share, Collaborate!
+Build, Share, Contribute, Collaborate!
 
 todo:
 Alert CloseButton imperfect

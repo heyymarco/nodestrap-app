@@ -401,7 +401,7 @@ export class ElementStyles {
      * @returns A `JssStyle` represents the implementation of the states.
      */
     public /*virtual*/ useStates(inherit = false): JssStyle {
-        return this.combineRules(this.states(inherit), /*addSpecificity :*/1);
+        return this.combineRules(this.states(inherit), /*specificityWeight :*/1);
     }
     /**
      * Creates css rule definitions for all states by manipulating some props.
@@ -433,7 +433,7 @@ export class ElementStyles {
 
 
     // utilities:
-    protected /*virtual*/ combineRules(ruleList: RuleList, addSpecificity: number = 0): JssStyle { return {
+    protected /*virtual*/ combineRules(ruleList: RuleList, specificityWeight: number = 0): JssStyle { return {
         extend: [
             ...((): JssStyle[] => {
                 const noRules: JssStyle[] = [];
@@ -442,15 +442,15 @@ export class ElementStyles {
                     ...ruleList.map(([rules, styles]): JssStyle => {
                         let normalizedRules = (Array.isArray(rules) ? rules : [rules]).map((rule): string => {
                             if (!rule) return '&';
-    
+
                             if (rule.includes('&')) return rule;
-    
+
                             if (rule.includes('.') || rule.includes(':')) return `&${rule}`;
-    
+
                             return `&.${rule}`;
                         });
-                        if (addSpecificity > 0) {
-                            const specificity = (new Array(addSpecificity)).fill(':not(._)').join('');
+                        if (specificityWeight > 0) {
+                            const specificity = (new Array(specificityWeight)).fill(':not(._)').join('');
                             normalizedRules = normalizedRules.map((rule) => (rule === '&') ? rule : `${rule}${specificity}`);
                         } // if
 
