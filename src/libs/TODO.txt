@@ -5,6 +5,14 @@ Alert CloseButton imperfect
 ***Builder
 ***Old()
 
+gapX => gapInline
+gapY => gapBlock
+typeof xxx => typeof(xxx)
+
+
+
+skip verifying CssConfig => rebuild()
+
 
 readonly
 themeDefault

@@ -14,7 +14,7 @@ import reportWebVitals from './reportWebVitals';
 //                 import AccordionApp                 from './apps/AccordionApp';
 //                 import NavscrollApp                 from './apps/NavscrollApp';
 //             import CardApp                          from './apps/CardApp';
-//                 import ModalApp                     from './apps/ModalApp';
+                import ModalApp                     from './apps/ModalApp';
 //         import PopupApp                             from './apps/PopupApp';
 //             import AlertApp                         from './apps/AlertApp';
 //         import ControlApp                           from './apps/ControlApp';
@@ -32,7 +32,7 @@ import reportWebVitals from './reportWebVitals';
 //     import IconApp                                  from './apps/IconApp';
 //     import MasonryApp                               from './apps/MasonryApp';
 //     import CarouselApp                              from './apps/CarouselApp';
-    import NavbarApp                                from './apps/NavbarApp';
+//     import NavbarApp                                from './apps/NavbarApp';
     
 
 
@@ -40,7 +40,7 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
     <React.StrictMode>
-        <NavbarApp />
+        <ModalApp />
     </React.StrictMode>,
     document.getElementById('root')
 );

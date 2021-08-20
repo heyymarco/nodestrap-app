@@ -555,8 +555,8 @@ const cssConfig = new CssConfig(() => {
         
         
         //#region spacings
-        paddingInline    : ccssProps.paddingInline, // override to BasicElement
-        paddingBlock     : bcssProps.paddingBlock,  // override to BasicElement
+        paddingInline    : ccssProps.paddingInline, // override to BasicComponent
+        paddingBlock     : bcssProps.paddingBlock,  // override to BasicComponent
 
         gapX             : bcssProps.paddingInline,
         gapY             : bcssProps.paddingBlock,
